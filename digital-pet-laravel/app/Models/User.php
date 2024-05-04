@@ -46,4 +46,12 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+    
+    /**
+     * Get the Digital Monsters associated with the user.
+     */
+    public function digitalMonsters()
+    {
+        return $this->hasMany(DigitalMonster::class);
+    }
 }
