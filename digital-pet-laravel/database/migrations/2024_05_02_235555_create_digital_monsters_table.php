@@ -11,6 +11,8 @@ class CreateDigitalMonstersTable extends Migration
         Schema::create('digital_monsters', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->integer('egg_id')->default(0);
+            $table->integer('monster_id')->default(0);
             $table->string('name')->nullable();
             $table->string('stage')->nullable();
             $table->string('type')->nullable();

@@ -15,7 +15,7 @@ class DigitalMonster extends Model
         'name', 'type', 'level', 'user_id', 'exp', 'strength', 'agility',
         'defense', 'mind', 'age', 'weight', 'min_weight', 'stage', 'hunger',
         'exercise', 'clean', 'energy', 'min_energy', 'wins', 'losses',
-        'trainings', 'care_misses'
+        'trainings', 'care_misses', 'egg_id', 'monster_id'
     ];
 
     public function user()
