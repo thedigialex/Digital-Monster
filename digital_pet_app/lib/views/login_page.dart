@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:digital_pet_app/services/authentication_service.dart';
-import 'package:digital_pet_app/services/digital_monster_service.dart';
-import 'package:digital_pet_app/utils/secure_storage.dart';
-import 'package:digital_pet_app/views/digital_monster_screen.dart'; // Import the digital monster screen
+import '/services/authentication_service.dart';
+import '/services/digital_monster_service.dart';
+import '/utils/secure_storage.dart';
+import '/views/digital_monster_screen.dart';
 
 class LoginPage extends StatelessWidget {
   final GlobalKey<ScaffoldMessengerState> scaffoldKey = GlobalKey();

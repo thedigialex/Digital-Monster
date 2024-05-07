@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '/utils/animation_controller_state.dart';
 
 class PushableButton extends StatefulWidget {
   const PushableButton({
@@ -8,30 +7,33 @@ class PushableButton extends StatefulWidget {
     required this.hslColor,
     required this.height,
     this.elevation = 8.0,
-    this.shadow,
     this.onPressed,
+    this.animationDuration = const Duration(milliseconds: 40),
   })  : assert(height > 0),
         super(key: key);
 
   final Widget? child;
-
   final HSLColor hslColor;
-
   final double height;
-
   final double elevation;
-
-  final BoxShadow? shadow;
-
   final VoidCallback? onPressed;
+  final Duration animationDuration;
 
   @override
-  _PushableButtonState createState() =>
-      _PushableButtonState(Duration(milliseconds: 60));
+  PushableButtonState createState() => PushableButtonState();
 }
 
-class _PushableButtonState extends AnimationControllerState<PushableButton> {
-  _PushableButtonState(Duration duration) : super(duration);
+class PushableButtonState extends State<PushableButton> with SingleTickerProviderStateMixin {
+  late AnimationController animationController;
+
+  @override
+  void initState() {
+    super.initState();
+    animationController = AnimationController(
+      duration: widget.animationDuration,
+      vsync: this,
+    );
+  }
 
   bool _isDragInProgress = false;
   Offset _gestureLocation = Offset.zero;
@@ -47,7 +49,7 @@ class _PushableButtonState extends AnimationControllerState<PushableButton> {
   }
 
   void _handleTapCancel() {
-    Future.delayed(Duration(milliseconds: 60), () {
+    Future.delayed(const Duration(milliseconds: 40), () {
       if (!_isDragInProgress && mounted) {
         animationController.reverse();
       }
@@ -66,7 +68,7 @@ class _PushableButtonState extends AnimationControllerState<PushableButton> {
       animationController.reverse();
     }
     if (_gestureLocation.dx >= 0 &&
-        _gestureLocation.dy < buttonSize.width &&
+        _gestureLocation.dx < buttonSize.width &&
         _gestureLocation.dy >= 0 &&
         _gestureLocation.dy < buttonSize.height) {
       widget.onPressed?.call();
@@ -89,6 +91,7 @@ class _PushableButtonState extends AnimationControllerState<PushableButton> {
     final totalHeight = widget.height + widget.elevation;
     return SizedBox(
       height: totalHeight,
+      width: widget.height,
       child: LayoutBuilder(
         builder: (context, constraints) {
           final buttonSize = Size(constraints.maxWidth, constraints.maxHeight);
@@ -113,7 +116,6 @@ class _PushableButtonState extends AnimationControllerState<PushableButton> {
                 hslColor.withLightness(hslColor.lightness - 0.15);
                 return Stack(
                   children: [
-                    // Draw bottom layer first
                     Positioned(
                       left: 0,
                       right: 0,
@@ -122,14 +124,11 @@ class _PushableButtonState extends AnimationControllerState<PushableButton> {
                         height: totalHeight - top,
                         decoration: BoxDecoration(
                           color: bottomHslColor.toColor(),
-                          boxShadow:
-                          widget.shadow != null ? [widget.shadow!] : [],
                           borderRadius:
                           BorderRadius.circular(widget.height / 2),
                         ),
                       ),
                     ),
-                    // Then top (pushable) layer
                     Positioned(
                       left: 0,
                       right: 0,
@@ -138,7 +137,7 @@ class _PushableButtonState extends AnimationControllerState<PushableButton> {
                         height: widget.height,
                         decoration: ShapeDecoration(
                           color: hslColor.toColor(),
-                          shape: StadiumBorder(),
+                          shape: const StadiumBorder(),
                         ),
                         child: Center(child: widget.child),
                       ),

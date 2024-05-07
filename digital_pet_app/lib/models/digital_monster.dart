@@ -3,6 +3,8 @@ class DigitalMonster {
   final String name;
   final String type;
   final int level;
+  final int eggId;
+  final int monsterId;
   final int userId;
   final int exp;
   final int strength;
@@ -28,6 +30,8 @@ class DigitalMonster {
     required this.name,
     required this.type,
     required this.level,
+    required this.eggId,
+    required this.monsterId,
     required this.userId,
     required this.exp,
     required this.strength,
@@ -55,6 +59,8 @@ class DigitalMonster {
       name: json['name'],
       type: json['type'],
       level: json['level'],
+      eggId: json['egg_id'],
+      monsterId: json['monster_id'],
       userId: json['user_id'],
       exp: json['exp'],
       strength: json['strength'],

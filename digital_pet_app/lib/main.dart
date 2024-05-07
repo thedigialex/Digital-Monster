@@ -32,7 +32,7 @@ class MyApp extends StatelessWidget {
             );
           }
           if (snapshot.hasData && snapshot.data!.isNotEmpty) {
-            return DigitalMonsterScreen(); // Assuming token is valid
+            return const DigitalMonsterScreen(); // Assuming token is valid
           }
           return LoginPage();
         },
