@@ -17,16 +17,17 @@ class DigitalMonsterScreenState extends State<DigitalMonsterScreen> {
   final DigitalMonsterService monsterService = DigitalMonsterService();
   String monsterName = '';
   int menuCount = -1;
+  bool menuOpen = false;
 
   List<Map<String, String>> images = [
-    {'on': 'assets/images/image1_on.png', 'off': 'assets/images/test.png'},
-    {'on': 'assets/images/image2_on.png', 'off': 'assets/images/test.png'},
-    {'on': 'assets/images/image3_on.png', 'off': 'assets/images/test.png'},
-    {'on': 'assets/images/image4_on.png', 'off': 'assets/images/test.png'},
-    {'on': 'assets/images/image5_on.png', 'off': 'assets/images/test.png'},
-    {'on': 'assets/images/image6_on.png', 'off': 'assets/images/test.png'},
-    {'on': 'assets/images/image7_on.png', 'off': 'assets/images/test.png'},
-    {'on': 'assets/images/image8_on.png', 'off': 'assets/images/test.png'},
+    {'on': 'assets/images/menu_icons/menu_zero_full.png', 'off': 'assets/images/menu_icons/menu_zero_empty.png'},
+    {'on': 'assets/images/menu_icons/menu_one_full.png', 'off': 'assets/images/menu_icons/menu_one_empty.png'},
+    {'on': 'assets/images/menu_icons/menu_two_full.png', 'off': 'assets/images/menu_icons/menu_two_empty.png'},
+    {'on': 'assets/images/menu_icons/menu_three_full.png', 'off': 'assets/images/menu_icons/menu_three_empty.png'},
+    {'on': 'assets/images/menu_icons/menu_four_full.png', 'off': 'assets/images/menu_icons/menu_four_empty.png'},
+    {'on': 'assets/images/menu_icons/menu_five_full.png', 'off': 'assets/images/menu_icons/menu_five_empty.png'},
+    {'on': 'assets/images/menu_icons/menu_six_full.png', 'off': 'assets/images/menu_icons/menu_six_empty.png'},
+    {'on': 'assets/images/menu_icons/menu_seven_full.png', 'off': 'assets/images/menu_icons/menu_seven_empty.png'},
   ];
 
   HSLColor lightGrey = const HSLColor.fromAHSL(1.0, 240, 0.02, 0.75);
@@ -36,6 +37,18 @@ class DigitalMonsterScreenState extends State<DigitalMonsterScreen> {
     super.initState();
     loadMonsterDetails();
     updateImages();
+  }
+
+  void cancelButton() {
+    setState(() {
+      if(menuOpen) {
+        menuOpen = false;
+      }
+      else{
+        menuCount = -1;
+        updateImages();
+      }
+    });
   }
 
   void changeImage(int movement) {
@@ -81,6 +94,7 @@ class DigitalMonsterScreenState extends State<DigitalMonsterScreen> {
       });
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -103,7 +117,7 @@ class DigitalMonsterScreenState extends State<DigitalMonsterScreen> {
                     margin: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
                       color: Colors.blueAccent,
-                      border: Border.all(color: Colors.green, width: 3),
+                      border: Border.all(color: lightGrey.toColor(), width: 8),
                     ),
                     child: Column(
                       children: [
@@ -128,13 +142,13 @@ class DigitalMonsterScreenState extends State<DigitalMonsterScreen> {
                           ),
                         ),
                         const SizedBox(height: 20),
-                        const SizedBox(
+                        SizedBox(
                           height: 100.0,
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
                               MonsterAnimation(
-                                imagePath: 'assets/images/test.png'
+                                imagePath: monsterName,
                               )
                             ],
                           ),
@@ -169,7 +183,7 @@ class DigitalMonsterScreenState extends State<DigitalMonsterScreen> {
                       PushableButton(
                         height: 50,
                         hslColor: lightGrey,
-                        onPressed: () => changeImage(-1),
+                        onPressed: () => cancelButton(),
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -190,9 +204,7 @@ class DigitalMonsterScreenState extends State<DigitalMonsterScreen> {
                       PushableButton(
                         height: 50,
                         hslColor: lightGrey,
-                        onPressed: () {
-                          print("Bottom Button pressed");
-                        },
+                        onPressed: () => cancelButton(),
                       ),
                     ],
                   ),
@@ -205,5 +217,3 @@ class DigitalMonsterScreenState extends State<DigitalMonsterScreen> {
     );
   }
 }
-
-

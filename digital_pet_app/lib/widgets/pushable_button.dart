@@ -8,7 +8,6 @@ class PushableButton extends StatefulWidget {
     required this.height,
     this.elevation = 8.0,
     this.onPressed,
-    this.animationDuration = const Duration(milliseconds: 40),
   })  : assert(height > 0),
         super(key: key);
 
@@ -17,7 +16,6 @@ class PushableButton extends StatefulWidget {
   final double height;
   final double elevation;
   final VoidCallback? onPressed;
-  final Duration animationDuration;
 
   @override
   PushableButtonState createState() => PushableButtonState();
@@ -30,7 +28,7 @@ class PushableButtonState extends State<PushableButton> with SingleTickerProvide
   void initState() {
     super.initState();
     animationController = AnimationController(
-      duration: widget.animationDuration,
+      duration: const Duration(milliseconds: 0),
       vsync: this,
     );
   }
@@ -49,7 +47,7 @@ class PushableButtonState extends State<PushableButton> with SingleTickerProvide
   }
 
   void _handleTapCancel() {
-    Future.delayed(const Duration(milliseconds: 40), () {
+    Future.delayed(const Duration(milliseconds: 0), () {
       if (!_isDragInProgress && mounted) {
         animationController.reverse();
       }
