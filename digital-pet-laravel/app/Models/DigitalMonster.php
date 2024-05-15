@@ -12,14 +12,10 @@ class DigitalMonster extends Model
     protected $table = 'digital_monsters';
 
     protected $fillable = [
-        'name', 'type', 'level', 'user_id', 'exp', 'strength', 'agility',
-        'defense', 'mind', 'age', 'weight', 'min_weight', 'stage', 'hunger',
-        'exercise', 'clean', 'energy', 'min_energy', 'wins', 'losses',
-        'trainings', 'care_misses', 'egg_id', 'monster_id'
+        'egg_id', 'monster_id',
+        'sprite_sheet', 'stage',
+        'type', 'min_weight', 'max_energy',
+        'required_evo_points' 
     ];
 
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
 }

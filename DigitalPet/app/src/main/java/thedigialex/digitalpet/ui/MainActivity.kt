@@ -5,9 +5,6 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -26,9 +23,6 @@ class MainActivity : ComponentActivity() {
         // Check if the user nickname is not null or empty before showing the toast
         user.name.let {
             Toast.makeText(applicationContext, "Welcome back, $it!", Toast.LENGTH_LONG).show()
-        } ?: run {
-            // In case nickname is null, you might want to handle it differently
-            Toast.makeText(applicationContext, "Welcome back, user without a nickname!", Toast.LENGTH_LONG).show()
         }
     }
 
@@ -58,12 +52,3 @@ class MainActivity : ComponentActivity() {
 
 
 }
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-

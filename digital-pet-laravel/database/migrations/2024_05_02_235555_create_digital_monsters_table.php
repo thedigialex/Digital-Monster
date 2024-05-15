@@ -10,12 +10,22 @@ class CreateDigitalMonstersTable extends Migration
     {
         Schema::create('digital_monsters', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->integer('egg_id')->default(0);
             $table->integer('monster_id')->default(0);
-            $table->string('name')->nullable();
+            $table->string('sprite_sheet');
             $table->string('stage')->nullable();
             $table->string('type')->nullable();
+            $table->integer('min_weight')->default(0);
+            $table->integer('max_energy')->default(0);
+            $table->integer('required_evo_points')->default(0);
+            $table->timestamps();
+        });
+
+        Schema::create('users_digital_monsters', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('digital_monster_id')->constrained()->onDelete('cascade');
+            $table->string('name')->nullable();
             $table->integer('age')->default(0);
             $table->integer('level')->default(1);
             $table->integer('exp')->default(0);
@@ -27,19 +37,19 @@ class CreateDigitalMonstersTable extends Migration
             $table->integer('exercise')->default(0);
             $table->integer('clean')->default(0);
             $table->integer('weight')->default(0);
-            $table->integer('min_weight')->default(0);
             $table->integer('energy')->default(0);
-            $table->integer('min_energy')->default(0);
             $table->integer('wins')->default(0);
             $table->integer('losses')->default(0);
             $table->integer('trainings')->default(0);
             $table->integer('care_misses')->default(0);
+            $table->timestamps();
         });
     }
 
+
     public function down()
     {
+        Schema::dropIfExists('users_digital_monsters');
         Schema::dropIfExists('digital_monsters');
     }
 }
-
