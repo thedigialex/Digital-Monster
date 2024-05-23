@@ -28,11 +28,13 @@ class User extends Authenticatable
         ];
     }
 
-    /**
-     * Get the digital monsters associated with the user.
-     */
     public function digitalMonsters()
     {
         return $this->hasMany(UserDigitalMonster::class);
+    }
+
+    public function inventories()
+    {
+        return $this->hasMany(Inventory::class);
     }
 }

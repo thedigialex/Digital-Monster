@@ -18,9 +18,12 @@ class UserController extends Controller
 
     public function show($id)
     {
-        $user = User::findOrFail($id);
-        return view('user.show', compact('user'));
+        // Eager load the 'digitalMonsters' and 'inventories.item' relationships
+        $user = User::with(['digitalMonsters', 'inventories.item'])->findOrFail($id);
+
+        return view('users.user_show', compact('user'));
     }
+
 
     public function edit($id)
     {
