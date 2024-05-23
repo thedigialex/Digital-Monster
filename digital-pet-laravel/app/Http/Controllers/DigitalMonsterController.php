@@ -17,11 +17,9 @@ class DigitalMonsterController extends Controller
 
     public function index(Request $request)
     {
-        $sort = $request->input('sort', 'monster_id');
-        $direction = $request->input('direction', 'asc');
-
-        $monsters = DigitalMonster::orderBy($sort, $direction)->get();
-        return view('monsters.monster_index', compact('monsters'));
+        $monsters = DigitalMonster::orderBy('monster_id', 'asc')->get();
+        $groupedMonsters = $monsters->groupBy('egg_id');
+        return view('monsters.monster_index', compact('groupedMonsters'));
     }
 
     public function destroy($id)
@@ -53,9 +51,6 @@ class DigitalMonsterController extends Controller
             'monster_id' => 'required|integer',
             'stage' => 'required|string',
             'type' => 'required|string',
-            'min_weight' => 'required|integer',
-            'max_energy' => 'required|integer',
-            'required_evo_points' => 'required|integer',
         ];
 
         if (!$isUpdate || $request->hasFile('sprite_sheet')) {
@@ -79,15 +74,16 @@ class DigitalMonsterController extends Controller
         $this->validateDigitalMonster($request);
         $path = $this->handleSpriteUpload($request);
 
+        $minValues = $this->getMinValues($request->stage);
         $digitalMonster = DigitalMonster::create([
             'monster_id' => $request->monster_id,
             'egg_id' => $request->egg_id,
             'sprite_sheet' => $path,
             'stage' => $request->stage,
             'type' => $request->type,
-            'min_weight' => $request->min_weight,
-            'max_energy' => $request->max_energy,
-            'required_evo_points' => $request->required_evo_points
+            'min_weight' => $minValues[0],
+            'max_energy' => $minValues[1],
+            'required_evo_points' => $minValues[2]
         ]);
 
         $digitalMonster->save();
@@ -104,16 +100,35 @@ class DigitalMonsterController extends Controller
             $digitalMonster->sprite_sheet = $this->handleSpriteUpload($request);
         }
 
+        $minValues = $this->getMinValues($request->stage);
         $digitalMonster->update([
             'monster_id' => $request->monster_id,
             'egg_id' => $request->egg_id,
             'stage' => $request->stage,
             'type' => $request->type,
-            'min_weight' => $request->min_weight,
-            'max_energy' => $request->max_energy,
-            'required_evo_points' => $request->required_evo_points
+            'min_weight' => $minValues[0],
+            'max_energy' => $minValues[1],
+            'required_evo_points' => $minValues[2]
         ]);
 
         return redirect()->route('monsters.index')->with('success', 'Monster created successfully!');
+    }
+
+    public function getMinValues($stage)
+    {
+        $baseValues = [5, 5, 25];
+        $additionalValues = [
+            "Rookie" => 5,
+            "Champion" => 10,
+            "Ultimate" => 15,
+            "Final" => 20,
+        ];
+
+        if (array_key_exists($stage, $additionalValues)) {
+            $baseValues[0] += $additionalValues[$stage];
+            $baseValues[1] += $additionalValues[$stage];
+            $baseValues[2] *= ($additionalValues[$stage] + 5);
+        }
+        return $baseValues;
     }
 }

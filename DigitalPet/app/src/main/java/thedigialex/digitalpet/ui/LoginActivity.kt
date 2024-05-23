@@ -22,6 +22,8 @@ import thedigialex.digitalpet.util.TokenManager
 import java.net.SocketTimeoutException
 
 class LoginActivity : AppCompatActivity() {
+    private var isLoginMode = true
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
@@ -43,15 +45,46 @@ class LoginActivity : AppCompatActivity() {
         if (existingToken != null) {
             validateTokenAndNavigate()
         }
-        findViewById<Button>(R.id.loginButton).setOnClickListener {
-            val email = findViewById<EditText>(R.id.emailEditText).text.toString()
-            val password = findViewById<EditText>(R.id.passwordEditText).text.toString()
-            performLogin(email, password)
+
+        val actionButton = findViewById<Button>(R.id.actionButton)
+        val switchButton = findViewById<Button>(R.id.switchButton)
+
+        actionButton.setOnClickListener {
+            if (isLoginMode) {
+                val email = findViewById<EditText>(R.id.emailEditText).text.toString()
+                val password = findViewById<EditText>(R.id.passwordEditText).text.toString()
+                performLogin(email, password)
+            } else {
+                val name = findViewById<EditText>(R.id.nameEditText).text.toString()
+                val email = findViewById<EditText>(R.id.emailEditText).text.toString()
+                val password = findViewById<EditText>(R.id.passwordEditText).text.toString()
+                performRegistration(name, email, password)
+            }
+        }
+
+        switchButton.setOnClickListener {
+            toggleMode()
+        }
+    }
+
+    private fun toggleMode() {
+        isLoginMode = !isLoginMode
+        val nameEditText = findViewById<EditText>(R.id.nameEditText)
+        val actionButton = findViewById<Button>(R.id.actionButton)
+        val switchButton = findViewById<Button>(R.id.switchButton)
+
+        if (isLoginMode) {
+            nameEditText.visibility = View.GONE
+            actionButton.text = "Login"
+            switchButton.text = "Create Account"
+        } else {
+            nameEditText.visibility = View.VISIBLE
+            actionButton.text = "Register"
+            switchButton.text = "Login"
         }
     }
 
     private fun performLogin(email: String, password: String) {
-        // Show ProgressBar
         val progressBar = findViewById<ProgressBar>(R.id.progressBar)
         progressBar.visibility = View.VISIBLE
 
@@ -72,7 +105,6 @@ class LoginActivity : AppCompatActivity() {
                 }
             } catch (e: SocketTimeoutException) {
                 withContext(Dispatchers.Main) {
-                    // Hide ProgressBar in case of an error
                     progressBar.visibility = View.GONE
                     Toast.makeText(applicationContext, "Connection timed out. Please check your network connection and try again.", Toast.LENGTH_LONG).show()
                 }
@@ -80,6 +112,33 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
+    private fun performRegistration(name: String, email: String, password: String) {
+        val progressBar = findViewById<ProgressBar>(R.id.progressBar)
+        progressBar.visibility = View.VISIBLE
+
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val api = RetrofitInstance.getApi(applicationContext)
+                val response = api.registerUser(name, email, password)
+                withContext(Dispatchers.Main) {
+                    progressBar.visibility = View.GONE
+
+                    val responseBody = response.body()
+                    if (response.isSuccessful && responseBody?.status == true) {
+                        Toast.makeText(applicationContext, "Registration successful! Please log in.", Toast.LENGTH_LONG).show()
+                        toggleMode()
+                    } else {
+                        Toast.makeText(applicationContext, "Registration failed: ${response.errorBody()?.string()}", Toast.LENGTH_LONG).show()
+                    }
+                }
+            } catch (e: SocketTimeoutException) {
+                withContext(Dispatchers.Main) {
+                    progressBar.visibility = View.GONE
+                    Toast.makeText(applicationContext, "Connection timed out. Please check your network connection and try again.", Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+    }
 
     private fun validateTokenAndNavigate() {
         CoroutineScope(Dispatchers.IO).launch {
@@ -112,6 +171,7 @@ class LoginActivity : AppCompatActivity() {
             apply()
         }
     }
+
     private fun navigateToMainActivity(user: User) {
         saveUserData(user)
         val intent = Intent(this, MainActivity::class.java)

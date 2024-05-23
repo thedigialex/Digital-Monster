@@ -15,6 +15,9 @@ interface AuthApi {
     @FormUrlEncoded
     @POST("api/auth/login")
     suspend fun loginUser(@Field("email") email: String, @Field("password") password: String): Response<LoginResponse>
+    @FormUrlEncoded
+    @POST("api/auth/register")
+    suspend fun registerUser(@Field("name") name: String, @Field("email") email: String, @Field("password") password: String): Response<LoginResponse>
     @GET("api/auth/validate-token")
     suspend fun validateToken(): Response<LoginResponse>
     @POST("api/user/nickname")
