@@ -10,7 +10,6 @@
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
                 <div class="flex justify-between items-center mb-4">
                     <h1 class="text-xl font-bold">Users</h1>
-                    
                 </div>
 
                 @if ($users->isEmpty())
@@ -37,8 +36,6 @@
                                 <td class="py-2 px-4 border-b">
                                     <div class="flex space-x-2">
                                         <a href="{{ route('user.show', $user->id) }}" class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white font-bold rounded-md">View</a>
-                                        <a href="{{ route('user.edit', $user->id) }}" class="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white font-bold rounded-md">Edit</a>
-                                        
                                     </div>
                                 </td>
                             </tr>

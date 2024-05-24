@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DigitalMonsterController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\UserDigitalMonsterController;
 use App\Http\Controllers\ItemController;
 use App\Http\Middleware\IsAdmin;
 use Illuminate\Support\Facades\Route;
@@ -40,6 +41,9 @@ Route::middleware(IsAdmin::class)->group(function () {
     Route::get('/user/{id}', [UserController::class, 'show'])->name('user.show');
     Route::get('/user/{id}/edit', [UserController::class, 'edit'])->name('user.edit');
     Route::put('/user/{id}', [UserController::class, 'update'])->name('user.update');
+
+    Route::get('/user/{id}/usermonster/create', [UserDigitalMonsterController::class, 'createMonster'])->name('user.createMonster');
+    Route::post('/user/{id}/usermonster/store', [UserDigitalMonsterController::class, 'storeMonster'])->name('user.storeMonster');
 
     Route::get('/items/create', [ItemController::class, 'create'])->name('items.create');
     Route::get('/items', [ItemController::class, 'index'])->name('items.index');

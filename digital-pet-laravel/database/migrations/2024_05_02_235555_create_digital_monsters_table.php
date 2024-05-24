@@ -25,6 +25,7 @@ class CreateDigitalMonstersTable extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('digital_monster_id')->constrained()->onDelete('cascade');
+            $table->boolean('isMain')->default(false);
             $table->string('name')->nullable();
             $table->integer('age')->default(0);
             $table->integer('level')->default(1);
