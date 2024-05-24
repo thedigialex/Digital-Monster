@@ -1,4 +1,4 @@
-package thedigialex.digitalpet.model
+package thedigialex.digitalpet.model.responses
 
 data class GenericApiResponse(
     val status: Boolean,

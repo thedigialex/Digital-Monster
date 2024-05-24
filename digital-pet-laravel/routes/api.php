@@ -13,4 +13,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/digital-monsters', [DigitalMonsterController::class, 'store']);
     Route::get('/auth/validate-token', [UserController::class, 'validateToken']);
     Route::post('/user/nickname', [UserController::class, 'updateNickname']);
+    Route::get('/user/inventories', [UserController::class, 'getUserInventories']);
 });

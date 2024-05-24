@@ -6,9 +6,10 @@ import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
 import retrofit2.http.POST
-import thedigialex.digitalpet.model.GenericApiResponse
-import thedigialex.digitalpet.model.LoginResponse
-import thedigialex.digitalpet.model.NicknameRequest
+import thedigialex.digitalpet.model.responses.GenericApiResponse
+import thedigialex.digitalpet.model.responses.InventoryResponse
+import thedigialex.digitalpet.model.responses.LoginResponse
+import thedigialex.digitalpet.model.requests.NicknameRequest
 
 interface AuthApi {
 
@@ -23,4 +24,6 @@ interface AuthApi {
     @POST("api/user/nickname")
     suspend fun updateNickname(@Body nicknameRequest: NicknameRequest): Response<GenericApiResponse>
 
+    @GET("api/user/inventories")
+    suspend fun getUserInventories(): Response<InventoryResponse>
 }

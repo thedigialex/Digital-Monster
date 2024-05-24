@@ -8,22 +8,25 @@ import androidx.activity.enableEdgeToEdge
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import thedigialex.digitalpet.model.NicknameRequest
-import thedigialex.digitalpet.model.User
+import thedigialex.digitalpet.model.entities.Inventory
+import thedigialex.digitalpet.model.requests.NicknameRequest
+import thedigialex.digitalpet.model.entities.User
 import thedigialex.digitalpet.network.RetrofitInstance
 
 
 class MainActivity : ComponentActivity() {
+    private lateinit var inventoryList: List<Inventory>
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         //updateNickname("testing")
         val user = getUserData()
 
-        // Check if the user nickname is not null or empty before showing the toast
+
         user.name.let {
             Toast.makeText(applicationContext, "Welcome back, $it!", Toast.LENGTH_LONG).show()
         }
+        fetchUserInventories()
     }
 
     private fun updateNickname(nickname: String) {
@@ -49,6 +52,21 @@ class MainActivity : ComponentActivity() {
             nickname = sharedPreferences.getString("userNickname", null)
         )
     }
-
+    private fun fetchUserInventories() {
+        CoroutineScope(Dispatchers.IO).launch {
+            val api = RetrofitInstance.getApi(applicationContext)
+            val response = api.getUserInventories()
+            runOnUiThread {
+                if (response.isSuccessful) {
+                    response.body()?.let { inventoryResponse ->
+                        inventoryList = inventoryResponse.inventories
+                        Toast.makeText(applicationContext, "Inventories fetched successfully", Toast.LENGTH_LONG).show()
+                    }
+                } else {
+                    Toast.makeText(applicationContext, "Failed to fetch inventories", Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+    }
 
 }

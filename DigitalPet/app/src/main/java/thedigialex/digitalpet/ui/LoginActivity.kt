@@ -15,7 +15,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import thedigialex.digitalpet.R
-import thedigialex.digitalpet.model.User
+import thedigialex.digitalpet.model.entities.User
 import thedigialex.digitalpet.network.RetrofitInstance
 import thedigialex.digitalpet.util.SpriteManager
 import thedigialex.digitalpet.util.TokenManager

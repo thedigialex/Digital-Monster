@@ -15,7 +15,6 @@ class DigitalMonster extends Model
         'egg_id', 'monster_id',
         'sprite_sheet', 'stage',
         'type', 'min_weight', 'max_energy',
-        'required_evo_points' 
+        'required_evo_points'
     ];
-
 }

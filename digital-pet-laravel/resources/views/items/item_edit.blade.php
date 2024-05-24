@@ -22,6 +22,14 @@
                     </div>
 
                     <div class="mb-4">
+                        <label for="image" class="block text-sm font-medium text-gray-700">Item Image:</label>
+                        <input type="file" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" id="image" name="image" {{ isset($item) ? '' : 'required' }}>
+                        @if(isset($item) && $item->image)
+                        <img src="{{ Storage::url($item->image) }}" class="h-24 w-auto mt-2" alt="Current Image">
+                        @endif
+                    </div>
+
+                    <div class="mb-4">
                         <label for="type" class="block text-sm font-medium text-gray-700">type:</label>
                         <select class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" id="type" name="type" required>
                             <option value="">Select type</option>
@@ -38,7 +46,7 @@
 
                     <div class="mb-4">
                         <label for="available" class="block text-sm font-medium text-gray-700">Available:</label>
-                        <input type="checkbox" class="mt-1 block leading-tight" id="available" name="available" value="1" {{ $item->available ? 'checked' : '' }}>
+                        <input type="checkbox" class="mt-1 block leading-tight" id="available" name="available" value="1" {{ (isset($item) && $item->available) ? 'checked' : '' }}>
                         <span class="text-sm text-gray-600">Check if the item is available</span>
                     </div>
 

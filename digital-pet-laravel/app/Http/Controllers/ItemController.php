@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Item;
+use Illuminate\Support\Facades\Storage;
 
 class ItemController extends Controller
 {
@@ -24,37 +25,58 @@ class ItemController extends Controller
         return view('items.item_edit', compact('item'));
     }
 
-    public function store(Request $request)
+    private function validateItem(Request $request, $isUpdate = false)
     {
-        $request->validate([
+        $rules = [
             'name' => 'required|string|max:255',
             'type' => 'required|string',
             'price' => 'required|numeric',
-            'available' => 'sometimes|boolean', 
-        ]);
+            'available' => 'sometimes|boolean',
+        ];
 
-        $item = new Item([
+        if (!$isUpdate || $request->hasFile('image')) {
+            $rules['image'] = 'required|image';
+        }
+
+        $request->validate($rules);
+    }
+
+    private function handleImageUpload(Request $request)
+    {
+        if ($request->hasFile('image')) {
+            return $request->file('image')->store('public/items');
+        }
+        return null;
+    }
+
+    public function store(Request $request)
+    {
+        $this->validateItem($request);
+        $path = $this->handleImageUpload($request);
+
+        $item = Item::create([
             'name' => $request->name,
+            'image' => $path,
             'type' => $request->type,
             'price' => $request->price,
             'available' => $request->filled('available'),
         ]);
-        $item->save(); 
+
+        $item->save();
 
         return redirect()->route('items.index')->with('success', 'Item created successfully.');
     }
 
-
     public function update(Request $request, $id)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'type' => 'required|string',
-            'price' => 'required|numeric',
-            'available' => 'sometimes|boolean', 
-        ]);
-
         $item = Item::findOrFail($id);
+        $this->validateItem($request, true);
+
+        if ($request->hasFile('image')) {
+            Storage::delete($item->image);
+            $item->image = $this->handleImageUpload($request);
+        }
+
         $item->update([
             'name' => $request->name,
             'type' => $request->type,
@@ -65,10 +87,12 @@ class ItemController extends Controller
         return redirect()->route('items.index')->with('success', 'Item updated successfully.');
     }
 
-
     public function destroy($id)
     {
         $item = Item::findOrFail($id);
+        if ($item->image) {
+            Storage::delete($item->image);
+        }
         $item->delete();
 
         return redirect()->route('items.index')->with('success', 'Item deleted successfully.');
