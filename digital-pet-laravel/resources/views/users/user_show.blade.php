@@ -13,28 +13,30 @@
                 <div class="mb-6">
                     <p><strong>Email:</strong> {{ $user->email }}</p>
                     <p><strong>Nickname:</strong> {{ $user->nickname }}</p>
-                    <p><strong>Role:</strong> {{ $user->role }}</p>
                 </div>
 
-                <!-- Digital Monsters Associated with the User -->
-                <h2 class="text-lg font-bold mb-2">Digital Monsters</h2>
-                @if($user->digitalMonsters->isEmpty())
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-bold">User Digital Monsters</h2>
+                    <a href="{{ route('user.createMonster', $user->id) }}" class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white font-bold rounded-md">New Monster</a>
+                </div>
+
+                @if($user->userDigitalMonsters->isEmpty())
                 <p>No digital monsters available.</p>
                 @else
                 <div class="relative p-4">
                     <table class="min-w-full bg-white text-center border border-gray-200">
                         <thead class="bg-gray-50">
                             <tr>
-                                <th class="py-2 px-4 border-b text-left">Monster ID</th>
+                                <th class="py-2 px-4 border-b text-left">Name</th>
                                 <th class="py-2 px-4 border-b text-left">Egg ID</th>
                                 <th class="py-2 px-4 border-b text-left">Stage</th>
                                 <th class="py-2 px-4 border-b text-left">Type</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($user->digitalMonsters as $monster)
-                            <tr>
-                                <td class="py-2 px-4 border-b">{{ $monster->monster_id }}</td>
+                            @foreach ($user->userDigitalMonsters as $monster)
+                            <tr class="{{ $monster->isMain ? 'bg-blue-100' : '' }}">
+                                <td class="py-2 px-4 border-b">{{ $monster->name }}</td>
                                 <td class="py-2 px-4 border-b">{{ $monster->egg_id }}</td>
                                 <td class="py-2 px-4 border-b">{{ $monster->stage }}</td>
                                 <td class="py-2 px-4 border-b">{{ $monster->type }}</td>

@@ -28,7 +28,7 @@ class User extends Authenticatable
         ];
     }
 
-    public function digitalMonsters()
+    public function userDigitalMonsters()
     {
         return $this->hasMany(UserDigitalMonster::class);
     }

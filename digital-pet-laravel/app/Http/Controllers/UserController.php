@@ -4,9 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
@@ -18,12 +16,11 @@ class UserController extends Controller
 
     public function show($id)
     {
-        // Eager load the 'digitalMonsters' and 'inventories.item' relationships
-        $user = User::with(['digitalMonsters', 'inventories.item'])->findOrFail($id);
-
+        $user = User::with(['userDigitalMonsters' => function ($query) {
+            $query->orderBy('isMain', 'desc');
+        }, 'inventories.item'])->findOrFail($id);
         return view('users.user_show', compact('user'));
     }
-
 
     public function edit($id)
     {
