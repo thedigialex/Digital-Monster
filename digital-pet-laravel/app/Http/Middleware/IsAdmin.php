@@ -11,10 +11,8 @@ class IsAdmin
     public function handle(Request $request, Closure $next)
     {
         if (!Auth::check() || Auth::user()->role !== 'admin') {
-            // Redirect to login if not logged in, or main page if not an admin
             return redirect('/login')->with('error', 'You do not have permission to access this page.');
         }
-
         return $next($request);
     }
 }
