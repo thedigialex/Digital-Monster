@@ -33,7 +33,7 @@ class User extends Authenticatable
         return $this->hasMany(UserDigitalMonster::class);
     }
 
-    public function inventories()
+    public function inventory()
     {
         return $this->hasMany(Inventory::class);
     }

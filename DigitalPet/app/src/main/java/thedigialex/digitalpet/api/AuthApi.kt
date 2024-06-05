@@ -30,10 +30,10 @@ interface AuthApi {
 
 
 
-    @GET("api/user/inventory")
+    @GET("api/user/userInventory")
     suspend fun getUserInventory(): Response<InventoryResponse>
-    @GET("api/user/allUserDigitalMonsters")
-    suspend fun getAllUserDigitalMonsters(): Response<UserDigitalMonsterResponse>
+    @GET("api/user/userDigitalMonsters")
+    suspend fun getUserDigitalMonsters(): Response<UserDigitalMonsterResponse>
 
     @GET("api/user/digitalMonster")
     suspend fun getDigitalMonster(): Response<DigitalMonsterResponse>

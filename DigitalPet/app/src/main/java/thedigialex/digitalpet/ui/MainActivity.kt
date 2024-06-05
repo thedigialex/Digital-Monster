@@ -18,15 +18,14 @@ import thedigialex.digitalpet.model.entities.User
 import thedigialex.digitalpet.model.entities.UserDigitalMonster
 import thedigialex.digitalpet.model.requests.NicknameRequest
 import thedigialex.digitalpet.network.RetrofitInstance
-import thedigialex.digitalpet.services.FetchServices
+import thedigialex.digitalpet.services.FetchService
 
 
 class MainActivity : ComponentActivity() {
     private lateinit var inventoryList: List<Inventory>
     private lateinit var userDigitalMonsterList: List<UserDigitalMonster>
 
-
-    private lateinit var fetchService: FetchServices
+    private lateinit var fetchService: FetchService
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -37,7 +36,7 @@ class MainActivity : ComponentActivity() {
             Toast.makeText(applicationContext, "Welcome back, $it!", Toast.LENGTH_LONG).show()
         }
 
-        fetchService = FetchServices(this)
+        fetchService = FetchService(this)
 
         lifecycleScope.launch {
             userDigitalMonsterList = fetchService.fetchAllUserDigitalMonsters()
@@ -86,44 +85,44 @@ class MainActivity : ComponentActivity() {
     }
 
 
-    private fun fetchDefaultDigitalMonster() {
-        CoroutineScope(Dispatchers.IO).launch {
-            val api = RetrofitInstance.getApi(applicationContext)
-            val response = api.getDigitalMonster()
-            runOnUiThread {
-                if (response.isSuccessful) {
-                    response.body()?.let { digitalMonsterResponse ->
-                        val defaultMonster = digitalMonsterResponse.digitalMonster
-                        val imageUrl = digitalMonsterResponse.imageUrl
-                        defaultMonster?.let {
-                            val spriteSheet = imageUrl ?: "No sprite sheet available"
-                            Log.d("DefaultDigitalMonster", spriteSheet)
-                            Toast.makeText(applicationContext, "Default Digital Monster fetched successfully", Toast.LENGTH_LONG).show()
-
-                            // Download and save the image
-                            imageUrl?.let { url ->
-                                saveImageToMediaStore(applicationContext, url, "spriteSheet.png") { success ->
-                                    if (success) {
-                                        Log.d("ImageDownload", "Image downloaded and saved successfully.")
-
-
-                                    } else {
-                                        Toast.makeText(applicationContext, "Failed to download image", Toast.LENGTH_LONG).show()
-                                    }
-                                }
-                            }
-                        } ?: run {
-                            Toast.makeText(applicationContext, "No Default Digital Monster found", Toast.LENGTH_LONG).show()
-                        }
-                    } ?: run {
-                        Toast.makeText(applicationContext, "No Default Digital Monster found", Toast.LENGTH_LONG).show()
-                    }
-                } else {
-                    Toast.makeText(applicationContext, "Failed to fetch Default Digital Monster", Toast.LENGTH_LONG).show()
-                }
-            }
-        }
-    }
+    //private fun fetchDefaultDigitalMonster() {
+    //    CoroutineScope(Dispatchers.IO).launch {
+    //        val api = RetrofitInstance.getApi(applicationContext)
+    //        val response = api.getDigitalMonster()
+    //        runOnUiThread {
+    //            if (response.isSuccessful) {
+    //                response.body()?.let { digitalMonsterResponse ->
+    //                    val defaultMonster = digitalMonsterResponse.digitalMonster
+    //                    val imageUrl = digitalMonsterResponse.imageUrl
+    //                    defaultMonster?.let {
+    //                        val spriteSheet = imageUrl ?: "No sprite sheet available"
+    //                        Log.d("DefaultDigitalMonster", spriteSheet)
+    //                        Toast.makeText(applicationContext, "Default Digital Monster fetched successfully", Toast.LENGTH_LONG).show()
+//
+    //                        // Download and save the image
+    //                        imageUrl?.let { url ->
+    //                            saveImageToMediaStore(applicationContext, url, "spriteSheet.png") { success ->
+    //                                if (success) {
+    //                                    Log.d("ImageDownload", "Image downloaded and saved successfully.")
+//
+//
+    //                                } else {
+    //                                    Toast.makeText(applicationContext, "Failed to download image", Toast.LENGTH_LONG).show()
+    //                                }
+    //                            }
+    //                        }
+    //                    } ?: run {
+    //                        Toast.makeText(applicationContext, "No Default Digital Monster found", Toast.LENGTH_LONG).show()
+    //                    }
+    //                } ?: run {
+    //                    Toast.makeText(applicationContext, "No Default Digital Monster found", Toast.LENGTH_LONG).show()
+    //                }
+    //            } else {
+    //                Toast.makeText(applicationContext, "Failed to fetch Default Digital Monster", Toast.LENGTH_LONG).show()
+    //            }
+    //        }
+    //    }
+    //}
 
 
     private fun saveImageToMediaStore(context: Context, imageUrl: String, fileName: String, callback: (Boolean) -> Unit) {
@@ -176,6 +175,4 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-
-
 }

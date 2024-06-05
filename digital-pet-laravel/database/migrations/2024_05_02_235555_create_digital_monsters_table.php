@@ -14,7 +14,6 @@ class CreateDigitalMonstersTable extends Migration
             $table->integer('monster_id')->default(0);
             $table->string('sprite_sheet');
             $table->string('stage')->nullable();
-            $table->string('type')->nullable();
             $table->integer('min_weight')->default(0);
             $table->integer('max_energy')->default(0);
             $table->integer('required_evo_points')->default(0);
@@ -27,6 +26,7 @@ class CreateDigitalMonstersTable extends Migration
             $table->foreignId('digital_monster_id')->constrained()->onDelete('cascade');
             $table->boolean('isMain')->default(false);
             $table->string('name')->nullable();
+            $table->string('type')->nullable();
             $table->integer('age')->default(0);
             $table->integer('level')->default(1);
             $table->integer('exp')->default(0);

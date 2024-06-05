@@ -50,7 +50,6 @@ class DigitalMonsterController extends Controller
             'egg_id' => 'required|integer',
             'monster_id' => 'required|integer',
             'stage' => 'required|string',
-            'type' => 'required|string',
         ];
 
         if (!$isUpdate || $request->hasFile('sprite_sheet')) {
@@ -80,7 +79,6 @@ class DigitalMonsterController extends Controller
             'egg_id' => $request->egg_id,
             'sprite_sheet' => $path,
             'stage' => $request->stage,
-            'type' => $request->type,
             'min_weight' => $minValues[0],
             'max_energy' => $minValues[1],
             'required_evo_points' => $minValues[2]
@@ -105,7 +103,6 @@ class DigitalMonsterController extends Controller
             'monster_id' => $request->monster_id,
             'egg_id' => $request->egg_id,
             'stage' => $request->stage,
-            'type' => $request->type,
             'min_weight' => $minValues[0],
             'max_energy' => $minValues[1],
             'required_evo_points' => $minValues[2]

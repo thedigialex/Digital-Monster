@@ -21,6 +21,7 @@ class UserDigitalMonsterController extends Controller
         $validatedData = $request->validate([
             'digital_monster_id' => 'required|integer',
             'name' => 'required|string|max:255',
+            'type' => 'required|string',
         ]);
 
         $user->userDigitalMonsters()->create($validatedData);

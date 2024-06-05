@@ -18,7 +18,7 @@ class UserController extends Controller
     {
         $user = User::with(['userDigitalMonsters' => function ($query) {
             $query->orderBy('isMain', 'desc');
-        }, 'inventories.item'])->findOrFail($id);
+        }, 'inventory.item'])->findOrFail($id);
         return view('users.user_show', compact('user'));
     }
 

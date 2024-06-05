@@ -18,6 +18,16 @@
                     </select>
 
                     <div class="mb-4">
+                        <label for="type" class="block text-sm font-medium text-gray-700">Type:</label>
+                        <select class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" id="type" name="type" required>
+                            <option value="">Select Type</option>
+                            <option value="Data" {{ (isset($digitalMonster) && $digitalMonster->type == 'Data') ? 'selected' : '' }}>Data</option>
+                            <option value="Virus" {{ (isset($digitalMonster) && $digitalMonster->type == 'Virus') ? 'selected' : '' }}>Virus</option>
+                            <option value="Vaccine" {{ (isset($digitalMonster) && $digitalMonster->type == 'Vaccine') ? 'selected' : '' }}>Vaccine</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-4">
                         <label for="name" class="block text-sm font-medium text-gray-700">Monster Name:</label>
                         <input type="text" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" id="name" name="name" value="Default Name" required>
                     </div>

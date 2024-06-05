@@ -49,7 +49,7 @@
 
                 <!-- Items Owned by the User -->
                 <h2 class="text-lg font-bold mt-8 mb-2">Items</h2>
-                @if($user->inventories->isEmpty())
+                @if($user->inventory->isEmpty())
                 <p>No items available.</p>
                 @else
                 <div class="relative p-4">
@@ -63,7 +63,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($user->inventories as $inventory)
+                            @foreach ($user->inventory as $inventory)
                             <tr>
                                 <td class="py-2 px-4 border-b">{{ $inventory->item->name }}</td>
                                 <td class="py-2 px-4 border-b">{{ $inventory->item->description }}</td>

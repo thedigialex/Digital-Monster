@@ -14,7 +14,7 @@ class DigitalMonster extends Model
     protected $fillable = [
         'egg_id', 'monster_id',
         'sprite_sheet', 'stage',
-        'type', 'min_weight', 'max_energy',
+        'min_weight', 'max_energy',
         'required_evo_points'
     ];
 }
