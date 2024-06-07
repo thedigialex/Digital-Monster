@@ -6,9 +6,12 @@
     </x-slot>
     <x-body-container>
         @if ($groupedMonsters->isEmpty())
-        <p class="text-gray-700">No digital monsters available.</p>
+        <x-paragraph>No digital monsters available.</x-paragraph>
+        <a href="{{ route('monsters.create') }}">
+            <x-primary-button>Add New Monster</x-primary-button>
+        </a>
         @else
-        <div id="eggGroupContainer" class="relative p-4 overflow-x-hidden relative z-10 w-full mx-4">
+        <div id="eggGroupContainer">
             <x-table-header>
                 <div class="flex items-center space-x-4">
                     <button id="prevButton">
@@ -18,31 +21,33 @@
                         &gt;
                     </button>
                 </div>
-                <x-primary-button>
-                    <a href="{{ route('monsters.create') }}">Add New Monster</a>
-                </x-primary-button>
+                <a href="{{ route('monsters.create') }}">
+                    <x-primary-button>Add New Monster</x-primary-button>
+                </a>
             </x-table-header>
             <x-table>
                 @foreach ($groupedMonsters as $eggId => $monstersGroup)
                 <tbody class="egg-group hidden">
-                    <tr>
-                        <td colspan="5" class="py-2 px-4 border-b text-left text-lg font-bold">Egg ID: {{ $eggId }}</td>
-                    </tr>
-                    <tr>
-                        <td class="py-2 px-4 border-b" style="width: 32%;">Sprite Sheet</td>
-                        <td class="py-2 px-4 border-b" style="width: 32%;">Stage</td>
-                        <td class="py-2 px-4 border-b" style="width: 32%;">Actions</td>
+                    <tr class="bg-gray-50">
+                        <td class="py-2 px-4 border-b w-[10%] text-lg font-bold"><x-paragraph>Egg: {{ $eggId }}</x-paragraph></td>
+                        <td class="py-2 px-4 border-b w-[31%] text-lg font-bold"><x-paragraph>Spirte</x-paragraph></td>
+                        <td class="py-2 px-4 border-b w-[31%] text-lg font-bold"><x-paragraph>Details</x-paragraph></td>
+                        <td class="py-2 px-4 border-b w-[31%] text-lg font-bold"><x-paragraph>Actions</x-paragraph></td>
                     </tr>
                     @foreach ($monstersGroup as $monster)
                     <tr class="border-t">
-                        <td class="py-2 px-4 border-b" style="width: 32%;">
+                        <td class="py-2 px-4 border-b w-[10%]"></td>
+                        <td class="py-2 px-4 border-b w-[31%]">
                             <img src="{{ Storage::url($monster->sprite_sheet) }}" class="h-24 object-contain" alt="Current Sprite">
                         </td>
-                        <td class="py-2 px-4 border-b" style="width: 32%;">{{ $monster->stage }}</td>
-                        <td class="py-2 px-4 border-b" style="width: 32%;">
-                            <x-secondary-button>
-                                <a href="{{ route('monsters.edit', $monster->id) }}">Edit</a>
-                            </x-secondary-button>
+                        <td class="py-2 px-4 border-b w-[31%]">
+                            <x-paragraph>Monster ID: {{ $monster->monster_id }}</x-paragraph>
+                            <x-paragraph>Stage: {{ $monster->stage }}</x-paragraph>
+                        </td>
+                        <td class="py-2 px-4 border-b w-[31%]">
+                            <a href="{{ route('monsters.edit', $monster->id) }}">
+                                <x-secondary-button>Edit</x-secondary-button>
+                            </a>
                         </td>
                     </tr>
                     @endforeach

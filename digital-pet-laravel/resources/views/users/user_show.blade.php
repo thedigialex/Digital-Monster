@@ -1,82 +1,95 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+        <x-sub-header>
             {{ __('User Details') }}
-        </h2>
+        </x-sub-header>
     </x-slot>
-
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
-                <h1 class="text-xl font-bold mb-4">{{ $user->name }}'s Profile</h1>
-
-                <div class="mb-6">
-                    <p><strong>Email:</strong> {{ $user->email }}</p>
-                    <p><strong>Nickname:</strong> {{ $user->nickname }}</p>
-                </div>
-
-                <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-xl font-bold">User Digital Monsters</h2>
-                    <a href="{{ route('user.createMonster', $user->id) }}" class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white font-bold rounded-md">New Monster</a>
-                </div>
-
-                @if($user->userDigitalMonsters->isEmpty())
-                <p>No digital monsters available.</p>
-                @else
-                <div class="relative p-4">
-                    <table class="min-w-full bg-white text-center border border-gray-200">
-                        <thead class="bg-gray-50">
-                            <tr>
-                                <th class="py-2 px-4 border-b text-left">Name</th>
-                                <th class="py-2 px-4 border-b text-left">Egg ID</th>
-                                <th class="py-2 px-4 border-b text-left">Stage</th>
-                                <th class="py-2 px-4 border-b text-left">Type</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($user->userDigitalMonsters as $monster)
-                            <tr class="{{ $monster->isMain ? 'bg-blue-100' : '' }}">
-                                <td class="py-2 px-4 border-b">{{ $monster->name }}</td>
-                                <td class="py-2 px-4 border-b">{{ $monster->egg_id }}</td>
-                                <td class="py-2 px-4 border-b">{{ $monster->stage }}</td>
-                                <td class="py-2 px-4 border-b">{{ $monster->type }}</td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-                @endif
-
-                <!-- Items Owned by the User -->
-                <h2 class="text-lg font-bold mt-8 mb-2">Items</h2>
-                @if($user->inventory->isEmpty())
-                <p>No items available.</p>
-                @else
-                <div class="relative p-4">
-                    <table class="min-w-full bg-white text-center border border-gray-200">
-                        <thead class="bg-gray-50">
-                            <tr>
-                                <th class="py-2 px-4 border-b text-left">Item Name</th>
-                                <th class="py-2 px-4 border-b text-left">Description</th>
-                                <th class="py-2 px-4 border-b text-left">Quantity</th>
-                                <th class="py-2 px-4 border-b text-left">Equipped</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($user->inventory as $inventory)
-                            <tr>
-                                <td class="py-2 px-4 border-b">{{ $inventory->item->name }}</td>
-                                <td class="py-2 px-4 border-b">{{ $inventory->item->description }}</td>
-                                <td class="py-2 px-4 border-b">{{ $inventory->quantity }}</td>
-                                <td class="py-2 px-4 border-b">{{ $inventory->is_equipped ? 'Yes' : 'No' }}</td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-                @endif
-
-            </div>
+    <x-body-container>
+        <x-sub-header>
+            {{ $user->name }}'s Profile
+        </x-sub-header>
+        <div>
+            <x-paragraph class="font-bold">Email: {{ $user->email }}</x-paragraph>
+            <x-paragraph class="font-bold">Nickname: {{ $user->nickname }}</x-paragraph>
         </div>
-    </div>
+        <x-table-header>
+            <div class="flex items-center space-x-4">
+                <x-paragraph class="font-bold">User Digital Monsters</x-paragraph>
+            </div>
+            <a href="{{ route('user.handleMonster', [$user->id]) }}">
+                <x-primary-button>New Digital Monster</x-primary-button>
+            </a>
+        </x-table-header>
+        @if($user->userDigitalMonsters->isEmpty())
+        <x-paragraph class="font-bold">No digital monsters available.</x-paragraph>
+        @else
+        <x-table>
+            <tr class="bg-gray-50">
+                <td class="py-2 px-4 border-b w-[10%] text-lg font-bold"><x-paragraph></x-paragraph></td>
+                <td class="py-2 px-4 border-b w-[31%] text-lg font-bold"><x-paragraph>Name</x-paragraph></td>
+                <td class="py-2 px-4 border-b w-[31%] text-lg font-bold"><x-paragraph>Details</x-paragraph></td>
+                <td class="py-2 px-4 border-b w-[31%] text-lg font-bold"><x-paragraph>Actions</x-paragraph></td>
+            </tr>
+            <tbody>
+                @foreach ($user->userDigitalMonsters as $monster)
+                <tr class="border-t">
+                    <td class="py-2 px-4 border-b w-[10%]"><x-paragraph></x-paragraph></td>
+                    <td class="py-2 px-4 border-b w-[31%]">
+                        <x-paragraph>{{ $monster->name }}</x-paragraph>
+                    </td>
+                    <td class="py-2 px-4 border-b w-[31%]">
+                        <x-paragraph>Egg ID: {{ $monster->digitalMonster->egg_id }}</x-paragraph>
+                        <x-paragraph>Monster ID: {{ $monster->digitalMonster->monster_id }}</x-paragraph>
+                    </td>
+                    <td class="py-2 px-4 border-b w-[31%]">
+                        <a href="{{ route('user.handleMonster', [$user->id, $monster->id]) }}">
+                            <x-secondary-button>Edit</x-secondary-button>
+                        </a>
+                    </td>
+                </tr>
+                @endforeach
+            </tbody>
+        </x-table>
+        @endif
+        <x-table-header>
+            <div class="flex items-center space-x-4">
+                <x-paragraph class="font-bold">User Items</x-paragraph>
+            </div>
+            <a href="{{ route('user.handleItem', [$user->id]) }}">
+                <x-primary-button>New Item</x-primary-button>
+            </a>
+        </x-table-header>
+        @if($user->inventory->isEmpty())
+        <x-paragraph class="font-bold">No Items.</x-paragraph>
+        @else
+        <x-table>
+            <tr class="bg-gray-50">
+                <td class="py-2 px-4 border-b w-[10%] text-lg font-bold"><x-paragraph></x-paragraph></td>
+                <td class="py-2 px-4 border-b w-[31%] text-lg font-bold"><x-paragraph>Name</x-paragraph></td>
+                <td class="py-2 px-4 border-b w-[31%] text-lg font-bold"><x-paragraph>Details</x-paragraph></td>
+                <td class="py-2 px-4 border-b w-[31%] text-lg font-bold"><x-paragraph>Actions</x-paragraph></td>
+            </tr>
+            <tbody>
+                @foreach ($user->inventory as $item)
+                <tr class="border-t">
+                    <td class="py-2 px-4 border-b w-[10%]"><x-paragraph></x-paragraph></td>
+                    <td class="py-2 px-4 border-b w-[31%]">
+                        <x-paragraph>{{ $item->item->name }}</x-paragraph>
+                    </td>
+                    <td class="py-2 px-4 border-b w-[31%]">
+                        <x-paragraph>Quantity: {{ $item->quantity }}</x-paragraph>
+                        <x-paragraph>Type: {{ $item->item->type }}</x-paragraph>
+                        <x-paragraph>Equipped: {{ $item->is_equipped }}</x-paragraph>
+                    </td>
+                    <td class="py-2 px-4 border-b w-[31%]">
+                        <a href="{{ route('user.handleItem', [$user->id, $item->id]) }}">
+                            <x-secondary-button>Edit</x-secondary-button>
+                        </a>
+                    </td>
+                </tr>
+                @endforeach
+            </tbody>
+        </x-table>
+        @endif
+    </x-body-container>
 </x-app-layout>
