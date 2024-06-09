@@ -1,4 +1,9 @@
 package thedigialex.digitalpet.model.responses
 
-class DigitalMonsterResponse {
-}
+import thedigialex.digitalpet.model.entities.DigitalMonster
+
+data class DigitalMonsterResponse(
+    val status: Boolean,
+    val message: String,
+    val digitalMonster: DigitalMonster?
+)

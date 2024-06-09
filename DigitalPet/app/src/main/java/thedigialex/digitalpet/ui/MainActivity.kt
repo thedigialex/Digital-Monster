@@ -8,11 +8,11 @@ import android.provider.MediaStore
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
-import androidx.activity.enableEdgeToEdge
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import thedigialex.digitalpet.R
 import thedigialex.digitalpet.model.entities.Inventory
 import thedigialex.digitalpet.model.entities.User
 import thedigialex.digitalpet.model.entities.UserDigitalMonster
@@ -28,7 +28,7 @@ class MainActivity : ComponentActivity() {
     private lateinit var fetchService: FetchService
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+        setContentView(R.layout.activity_main)
         //updateNickname("testing")
         val user = getUserData()
 
@@ -39,7 +39,7 @@ class MainActivity : ComponentActivity() {
         fetchService = FetchService(this)
 
         lifecycleScope.launch {
-            userDigitalMonsterList = fetchService.fetchAllUserDigitalMonsters()
+            val userDigitalMonsterList = fetchService.fetchUserDigitalMonsters(isMain = true)
             if (userDigitalMonsterList.isNotEmpty()) {
                 userDigitalMonsterList.forEach { monster ->
                     Log.d("DigitalMonster", monster.name)
@@ -48,7 +48,8 @@ class MainActivity : ComponentActivity() {
             } else {
                 Toast.makeText(this@MainActivity, "No Digital Monsters found", Toast.LENGTH_SHORT).show()
             }
-            inventoryList = fetchService.fetchUserInventory()
+
+            val inventoryList = fetchService.fetchUserInventory(isEquipped = true)
             if (inventoryList.isNotEmpty()) {
                 inventoryList.forEach { inventory ->
                     Log.d("InventoryItem", inventory.item.name)
@@ -56,6 +57,13 @@ class MainActivity : ComponentActivity() {
                 Toast.makeText(this@MainActivity, "Inventories fetched successfully", Toast.LENGTH_SHORT).show()
             } else {
                 Toast.makeText(this@MainActivity, "No Inventories found", Toast.LENGTH_SHORT).show()
+            }
+
+            val digitalMonster = fetchService.fetchDigitalMonster(eggId = 0, monsterId = 0)
+            digitalMonster?.let {
+                Log.d("DigitalMonster", "Max Weight: ${it.minWeight}")
+            } ?: run {
+                Log.e("DigitalMonster", "No digital monster found for the given eggId and monsterId")
             }
         }
     }
@@ -83,47 +91,6 @@ class MainActivity : ComponentActivity() {
             nickname = sharedPreferences.getString("userNickname", null)
         )
     }
-
-
-    //private fun fetchDefaultDigitalMonster() {
-    //    CoroutineScope(Dispatchers.IO).launch {
-    //        val api = RetrofitInstance.getApi(applicationContext)
-    //        val response = api.getDigitalMonster()
-    //        runOnUiThread {
-    //            if (response.isSuccessful) {
-    //                response.body()?.let { digitalMonsterResponse ->
-    //                    val defaultMonster = digitalMonsterResponse.digitalMonster
-    //                    val imageUrl = digitalMonsterResponse.imageUrl
-    //                    defaultMonster?.let {
-    //                        val spriteSheet = imageUrl ?: "No sprite sheet available"
-    //                        Log.d("DefaultDigitalMonster", spriteSheet)
-    //                        Toast.makeText(applicationContext, "Default Digital Monster fetched successfully", Toast.LENGTH_LONG).show()
-//
-    //                        // Download and save the image
-    //                        imageUrl?.let { url ->
-    //                            saveImageToMediaStore(applicationContext, url, "spriteSheet.png") { success ->
-    //                                if (success) {
-    //                                    Log.d("ImageDownload", "Image downloaded and saved successfully.")
-//
-//
-    //                                } else {
-    //                                    Toast.makeText(applicationContext, "Failed to download image", Toast.LENGTH_LONG).show()
-    //                                }
-    //                            }
-    //                        }
-    //                    } ?: run {
-    //                        Toast.makeText(applicationContext, "No Default Digital Monster found", Toast.LENGTH_LONG).show()
-    //                    }
-    //                } ?: run {
-    //                    Toast.makeText(applicationContext, "No Default Digital Monster found", Toast.LENGTH_LONG).show()
-    //                }
-    //            } else {
-    //                Toast.makeText(applicationContext, "Failed to fetch Default Digital Monster", Toast.LENGTH_LONG).show()
-    //            }
-    //        }
-    //    }
-    //}
-
 
     private fun saveImageToMediaStore(context: Context, imageUrl: String, fileName: String, callback: (Boolean) -> Unit) {
         CoroutineScope(Dispatchers.IO).launch {

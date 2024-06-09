@@ -32,6 +32,7 @@
                         <img src="{{ Storage::url($item->image) }}" class="h-24 object-contain" alt="Current Sprite">
                     </td>
                     <td class="py-2 px-4 border-b w-[31%]">
+                        <x-paragraph>Type: {{ $item->type }}</x-paragraph>
                         <x-paragraph>Available: {{ $item->available ? 'Yes' : 'No' }}</x-paragraph>
                         <x-paragraph>Price: {{ $item->price }}</x-paragraph>
                     </td>

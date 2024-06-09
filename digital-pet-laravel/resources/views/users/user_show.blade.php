@@ -32,7 +32,7 @@
             </tr>
             <tbody>
                 @foreach ($user->userDigitalMonsters as $monster)
-                <tr class="border-t">
+                <tr class="border-t {{ $monster->isMain ? 'bg-green-100' : '' }}">
                     <td class="py-2 px-4 border-b w-[10%]"><x-paragraph></x-paragraph></td>
                     <td class="py-2 px-4 border-b w-[31%]">
                         <x-paragraph>{{ $monster->name }}</x-paragraph>

@@ -13,6 +13,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/auth/validate-token', [UserController::class, 'validateToken']);
     Route::post('/user/nickname', [UserController::class, 'updateNickname']);
 
+    Route::get('/digitalMonster', [DigitalMonsterController::class, 'getDigitalMonsterByEggAndMonsterId']);
     Route::get('/user/userDigitalMonsters', [DigitalMonsterController::class, 'getUserDigitalMonsters']);
     Route::get('/user/userInventory', [InventoryController::class, 'getUserInventory']);
 });

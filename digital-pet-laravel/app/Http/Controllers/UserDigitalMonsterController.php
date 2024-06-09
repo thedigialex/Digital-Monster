@@ -20,6 +20,7 @@ class UserDigitalMonsterController extends Controller
                 'digital_monster_id' => 'required|exists:digital_monsters,id',
                 'name' => 'required|string|max:255',
                 'type' => 'required|string',
+                'isMain' => 'required|boolean'
             ]);
 
             if ($userDigitalMonster) {
