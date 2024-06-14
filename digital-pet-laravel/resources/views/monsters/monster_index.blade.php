@@ -5,15 +5,12 @@
         </x-sub-header>
     </x-slot>
     <x-body-container>
-        @if ($groupedMonsters->isEmpty())
-        <x-paragraph>No digital monsters available.</x-paragraph>
-        <a href="{{ route('monsters.create') }}">
-            <x-primary-button>Add New Monster</x-primary-button>
-        </a>
-        @else
         <div id="eggGroupContainer">
             <x-table-header>
                 <div class="flex items-center space-x-4">
+                    @if ($groupedMonsters->isEmpty())
+                    <x-paragraph>No items</x-paragraph>
+                    @endif
                     <button id="prevButton">
                         &lt;
                     </button>
@@ -21,7 +18,7 @@
                         &gt;
                     </button>
                 </div>
-                <a href="{{ route('monsters.create') }}">
+                <a href="{{ route('monsters.handle') }}">
                     <x-primary-button>Add New Monster</x-primary-button>
                 </a>
             </x-table-header>
@@ -45,7 +42,7 @@
                             <x-paragraph>Stage: {{ $monster->stage }}</x-paragraph>
                         </td>
                         <td class="py-2 px-4 border-b w-[31%]">
-                            <a href="{{ route('monsters.edit', $monster->id) }}">
+                            <a href="{{ route('monsters.handle', $monster->id) }}">
                                 <x-secondary-button>Edit</x-secondary-button>
                             </a>
                         </td>
@@ -55,7 +52,6 @@
                 @endforeach
             </x-table>
         </div>
-        @endif
     </x-body-container>
 </x-app-layout>
 

@@ -28,18 +28,7 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
-        val imageView = findViewById<ImageView>(R.id.imageView)
-        val resourceId = R.drawable.eggs
-        val tilesPerRow = 8
-        val sprites = SpriteManager.splitSpriteSheet(resources, resourceId, tilesPerRow)
-        if (sprites.isNotEmpty()) {
-            imageView.setImageBitmap(sprites[0])
-            var currentIndex = 0
-            imageView.setOnClickListener {
-                currentIndex = (currentIndex + 1) % sprites.size
-                imageView.setImageBitmap(sprites[currentIndex])
-            }
-        }
+
 
         val existingToken = TokenManager.getToken(applicationContext)
         if (existingToken != null) {

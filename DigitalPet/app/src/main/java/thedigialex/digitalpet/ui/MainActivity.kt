@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.lifecycle.lifecycleScope
@@ -13,18 +14,14 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import thedigialex.digitalpet.R
-import thedigialex.digitalpet.model.entities.Inventory
 import thedigialex.digitalpet.model.entities.User
-import thedigialex.digitalpet.model.entities.UserDigitalMonster
 import thedigialex.digitalpet.model.requests.NicknameRequest
 import thedigialex.digitalpet.network.RetrofitInstance
 import thedigialex.digitalpet.services.FetchService
+import thedigialex.digitalpet.util.SpriteManager
 
 
 class MainActivity : ComponentActivity() {
-    private lateinit var inventoryList: List<Inventory>
-    private lateinit var userDigitalMonsterList: List<UserDigitalMonster>
-
     private lateinit var fetchService: FetchService
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,32 +35,34 @@ class MainActivity : ComponentActivity() {
 
         fetchService = FetchService(this)
 
+
         lifecycleScope.launch {
             val userDigitalMonsterList = fetchService.fetchUserDigitalMonsters(isMain = true)
             if (userDigitalMonsterList.isNotEmpty()) {
                 userDigitalMonsterList.forEach { monster ->
                     Log.d("DigitalMonster", monster.name)
                 }
-                Toast.makeText(this@MainActivity, "Digital Monsters fetched successfully", Toast.LENGTH_SHORT).show()
             } else {
-                Toast.makeText(this@MainActivity, "No Digital Monsters found", Toast.LENGTH_SHORT).show()
+                val digitalMonster = fetchService.fetchDigitalMonster(eggId = 1, monsterId = 2)
+                digitalMonster?.let {
+                    var tilesPerRow = 11
+                    if(it.eggId == 0) {
+                        tilesPerRow = 8
+                    }
+                    val imageView = findViewById<ImageView>(R.id.imageView)
+                    SpriteManager.setUpImageSprite(imageView, it.spriteSheet, tilesPerRow)
+
+                }
             }
 
-            val inventoryList = fetchService.fetchUserInventory(isEquipped = true)
+            val inventoryList = fetchService.fetchUserInventory(isEquipped = false)
             if (inventoryList.isNotEmpty()) {
                 inventoryList.forEach { inventory ->
                     Log.d("InventoryItem", inventory.item.name)
                 }
-                Toast.makeText(this@MainActivity, "Inventories fetched successfully", Toast.LENGTH_SHORT).show()
+
             } else {
                 Toast.makeText(this@MainActivity, "No Inventories found", Toast.LENGTH_SHORT).show()
-            }
-
-            val digitalMonster = fetchService.fetchDigitalMonster(eggId = 0, monsterId = 0)
-            digitalMonster?.let {
-                Log.d("DigitalMonster", "Max Weight: ${it.minWeight}")
-            } ?: run {
-                Log.e("DigitalMonster", "No digital monster found for the given eggId and monsterId")
             }
         }
     }

@@ -5,7 +5,7 @@
         </x-sub-header>
     </x-slot>
     <x-body-container>
-        <form method="POST" action="{{ isset($digitalMonster) ? route('monsters.update', $digitalMonster->id) : route('monsters.store') }}" enctype="multipart/form-data">
+        <form method="POST" action="{{ route('monsters.handle', $digitalMonster->id ?? null) }}" enctype="multipart/form-data">
             @csrf
             @if(isset($digitalMonster))
             @method('PUT')
@@ -21,16 +21,7 @@
                 </div>
                 <div class="w-1/3">
                     <x-input-label for="stage">Stage:</x-input-label>
-                    <select class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" id="stage" name="stage" required>
-                        <option value="">Select Stage</option>
-                        <option value="Egg" {{ (isset($digitalMonster) && $digitalMonster->stage == 'Egg') ? 'selected' : '' }}>Egg</option>
-                        <option value="Fresh" {{ (isset($digitalMonster) && $digitalMonster->stage == 'Fresh') ? 'selected' : '' }}>Fresh</option>
-                        <option value="Child" {{ (isset($digitalMonster) && $digitalMonster->stage == 'Child') ? 'selected' : '' }}>Child</option>
-                        <option value="Rookie" {{ (isset($digitalMonster) && $digitalMonster->stage == 'Rookie') ? 'selected' : '' }}>Rookie</option>
-                        <option value="Champion" {{ (isset($digitalMonster) && $digitalMonster->stage == 'Champion') ? 'selected' : '' }}>Champion</option>
-                        <option value="Ultimate" {{ (isset($digitalMonster) && $digitalMonster->stage == 'Ultimate') ? 'selected' : '' }}>Ultimate</option>
-                        <option value="Final" {{ (isset($digitalMonster) && $digitalMonster->stage == 'Final') ? 'selected' : '' }}>Final</option>
-                    </select>
+                    <x-select-input id="stage" name="stage" :options="['Egg' => 'Egg', 'Fresh' => 'Fresh', 'Child' => 'Child', 'Rookie' => 'Rookie', 'Champion' => 'Champion', 'Ultimate' => 'Ultimate', 'Final' => 'Final']" :selected="$digitalMonster->stage ?? ''" required></x-select-input>
                 </div>
             </div>
             <div class="mb-4">
@@ -46,7 +37,7 @@
         </form>
         @if(isset($digitalMonster))
         <div class="flex mt-4">
-            <form method="POST" action="{{ route('monsters.destroy', $digitalMonster->id) }}" onsubmit="return confirm('Are you sure you want to delete this monster?');"  class="ml-auto">
+            <form method="POST" action="{{ route('monsters.destroy', $digitalMonster->id) }}" onsubmit="return confirm('Are you sure you want to delete this monster?');" class="ml-auto">
                 @csrf
                 @method('DELETE')
                 <x-delete-button type="submit">

@@ -5,7 +5,7 @@
         </x-sub-header>
     </x-slot>
     <x-body-container>
-        <form method="POST" action="{{ isset($item) ? route('items.update', $item->id) : route('items.store') }}" enctype="multipart/form-data">
+        <form method="POST" action="{{ route('items.handle', isset($item) ? $item->id : null) }}" enctype="multipart/form-data">
             @csrf
             @if(isset($item))
             @method('PUT')
@@ -21,17 +21,11 @@
                 </div>
                 <div class="w-1/4">
                     <x-input-label for="type">Type:</x-input-label>
-                    <select class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" id="type" name="type" required>
-                        <option value="">Select type</option>
-                        <option value="Case" {{ (isset($item) && $item->type == 'Case') ? 'selected' : '' }}>Case</option>
-                        <option value="Background" {{ (isset($item) && $item->type == 'Background') ? 'selected' : '' }}>Background</option>
-                        <option value="Usable" {{ (isset($item) && $item->type == 'Usable') ? 'selected' : '' }}>Usable</option>
-                    </select>
+                    <x-select-input id="type" name="type" :options="['Case' => 'Case', 'Background' => 'Background', 'Usable' => 'Usable']" :selected="$item->type ?? ''" required></x-select-input>
                 </div>
                 <div class="w-1/4">
-                    <label for="available" class="block text-sm font-medium text-gray-700">Available:</label>
-                    <input type="checkbox" class="mt-1 block leading-tight" id="available" name="available" value="1" {{ (isset($item) && $item->available) ? 'checked' : '' }}>
-                    <span class="text-sm text-gray-600">Check if the item is available</span>
+                    <x-input-label for="available">Available:</x-input-label>
+                    <x-select-input id="available" name="available" :options="[1 => 'Yes', 0 => 'No']" :selected="$item->available ?? ''" required></x-select-input>
                 </div>
             </div>
             <div class="mb-4">

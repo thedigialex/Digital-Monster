@@ -14,14 +14,37 @@ class ItemController extends Controller
         return view('items.item_index', compact('items'));
     }
 
-    public function create()
+    public function handleItem(Request $request, $id = null)
     {
-        return view('items.item_edit');
-    }
+        $item = $id ? Item::findOrFail($id) : null;
+        if ($request->isMethod('post') || $request->isMethod('put')) {
+            $this->validateItem($request, $id !== null);
+            $path = $this->handleImageUpload($request);
+            if ($item) {
+                if ($request->hasFile('image') && $item->image) {
+                    Storage::delete($item->image);
+                    $item->image = $path;
+                }
+                $item->update([
+                    'name' => $request->name,
+                    'type' => $request->type,
+                    'price' => $request->price,
+                    'available' => $request->available,
+                ]);
+                return redirect()->route('items.index')->with('success', 'Item updated successfully.');
+            } else {
+                $item = Item::create([
+                    'name' => $request->name,
+                    'image' => $path,
+                    'type' => $request->type,
+                    'price' => $request->price,
+                    'available' => $request->available,
+                ]);
 
-    public function edit($id)
-    {
-        $item = Item::findOrFail($id);
+                $item->save();
+                return redirect()->route('items.index')->with('success', 'Item created successfully.');
+            }
+        }
         return view('items.item_edit', compact('item'));
     }
 
@@ -31,7 +54,7 @@ class ItemController extends Controller
             'name' => 'required|string|max:255',
             'type' => 'required|string',
             'price' => 'required|numeric',
-            'available' => 'sometimes|boolean',
+            'available' => 'required|numeric',
         ];
 
         if (!$isUpdate || $request->hasFile('image')) {
@@ -47,44 +70,6 @@ class ItemController extends Controller
             return $request->file('image')->store('public/items');
         }
         return null;
-    }
-
-    public function store(Request $request)
-    {
-        $this->validateItem($request);
-        $path = $this->handleImageUpload($request);
-
-        $item = Item::create([
-            'name' => $request->name,
-            'image' => $path,
-            'type' => $request->type,
-            'price' => $request->price,
-            'available' => $request->filled('available'),
-        ]);
-
-        $item->save();
-
-        return redirect()->route('items.index')->with('success', 'Item created successfully.');
-    }
-
-    public function update(Request $request, $id)
-    {
-        $item = Item::findOrFail($id);
-        $this->validateItem($request, true);
-
-        if ($request->hasFile('image')) {
-            Storage::delete($item->image);
-            $item->image = $this->handleImageUpload($request);
-        }
-
-        $item->update([
-            'name' => $request->name,
-            'type' => $request->type,
-            'price' => $request->price,
-            'available' => $request->filled('available'),
-        ]);
-
-        return redirect()->route('items.index')->with('success', 'Item updated successfully.');
     }
 
     public function destroy($id)

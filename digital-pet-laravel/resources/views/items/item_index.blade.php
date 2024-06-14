@@ -5,15 +5,13 @@
         </x-sub-header>
     </x-slot>
     <x-body-container>
-        @if ($items->isEmpty())
-        <x-paragraph>No items available.</x-paragraph>
-        <a href="{{ route('items.create') }}">
-            <x-primary-button>Add New Item</x-primary-button>
-        </a>
-        @else
         <x-table-header>
-            <div class="flex items-center space-x-4"></div>
-            <a href="{{ route('items.create') }}">
+            <div class="flex items-center space-x-4">
+                @if ($items->isEmpty())
+                <x-paragraph>No items</x-paragraph>
+                @endif
+            </div>
+            <a href="{{ route('items.handle') }}">
                 <x-primary-button>Add New Item</x-primary-button>
             </a>
         </x-table-header>
@@ -37,7 +35,7 @@
                         <x-paragraph>Price: {{ $item->price }}</x-paragraph>
                     </td>
                     <td class="py-2 px-4 border-b w-[31%]">
-                        <a href="{{ route('items.edit', $item->id) }}">
+                        <a href="{{ route('items.handle', ['id' => $item->id]) }}">
                             <x-secondary-button>Edit</x-secondary-button>
                         </a>
                     </td>
@@ -45,6 +43,6 @@
                 @endforeach
             </tbody>
         </x-table>
-        @endif
+
     </x-body-container>
 </x-app-layout>
