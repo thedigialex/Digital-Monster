@@ -6,6 +6,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserDigitalMonsterController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\InventoryController;
+use App\Http\Controllers\EggGroupController;
 use App\Http\Middleware\IsAdmin;
 use Illuminate\Support\Facades\Route;
 
@@ -14,19 +15,21 @@ Route::get('/', function () {
 });
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->name('dashboard');
+
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    Route::get('/user', [UserController::class, 'show'])->name('user.profile');
+
+    Route::get('/dashboard', [UserController::class, 'dashboard'])->name('dashboard');
 });
 
 Route::middleware(IsAdmin::class)->group(function () {
-    Route::get('/monsters', [DigitalMonsterController::class, 'index'])->name('monsters.index');
-    Route::match(['get', 'post', 'put'], '/monsters/edit/{id?}', [DigitalMonsterController::class, 'handleMonster'])->name('monsters.handle');
-    Route::delete('/monsters/{id}', [DigitalMonsterController::class, 'destroy'])->name('monsters.destroy');
+    Route::get('/digitalMonsters', [DigitalMonsterController::class, 'index'])->name('digitalMonsters.index');
+    Route::match(['get', 'post', 'put'], '/digitalMonsters/edit/{id?}', [DigitalMonsterController::class, 'handleMonster'])->name('digitalMonsters.handle');
+    Route::delete('/digitalMonsters/{id}', [DigitalMonsterController::class, 'destroy'])->name('digitalMonsters.destroy');
 
     Route::get('/items', [ItemController::class, 'index'])->name('items.index');
     Route::match(['get', 'post', 'put'], '/items/edit/{id?}', [ItemController::class, 'handleItem'])->name('items.handle');
@@ -42,6 +45,8 @@ Route::middleware(IsAdmin::class)->group(function () {
 
     Route::match(['get', 'post'], '/user/{id}/edit/inventory/{itemId?}', [InventoryController::class, 'handleItem'])->name('user.handleItem');
     Route::delete('/user/{id}/inventory/{itemId}', [InventoryController::class, 'deleteItem'])->name('user.deleteItem');
+
+    Route::resource('eggGroups', EggGroupController::class)->middleware('auth');
 });
 
 

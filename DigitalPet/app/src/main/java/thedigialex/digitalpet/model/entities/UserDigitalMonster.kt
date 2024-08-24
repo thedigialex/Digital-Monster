@@ -24,5 +24,6 @@ data class UserDigitalMonster(
     val trainings: Int,
     val careMisses: Int,
     val createdAt: String,
-    val updatedAt: String
+    val updatedAt: String,
+    val digital_monster: DigitalMonster
 )

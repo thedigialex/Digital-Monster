@@ -5,54 +5,64 @@ namespace App\Http\Controllers;
 use App\Models\DigitalMonster;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use App\Models\EggGroup;
 
 class DigitalMonsterController extends Controller
 {
     public function index(Request $request)
     {
-        $monsters = DigitalMonster::orderBy('monster_id', 'asc')->get();
-        $groupedMonsters = $monsters->groupBy('egg_id');
-        return view('monsters.monster_index', compact('groupedMonsters'));
+        $digitalMonsters = DigitalMonster::all();
+        $eggGroups = EggGroup::pluck('name', 'id')->toArray();
+        return view('digitalmonsters.index', compact('digitalMonsters', 'eggGroups'));
     }
 
     public function handleMonster(Request $request, $id = null)
     {
         $digitalMonster = $id ? DigitalMonster::findOrFail($id) : null;
+        $eggGroups = EggGroup::pluck('name', 'id')->toArray();
+
         if ($request->isMethod('post') || $request->isMethod('put')) {
             $this->validateDigitalMonster($request, $id !== null);
             $path = $this->handleSpriteUpload($request);
+            $stage = $this->getStage($request->monster_id);
+            $minValues = $this->getMinValues($stage);
+
             if ($digitalMonster) {
-                if ($request->hasFile('sprite_sheet') && $digitalMonster->sprite_sheet) {
-                    Storage::delete($digitalMonster->sprite_sheet);
-                    $digitalMonster->sprite_sheet = $path;
+                if ($request->hasFile('sprite_sheet') && $digitalMonster->spriteSheet) {
+                    Storage::delete($digitalMonster->spriteSheet);
+                    $digitalMonster->spriteSheet = $path;
                 }
-                $minValues = $this->getMinValues($request->stage);
                 $digitalMonster->update([
-                    'monster_id' => $request->monster_id,
-                    'egg_id' => $request->egg_id,
-                    'stage' => $request->stage,
-                    'min_weight' => $minValues[0],
-                    'max_energy' => $minValues[1],
-                    'required_evo_points' => $minValues[2]
-                ]);
-                return redirect()->route('monsters.index')->with('success', 'Monster updated successfully.');
-            } else {
-                $minValues = $this->getMinValues($request->stage);
-                $digitalMonster = DigitalMonster::create([
-                    'monster_id' => $request->monster_id,
-                    'egg_id' => $request->egg_id,
-                    'sprite_sheet' => $path,
-                    'stage' => $request->stage,
-                    'min_weight' => $minValues[0],
-                    'max_energy' => $minValues[1],
-                    'required_evo_points' => $minValues[2]
+                    'monsterId' => $request->monster_id,
+                    'eggId' => $request->egg_id,
+                    'stage' => $stage,
+                    'minWeight' => $minValues[0],
+                    'maxEnergy' => $minValues[1],
+                    'requiredEvoPoints' => $minValues[2]
                 ]);
 
-                $digitalMonster->save();
-                return redirect()->route('monsters.index')->with('success', 'Monster created successfully.');
+                return redirect()->route('digitalMonsters.index')->with('success', 'Monster updated successfully.');
+            } else {
+                $digitalMonster = DigitalMonster::create([
+                    'monsterId' => $request->monster_id,
+                    'eggId' => $request->egg_id,
+                    'spriteSheet' => $path,
+                    'stage' => $stage,
+                    'minWeight' => $minValues[0],
+                    'maxEnergy' => $minValues[1],
+                    'requiredEvoPoints' => $minValues[2]
+                ]);
+
+                return redirect()->route('digitalMonsters.index')->with('success', 'Monster created successfully.');
             }
         }
-        return view('monsters.monster_edit', compact('digitalMonster'));
+
+        $options = [];
+        for($i = 0; $i <=26; $i++) {
+            $options[$i] = $i;
+        }
+
+        return view('digitalmonsters.edit', compact('digitalMonster', 'eggGroups', 'options'));
     }
 
     private function validateDigitalMonster(Request $request, $isUpdate = false)
@@ -60,7 +70,6 @@ class DigitalMonsterController extends Controller
         $rules = [
             'egg_id' => 'required|integer',
             'monster_id' => 'required|integer',
-            'stage' => 'required|string',
         ];
 
         if (!$isUpdate || $request->hasFile('sprite_sheet')) {
@@ -86,7 +95,7 @@ class DigitalMonsterController extends Controller
         }
         $digitalMonster->delete();
 
-        return redirect()->route('monsters.index')->with('success', 'Monster deleted successfully!');
+        return redirect()->route('digitalMonsters.index')->with('success', 'Monster deleted successfully!');
     }
 
     public function getMinValues($stage)
@@ -96,7 +105,7 @@ class DigitalMonsterController extends Controller
             "Rookie" => 5,
             "Champion" => 10,
             "Ultimate" => 15,
-            "Final" => 20,
+            "Mega" => 20,
         ];
 
         if (array_key_exists($stage, $additionalValues)) {
@@ -105,5 +114,25 @@ class DigitalMonsterController extends Controller
             $baseValues[2] *= ($additionalValues[$stage] + 5);
         }
         return $baseValues;
+    }
+
+    public function getStage($monster_id)
+    {
+        switch(true) {
+            case $monster_id == 1:
+                return "Fresh";
+            case $monster_id == 2:
+                return "Child";  
+            case $monster_id == 3 || $monster_id == 4:
+                return "Rookie";
+            case $monster_id >= 5 && $monster_id <= 9:
+                return "Champion";  
+            case $monster_id >= 10 && $monster_id <= 18:
+                return "Ultimate";
+            case $monster_id >= 19 && $monster_id <= 26:
+                return "Mega";  
+            default:
+                return "Egg";    
+        }
     }
 }

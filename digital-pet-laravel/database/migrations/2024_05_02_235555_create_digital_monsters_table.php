@@ -6,21 +6,28 @@ use Illuminate\Support\Facades\Schema;
 
 class CreateDigitalMonstersTable extends Migration
 {
+
     public function up()
     {
-        Schema::create('digital_monsters', function (Blueprint $table) {
+        Schema::create('egg_groups', function (Blueprint $table) {
             $table->id();
-            $table->integer('egg_id')->default(0);
-            $table->integer('monster_id')->default(0);
-            $table->string('sprite_sheet');
-            $table->string('stage')->nullable();
-            $table->integer('min_weight')->default(0);
-            $table->integer('max_energy')->default(0);
-            $table->integer('required_evo_points')->default(0);
+            $table->string('name');
             $table->timestamps();
         });
 
-        Schema::create('users_digital_monsters', function (Blueprint $table) {
+        Schema::create('digital_monsters', function (Blueprint $table) {
+            $table->id();
+            $table->integer('eggId')->default(0);
+            $table->integer('monsterId')->default(0);
+            $table->string('spriteSheet');
+            $table->string('stage')->nullable();
+            $table->integer('minWeight')->default(0);
+            $table->integer('maxEnergy')->default(0);
+            $table->integer('requiredEvoPoints')->default(0);
+            $table->timestamps();
+        });
+
+        Schema::create('user_digital_monsters', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('digital_monster_id')->constrained()->onDelete('cascade');
@@ -52,5 +59,6 @@ class CreateDigitalMonstersTable extends Migration
     {
         Schema::dropIfExists('users_digital_monsters');
         Schema::dropIfExists('digital_monsters');
+        Schema::dropIfExists('egg_groups');
     }
 }

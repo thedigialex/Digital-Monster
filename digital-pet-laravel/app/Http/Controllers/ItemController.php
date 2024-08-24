@@ -11,7 +11,8 @@ class ItemController extends Controller
     public function index()
     {
         $items = Item::all();
-        return view('items.item_index', compact('items'));
+        $itemTypes = ["All", "Attack", "Background", "Case", "Useable"];
+        return view('items.item_index', compact('items', 'itemTypes'));
     }
 
     public function handleItem(Request $request, $id = null)
@@ -30,6 +31,7 @@ class ItemController extends Controller
                     'type' => $request->type,
                     'price' => $request->price,
                     'available' => $request->available,
+                    'rarity' => $request->rarity, 
                 ]);
                 return redirect()->route('items.index')->with('success', 'Item updated successfully.');
             } else {
@@ -39,6 +41,7 @@ class ItemController extends Controller
                     'type' => $request->type,
                     'price' => $request->price,
                     'available' => $request->available,
+                    'rarity' => $request->rarity, 
                 ]);
 
                 $item->save();
@@ -55,6 +58,7 @@ class ItemController extends Controller
             'type' => 'required|string',
             'price' => 'required|numeric',
             'available' => 'required|numeric',
+            'rarity' => 'required|string|in:free,common,uncommon,rare,legendary',
         ];
 
         if (!$isUpdate || $request->hasFile('image')) {

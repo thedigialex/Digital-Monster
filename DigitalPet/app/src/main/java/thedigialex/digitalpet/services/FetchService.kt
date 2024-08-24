@@ -16,10 +16,21 @@ class FetchService(private val context: Context) {
             val response = api.getUserDigitalMonsters(isMain)
             if (response.isSuccessful) {
                 val responseBody = response.body()
+                Log.d("API", response.body().toString())
                 responseBody?.let { userDigitalMonsterResponse ->
                     val userDigitalMonsterList = userDigitalMonsterResponse.userDigitalMonsters
+
+                    // Logging each UserDigitalMonster in the list
+                    userDigitalMonsterList.forEach { userDigitalMonster ->
+                        Log.d("UserDigitalMonster", "ID: ${userDigitalMonster.digitalMonsterId}, Name: ${userDigitalMonster.name}")
+                    }
+
                     userDigitalMonsterList
-                } ?: emptyList()
+                } ?: run {
+                    Log.d("UserDigitalMonster", "No data received. Response body is null.")
+                    emptyList()
+                }
+
             } else {
                 Log.e("FetchService", "Failed to fetch digital monsters. Response code: ${response.code()}")
                 emptyList()

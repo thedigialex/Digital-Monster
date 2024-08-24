@@ -5,5 +5,7 @@ data class Item(
     val name: String,
     val image: String,
     val type: String,
-    val price: Double,
+    val price: Int,
+    val available: Int,
+    val rarity: String,
 )

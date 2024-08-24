@@ -9,8 +9,6 @@ class UserDigitalMonster extends Model
 {
     use HasFactory;
 
-    protected $table = 'users_digital_monsters';
-
     protected $fillable = [
         'user_id', 'digital_monster_id', 'name', 'level', 'exp', 'strength',
         'agility', 'defense', 'mind', 'age', 'weight', 'hunger',
@@ -25,6 +23,6 @@ class UserDigitalMonster extends Model
 
     public function digitalMonster()
     {
-        return $this->belongsTo(DigitalMonster::class, 'digital_monster_id');
+        return $this->belongsTo(DigitalMonster::class);
     }
 }

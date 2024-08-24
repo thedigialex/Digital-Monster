@@ -11,6 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
+        Schema::create('items', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->string('image');
+            $table->string('type');
+            $table->integer('price');
+            $table->string('rarity');
+            $table->boolean('available')->default(true);
+            $table->timestamps();
+        });
+
         Schema::create('inventories', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
@@ -26,6 +37,8 @@ return new class extends Migration
      */
     public function down(): void
     {
+        
+        Schema::dropIfExists('items');
         Schema::dropIfExists('inventories');
     }
 };

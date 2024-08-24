@@ -2,10 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Item extends Model
 {
-    protected $fillable = ['name', 'image', 'type', 'price', 'available'];
+    protected $fillable = ['name', 'image', 'type', 'price', 'available', 'rarity'];
 }

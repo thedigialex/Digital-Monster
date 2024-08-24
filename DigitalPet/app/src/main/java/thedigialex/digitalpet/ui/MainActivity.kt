@@ -39,10 +39,18 @@ class MainActivity : ComponentActivity() {
         lifecycleScope.launch {
             val userDigitalMonsterList = fetchService.fetchUserDigitalMonsters(isMain = true)
             if (userDigitalMonsterList.isNotEmpty()) {
-                userDigitalMonsterList.forEach { monster ->
-                    Log.d("DigitalMonster", monster.name)
+                val mainMonster = userDigitalMonsterList.first()
+                Log.d("DigitalMonster", mainMonster.toString())
+                mainMonster.digital_monster.let { digitalMonster ->
+                    var tilesPerRow = 11
+                    if (digitalMonster.eggId == 0) {
+                        tilesPerRow = 8
+                    }
+                    val imageView = findViewById<ImageView>(R.id.imageView)
+                    SpriteManager.setUpImageSprite(imageView, digitalMonster.spriteSheet, tilesPerRow)
                 }
-            } else {
+            }
+            else {
                 val digitalMonster = fetchService.fetchDigitalMonster(eggId = 1, monsterId = 2)
                 digitalMonster?.let {
                     var tilesPerRow = 11
@@ -51,19 +59,22 @@ class MainActivity : ComponentActivity() {
                     }
                     val imageView = findViewById<ImageView>(R.id.imageView)
                     SpriteManager.setUpImageSprite(imageView, it.spriteSheet, tilesPerRow)
-
                 }
             }
 
-            val inventoryList = fetchService.fetchUserInventory(isEquipped = false)
+            val inventoryList = fetchService.fetchUserInventory(isEquipped = true)
+
             if (inventoryList.isNotEmpty()) {
                 inventoryList.forEach { inventory ->
                     Log.d("InventoryItem", inventory.item.name)
+                    Log.d("DigitalMonster", inventory.userId.toString())
+                    Log.d("DigitalMonster", inventory.toString())
                 }
-
             } else {
                 Toast.makeText(this@MainActivity, "No Inventories found", Toast.LENGTH_SHORT).show()
             }
+
+
         }
     }
 

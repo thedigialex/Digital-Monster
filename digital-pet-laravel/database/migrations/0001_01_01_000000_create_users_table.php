@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('nickname')->nullable();
             $table->string('role')->default('user'); 
             $table->integer('score')->default(0);
+            $table->integer('bits')->default(0);
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');

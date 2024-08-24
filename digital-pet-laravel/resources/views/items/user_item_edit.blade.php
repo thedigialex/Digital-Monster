@@ -1,10 +1,10 @@
 <x-app-layout>
     <x-slot name="header">
-        <x-sub-header>
+        <x-fonts.sub-header>
             {{ isset($item) ? 'Edit Inventory Item' : 'Add Inventory Item' }}
-        </x-sub-header>
+        </x-fonts.sub-header>
     </x-slot>
-    <x-body-container>
+    <x-elements.container>
         <form method="POST" action="{{ isset($item) ? route('user.handleItem', [$user->id, $item->id]) : route('user.handleItem', $user->id) }}">
             @csrf
             <div class="mb-4 flex space-x-4">
@@ -34,9 +34,9 @@
                 </div>
             </div>
 
-            <x-primary-button type="submit">
+            <x-elements.primary-button type="submit">
                 {{ isset($item) ? 'Update' : 'Add' }} Item
-            </x-primary-button>
+            </x-elements.primary-button>
         </form>
 
         @if (isset($item))
@@ -50,5 +50,5 @@
             </form>
         </div>
         @endif
-    </x-body-container>
+    </x-elements.container>
 </x-app-layout>

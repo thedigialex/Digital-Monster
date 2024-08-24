@@ -6,12 +6,15 @@
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
                     <a href="{{ route('dashboard') }}">
-                        <x-application-logo class="block h-9 w-auto fill-current text-gray-800 dark:text-gray-200" />
+                        <x-elements.application-logo class="block h-9 w-auto fill-current text-gray-800 dark:text-gray-200" />
                     </a>
                 </div>
+                <div class="space-x-8 sm:-my-px sm:ms-10 sm:flex">
                 @if(auth()->user() && auth()->user()->role == 'admin')
-                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('monsters.index')" :active="request()->routeIs('monsters.index')">
+                <x-nav-link :href="route('eggGroups.index')" :active="request()->routeIs('eggGroups.index')">
+                        {{ __('Egg Groups') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('digitalMonsters.index')" :active="request()->routeIs('digitalMonsters.index')">
                         {{ __('Digital Monsters') }}
                     </x-nav-link>
                     <x-nav-link :href="route('items.index')" :active="request()->routeIs('items.index')">
@@ -20,8 +23,11 @@
                     <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.index')">
                         {{ __('Users') }}
                     </x-nav-link>
+                    @endif
+                    <x-nav-link :href="route('user.profile')" :active="request()->routeIs('user.profile')">
+                    {{ __('Profile') }}
+                </x-nav-link>
                 </div>
-                @endif
             </div>
 
             <!-- Settings Dropdown -->

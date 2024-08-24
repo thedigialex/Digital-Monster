@@ -1,5 +1,5 @@
 [versions]
-agp = "8.4.2"
+agp = "8.5.0"
 converterGson = "2.9.0"
 kotlin = "1.9.0"
 coreKtx = "1.10.1"
@@ -10,6 +10,7 @@ lifecycleRuntimeKtx = "2.6.1"
 activityCompose = "1.8.0"
 composeBom = "2023.08.00"
 appcompat = "1.6.1"
+constraintlayout = "2.1.4"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -31,6 +32,7 @@ androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "converterGson" }
 glide = { group = "com.github.bumptech.glide", name = "glide", version = "4.12.0" }
 glideCompiler = { group = "com.github.bumptech.glide", name = "compiler", version = "4.12.0" }
+androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

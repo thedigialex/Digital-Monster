@@ -32,10 +32,13 @@ interface AuthApi {
 
 
 
-    @GET("api/user/userInventory")
+    @GET("api/user/inventory")
     suspend fun getUserInventory(@Query("isEquipped") isEquipped: Boolean? = null): Response<InventoryResponse>
+
     @GET("api/user/userDigitalMonsters")
     suspend fun getUserDigitalMonsters(@Query("isMain") isMain: Boolean? = null): Response<UserDigitalMonsterResponse>
+
+
     @GET("api/digitalMonster")
     suspend fun fetchDigitalMonster(
         @Query("egg_id") eggId: Int,
