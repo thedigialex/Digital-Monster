@@ -31,7 +31,7 @@ class InventoryController extends Controller
                 return redirect()->route('user.show', $id)->with('success', 'Inventory item created successfully.');
             }
         }
-        return view('items.user_item_edit', compact('user', 'allItems', 'item'));
+        return view('items.user-inventory-edit', compact('user', 'allItems', 'item'));
     }
 
     public function deleteItem($id, $itemId)

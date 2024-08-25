@@ -5,37 +5,36 @@ import android.content.Context
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
-import android.util.Log
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.ComponentActivity
-import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import thedigialex.digitalpet.R
+import thedigialex.digitalpet.controller.CaseController
 import thedigialex.digitalpet.model.entities.User
 import thedigialex.digitalpet.model.requests.NicknameRequest
 import thedigialex.digitalpet.network.RetrofitInstance
 import thedigialex.digitalpet.services.FetchService
-import thedigialex.digitalpet.util.SpriteManager
 
 
 class MainActivity : ComponentActivity() {
     private lateinit var fetchService: FetchService
+    private lateinit var caseController: CaseController;
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        createController()
+        findViewById<Button>(R.id.switchButton).setOnClickListener { caseController.switchMenu() }
+
         //updateNickname("testing")
+        /*
         val user = getUserData()
-
-        user.name.let {
-            Toast.makeText(applicationContext, "Welcome back, $it!", Toast.LENGTH_LONG).show()
-        }
-
         fetchService = FetchService(this)
-
-
         lifecycleScope.launch {
             val userDigitalMonsterList = fetchService.fetchUserDigitalMonsters(isMain = true)
             if (userDigitalMonsterList.isNotEmpty()) {
@@ -46,7 +45,7 @@ class MainActivity : ComponentActivity() {
                     if (digitalMonster.eggId == 0) {
                         tilesPerRow = 8
                     }
-                    val imageView = findViewById<ImageView>(R.id.imageView)
+                    val imageView = findViewById<ImageView>(R.id.mainImageView)
                     SpriteManager.setUpImageSprite(imageView, digitalMonster.spriteSheet, tilesPerRow)
                 }
             }
@@ -57,7 +56,7 @@ class MainActivity : ComponentActivity() {
                     if(it.eggId == 0) {
                         tilesPerRow = 8
                     }
-                    val imageView = findViewById<ImageView>(R.id.imageView)
+                    val imageView = findViewById<ImageView>(R.id.mainImageView)
                     SpriteManager.setUpImageSprite(imageView, it.spriteSheet, tilesPerRow)
                 }
             }
@@ -76,6 +75,28 @@ class MainActivity : ComponentActivity() {
 
 
         }
+        */
+    }
+
+    private fun createController() {
+        val buttons = arrayOf<Button>(
+            findViewById(R.id.upButton),
+            findViewById(R.id.bottomButton),
+            findViewById(R.id.leftButton),
+            findViewById(R.id.rightButton)
+        )
+        val images = arrayOf<ImageView>(
+            findViewById(R.id.topMenu_0),
+            findViewById(R.id.topMenu_1),
+            findViewById(R.id.topMenu_2),
+            findViewById(R.id.topMenu_3),
+            findViewById(R.id.bottomMenu_0),
+            findViewById(R.id.bottomMenu_1),
+            findViewById(R.id.bottomMenu_2),
+            findViewById(R.id.bottomMenu_3),
+        )
+
+        caseController = CaseController(findViewById(R.id.parentMenuLayout),buttons, images)
     }
 
     private fun updateNickname(nickname: String) {

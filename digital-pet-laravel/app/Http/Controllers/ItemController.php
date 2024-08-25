@@ -12,7 +12,7 @@ class ItemController extends Controller
     {
         $items = Item::all();
         $itemTypes = ["All", "Attack", "Background", "Case", "Useable"];
-        return view('items.item_index', compact('items', 'itemTypes'));
+        return view('items.index', compact('items', 'itemTypes'));
     }
 
     public function handleItem(Request $request, $id = null)
@@ -48,7 +48,7 @@ class ItemController extends Controller
                 return redirect()->route('items.index')->with('success', 'Item created successfully.');
             }
         }
-        return view('items.item_edit', compact('item'));
+        return view('items.edit', compact('item'));
     }
 
     private function validateItem(Request $request, $isUpdate = false)
