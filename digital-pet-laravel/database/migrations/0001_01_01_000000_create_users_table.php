@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('nickname')->nullable();
             $table->string('role')->default('user'); 
             $table->integer('score')->default(0);
             $table->integer('bits')->default(0);

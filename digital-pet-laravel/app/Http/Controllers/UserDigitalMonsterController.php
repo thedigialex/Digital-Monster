@@ -15,7 +15,7 @@ class UserDigitalMonsterController extends Controller
         $monstersByEgg = DigitalMonster::all()->sortBy('eggId')->sortBy('monsterId');
         $userDigitalMonster = $monsterId ? UserDigitalMonster::findOrFail($monsterId) : null;
 
-        $monsterOptions = $monstersByEgg->mapWithKeys(function($monster) {
+        $monsterOptions = $monstersByEgg->mapWithKeys(function ($monster) {
             return [$monster->id => 'Egg: ' . $monster->eggGroup->name . ' | Monster Id: ' . $monster->monsterId];
         });
 
@@ -47,28 +47,86 @@ class UserDigitalMonsterController extends Controller
         return redirect()->route('user.show', $id)->with('success', 'Digital Monster deleted successfully.');
     }
 
-    public function getUserDigitalMonsters(Request $request)
+
+
+    public function getUserDigitalMonster(Request $request)
     {
         try {
             $user = $request->user();
             if ($user) {
-                $isMain = $request->query('isMain', null);
-                $query = $user->userDigitalMonsters()->with('digitalMonster');
-                if ($isMain !== null) {
-                    $isMain = filter_var($isMain, FILTER_VALIDATE_BOOLEAN);
-                    $query->where('isMain', $isMain);
+                $userDigitalMonster = $user->userDigitalMonsters()
+                    ->with('digitalMonster')
+                    ->where('isMain', 1)
+                    ->first();
+
+                if ($userDigitalMonster) {
+                    return response()->json([
+                        'status' => true,
+                        'message' => 'User Digital Monster Retrieved Successfully',
+                        'userDigitalMonster' => $userDigitalMonster
+                    ], 200);
                 }
 
-                $userDigitalMonsters = $query->get();
                 return response()->json([
-                    'status' => true,
-                    'message' => 'User Digital Monsters Retrieved Successfully',
-                    'userDigitalMonsters' => $userDigitalMonsters
-                ], 200);
+                    'status' => false,
+                    'message' => 'No main User Digital Monster found'
+                ], 404);
             }
+
             return response()->json([
                 'status' => false,
                 'message' => 'User not found'
+            ], 404);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage()
+            ], 500);
+        }
+    }
+
+    public function getDigitalMonsters(Request $request)
+    {
+        try {
+            $user = $request->user();
+            if ($user) {
+                if ($request->query('eggReturn') != null) {
+                    $query = DigitalMonster::where('monsterId', 0);
+                    $digitalMonsters = $query->get();
+                    return response()->json([
+                        'status' => true,
+                        'message' => 'Digital Monsters Retrieved Successfully',
+                        'digitalMonsters' => $digitalMonsters
+                    ], 200);
+                } elseif ($request->query('battleStage') != null) {
+                    //return random digitalmonsters based on stage 
+                    //will add later ignoring for now
+                } else {
+                    $eggId = $request->query('eggId');
+                    $monsterId = $request->query('monsterId');
+                    if ($eggId !== null && $monsterId !== null) {
+                        $digitalMonsters = DigitalMonster::where('eggId', $eggId)
+                            ->where('monsterId', $monsterId)
+                            ->get();
+
+                        if ($digitalMonsters->isNotEmpty()) {
+                            return response()->json([
+                                'status' => true,
+                                'message' => 'Digital Monsters Retrieved Successfully',
+                                'digitalMonsters' => $digitalMonsters
+                            ], 200);
+                        } else {
+                            return response()->json([
+                                'status' => false,
+                                'message' => 'No Digital Monsters Found'
+                            ], 404);
+                        }
+                    }
+                }
+            }
+            return response()->json([
+                'status' => false,
+                'message' => 'Invalid parameters'
             ], 404);
         } catch (\Throwable $th) {
             return response()->json([

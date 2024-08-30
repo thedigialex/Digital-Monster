@@ -48,14 +48,7 @@ class InventoryController extends Controller
         try {
             $user = $request->user();
             if ($user) {
-                $isEquipped = $request->query('isEquipped', null);
-                $query = $user->inventory()->with('item');
-                if ($isEquipped !== null) {
-                    $isEquipped = filter_var($isEquipped, FILTER_VALIDATE_BOOLEAN);
-                    $query->where('is_equipped', $isEquipped);
-                }
-
-                $inventory = $query->get();
+                $inventory = $user->inventory()->with('item')->get();
 
                 return response()->json([
                     'status' => true,

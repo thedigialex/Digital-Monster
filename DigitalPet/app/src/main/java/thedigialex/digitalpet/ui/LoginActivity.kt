@@ -115,7 +115,7 @@ class LoginActivity : AppCompatActivity() {
             putLong("userId", user.id)
             putString("userName", user.name)
             putString("userEmail", user.email)
-            putString("userNickname", user.nickname)
+            putInt("userBits", user.bits)
             apply()
         }
     }

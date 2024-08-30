@@ -8,9 +8,10 @@ import thedigialex.digitalpet.api.AuthApi
 import thedigialex.digitalpet.util.TokenManager
 
 object RetrofitInstance {
-    private const val BASE_URL = "http://10.0.2.2:8000/"
 
     private fun getClient(context: Context): Retrofit {
+
+        val baseUrl = context.getString(thedigialex.digitalpet.R.string.base_url)
         val client = OkHttpClient.Builder()
             .addInterceptor { chain ->
                 val token = TokenManager.getToken(context)
@@ -23,7 +24,7 @@ object RetrofitInstance {
             .build()
 
         return Retrofit.Builder()
-            .baseUrl(BASE_URL)
+            .baseUrl(baseUrl)
             .client(client)
             .addConverterFactory(GsonConverterFactory.create())
             .build()

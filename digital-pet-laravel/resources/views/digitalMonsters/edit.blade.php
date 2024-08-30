@@ -14,14 +14,8 @@
 
             <div class="mb-4 flex space-x-4">
                 <div class="w-1/3">
-                    <x-input-label for="egg_id">Egg ID:</x-input-label>
-                    <select id="egg_id" name="egg_id" required>
-                        @foreach ($eggGroups as $id => $name)
-                        <option value="{{ $id }}" {{ (isset($digitalMonster->eggId) && $digitalMonster->eggId == $id) ? 'selected' : '' }}>
-                            {{ $name }}
-                        </option>
-                        @endforeach
-                    </select>
+                    <x-input-label for="monster_id">Egg:</x-input-label>
+                    <x-elements.select-input id="egg_id" name="egg_id" :options="$eggGroups" required :selected="$digitalMonster->eggId ?? ''"></x-elements.select-input>
                 </div>
                 <div class="w-1/3">
                     <x-input-label for="monster_id">Monster ID:</x-input-label>

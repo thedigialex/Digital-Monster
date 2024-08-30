@@ -104,7 +104,7 @@ class UserController extends Controller
         });
         $requestForMonsters->replace(['isMain' => true]);
 
-        $userDigitalMonstersResponse = $userDigitalMonsterController->getUserDigitalMonsters($requestForMonsters);
+        $userDigitalMonstersResponse = $userDigitalMonsterController->getUserDigitalMonster($requestForMonsters);
         $userDigitalMonstersData = json_decode($userDigitalMonstersResponse->getContent(), true);
 
         if ($userDigitalMonstersData['status']) {
@@ -230,8 +230,7 @@ class UserController extends Controller
             'user' => [
                 'id' => $user->id,
                 'name' => $user->name,
-                'email' => $user->email,
-                'nickname' => $user->nickname
+                'email' => $user->email
             ]
         ];
 
@@ -242,27 +241,4 @@ class UserController extends Controller
         return response()->json($response, 200);
     }
 
-    public function updateNickname(Request $request)
-    {
-        $user = $request->user();
-        $validate = Validator::make($request->all(), [
-            'nickname' => 'required|string|max:255',
-        ]);
-
-        if ($validate->fails()) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Validation error',
-                'errors' => $validate->errors()
-            ], 400);
-        }
-
-        $user->nickname = $request->nickname;
-        $user->save();
-
-        return response()->json([
-            'status' => true,
-            'message' => 'Nickname updated successfully',
-        ], 200);
-    }
 }

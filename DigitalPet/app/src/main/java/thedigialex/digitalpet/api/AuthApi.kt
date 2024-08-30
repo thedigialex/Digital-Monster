@@ -1,6 +1,5 @@
 package thedigialex.digitalpet.api
 
-import okhttp3.ResponseBody
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.Field
@@ -8,7 +7,6 @@ import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Query
-import retrofit2.http.Url
 import thedigialex.digitalpet.model.requests.NicknameRequest
 import thedigialex.digitalpet.model.responses.DigitalMonsterResponse
 import thedigialex.digitalpet.model.responses.GenericApiResponse
@@ -35,16 +33,24 @@ interface AuthApi {
     @GET("api/user/inventory")
     suspend fun getUserInventory(@Query("isEquipped") isEquipped: Boolean? = null): Response<InventoryResponse>
 
-    @GET("api/user/userDigitalMonsters")
-    suspend fun getUserDigitalMonsters(@Query("isMain") isMain: Boolean? = null): Response<UserDigitalMonsterResponse>
+    @GET("api/user/userDigitalMonster")
+    suspend fun getUserDigitalMonster(): Response<UserDigitalMonsterResponse>
 
 
     @GET("api/digitalMonster")
     suspend fun fetchDigitalMonster(
-        @Query("egg_id") eggId: Int,
-        @Query("monster_id") monsterId: Int
+        @Query("eggId") eggId: Int,
+        @Query("monsterId") monsterId: Int
     ): Response<DigitalMonsterResponse>
 
-    @GET
-    suspend fun downloadImage(@Url fileUrl: String): Response<ResponseBody>
+
+
+    @GET("api/digitalMonsters")
+    suspend fun fetchDigitalMonsters(
+        @Query("eggId") eggId: Int? = null,
+        @Query("monsterId") monsterId: Int? = null,
+        @Query("battleStage") battleStage: Int? = null,
+        @Query("eggReturn") eggReturn: Boolean? = null
+    ): Response<DigitalMonsterResponse>
+
 }

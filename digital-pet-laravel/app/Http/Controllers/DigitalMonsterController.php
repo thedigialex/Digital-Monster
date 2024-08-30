@@ -58,8 +58,16 @@ class DigitalMonsterController extends Controller
         }
 
         $options = [];
-        for($i = 0; $i <=26; $i++) {
-            $options[$i] = $i;
+        for ($i = 0; $i <= 26; $i++) {
+            $options[$i] = match (true) {
+                $i == 1 => "Fresh",
+                $i == 2 => "Child",
+                $i == 3, $i == 4 => "Rookie",
+                $i >= 5 && $i <= 9 => "Champion",
+                $i >= 10 && $i <= 18 => "Ultimate",
+                $i >= 19 && $i <= 26 => "Mega",
+                default => "Egg",
+            };
         }
 
         return view('digitalmonsters.edit', compact('digitalMonster', 'eggGroups', 'options'));
@@ -118,21 +126,21 @@ class DigitalMonsterController extends Controller
 
     public function getStage($monster_id)
     {
-        switch(true) {
+        switch (true) {
             case $monster_id == 1:
                 return "Fresh";
             case $monster_id == 2:
-                return "Child";  
+                return "Child";
             case $monster_id == 3 || $monster_id == 4:
                 return "Rookie";
             case $monster_id >= 5 && $monster_id <= 9:
-                return "Champion";  
+                return "Champion";
             case $monster_id >= 10 && $monster_id <= 18:
                 return "Ultimate";
             case $monster_id >= 19 && $monster_id <= 26:
-                return "Mega";  
+                return "Mega";
             default:
-                return "Egg";    
+                return "Egg";
         }
     }
 }

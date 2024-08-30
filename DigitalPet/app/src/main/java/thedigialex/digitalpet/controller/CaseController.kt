@@ -1,5 +1,7 @@
 package thedigialex.digitalpet.controller
 
+import android.annotation.SuppressLint
+import android.graphics.Bitmap
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
@@ -9,12 +11,13 @@ import thedigialex.digitalpet.R
 
 class CaseController(private val parentLayout: ViewGroup, private val caseButtons: Array<Button>, private val menuImages: Array<ImageView>) {
     private var menuCycle: Int = -1
-    private var menuId: Int = -1
     private var innerMenuCycle: Int = 0
-    private var isMenuOpen: Boolean = false
+    var menuId: Int = -1
+    var isMenuOpen: Boolean = false
     private var isSettings = false
     private val emptyMenuImageResources = IntArray(8)
     private val filledMenuImageResources = IntArray(8)
+    var imageResources: MutableList<Bitmap> = mutableListOf()
 
     init {
         setupImageResources()
@@ -54,9 +57,11 @@ class CaseController(private val parentLayout: ViewGroup, private val caseButton
         }
     }
 
-    private fun updateMenuLayout() {
+    fun updateMenuLayout() {
+        parentLayout.visibility = View.VISIBLE
         val titleTextView = parentLayout.findViewById<TextView>(R.id.title)
         when (menuId) {
+            -10 ->  titleTextView.text = "Select Egg"
             0 ->  titleTextView.text =  if (!isSettings) "Accept 0" else "Settings 0"
             1 ->  titleTextView.text = if (!isSettings) "Accept 1" else "Settings 1"
             2 ->  titleTextView.text = if (!isSettings) "Accept 2" else "Settings 2"
@@ -66,12 +71,22 @@ class CaseController(private val parentLayout: ViewGroup, private val caseButton
             6 ->  titleTextView.text = if (!isSettings) "Accept 6" else "Settings 6"
             7 ->  titleTextView.text = if (!isSettings) "Accept 7" else "Settings 7"
         }
+        updateMenuImage()
 
     }
 
-    private fun select(direction: Int) {
-        if(isMenuOpen) {
+    @SuppressLint("SetTextI18n")
+    private  fun updateMenuImage() {
+        val  iconImage = parentLayout.findViewById<ImageView>(R.id.iconImage)
+        iconImage.setImageBitmap(imageResources[innerMenuCycle])
+        val countTextView = parentLayout.findViewById<TextView>(R.id.count)
+        countTextView.text = "${innerMenuCycle + 1} / ${imageResources.size}"
+    }
 
+    private fun select(direction: Int) {
+        if (isMenuOpen) {
+            innerMenuCycle = (innerMenuCycle + direction + imageResources.size) % imageResources.size
+            updateMenuImage()
         }
         else {
             menuCycle = (menuCycle + direction + 8) % 8
@@ -96,7 +111,6 @@ class CaseController(private val parentLayout: ViewGroup, private val caseButton
         if(!isMenuOpen && menuCycle != -1) {
             isMenuOpen = true
             menuId = menuCycle
-            parentLayout.visibility = View.VISIBLE
             updateMenuLayout()
         }
         else {

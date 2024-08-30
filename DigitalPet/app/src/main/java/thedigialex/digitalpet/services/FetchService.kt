@@ -10,37 +10,33 @@ import thedigialex.digitalpet.model.entities.UserDigitalMonster
 import thedigialex.digitalpet.network.RetrofitInstance
 
 class FetchService(private val context: Context) {
-    suspend fun fetchUserDigitalMonsters(isMain: Boolean? = null): List<UserDigitalMonster> {
+
+    suspend fun fetchUserDigitalMonsters(): UserDigitalMonster? {
         return withContext(Dispatchers.IO) {
             val api = RetrofitInstance.getApi(context)
-            val response = api.getUserDigitalMonsters(isMain)
+            val response = api.getUserDigitalMonster()
             if (response.isSuccessful) {
                 val responseBody = response.body()
                 Log.d("API", response.body().toString())
                 responseBody?.let { userDigitalMonsterResponse ->
-                    val userDigitalMonsterList = userDigitalMonsterResponse.userDigitalMonsters
-
-                    // Logging each UserDigitalMonster in the list
-                    userDigitalMonsterList.forEach { userDigitalMonster ->
-                        Log.d("UserDigitalMonster", "ID: ${userDigitalMonster.digitalMonsterId}, Name: ${userDigitalMonster.name}")
-                    }
-
-                    userDigitalMonsterList
+                    val userDigitalMonster = userDigitalMonsterResponse.userDigitalMonster
+                    Log.d("UserDigitalMonster", "ID: ${userDigitalMonster.digitalMonsterId}, Name: ${userDigitalMonster.name}")
+                    userDigitalMonster
                 } ?: run {
                     Log.d("UserDigitalMonster", "No data received. Response body is null.")
-                    emptyList()
+                    null
                 }
-
             } else {
-                Log.e("FetchService", "Failed to fetch digital monsters. Response code: ${response.code()}")
-                emptyList()
+                Log.e("FetchService", "Failed to fetch user digital monster. Response code: ${response.code()}")
+                null
             }
         }
     }
-    suspend fun fetchUserInventory(isEquipped: Boolean? = null): List<Inventory> {
+
+    suspend fun fetchUserInventory(): List<Inventory> {
         return withContext(Dispatchers.IO) {
             val api = RetrofitInstance.getApi(context)
-            val response = api.getUserInventory(isEquipped)
+            val response = api.getUserInventory()
             if (response.isSuccessful) {
                 val responseBody = response.body()
                 responseBody?.let { inventoryResponse ->
@@ -53,16 +49,31 @@ class FetchService(private val context: Context) {
             }
         }
     }
-    suspend fun fetchDigitalMonster(eggId: Int? = 0, monsterId: Int? = 0): DigitalMonster? {
+
+    suspend fun fetchDigitalMonsters(eggId: Int? = null, monsterId: Int? = null, battleStage: Int? = null, getEggs: Boolean? = null): List<DigitalMonster>? {
         return withContext(Dispatchers.IO) {
             val api = RetrofitInstance.getApi(context)
-            val response = api.fetchDigitalMonster(eggId ?: 0, monsterId ?: 0)
+            val response = api.fetchDigitalMonsters(eggId, monsterId, battleStage, getEggs)
             if (response.isSuccessful) {
-                response.body()?.digitalMonster
+                response.body()?.digitalMonsters
             } else {
-                Log.e("FetchService", "Failed to fetch Digital Monster. Response code: ${response.code()}")
+                Log.e("FetchService", "Failed to fetch Digital Monsters. Response code: ${response.code()}")
                 null
             }
         }
     }
+
+
+    //suspend fun fetchDigitalMonsters(eggId: Int? = 0, monsterId: Int? = 0): DigitalMonster? {
+    //    return withContext(Dispatchers.IO) {
+    //        val api = RetrofitInstance.getApi(context)
+    //        val response = api.fetchDigitalMonster(eggId ?: 0, monsterId ?: 0)
+    //        if (response.isSuccessful) {
+    //            response.body()?.digitalMonster
+    //        } else {
+    //            Log.e("FetchService", "Failed to fetch Digital Monster. Response code: ${response.code()}")
+    //            null
+    //        }
+    //    }
+    //}
 }

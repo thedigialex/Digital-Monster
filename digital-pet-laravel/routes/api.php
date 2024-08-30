@@ -11,13 +11,7 @@ Route::post('/auth/login', [UserController::class, 'loginUser']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/auth/validate-token', [UserController::class, 'validateToken']);
-    Route::post('/user/nickname', [UserController::class, 'updateNickname']);
-
-    Route::get('/digitalMonster', [UserDigitalMonsterController::class, 'getDigitalMonsterByEggAndMonsterId']);
-
-
-
-
-    Route::get('/user/userDigitalMonsters', [UserDigitalMonsterController::class, 'getUserDigitalMonsters']);
+    Route::get('/digitalMonsters', [UserDigitalMonsterController::class, 'getDigitalMonsters']);
+    Route::get('/user/userDigitalMonster', [UserDigitalMonsterController::class, 'getUserDigitalMonster']);
     Route::get('/user/inventory', [InventoryController::class, 'getUserInventory']);
 });
