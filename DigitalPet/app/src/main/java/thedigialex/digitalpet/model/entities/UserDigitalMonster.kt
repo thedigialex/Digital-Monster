@@ -2,10 +2,10 @@ package thedigialex.digitalpet.model.entities
 
 data class UserDigitalMonster(
     val id: Int,
-    val userId: Int,
+    val userId: Long,
     val digitalMonsterId: Int,
     val isMain: Int,
-    val name: String,
+    var name: String,
     val type: String,
     val age: Int,
     val level: Int,
@@ -23,7 +23,5 @@ data class UserDigitalMonster(
     val losses: Int,
     val trainings: Int,
     val careMisses: Int,
-    val createdAt: String,
-    val updatedAt: String,
-    val digital_monster: DigitalMonster
+    var digital_monster: DigitalMonster
 )

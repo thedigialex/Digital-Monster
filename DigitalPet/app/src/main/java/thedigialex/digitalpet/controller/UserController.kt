@@ -7,37 +7,36 @@ import thedigialex.digitalpet.model.entities.DigitalMonster
 import thedigialex.digitalpet.model.entities.User
 import thedigialex.digitalpet.services.FetchService
 
-class UserController(private val context: Context, private val scope: CoroutineScope) {
+class UserController(private val context: Context, private val scope: CoroutineScope, private var user: User) {
     private var fetchService: FetchService = FetchService(context)
-    private val user: User
 
     init {
-        user = getUserData()
         getUserInventory()
     }
 
-    private fun getUserData(): User {
-        val sharedPreferences = context.getSharedPreferences("UserData", Context.MODE_PRIVATE)
-        return User(
-            id = sharedPreferences.getLong("userId", -1),
-            name = sharedPreferences.getString("userName", "")!!,
-            email = sharedPreferences.getString("userEmail", "")!!,
-            bits = sharedPreferences.getInt("userBits", 0),
-        )
-    }
-
-    fun getUserDigitalMonster(callback: (DigitalMonster?) -> Unit) {
+    fun getUserDigitalMonster(callback: () -> Unit) {
         scope.launch {
             val mainMonster = fetchService.fetchUserDigitalMonsters()
             if (mainMonster != null) {
                 mainMonster.digital_monster.setupSprite(context) {
-
-                    callback(mainMonster.digital_monster)
+                    user.mainDigitalMonster = mainMonster
+                    callback()
                 }
-                user.mainDigitalMonster = mainMonster
             } else {
-                callback(null)
+                callback()
             }
+        }
+    }
+
+    fun updateUserDigitalMonster() {
+        scope.launch {
+            fetchService.postUserDigitalMonster(user.mainDigitalMonster!!)
+        }
+    }
+
+    private fun getUserInventory() {
+        scope.launch {
+            user.inventory = fetchService.fetchUserInventory()
         }
     }
 
@@ -57,12 +56,6 @@ class UserController(private val context: Context, private val scope: CoroutineS
             } else {
                 callback(null)
             }
-        }
-    }
-
-    private fun getUserInventory() {
-        scope.launch {
-            user.inventory = fetchService.fetchUserInventory()
         }
     }
 }

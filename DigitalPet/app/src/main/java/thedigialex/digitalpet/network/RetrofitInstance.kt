@@ -10,7 +10,6 @@ import thedigialex.digitalpet.util.TokenManager
 object RetrofitInstance {
 
     private fun getClient(context: Context): Retrofit {
-
         val baseUrl = context.getString(thedigialex.digitalpet.R.string.base_url)
         val client = OkHttpClient.Builder()
             .addInterceptor { chain ->

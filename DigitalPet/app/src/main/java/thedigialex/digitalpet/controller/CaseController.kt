@@ -1,23 +1,32 @@
 package thedigialex.digitalpet.controller
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.graphics.Bitmap
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import thedigialex.digitalpet.R
+import thedigialex.digitalpet.model.entities.DigitalMonster
+import thedigialex.digitalpet.model.entities.User
+import thedigialex.digitalpet.services.FetchService
 
-class CaseController(private val parentLayout: ViewGroup, private val caseButtons: Array<Button>, private val menuImages: Array<ImageView>) {
+class CaseController(private val context: Context, private val scope: CoroutineScope, private val parentLayout: ViewGroup, private val caseButtons: Array<Button>, private val menuImages: Array<ImageView>, private val user: User) {
+    private var fetchService: FetchService = FetchService(context)
     private var menuCycle: Int = -1
     private var innerMenuCycle: Int = 0
-    var menuId: Int = -1
-    var isMenuOpen: Boolean = false
+    private var menuId: Int = -1
+    private var isMenuOpen: Boolean = false
     private var isSettings = false
     private val emptyMenuImageResources = IntArray(8)
     private val filledMenuImageResources = IntArray(8)
-    var imageResources: MutableList<Bitmap> = mutableListOf()
+    private var imageResources: MutableList<Bitmap> = mutableListOf()
+    private var digitalMonsters: List<DigitalMonster>? = null
+    var imageView: ImageView? = null
 
     init {
         setupImageResources()
@@ -29,25 +38,26 @@ class CaseController(private val parentLayout: ViewGroup, private val caseButton
         caseButtons[1].setOnClickListener { cancel() }
         caseButtons[2].setOnClickListener { select(-1) }
         caseButtons[3].setOnClickListener { select(1) }
+        caseButtons[4].setOnClickListener { switchMenu() }
     }
 
     private fun setupImageResources() {
-        emptyMenuImageResources[0] = if (!isSettings) R.drawable.statsmenuempty else R.drawable.feedmenuempty
-        emptyMenuImageResources[1] = if (!isSettings) R.drawable.statsmenuempty else R.drawable.feedmenuempty
-        emptyMenuImageResources[2] = if (!isSettings) R.drawable.statsmenuempty else R.drawable.feedmenuempty
-        emptyMenuImageResources[3] = if (!isSettings) R.drawable.statsmenuempty else R.drawable.feedmenuempty
-        emptyMenuImageResources[4] = if (!isSettings) R.drawable.statsmenuempty else R.drawable.feedmenuempty
-        emptyMenuImageResources[5] = if (!isSettings) R.drawable.statsmenuempty else R.drawable.feedmenuempty
-        emptyMenuImageResources[6] = if (!isSettings) R.drawable.statsmenuempty else R.drawable.feedmenuempty
-        emptyMenuImageResources[7] = if (!isSettings) R.drawable.statsmenuempty else R.drawable.feedmenuempty
-        filledMenuImageResources[0] = if (!isSettings) R.drawable.chartfull else R.drawable.feedmenufull
-        filledMenuImageResources[1] = if (!isSettings) R.drawable.chartfull else R.drawable.feedmenufull
-        filledMenuImageResources[2] = if (!isSettings) R.drawable.chartfull else R.drawable.feedmenufull
-        filledMenuImageResources[3] = if (!isSettings) R.drawable.chartfull else R.drawable.feedmenufull
-        filledMenuImageResources[4] = if (!isSettings) R.drawable.chartfull else R.drawable.feedmenufull
-        filledMenuImageResources[5] = if (!isSettings) R.drawable.chartfull else R.drawable.feedmenufull
-        filledMenuImageResources[6] = if (!isSettings) R.drawable.chartfull else R.drawable.feedmenufull
-        filledMenuImageResources[7] = if (!isSettings) R.drawable.chartfull else R.drawable.feedmenufull
+        emptyMenuImageResources[0] = if (!isSettings) R.drawable.stat_menu else R.drawable.stat_menu
+        emptyMenuImageResources[1] = if (!isSettings) R.drawable.food_menu else R.drawable.stat_menu
+        emptyMenuImageResources[2] = if (!isSettings) R.drawable.train_menu else R.drawable.stat_menu
+        emptyMenuImageResources[3] = if (!isSettings) R.drawable.clean_menu else R.drawable.stat_menu
+        emptyMenuImageResources[4] = if (!isSettings) R.drawable.light_menu else R.drawable.stat_menu
+        emptyMenuImageResources[5] = if (!isSettings) R.drawable.battle_menu else R.drawable.stat_menu
+        emptyMenuImageResources[6] = if (!isSettings) R.drawable.game_menu else R.drawable.stat_menu
+        emptyMenuImageResources[7] = if (!isSettings) R.drawable.shop_menu else R.drawable.stat_menu
+        filledMenuImageResources[0] = if (!isSettings) R.drawable.stat_menu_highlight else R.drawable.stat_menu_highlight
+        filledMenuImageResources[1] = if (!isSettings) R.drawable.food_menu_highlight else R.drawable.stat_menu_highlight
+        filledMenuImageResources[2] = if (!isSettings) R.drawable.train_menu_highlight else R.drawable.stat_menu_highlight
+        filledMenuImageResources[3] = if (!isSettings) R.drawable.clean_menu_highlight else R.drawable.stat_menu_highlight
+        filledMenuImageResources[4] = if (!isSettings) R.drawable.light_menu_highlight else R.drawable.stat_menu_highlight
+        filledMenuImageResources[5] = if (!isSettings) R.drawable.battle_menu_highlight else R.drawable.stat_menu_highlight
+        filledMenuImageResources[6] = if (!isSettings) R.drawable.game_menu_highlight else R.drawable.stat_menu_highlight
+        filledMenuImageResources[7] = if (!isSettings) R.drawable.shop_menu_highlight else R.drawable.stat_menu_highlight
         updateMenuImages()
     }
 
@@ -57,7 +67,7 @@ class CaseController(private val parentLayout: ViewGroup, private val caseButton
         }
     }
 
-    fun updateMenuLayout() {
+    private fun updateMenuLayout() {
         parentLayout.visibility = View.VISIBLE
         val titleTextView = parentLayout.findViewById<TextView>(R.id.title)
         when (menuId) {
@@ -72,7 +82,6 @@ class CaseController(private val parentLayout: ViewGroup, private val caseButton
             7 ->  titleTextView.text = if (!isSettings) "Accept 7" else "Settings 7"
         }
         updateMenuImage()
-
     }
 
     @SuppressLint("SetTextI18n")
@@ -81,6 +90,39 @@ class CaseController(private val parentLayout: ViewGroup, private val caseButton
         iconImage.setImageBitmap(imageResources[innerMenuCycle])
         val countTextView = parentLayout.findViewById<TextView>(R.id.count)
         countTextView.text = "${innerMenuCycle + 1} / ${imageResources.size}"
+    }
+
+    fun setUpNewUserDigitalMonster(digitalMonsters: List<DigitalMonster>, imageView: ImageView) {
+        this.digitalMonsters = digitalMonsters
+        this.imageView = imageView
+        caseButtons[1].isClickable = false
+        if (this.digitalMonsters?.isNotEmpty() == true) {
+            val allSprites = mutableListOf<Bitmap>()
+            this.digitalMonsters?.forEach { monster ->
+                monster.sprites?.firstOrNull()?.let { firstSprite ->
+                    allSprites.add(firstSprite)
+                }
+            }
+            imageResources = allSprites
+            menuId = -10
+            isMenuOpen = true
+            updateMenuLayout()
+        }
+    }
+
+    private fun selectEgg() {
+        val eggId = digitalMonsters?.get(innerMenuCycle)!!.eggId
+        scope.launch {
+            user.mainDigitalMonster = fetchService.createUserDigitalMonster(eggId)
+            val digitalMonster = user.mainDigitalMonster?.digital_monster
+            digitalMonster?.setupSprite(context) {
+                imageView?.let {
+                    digitalMonster.animation(it, 1)
+                }
+                caseButtons[1].isClickable = true
+                cancel()
+            }
+        }
     }
 
     private fun select(direction: Int) {
@@ -114,11 +156,13 @@ class CaseController(private val parentLayout: ViewGroup, private val caseButton
             updateMenuLayout()
         }
         else {
-
+            when (menuId) {
+                -10 ->  selectEgg()
+            }
         }
     }
 
-    fun switchMenu() {
+    private fun switchMenu() {
         if(!isMenuOpen){
             isSettings = !isSettings
             setupImageResources()

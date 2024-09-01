@@ -7,9 +7,8 @@ import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Query
-import thedigialex.digitalpet.model.requests.NicknameRequest
+import thedigialex.digitalpet.model.entities.UserDigitalMonster
 import thedigialex.digitalpet.model.responses.DigitalMonsterResponse
-import thedigialex.digitalpet.model.responses.GenericApiResponse
 import thedigialex.digitalpet.model.responses.InventoryResponse
 import thedigialex.digitalpet.model.responses.LoginResponse
 import thedigialex.digitalpet.model.responses.UserDigitalMonsterResponse
@@ -24,26 +23,18 @@ interface AuthApi {
 
     @GET("api/auth/validate-token")
     suspend fun validateToken(): Response<LoginResponse>
-    @POST("api/user/nickname")
-    suspend fun updateNickname(@Body nicknameRequest: NicknameRequest): Response<GenericApiResponse>
-
-
-
 
     @GET("api/user/inventory")
     suspend fun getUserInventory(@Query("isEquipped") isEquipped: Boolean? = null): Response<InventoryResponse>
 
+    @POST("api/user/userDigitalMonster/create")
+    suspend fun createUserDigitalMonster(@Query("eggId") eggId: Int): Response<UserDigitalMonsterResponse>
+
     @GET("api/user/userDigitalMonster")
     suspend fun getUserDigitalMonster(): Response<UserDigitalMonsterResponse>
 
-
-    @GET("api/digitalMonster")
-    suspend fun fetchDigitalMonster(
-        @Query("eggId") eggId: Int,
-        @Query("monsterId") monsterId: Int
-    ): Response<DigitalMonsterResponse>
-
-
+    @POST("api/user/userDigitalMonster/update")
+    suspend fun updateUserDigitalMonster(@Body userDigitalMonster: UserDigitalMonster): Response<UserDigitalMonsterResponse>
 
     @GET("api/digitalMonsters")
     suspend fun fetchDigitalMonsters(
@@ -52,5 +43,4 @@ interface AuthApi {
         @Query("battleStage") battleStage: Int? = null,
         @Query("eggReturn") eggReturn: Boolean? = null
     ): Response<DigitalMonsterResponse>
-
 }

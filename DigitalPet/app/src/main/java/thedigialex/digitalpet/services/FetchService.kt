@@ -11,6 +11,29 @@ import thedigialex.digitalpet.network.RetrofitInstance
 
 class FetchService(private val context: Context) {
 
+
+    suspend fun createUserDigitalMonster(eggId: Int): UserDigitalMonster? {
+        return withContext(Dispatchers.IO) {
+            val api = RetrofitInstance.getApi(context)
+            val response = api.createUserDigitalMonster(eggId)
+            if (response.isSuccessful) {
+                val responseBody = response.body()
+                Log.d("API", response.body().toString())
+                responseBody?.let { userDigitalMonsterResponse ->
+                    val userDigitalMonster = userDigitalMonsterResponse.userDigitalMonster
+                    Log.d("UserDigitalMonster", "ID: ${userDigitalMonster.digitalMonsterId}, Name: ${userDigitalMonster.name}")
+                    userDigitalMonster
+                } ?: run {
+                    Log.d("UserDigitalMonster", "No data received. Response body is null.")
+                    null
+                }
+            } else {
+                Log.e("FetchService", "Failed to fetch user digital monster. Response code: ${response.code()}")
+                null
+            }
+        }
+    }
+
     suspend fun fetchUserDigitalMonsters(): UserDigitalMonster? {
         return withContext(Dispatchers.IO) {
             val api = RetrofitInstance.getApi(context)
@@ -28,6 +51,28 @@ class FetchService(private val context: Context) {
                 }
             } else {
                 Log.e("FetchService", "Failed to fetch user digital monster. Response code: ${response.code()}")
+                null
+            }
+        }
+    }
+
+    suspend fun postUserDigitalMonster(userDigitalMonster: UserDigitalMonster): UserDigitalMonster? {
+        return withContext(Dispatchers.IO) {
+            val api = RetrofitInstance.getApi(context)
+            val response = api.updateUserDigitalMonster(userDigitalMonster)
+            if (response.isSuccessful) {
+                val responseBody = response.body()
+                Log.d("API", response.body().toString())
+                responseBody?.let { userDigitalMonsterResponse ->
+                    val updatedMonster = userDigitalMonsterResponse.userDigitalMonster
+                    Log.d("UserDigitalMonster", "ID: ${updatedMonster.digitalMonsterId}, Name: ${updatedMonster.name}")
+                    updatedMonster
+                } ?: run {
+                    Log.d("UserDigitalMonster", "No data received. Response body is null.")
+                    null
+                }
+            } else {
+                Log.e("FetchService", "Failed to update user digital monster. Response code: ${response.code()}")
                 null
             }
         }
@@ -62,18 +107,4 @@ class FetchService(private val context: Context) {
             }
         }
     }
-
-
-    //suspend fun fetchDigitalMonsters(eggId: Int? = 0, monsterId: Int? = 0): DigitalMonster? {
-    //    return withContext(Dispatchers.IO) {
-    //        val api = RetrofitInstance.getApi(context)
-    //        val response = api.fetchDigitalMonster(eggId ?: 0, monsterId ?: 0)
-    //        if (response.isSuccessful) {
-    //            response.body()?.digitalMonster
-    //        } else {
-    //            Log.e("FetchService", "Failed to fetch Digital Monster. Response code: ${response.code()}")
-    //            null
-    //        }
-    //    }
-    //}
 }

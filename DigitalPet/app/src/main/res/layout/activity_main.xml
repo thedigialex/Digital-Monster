@@ -9,11 +9,11 @@
         android:id="@+id/caseBackground"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="4dp"
         android:layout_marginTop="24dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginEnd="4dp"
         android:layout_marginBottom="24dp"
-        android:background="@drawable/case_test"
+        android:background="@drawable/test"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -23,11 +23,9 @@
             android:id="@+id/frameLayout"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="48dp"
-            android:layout_marginEnd="8dp"
+            android:layout_marginTop="32dp"
             android:layout_marginBottom="32dp"
-            android:background="@drawable/elementholder"
+            android:background="@drawable/frame"
             app:layout_constraintBottom_toTopOf="@+id/buttonLayout"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -38,7 +36,7 @@
                 android:layout_width="0dp"
                 android:layout_height="48dp"
                 android:layout_marginStart="24dp"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="28dp"
                 android:layout_marginEnd="24dp"
                 app:layout_constraintBottom_toTopOf="@+id/mainView"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -47,8 +45,8 @@
 
                 <ImageView
                     android:id="@+id/topMenu_0"
-                    style="@style/menuButtons"
-                    android:background="@drawable/statsmenuempty"
+                    style="@style/menuTop"
+                    android:background="@drawable/stat_menu"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/topMenu_1"
                     app:layout_constraintStart_toStartOf="parent"
@@ -56,8 +54,8 @@
 
                 <ImageView
                     android:id="@+id/topMenu_1"
-                    style="@style/menuButtons"
-                    android:background="@drawable/statsmenuempty"
+                    style="@style/menuTop"
+                    android:background="@drawable/food_menu"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/topMenu_2"
                     app:layout_constraintStart_toEndOf="@+id/topMenu_0"
@@ -65,9 +63,9 @@
 
                 <ImageView
                     android:id="@+id/topMenu_2"
-                    style="@style/menuButtons"
+                    style="@style/menuTop"
                     android:layout_height="0dp"
-                    android:background="@drawable/statsmenuempty"
+                    android:background="@drawable/train_menu"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/topMenu_3"
                     app:layout_constraintStart_toEndOf="@+id/topMenu_1"
@@ -75,8 +73,8 @@
 
                 <ImageView
                     android:id="@+id/topMenu_3"
-                    style="@style/menuButtons"
-                    android:background="@drawable/statsmenuempty"
+                    style="@style/menuTop"
+                    android:background="@drawable/clean_menu"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/topMenu_2"
@@ -91,44 +89,70 @@
                 android:background="@drawable/winterone"
                 app:layout_constraintBottom_toTopOf="@+id/bottomMenu"
                 app:layout_constraintEnd_toEndOf="@+id/topMenu"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="@+id/topMenu"
                 app:layout_constraintTop_toBottomOf="@+id/topMenu">
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/topStatusBar"
-                    android:layout_width="0dp"
-                    android:layout_height="32dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-                <ImageView
-                    android:id="@+id/mainImageView"
-                    android:layout_width="96dp"
-                    android:layout_height="96dp"
-                    android:scaleType="fitCenter"
-                    app:layout_constraintBottom_toTopOf="@+id/bottomStatusBar"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/topStatusBar" />
 
                 <include
                     android:id="@+id/parentMenuLayout"
                     layout="@layout/menu_layout"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
                     android:visibility="gone"
                     app:layout_constraintBottom_toTopOf="@+id/bottomStatusBar"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/topStatusBar" />
+                    app:layout_constraintTop_toBottomOf="@+id/topStatusBar" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/topStatusBar"
+                    android:layout_width="0dp"
+                    android:layout_height="32dp"
+                    android:background="@color/transparent_frame"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <TextView
+                        android:id="@+id/subNameTitleView"
+                        style="@style/fontParagraph"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:text="TextView"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/nameTitleView"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/nameTitleView"
+                        style="@style/fontParagraph"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:text="TextView"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/subNameTitleView"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <ImageView
+                    android:id="@+id/mainImageView"
+                    android:layout_width="96dp"
+                    android:layout_height="96dp"
+                    android:layout_marginBottom="32dp"
+                    android:scaleType="fitCenter"
+                    app:layout_constraintBottom_toTopOf="@+id/bottomStatusBar"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/bottomStatusBar"
                     android:layout_width="0dp"
                     android:layout_height="32dp"
+                    android:background="@color/transparent_frame"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent">
@@ -141,15 +165,15 @@
                 android:id="@+id/bottomMenu"
                 android:layout_width="0dp"
                 android:layout_height="48dp"
-                android:layout_marginBottom="24dp"
+                android:layout_marginBottom="28dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="@+id/topMenu"
                 app:layout_constraintStart_toStartOf="@+id/topMenu">
 
                 <ImageView
                     android:id="@+id/bottomMenu_0"
-                    style="@style/menuButtons"
-                    android:background="@drawable/statsmenuempty"
+                    style="@style/menuBottom"
+                    android:background="@drawable/light_menu"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/bottomMenu_1"
                     app:layout_constraintStart_toStartOf="parent"
@@ -157,8 +181,8 @@
 
                 <ImageView
                     android:id="@+id/bottomMenu_1"
-                    style="@style/menuButtons"
-                    android:background="@drawable/statsmenuempty"
+                    style="@style/menuBottom"
+                    android:background="@drawable/battle_menu"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/bottomMenu_2"
                     app:layout_constraintStart_toEndOf="@+id/bottomMenu_0"
@@ -166,8 +190,8 @@
 
                 <ImageView
                     android:id="@+id/bottomMenu_2"
-                    style="@style/menuButtons"
-                    android:background="@drawable/statsmenuempty"
+                    style="@style/menuBottom"
+                    android:background="@drawable/game_menu"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/bottomMenu_3"
                     app:layout_constraintStart_toEndOf="@+id/bottomMenu_1"
@@ -175,8 +199,8 @@
 
                 <ImageView
                     android:id="@+id/bottomMenu_3"
-                    style="@style/menuButtons"
-                    android:background="@drawable/statsmenuempty"
+                    style="@style/menuBottom"
+                    android:background="@drawable/shop_menu"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/bottomMenu_2"
@@ -191,26 +215,27 @@
             android:id="@+id/buttonLayout"
             android:layout_width="0dp"
             android:layout_height="200dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
             android:layout_marginBottom="32dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/frameLayout"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/frameLayout"
             app:layout_constraintTop_toBottomOf="@+id/frameLayout">
 
             <Button
                 android:id="@+id/switchButton"
-                android:layout_width="56dp"
-                android:layout_height="56dp"
-                android:background="@drawable/gear_button"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:background="@drawable/case_button"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <Button
                 android:id="@+id/leftButton"
                 style="@style/deviceButton"
-                android:layout_marginEnd="24dp"
+                android:layout_marginEnd="8dp"
                 app:layout_constraintBottom_toTopOf="@+id/bottomButton"
                 app:layout_constraintEnd_toStartOf="@+id/bottomButton"
                 app:layout_constraintTop_toBottomOf="@+id/upButton" />
@@ -218,6 +243,8 @@
             <Button
                 android:id="@+id/upButton"
                 style="@style/deviceButton"
+                android:layout_marginBottom="8dp"
+                app:layout_constraintBottom_toTopOf="@+id/bottomButton"
                 app:layout_constraintEnd_toEndOf="@+id/bottomButton"
                 app:layout_constraintStart_toStartOf="@+id/bottomButton"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -225,7 +252,7 @@
             <Button
                 android:id="@+id/rightButton"
                 style="@style/deviceButton"
-                android:layout_marginStart="24dp"
+                android:layout_marginStart="8dp"
                 app:layout_constraintBottom_toTopOf="@+id/bottomButton"
                 app:layout_constraintStart_toEndOf="@+id/bottomButton"
                 app:layout_constraintTop_toBottomOf="@+id/upButton" />
@@ -233,10 +260,11 @@
             <Button
                 android:id="@+id/bottomButton"
                 style="@style/deviceButton"
-                android:layout_marginBottom="24dp"
+                android:layout_marginTop="8dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/upButton" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
