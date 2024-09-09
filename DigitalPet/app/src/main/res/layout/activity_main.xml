@@ -93,13 +93,23 @@
                 app:layout_constraintStart_toStartOf="@+id/topMenu"
                 app:layout_constraintTop_toBottomOf="@+id/topMenu">
 
+                <ImageView
+                    android:id="@+id/mainImageView"
+                    android:layout_width="96dp"
+                    android:layout_height="96dp"
+                    android:layout_marginBottom="32dp"
+                    android:scaleType="fitCenter"
+                    app:layout_constraintBottom_toTopOf="@+id/bottomStatusBar"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
+
                 <include
                     android:id="@+id/parentMenuLayout"
                     layout="@layout/menu_layout"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginEnd="16dp"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginEnd="24dp"
                     android:visibility="gone"
                     app:layout_constraintBottom_toTopOf="@+id/bottomStatusBar"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -117,7 +127,7 @@
 
                     <TextView
                         android:id="@+id/subNameTitleView"
-                        style="@style/fontParagraph"
+                        style="@style/fontParagraphDark"
                         android:layout_width="0dp"
                         android:layout_height="0dp"
                         android:text="TextView"
@@ -128,7 +138,7 @@
 
                     <TextView
                         android:id="@+id/nameTitleView"
-                        style="@style/fontParagraph"
+                        style="@style/fontParagraphDark"
                         android:layout_width="0dp"
                         android:layout_height="0dp"
                         android:text="TextView"
@@ -137,16 +147,6 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
-
-                <ImageView
-                    android:id="@+id/mainImageView"
-                    android:layout_width="96dp"
-                    android:layout_height="96dp"
-                    android:layout_marginBottom="32dp"
-                    android:scaleType="fitCenter"
-                    app:layout_constraintBottom_toTopOf="@+id/bottomStatusBar"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/bottomStatusBar"

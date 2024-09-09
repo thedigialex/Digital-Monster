@@ -27,18 +27,20 @@ class DigitalMonsterController extends Controller
             $stage = $this->getStage($request->monster_id);
             $minValues = $this->getMinValues($stage);
 
+            $evolutionRoutes = $request->has('evolution_routes') ? json_encode($request->evolution_routes) : null;
+
             if ($digitalMonster) {
                 if ($request->hasFile('sprite_sheet') && $digitalMonster->spriteSheet) {
                     Storage::delete($digitalMonster->spriteSheet);
                     $digitalMonster->spriteSheet = $path;
                 }
+
                 $digitalMonster->update([
                     'monsterId' => $request->monster_id,
                     'eggId' => $request->egg_id,
                     'stage' => $stage,
-                    'minWeight' => $minValues[0],
-                    'maxEnergy' => $minValues[1],
-                    'requiredEvoPoints' => $minValues[2]
+                    'requiredEvoPoints' => $minValues[0],
+                    'evolution_routes' => $evolutionRoutes, // Handle evolution routes
                 ]);
 
                 return redirect()->route('digitalMonsters.index')->with('success', 'Monster updated successfully.');
@@ -48,9 +50,8 @@ class DigitalMonsterController extends Controller
                     'eggId' => $request->egg_id,
                     'spriteSheet' => $path,
                     'stage' => $stage,
-                    'minWeight' => $minValues[0],
-                    'maxEnergy' => $minValues[1],
-                    'requiredEvoPoints' => $minValues[2]
+                    'requiredEvoPoints' => $minValues[0],
+                    'evolution_routes' => $evolutionRoutes, // Handle evolution routes
                 ]);
 
                 return redirect()->route('digitalMonsters.index')->with('success', 'Monster created successfully.');
@@ -78,6 +79,7 @@ class DigitalMonsterController extends Controller
         $rules = [
             'egg_id' => 'required|integer',
             'monster_id' => 'required|integer',
+            'evolution_routes' => 'nullable|array', // Validate evolution routes as an array
         ];
 
         if (!$isUpdate || $request->hasFile('sprite_sheet')) {
@@ -86,6 +88,7 @@ class DigitalMonsterController extends Controller
 
         $request->validate($rules);
     }
+
 
     private function handleSpriteUpload(Request $request)
     {
@@ -117,9 +120,7 @@ class DigitalMonsterController extends Controller
         ];
 
         if (array_key_exists($stage, $additionalValues)) {
-            $baseValues[0] += $additionalValues[$stage];
-            $baseValues[1] += $additionalValues[$stage];
-            $baseValues[2] *= ($additionalValues[$stage] + 5);
+            $baseValues[0] *= ($additionalValues[$stage] + 5);
         }
         return $baseValues;
     }
@@ -141,6 +142,75 @@ class DigitalMonsterController extends Controller
                 return "Mega";
             default:
                 return "Egg";
+        }
+    }
+
+    public function evolveUserDigitalMonster(Request $request)
+    {
+        try {
+            $user = $request->user();
+            if ($user) {
+                $userDigitalMonster = $user->userDigitalMonsters()
+                    ->with('digitalMonster')
+                    ->where('isMain', 1)
+                    ->first();
+
+                if (!$userDigitalMonster || !$userDigitalMonster->digitalMonster) {
+                    return response()->json([
+                        'status' => false,
+                        'message' => 'No main Digital Monster found for evolution.'
+                    ], 404);
+                }
+
+                $evolutionRoutes = json_decode($userDigitalMonster->digitalMonster->evolution_routes, true);
+
+                if (empty($evolutionRoutes)) {
+                    return response()->json([
+                        'status' => false,
+                        'message' => 'Evolution is not possible. No evolution routes available.'
+                    ], 400);
+                }
+
+                if (count($evolutionRoutes) > 1) {
+                    $strength = $userDigitalMonster->strength;
+                    $mind = $userDigitalMonster->mind;
+
+                    $selectedRoute = ($strength >= $mind) ? $evolutionRoutes[0] : $evolutionRoutes[1];
+                } else {
+                    $selectedRoute = $evolutionRoutes[0];
+                }
+
+                $newDigitalMonster = DigitalMonster::where('monsterId', $selectedRoute)->first();
+
+                if (!$newDigitalMonster) {
+                    return response()->json([
+                        'status' => false,
+                        'message' => 'Evolution route is invalid. No such Digital Monster found.'
+                    ], 404);
+                }
+
+                $userDigitalMonster->update([
+                    'digital_monster_id' => $newDigitalMonster->id,
+
+                ]);
+
+                $userDigitalMonster->load('digitalMonster');
+
+                return response()->json([
+                    'status' => true,
+                    'message' => 'Evolution successful. Digital Monster evolved.',
+                    'userDigitalMonster' => $userDigitalMonster 
+                ], 200);
+            }
+            return response()->json([
+                'status' => false,
+                'message' => 'User not authenticated.'
+            ], 401);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => 'An error occurred: ' . $th->getMessage()
+            ], 500);
         }
     }
 }

@@ -3,10 +3,12 @@ package thedigialex.digitalpet.ui
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ProgressBar
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.coroutines.CoroutineScope
@@ -54,6 +56,7 @@ class LoginActivity : AppCompatActivity() {
         findViewById<EditText>(R.id.confirmPasswordEditText).visibility = if (isLoginMode) View.GONE else View.VISIBLE
         findViewById<Button>(R.id.actionButton).text = getString(if (isLoginMode) R.string.login else R.string.register)
         findViewById<Button>(R.id.switchButton).text = getString(if (isLoginMode) R.string.register else R.string.login)
+        findViewById<TextView>(R.id.formTitle).text = getString(if (isLoginMode) R.string.login else R.string.register)
     }
 
     private fun performLogin(email: String, password: String) = performAuthAction {
@@ -75,11 +78,35 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun validateTokenAndNavigate() = performAuthAction {
+        Log.d("LoginActivity", "Validating token...")
         val response = RetrofitInstance.getApi(applicationContext).validateToken()
-        if (response.isSuccessful && response.body()?.status == true) {
-            navigateToMainActivity(response.body()?.user!!)
-        } else showToast("Login failed: ${response.errorBody()?.string()}")
+        if (response.isSuccessful) {
+            try {
+                val userResponse = response.body()
+                if (userResponse?.status == true) {
+                    navigateToMainActivity(userResponse.user)
+                } else {
+                    handleInvalidToken()
+                }
+            } catch (e: Exception) {
+                Log.e("LoginActivity", "Error parsing response: ${e.message}")
+                handleInvalidToken()  // Handle parsing errors or unexpected response format
+            }
+        } else if (response.code() == 401) {
+            handleInvalidToken()
+        } else {
+            Log.e("LoginActivity", "Unexpected error: ${response.errorBody()?.string()}")
+            handleInvalidToken()
+        }
     }
+
+    private fun handleInvalidToken() {
+        TokenManager.clearToken(applicationContext)
+        showToast("Session expired or invalid token. Please log in again.")
+        startActivity(Intent(this, LoginActivity::class.java))
+        finish()
+    }
+
 
     private fun performAuthAction(action: suspend () -> Unit) {
         val progressBar = findViewById<ProgressBar>(R.id.progressBar)
@@ -92,6 +119,11 @@ class LoginActivity : AppCompatActivity() {
             } catch (e: SocketTimeoutException) {
                 withContext(Dispatchers.Main) {
                     showToast("Connection timed out. Please check your network connection and try again.")
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    Log.e("performAuthAction", "Unexpected error: ${e.message}")
+                    showToast("An unexpected error occurred. Please try again.")
                 }
             } finally {
                 withContext(Dispatchers.Main) {

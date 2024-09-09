@@ -1,5 +1,6 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background">
@@ -18,8 +19,8 @@
 
     <ProgressBar
         android:id="@+id/progressBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_centerInParent="true"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/logoHeader"
@@ -27,13 +28,24 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/logoHeader" />
 
+    <Button
+        android:id="@+id/switchButton"
+        style="@style/roundedButton"
+        android:layout_width="0dp"
+        android:layout_height="60dp"
+        android:layout_marginEnd="24dp"
+        android:text="@string/register"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/linearLayout"
+        app:layout_constraintStart_toStartOf="@+id/linearLayout" />
+
     <LinearLayout
 
         android:id="@+id/linearLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
         android:background="@drawable/bottom_boarder"
         android:orientation="vertical"
@@ -44,7 +56,7 @@
 
         <TextView
             android:id="@+id/formTitle"
-            style="@style/header"
+            style="@style/fontHeader"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/top_boarder"
@@ -53,35 +65,35 @@
 
         <EditText
             android:id="@+id/nameEditText"
+            style="@style/fontInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/name"
-            android:padding="16dp"
             android:visibility="gone" />
 
         <EditText
             android:id="@+id/emailEditText"
+            style="@style/fontInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/email"
-            android:inputType="textEmailAddress"
-            android:padding="16dp" />
+            android:inputType="textEmailAddress" />
 
         <EditText
             android:id="@+id/passwordEditText"
+            style="@style/fontInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/password"
-            android:inputType="textPassword"
-            android:padding="16dp" />
+            android:inputType="textPassword" />
 
         <EditText
             android:id="@+id/confirmPasswordEditText"
+            style="@style/fontInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/confirm_password"
             android:inputType="textPassword"
-            android:padding="16dp"
             android:visibility="gone" />
 
         <Button
@@ -90,28 +102,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/login" />
-
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/buttonContainer"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginEnd="24dp"
-        android:layout_marginBottom="24dp"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/linearLayout"
-        app:layout_constraintStart_toStartOf="@+id/linearLayout">
-
-        <Button
-            android:id="@+id/switchButton"
-            style="@style/roundedButton"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="@string/register" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

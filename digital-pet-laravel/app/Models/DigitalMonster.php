@@ -11,14 +11,24 @@ class DigitalMonster extends Model
         'monsterId',
         'spriteSheet',
         'stage',
-        'minWeight',
-        'maxEnergy',
-        'requiredEvoPoints'
+        'requiredEvoPoints',
+        'evolution_routes', 
     ];
 
     public function eggGroup()
     {
         return $this->belongsTo(EggGroup::class, 'eggId');
     }
+
+    public function getTypes() {
+        return ['Data', 'Virus', 'Vaccine'];
+    }
+    
+    public function generateType() {
+        $types = $this->getTypes();
+        $randomType = $types[array_rand($types)];
+        return $randomType;
+    }
+
 }
 

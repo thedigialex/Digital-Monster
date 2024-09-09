@@ -13,38 +13,37 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body class="antialiased selection:bg-cyan-500 h-screen bg-secondary">
+<body class="antialiased selection:bg-accent h-screen bg-secondary">
     <div class="h-full flex flex-col lg:flex-row">
         <div class="w-full lg:w-1/2 flex flex-col justify-center p-6 lg:p-32">
-            <div class="bg-neutral p-4 lg:p-8 rounded">
+            <div class="bg-primary p-4 lg:p-8 rounded">
                 <div x-data="{ activeTab: 'login' }">
                     <!-- Tab Navigation -->
-                    <div class="flex justify-center bg-neutral pt-4">
+                    <div class="flex justify-center pt-4 bg-secondary rounded-t">
                         <button
-                            :class="{'neutral-b-2 neutral-accent text-accent': activeTab === 'login', 'text-text': activeTab !== 'login'}"
-                            class="py-2 px-4 focus:outline-none"
+                            :class="{'neutral-b-2 bg-accent neutral-accent text-secondary rounded-t': activeTab === 'login', 'text-text': activeTab !== 'login'}"
+                            class="py-2 px-4 focus:outline-none bg-accent"
                             @click="activeTab = 'login'">
                             Login
                         </button>
                         <button
-                            :class="{'neutral-b-2 neutral-accent text-accent': activeTab === 'register', 'text-text': activeTab !== 'register'}"
+                            :class="{'neutral-b-2 bg-accent neutral-accent text-secondary rounded-t': activeTab === 'register', 'text-text': activeTab !== 'register'}"
                             class="py-2 px-4 focus:outline-none"
                             @click="activeTab = 'register'">
                             Register
                         </button>
                         <button
-                            :class="{'neutral-b-2 neutral-accent text-accent': activeTab === 'forgot-password', 'text-text': activeTab !== 'forgot-password'}"
+                            :class="{'neutral-b-2 bg-accent neutral-accent text-secondary rounded-t': activeTab === 'forgot-password', 'text-text': activeTab !== 'forgot-password'}"
                             class="py-2 px-4 focus:outline-none"
                             @click="activeTab = 'forgot-password'">
                             Forgot Password?
                         </button>
                     </div>
 
-                    <div class="mt-8">
+                    <div >
                         <!-- Login Form -->
                         <div x-show="activeTab === 'login'">
                             <x-elements.container :title="'Sign In'">
-                                <x-fonts.paragraph>Welcome! Please enter your details.</x-fonts.paragraph>
                                 @include('auth.login')
                             </x-elements.container>
                         </div>
@@ -52,7 +51,6 @@
                         <!-- Register Form -->
                         <div x-show="activeTab === 'register'">
                             <x-elements.container :title="'Sign Up'">
-                                <x-fonts.paragraph>Welcome! Please enter your details.</x-fonts.paragraph>
                                 @include('auth.register')
                             </x-elements.container>
                         </div>
@@ -60,8 +58,7 @@
                         <!-- Forgot Password Form -->
                         <div x-show="activeTab === 'forgot-password'">
                             <x-elements.container :title="'Forgot your password?'">
-                                <x-fonts.paragraph>Please enter your details.</x-fonts.paragraph>
-                                @include('auth.forgot-password')
+                                 @include('auth.forgot-password')
                             </x-elements.container>
                         </div>
                     </div>

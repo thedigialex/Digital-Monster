@@ -11,8 +11,6 @@ data class DigitalMonster(
     val monsterId: Int,
     val spriteSheet: String,
     val stage: String,
-    val minWeight: Int,
-    val maxEnergy: Int,
     val requiredEvoPoints: Int
 ) {
     var sprites: List<Bitmap>? = null

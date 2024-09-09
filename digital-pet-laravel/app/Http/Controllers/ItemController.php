@@ -31,7 +31,7 @@ class ItemController extends Controller
                     'type' => $request->type,
                     'price' => $request->price,
                     'available' => $request->available,
-                    'rarity' => $request->rarity, 
+                    'rarity' => $request->rarity,
                 ]);
                 return redirect()->route('items.index')->with('success', 'Item updated successfully.');
             } else {
@@ -41,7 +41,7 @@ class ItemController extends Controller
                     'type' => $request->type,
                     'price' => $request->price,
                     'available' => $request->available,
-                    'rarity' => $request->rarity, 
+                    'rarity' => $request->rarity,
                 ]);
 
                 $item->save();
@@ -86,4 +86,33 @@ class ItemController extends Controller
 
         return redirect()->route('items.index')->with('success', 'Item deleted successfully.');
     }
+
+    public function getItems(Request $request)
+{
+    try {
+        // Retrieve the 'type' and other filters from the request
+        $itemType = $request->input('type');
+
+        // Query the items directly, not through the user's inventory
+        $itemQuery = Item::query();
+
+        // Filter by type if provided
+        if ($itemType) {
+            $itemQuery->where('type', $itemType);
+        }
+
+        // Always filter by available items
+        $itemQuery->where('available', true);
+
+        // Get the filtered items
+        $items = $itemQuery->get();
+
+        // Return the items directly
+        return response()->json($items, 200);
+    } catch (\Throwable $th) {
+        // Return an error response if something goes wrong
+        return response()->json([], 500);
+    }
+}
+
 }

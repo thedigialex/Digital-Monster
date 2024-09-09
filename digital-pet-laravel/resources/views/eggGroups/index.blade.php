@@ -19,7 +19,7 @@
                 @endif
 
                 <div class="flex-grow">
-                    <x-input-label for="name">Egg Group Name:</x-input-label>
+                    <x-elements.input-label for="name">Egg Group Name:</x-elements.input-label>
                     <x-text-input id="name" name="name" value="{{ $eggGroup->name ?? '' }}" required></x-text-input>
                 </div>
 

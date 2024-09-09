@@ -16,7 +16,21 @@ class UserController(private val context: Context, private val scope: CoroutineS
 
     fun getUserDigitalMonster(callback: () -> Unit) {
         scope.launch {
-            val mainMonster = fetchService.fetchUserDigitalMonsters()
+            val mainMonster = fetchService.fetchUserDigitalMonster()
+            if (mainMonster != null) {
+                mainMonster.digital_monster.setupSprite(context) {
+                    user.mainDigitalMonster = mainMonster
+                    callback()
+                }
+            } else {
+                callback()
+            }
+        }
+    }
+
+    fun evolveUserDigitalMonster(callback: () -> Unit) {
+        scope.launch {
+            val mainMonster = fetchService.evolveUserDigitalMonster()
             if (mainMonster != null) {
                 mainMonster.digital_monster.setupSprite(context) {
                     user.mainDigitalMonster = mainMonster

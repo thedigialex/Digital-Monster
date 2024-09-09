@@ -79,22 +79,7 @@ class UserController extends Controller
         $inventoryData = json_decode($inventoryResponse->getContent(), true);
         $backgroundImage = null;
         $caseImage = null;
-        if ($inventoryData['status']) {
-            $inventory = $inventoryData['inventory'];
-            foreach ($inventory as $inventoryItem) {
-                $item = $inventoryItem['item'];
-
-                if ($item['type'] === 'Background') {
-                    $backgroundImage = str_replace('public/', '', $item['image']);
-                }
-
-                if ($item['type'] === 'Case') {
-                    $caseImage = str_replace('public/', '', $item['image']);
-                }
-            }
-        } else {
-            $inventory = [];
-        }
+        
 
         $userDigitalMonsterController = new UserDigitalMonsterController();
         $spriteSheet = null;

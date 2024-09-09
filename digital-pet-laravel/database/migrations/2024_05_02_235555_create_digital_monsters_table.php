@@ -21,9 +21,8 @@ class CreateDigitalMonstersTable extends Migration
             $table->integer('monsterId')->default(0);
             $table->string('spriteSheet');
             $table->string('stage')->nullable();
-            $table->integer('minWeight')->default(0);
-            $table->integer('maxEnergy')->default(0);
             $table->integer('requiredEvoPoints')->default(0);
+            $table->json('evolution_routes')->nullable();
             $table->timestamps();
         });
 
@@ -44,12 +43,13 @@ class CreateDigitalMonstersTable extends Migration
             $table->integer('hunger')->default(0);
             $table->integer('exercise')->default(0);
             $table->integer('clean')->default(0);
-            $table->integer('weight')->default(0);
             $table->integer('energy')->default(0);
+            $table->integer('maxEnergy')->default(5);
             $table->integer('wins')->default(0);
             $table->integer('losses')->default(0);
             $table->integer('trainings')->default(0);
-            $table->integer('care_misses')->default(0);
+            $table->integer('maxTrainings')->default(5);
+            $table->integer('evoPoints')->default(0);
             $table->timestamps();
         });
     }

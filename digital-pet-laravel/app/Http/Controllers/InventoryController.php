@@ -42,30 +42,21 @@ class InventoryController extends Controller
         return redirect()->route('user.show', $id)->with('success', 'Inventory item deleted successfully.');
     }
 
-    //Same function for local and API calls
     public function getUserInventory(Request $request)
     {
         try {
             $user = $request->user();
             if ($user) {
+                // Fetch user's inventory with related items
                 $inventory = $user->inventory()->with('item')->get();
 
-                return response()->json([
-                    'status' => true,
-                    'message' => 'User Inventory Retrieved Successfully',
-                    'inventory' => $inventory
-                ], 200);
+                // Return inventory as an array
+                return response()->json($inventory->toArray(), 200);
             }
 
-            return response()->json([
-                'status' => false,
-                'message' => 'User not found'
-            ], 404);
+            return response()->json([], 404);  // Return an empty array if user not found
         } catch (\Throwable $th) {
-            return response()->json([
-                'status' => false,
-                'message' => $th->getMessage()
-            ], 500);
+            return response()->json([], 500);  // Return an empty array on error
         }
     }
 }

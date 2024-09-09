@@ -52,9 +52,27 @@ class UserDigitalMonsterController extends Controller
         $userDigitalMonster = $user->userDigitalMonsters()->create([
             'digital_monster_id' => $digitalMonster->id,
             'name' => 'New Monster',
-            'type' => 'Data',
+            'type' => $digitalMonster->generateType(),
             'isMain' => 1,
+            'age' => 0,
+            'level' => 1,
+            'exp' => 0,
+            'strength' => 0,
+            'agility' => 0,
+            'defense' => 0,
+            'mind' => 0,
+            'hunger' => 0,
+            'exercise' => 0,
+            'clean' => 0,
+            'energy' => 0,
+            'maxEnergy' => 5,
+            'wins' => 0,
+            'losses' => 0,
+            'trainings' => 0,
+            'maxTrainings' => 5,
+            'evoPoints' => 0,
         ]);
+
         $userDigitalMonster->load('digitalMonster');
         return response()->json([
             'status' => true,
@@ -100,22 +118,17 @@ class UserDigitalMonsterController extends Controller
     {
         try {
             $user = $request->user();
-            if ($user) {
-                $query = match (true) {
+            if ($user) {                $query = match (true) {
                     $request->query('eggReturn') !== null => DigitalMonster::where('monsterId', 0),
                     $request->query('eggId') !== null && $request->query('monsterId') !== null => DigitalMonster::where('eggId', $request->query('eggId'))->where('monsterId', $request->query('monsterId')),
-                    default => null
+                    default => DigitalMonster::query(), 
                 };
-
-                $monsters = $query?->get();
-                return $monsters && $monsters->isNotEmpty()
-                    ? response()->json(['status' => true, 'message' => 'Digital Monsters Retrieved Successfully', 'digitalMonsters' => $monsters], 200)
-                    : response()->json(['status' => false, 'message' => 'No Digital Monsters Found'], 404);
+                $monsters = $query->get();
+                return response()->json($monsters->toArray(), 200);
             }
-
-            return response()->json(['status' => false, 'message' => 'Invalid parameters'], 404);
+            return response()->json([], 404);  // Return an empty array if no user
         } catch (\Throwable $th) {
-            return response()->json(['status' => false, 'message' => $th->getMessage()], 500);
+            return response()->json([], 500);  // Return an empty array on error
         }
     }
 }

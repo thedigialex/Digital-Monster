@@ -11,9 +11,9 @@ class UserDigitalMonster extends Model
 
     protected $fillable = [
         'user_id', 'digital_monster_id', 'name', 'level', 'exp', 'strength',
-        'agility', 'defense', 'mind', 'age', 'weight', 'hunger',
-        'exercise', 'clean', 'energy', 'wins', 'losses',
-        'trainings', 'care_misses', 'type', 'isMain'
+        'agility', 'defense', 'mind', 'age', 'hunger',
+        'exercise', 'clean', 'energy', 'maxEnergy', 'wins', 'losses',
+        'trainings', 'maxTrainings', 'type', 'isMain'
     ];
 
     public function user()

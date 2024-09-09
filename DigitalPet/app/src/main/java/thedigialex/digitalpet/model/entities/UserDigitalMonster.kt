@@ -17,11 +17,12 @@ data class UserDigitalMonster(
     val hunger: Int,
     val exercise: Int,
     val clean: Int,
-    val weight: Int,
     val energy: Int,
+    val maxEnergy: Int,
     val wins: Int,
     val losses: Int,
     val trainings: Int,
-    val careMisses: Int,
+    val maxTrainings: Int,
+    val evoPoints: Int,
     var digital_monster: DigitalMonster
 )

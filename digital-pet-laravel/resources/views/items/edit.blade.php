@@ -14,32 +14,32 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
                 <div>
-                    <x-input-label for="name">Item Name:</x-input-label>
+                    <x-elements.input-label for="name">Item Name:</x-elements.input-label>
                     <x-text-input id="name" name="name" value="{{ $item->name ?? '' }}" required></x-text-input>
                 </div>
 
                 <div>
-                    <x-input-label for="price">Cost:</x-input-label>
+                    <x-elements.input-label for="price">Cost:</x-elements.input-label>
                     <x-text-input type="number" id="price" name="price" value="{{ $item->price ?? '' }}" required></x-text-input>
                 </div>
 
                 <div>
-                    <x-input-label for="type">Type:</x-input-label>
+                    <x-elements.input-label for="type">Type:</x-elements.input-label>
                     <x-elements.select-input id="type" name="type" :options="['Attack' => 'Attack', 'Background' => 'Background', 'Case' => 'Case', 'Usable' => 'Usable']" :selected="$item->type ?? ''" required></x-elements.select-input>
                 </div>
 
                 <div>
-                    <x-input-label for="available">Available:</x-input-label>
+                    <x-elements.input-label for="available">Available:</x-elements.input-label>
                     <x-elements.select-input id="available" name="available" :options="[1 => 'Yes', 0 => 'No']" :selected="$item->available ?? ''" required></x-elements.select-input>
                 </div>
 
                 <div>
-                    <x-input-label for="rarity">Rarity:</x-input-label>
+                    <x-elements.input-label for="rarity">Rarity:</x-elements.input-label>
                     <x-elements.select-input id="rarity" name="rarity" :options="['free' => 'Free', 'common' => 'Common', 'uncommon' => 'Uncommon', 'rare' => 'Rare', 'legendary' => 'Legendary']" :selected="$item->rarity ?? 'common'" required></x-elements.select-input>
                 </div>
 
                 <div>
-                    <x-input-label for="image">Item Image:</x-input-label>
+                    <x-elements.input-label for="image">Item Image:</x-elements.input-label>
                     <input type="file" id="image" name="image" {{ isset($item) ? '' : 'required' }}>
                     @if(isset($item) && $item->image)
                     <img src="{{ Storage::url($item->image) }}" class="h-24 w-auto mt-2" alt="Current Image">

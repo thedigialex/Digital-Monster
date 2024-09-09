@@ -53,6 +53,7 @@ class MainActivity : ComponentActivity() {
         )
         caseController = CaseController(this, lifecycleScope, findViewById(R.id.parentMenuLayout), buttons, menus, user)
         userController = UserController(this, lifecycleScope, user)
+
         userController.getUserDigitalMonster {
             val imageView = findViewById<ImageView>(R.id.mainImageView)
             if (user.mainDigitalMonster != null) {
@@ -70,5 +71,25 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+        //example of call evo
+        //userController.evolveUserDigitalMonster {
+        //    Log.d("testing", user.mainDigitalMonster.toString())
+        //    val imageView = findViewById<ImageView>(R.id.mainImageView)
+        //    if (user.mainDigitalMonster != null) {
+//
+        //        user.mainDigitalMonster?.digital_monster?.animation(imageView, 1)
+        //        //example on how to update
+        //        //user.mainDigitalMonster?.name =  "post"
+        //        //userController.updateUserDigitalMonster()
+        //        //userController.evolveUserDigitalMonster()
+        //        Log.d("testing", user.mainDigitalMonster.toString())
+        //    } else {
+        //        userController.getDigitalMonsters(eggReturn = true) { digitalMonsters ->
+        //            if (digitalMonsters != null) {
+        //                caseController.setUpNewUserDigitalMonster(digitalMonsters, imageView)
+        //            }
+        //        }
+        //    }
+        //}
     }
 }
