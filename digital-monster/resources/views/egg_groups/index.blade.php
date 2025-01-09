@@ -1,0 +1,70 @@
+<x-app-layout>
+    <script src="{{ asset('js/switch-tab.js') }}"></script>
+
+    <x-slot name="header">
+        <div class="flex justify-between items-center">
+            <x-fonts.sub-header>
+                {{ __('Egg Groups') }}
+            </x-fonts.sub-header>
+            <a href="{{ route('egg_groups.edit') }}">
+                <x-primary-button>
+                    Add New
+                </x-primary-button>
+            </a>
+        </div>
+    </x-slot>
+
+    @if (session('success'))
+        <x-alert-success>{{ session('success') }}</x-alert-success>
+    @endif
+
+    <x-container>
+        <div class="flex justify-center space-x-4 bg-accent pt-4 rounded-t-md">
+            @foreach ($fieldTypes as $key => $label)
+            <button onclick="switchTab(event, 'tab-{{ $key }}')" 
+                    class="tablinks {{ $loop->first ? 'active bg-primary' : 'bg-secondary' }} w-64 py-2 text-text font-semibold rounded-t-md hover:bg-primary">
+                {{ $label }}
+            </button>
+            @endforeach
+        </div>
+        
+        @foreach ($fieldTypes as $key => $label)
+        <div id="tab-{{ $key }}" class="tabcontent {{ !$loop->first ? 'hidden' : '' }}">
+            @if (isset($eggGroups[$key]) && $eggGroups[$key]->isNotEmpty())
+            <table class="min-w-full border border-primary border-4">
+                <thead class="bg-primary">
+                    <tr>
+                        <th class="w-1/3 px-4 py-2 text-left text-text">Name</th>
+                        <th class="w-1/3 px-4 py-2 text-left text-text">Field Type</th>
+                        <th class="w-1/5 px-4 py-2 text-center text-text">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($eggGroups[$key] as $eggGroup)
+                    <tr class="{{ $loop->even ? 'bg-neutral' : 'bg-secondary' }}">
+                        <td class="px-4 py-2 text-text">{{ $eggGroup->name }}</td>
+                        <td class="px-4 py-2 text-text">{{ $eggGroup->field_type }}</td>
+                        <td class="px-4 py-2 flex justify-center items-center space-x-2">
+                            <a href="{{ route('egg_groups.edit', ['id' => $eggGroup->id]) }}">
+                                <x-primary-button>Edit</x-primary-button>
+                            </a>
+                            <form action="{{ route('egg_groups.destroy', ['eggGroup' => $eggGroup->id]) }}" 
+                                  method="POST" 
+                                  class="inline" 
+                                  onsubmit="return confirm('Are you sure you want to delete this egg group?');">
+                                @csrf
+                                @method('DELETE')
+                                <x-danger-button type="submit">Delete</x-danger-button>
+                            </form>
+                        </td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+            @else
+            <p class="text-text py-4">No egg groups available for this field type.</p>
+            @endif
+        </div>
+        @endforeach
+    </x-container>
+</x-app-layout>

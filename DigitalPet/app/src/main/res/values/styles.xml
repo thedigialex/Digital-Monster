@@ -3,7 +3,6 @@
     <style name="roundedButton">
         <item name="android:layout_margin">8dp</item>
         <item name="android:background">@drawable/rounded_button</item>
-        <item name="android:fontFamily">@font/press_start_2p</item>
         <item name="android:gravity">center</item>
         <item name="android:textColor">@color/primary</item>
         <item name="android:textColorHighlight">@color/accent</item>
@@ -12,8 +11,8 @@
         <item name="android:textSize">12sp</item>
     </style>
     <style name="deviceButton">
-        <item name="android:layout_width">56dp</item>
-        <item name="android:layout_height">56dp</item>
+        <item name="android:layout_width">64dp</item>
+        <item name="android:layout_height">64dp</item>
         <item name="android:background">@drawable/case_button</item>
     </style>
     <style name="menuTop">
@@ -31,25 +30,14 @@
         <item name="android:layout_height">0dp</item>
     </style>
     <style name="fontHeader">
-        <item name="android:fontFamily">@font/press_start_2p</item>
         <item name="android:gravity">center</item>
         <item name="android:textColor">@color/primary</item>
         <item name="android:textColorHighlight">@color/accent</item>
         <item name="android:textColorHint">@color/accent</item>
         <item name="android:textColorLink">@color/text</item>
-        <item name="android:textSize">16sp</item>
+        <item name="android:textSize">12sp</item>
     </style>
     <style name="fontSubHeader">
-        <item name="android:fontFamily">@font/press_start_2p</item>
-        <item name="android:gravity">center</item>
-        <item name="android:textColor">@color/text</item>
-        <item name="android:textColorHighlight">@color/accent</item>
-        <item name="android:textColorHint">@color/accent</item>
-        <item name="android:textColorLink">@color/text</item>
-        <item name="android:textSize">14sp</item>
-    </style>
-    <style name="fontParagraph">
-        <item name="android:fontFamily">@font/press_start_2p</item>
         <item name="android:gravity">center</item>
         <item name="android:textColor">@color/text</item>
         <item name="android:textColorHighlight">@color/accent</item>
@@ -57,17 +45,25 @@
         <item name="android:textColorLink">@color/text</item>
         <item name="android:textSize">12sp</item>
     </style>
+    <style name="fontParagraph">
+        <item name="android:lineSpacingExtra">8dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/text</item>
+        <item name="android:textColorHighlight">@color/accent</item>
+        <item name="android:textColorHint">@color/accent</item>
+        <item name="android:textColorLink">@color/text</item>
+        <item name="android:textSize">10sp</item>
+    </style>
     <style name="fontParagraphDark">
-        <item name="android:fontFamily">@font/press_start_2p</item>
+        <item name="android:lineSpacingExtra">8dp</item>
         <item name="android:gravity">center</item>
         <item name="android:textColor">@color/primary</item>
         <item name="android:textColorHighlight">@color/accent</item>
         <item name="android:textColorHint">@color/accent</item>
         <item name="android:textColorLink">@color/primary</item>
-        <item name="android:textSize">12sp</item>
+        <item name="android:textSize">10sp</item>
     </style>
     <style name="fontInput">
-        <item name="android:fontFamily">@font/press_start_2p</item>
         <item name="android:textColor">@color/text</item>
         <item name="android:textColorHighlight">@color/accent</item>
         <item name="android:textColorHint">@color/accent</item>

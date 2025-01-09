@@ -1,15 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="primary"> #1c1c1c</color>
+    <color name="primary"> #262626</color>
     <color name="secondary"> #333333</color>
-    <color name="neutral"> #2d2d2d</color>
-    <color name="accent"> #FA8A00</color>
-    <color name="dark_accent"> #C76E00</color>
+    <color name="accent"> #e47e00</color>
+    <color name="accent_light"> #FF9818</color>
+    <color name="neutral"> #545454</color>
     <color name="text"> #FAFAFA</color>
-    <color name="green"> #00FA8A</color>
-    <color name="red"> #FA0D00</color>
+    <color name="success"> #5CBF70</color>
+    <color name="error"> #BF360C</color>
     <color name="transparent_frame">#40FAF2D1</color>
-
-
-    <color name="light_accent"> #63b2c7</color>
 </resources>

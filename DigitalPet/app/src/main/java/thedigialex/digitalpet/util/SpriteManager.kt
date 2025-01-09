@@ -10,16 +10,59 @@ import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import thedigialex.digitalpet.model.entities.DigitalMonster
+import thedigialex.digitalpet.model.entities.Item
+import thedigialex.digitalpet.model.entities.TrainingEquipment
 
 object SpriteManager {
+    private var currentAnimationRunnable: Runnable? = null
+    private var sideAnimationRunnable: Runnable? = null
+    private val handler = Handler(Looper.getMainLooper())
 
-    fun setupSprite(context: Context, digitalMonster: DigitalMonster, onSpritesReady: () -> Unit = {}): List<Bitmap>? {
-        val tilesPerRow = if (digitalMonster.stage == "Egg") 2 else 11
-        val baseUrl = context.getString(thedigialex.digitalpet.R.string.base_url)
-        val imageUrl = baseUrl + digitalMonster.spriteSheet.replace("public/", "storage/")
-
+    fun setupItemSprite(context: Context, item: Item, onSpritesReady: () -> Unit = {}): List<Bitmap>? {
+        val tilesPerRow = 4
+        val imageUrl = context.getString(thedigialex.digitalpet.R.string.base_url) + item.image.replace("item_images/", "storage/item_images/")
         var sprites: List<Bitmap>? = null
+        Glide.with(context)
+            .asBitmap()
+            .load(imageUrl)
+            .into(object : CustomTarget<Bitmap>() {
+                override fun onResourceReady(resource: Bitmap, transition: com.bumptech.glide.request.transition.Transition<in Bitmap>?) {
+                    sprites = splitSpriteSheet(resource, tilesPerRow)
+                    item.sprites = sprites
+                    onSpritesReady()
+                }
+                override fun onLoadCleared(placeholder: Drawable?) {}
+            })
+        return sprites
+    }
 
+    fun setupTrainingEquipmentSprite(context: Context, trainingEquipment: TrainingEquipment, onSpritesReady: () -> Unit = {}): List<Bitmap>? {
+        val tilesPerRow = 4
+        val imageUrl = context.getString(thedigialex.digitalpet.R.string.base_url) + trainingEquipment.image.replace("training_equipment_images/", "storage/training_equipment_images/")
+        var sprites: List<Bitmap>? = null
+        Glide.with(context)
+            .asBitmap()
+            .load(imageUrl)
+            .into(object : CustomTarget<Bitmap>() {
+                override fun onResourceReady(resource: Bitmap, transition: com.bumptech.glide.request.transition.Transition<in Bitmap>?) {
+                    sprites = splitSpriteSheet(resource, tilesPerRow)
+                    trainingEquipment.sprites = sprites
+                    onSpritesReady()
+                }
+                override fun onLoadCleared(placeholder: Drawable?) {}
+            })
+        return sprites
+    }
+
+    fun setupSprite(context: Context, digitalMonster: DigitalMonster, type: String, onSpritesReady: () -> Unit = {}): List<Bitmap>? {
+        val tilesPerRow = if (digitalMonster.stage == "Egg") 2 else 10
+        val baseUrl = context.getString(thedigialex.digitalpet.R.string.base_url)
+        val imageUrl = when (type) {
+            "Virus" -> baseUrl + digitalMonster.spriteImage1?.replace("sprite_images/", "storage/sprite_images/")
+            "Vaccine" -> baseUrl + digitalMonster.spriteImage2?.replace("sprite_images/", "storage/sprite_images/")
+            else -> baseUrl + digitalMonster.spriteImage0?.replace("sprite_images/", "storage/sprite_images/")
+        }
+        var sprites: List<Bitmap>? = null
         Glide.with(context)
             .asBitmap()
             .load(imageUrl)
@@ -29,9 +72,9 @@ object SpriteManager {
                     digitalMonster.sprites = sprites
                     onSpritesReady()
                 }
+
                 override fun onLoadCleared(placeholder: Drawable?) {}
             })
-
         return sprites
     }
 
@@ -52,9 +95,8 @@ object SpriteManager {
     }
 
     fun animateSprite(imageView: ImageView, sprites: List<Bitmap>, frames: List<Int>, interval: Long = 500) {
-        val handler = Handler(Looper.getMainLooper())
+        currentAnimationRunnable?.let { handler.removeCallbacks(it) }
         var currentIndex = 0
-
         val runnable = object : Runnable {
             override fun run() {
                 imageView.setImageBitmap(sprites[frames[currentIndex]])
@@ -62,7 +104,32 @@ object SpriteManager {
                 handler.postDelayed(this, interval)
             }
         }
+        currentAnimationRunnable = runnable
         handler.post(runnable)
+    }
+
+    fun animateSideSprite(imageView: ImageView, sprites: List<Bitmap>, frames: List<Int>, interval: Long = 1000) {
+        sideAnimationRunnable?.let { handler.removeCallbacks(it) }
+        var currentIndex = 0
+        val runnable = object : Runnable {
+            override fun run() {
+                imageView.setImageBitmap(sprites[frames[currentIndex]])
+                currentIndex = (currentIndex + 1) % frames.size
+                handler.postDelayed(this, interval)
+            }
+        }
+        sideAnimationRunnable = runnable
+        handler.post(runnable)
+    }
+
+    fun stopAnimation() {
+        currentAnimationRunnable?.let { handler.removeCallbacks(it) }
+        currentAnimationRunnable = null
+    }
+
+    fun stopSideAnimation() {
+        sideAnimationRunnable?.let { handler.removeCallbacks(it) }
+        sideAnimationRunnable = null
     }
 
     fun flipBitmap(original: Bitmap): Bitmap {

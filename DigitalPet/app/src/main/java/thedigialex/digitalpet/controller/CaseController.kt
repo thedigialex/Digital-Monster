@@ -4,35 +4,61 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.util.Log
+import android.os.Handler
+import android.os.Looper
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 import thedigialex.digitalpet.R
+import thedigialex.digitalpet.api.FetchService
 import thedigialex.digitalpet.model.entities.DigitalMonster
-import thedigialex.digitalpet.model.entities.Item
 import thedigialex.digitalpet.model.entities.User
-import thedigialex.digitalpet.services.FetchService
+import thedigialex.digitalpet.util.SpriteManager
+import java.sql.Timestamp
 
-class CaseController(private val context: Context, private val scope: CoroutineScope, private val parentLayout: ViewGroup, private val caseButtons: Array<Button>, private val menuImages: Array<ImageView>, private val user: User) {
-    private var fetchService: FetchService = FetchService(context)
+class CaseController(private val caseBackground: ConstraintLayout, private val context: Context, private val fetchService: FetchService, private val user: User) {
     private var menuCycle: Int = -1
     private var innerMenuCycle: Int = 0
     private var menuId: Int = -1
+    private var isHandlerRunning: Boolean = false
     private var menuMax: Int = 0
+    private var trainingEffort: Int = 0
     private var isMenuOpen: Boolean = false
     private var isSettings = false
+    private var isTraining: Boolean = false
     private val emptyMenuImageResources = IntArray(8)
     private val filledMenuImageResources = IntArray(8)
     private var imageResources: MutableList<Bitmap> = mutableListOf()
-    private var digitalMonsters: List<DigitalMonster>? = null
-    private var imageView: ImageView? = null
-    private var items: List<Item>? = null
+    private var selectableDigitalMonsters: List<DigitalMonster>? = null
+
+    private val handler = Handler(Looper.getMainLooper())
+    private lateinit var runnable: Runnable
+    private var menuLayout: ViewGroup = caseBackground.findViewById(R.id.menuLayout)
+    private var animationLayout: ViewGroup = caseBackground.findViewById(R.id.animationLayout)
+    private var mainImage: ImageView = caseBackground.findViewById(R.id.mainImageView)
+    private var menuImages: Array<ImageView> =
+        arrayOf(
+            caseBackground.findViewById(R.id.topMenu_0),
+            caseBackground.findViewById(R.id.topMenu_1),
+            caseBackground.findViewById(R.id.topMenu_2),
+            caseBackground.findViewById(R.id.topMenu_3),
+            caseBackground.findViewById(R.id.bottomMenu_0),
+            caseBackground.findViewById(R.id.bottomMenu_1),
+            caseBackground.findViewById(R.id.bottomMenu_2),
+            caseBackground.findViewById(R.id.bottomMenu_3),
+        )
+    private var caseButtons: Array<Button>  =
+        arrayOf(
+            caseBackground.findViewById(R.id.upButton),
+            caseBackground.findViewById(R.id.bottomButton),
+            caseBackground.findViewById(R.id.leftButton),
+            caseBackground.findViewById(R.id.rightButton),
+            caseBackground.findViewById(R.id.switchButton),
+        )
 
     init {
         setupImageResources()
@@ -72,37 +98,97 @@ class CaseController(private val context: Context, private val scope: CoroutineS
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun updateMenuLayout() {
-        parentLayout.visibility = View.VISIBLE
-        val titleTextView = parentLayout.findViewById<TextView>(R.id.title)
-        parentLayout.findViewById<ImageView>(R.id.iconImage).visibility = View.GONE
-        parentLayout.findViewById<ConstraintLayout>(R.id.statsViewLayout).visibility = View.GONE
+        menuLayout.visibility = View.VISIBLE
+        mainImage.visibility = View.GONE
+        val titleTextView = menuLayout.findViewById<TextView>(R.id.title)
+        menuLayout.findViewById<ImageView>(R.id.iconImage).visibility = View.GONE
+        menuLayout.findViewById<ConstraintLayout>(R.id.statsViewLayout).visibility = View.GONE
         when (menuId) {
             -10 ->  {
                 titleTextView.text = context.getString(R.string.select_egg)
-                parentLayout.findViewById<ImageView>(R.id.iconImage).visibility = View.VISIBLE
+                menuLayout.findViewById<ImageView>(R.id.iconImage).visibility = View.VISIBLE
             }
             0 -> {
                 if (!isSettings) {
                     titleTextView.text = context.getString(R.string.stats)
                     menuMax = 4
-                    parentLayout.findViewById<ConstraintLayout>(R.id.statsViewLayout).visibility = View.VISIBLE
+                    menuLayout.findViewById<ConstraintLayout>(R.id.statsViewLayout).visibility = View.VISIBLE
                     updateStatMenu()
                 } else {
                     titleTextView.text = "Settings 0"
                 }
             }
-            1 ->  titleTextView.text = if (!isSettings) "Accept 1" else "Settings 1"
-            2 ->  titleTextView.text = if (!isSettings) "Accept 2" else "Settings 2"
-            3 ->  titleTextView.text = if (!isSettings) "Accept 3" else "Settings 3"
-            4 ->  titleTextView.text = if (!isSettings) "Accept 4" else "Settings 4"
+            1 -> {
+                if (!isSettings) {
+                    titleTextView.text = "Food"
+                    val consumableItems = user.getConsumableItems()
+                    if (consumableItems.isEmpty()) {
+                        displayMessage("No Items")
+                        cancel()
+                    } else {
+                        menuMax = consumableItems.size
+                        val allSprites = mutableListOf<Bitmap>()
+                        consumableItems.forEach { inventoryItem ->
+                            inventoryItem.item.sprites?.firstOrNull()?.let { firstSprite ->
+                                allSprites.add(firstSprite)
+                            }
+                        }
+                        imageResources = allSprites
+                        menuLayout.findViewById<ImageView>(R.id.iconImage).visibility = View.VISIBLE
+                        updateMenuIcon()
+                    }
+                } else {
+                    titleTextView.text = "Settings 1"
+                }
+            }
+            2 ->  {
+                if (!isSettings) {
+                    titleTextView.text = "Training"
+                    val trainingEquipment = user.getTrainingEquipment()
+                    if (trainingEquipment.isEmpty()) {
+                        displayMessage("No Training Equipment")
+                        cancel()
+                    } else {
+                        menuMax = trainingEquipment.size
+                        val allSprites = mutableListOf<Bitmap>()
+                        trainingEquipment.forEach { equipment ->
+                            equipment.trainingEquipment.sprites?.firstOrNull()?.let { firstSprite ->
+                                allSprites.add(firstSprite)
+                            }
+                        }
+                        imageResources = allSprites
+                        menuLayout.findViewById<ImageView>(R.id.iconImage).visibility = View.VISIBLE
+                        updateMenuIcon()
+                    }
+                } else {
+                    titleTextView.text = "Settings 1"
+                }
+            }
+            3 -> {
+                if(!isSettings) {
+                    performAction("cleaning")
+                }
+                else {
+                    titleTextView.text = "Settings 3"
+                }
+            }
+            4 ->  {
+                if(!isSettings) {
+                    switchLight()
+                }
+                else {
+                    titleTextView.text = "Settings 3"
+                }
+            }
             5 ->  titleTextView.text = if (!isSettings) "Accept 5" else "Settings 5"
             6 ->  titleTextView.text = if (!isSettings) "Accept 6" else "Settings 6"
             7 -> {
                 if (!isSettings) {
                     titleTextView.text = "Shop"
                     menuMax = 4
-                    parentLayout.findViewById<ImageView>(R.id.iconImage).visibility = View.VISIBLE
+                    menuLayout.findViewById<ImageView>(R.id.iconImage).visibility = View.VISIBLE
                     imageResources = mutableListOf(
                         BitmapFactory.decodeResource(context.resources, R.drawable.food_menu_highlight),
                         BitmapFactory.decodeResource(context.resources, R.drawable.stat_menu_highlight),
@@ -114,37 +200,53 @@ class CaseController(private val context: Context, private val scope: CoroutineS
                     titleTextView.text = "Settings 7"
                 }
             }
+            8 -> {
+                titleTextView.text = "item for sale"
+                menuMax = user.itemsForSale!!.size
+                val allSprites = mutableListOf<Bitmap>()
+                user.itemsForSale!!.forEach { item ->
+                    item.sprites?.firstOrNull()?.let { firstSprite ->
+                        allSprites.add(firstSprite)
+                    }
+                }
+                imageResources = allSprites
+                menuLayout.findViewById<ImageView>(R.id.iconImage).visibility = View.VISIBLE
+                updateMenuIcon()
+            }
         }
-        val countTextView = parentLayout.findViewById<TextView>(R.id.count)
+        val countTextView = menuLayout.findViewById<TextView>(R.id.count)
         countTextView.text = "${innerMenuCycle + 1} / $menuMax"
     }
 
     @SuppressLint("SetTextI18n")
     private fun updateMenuIcon() {
-        val  iconImage = parentLayout.findViewById<ImageView>(R.id.iconImage)
+        val  iconImage = menuLayout.findViewById<ImageView>(R.id.iconImage)
         iconImage.setImageBitmap(imageResources[innerMenuCycle])
     }
 
+    @SuppressLint("SetTextI18n")
     private fun updateStatMenu() {
         val statTextViews = listOf(
             R.id.statTextTopLeft,
             R.id.statTextTopRight,
             R.id.statTextBottomLeft,
             R.id.statTextBottomRight
-        ).map { parentLayout.findViewById<TextView>(it).apply { text = null; background = null } }
+        ).map { menuLayout.findViewById<TextView>(it).apply { text = null; background = null } }
         val energyBars = listOf(
             R.drawable.energy_bar_0, R.drawable.energy_bar_25, R.drawable.energy_bar_50,
             R.drawable.energy_bar_75, R.drawable.energy_bar_100)
         when (innerMenuCycle) {
             0 -> {
-                statTextViews[0].text = "Age\n${user.mainDigitalMonster?.age}"
-                statTextViews[1].text = "Type\n${user.mainDigitalMonster?.type}"
-                statTextViews[2].text = "Stage\n${user.mainDigitalMonster?.digital_monster?.stage}"
+                statTextViews[0].text = "Level\n${user.mainDigitalMonster?.level}"
+                statTextViews[1].text = "Stage\n${user.mainDigitalMonster?.digitalMonster?.stage}"
+                statTextViews[2].text = "Training\n${user.mainDigitalMonster?.trainings} / ${user.mainDigitalMonster?.maxTrainings}"
+                statTextViews[3].text = "Battle\n${user.mainDigitalMonster?.wins} / ${user.mainDigitalMonster?.let { it.wins + it.losses }}"
             }
             1 -> {
-                statTextViews[0].text = "Level\n${user.mainDigitalMonster?.level}"
-                statTextViews[1].text = "Battle\n${user.mainDigitalMonster?.wins} / ${user.mainDigitalMonster?.let { it.wins + it.losses }}"
-                statTextViews[2].text = "Training\n${user.mainDigitalMonster?.trainings}"
+                statTextViews[0].text = "Strength\n${user.mainDigitalMonster?.strength}"
+                statTextViews[1].text = "Defense\n${user.mainDigitalMonster?.defense}"
+                statTextViews[2].text = "Agility\n${user.mainDigitalMonster?.agility}"
+                statTextViews[3].text = "Mind\n${user.mainDigitalMonster?.mind}"
             }
             2 -> {
                 statTextViews[0].text = context.getString(R.string.hunger)
@@ -154,20 +256,22 @@ class CaseController(private val context: Context, private val scope: CoroutineS
             }
             3 -> {
                 statTextViews[0].text = "Energy"
-                statTextViews[1].setBackgroundResource(energyBars[user.mainDigitalMonster?.energy!!/ user.mainDigitalMonster?.maxEnergy!!])
+                val energyIndex = ((user.mainDigitalMonster?.energy ?: 0) * 4 / (user.mainDigitalMonster?.maxEnergy ?: 1)).coerceIn(0, 4)
+                statTextViews[1].setBackgroundResource(energyBars[energyIndex])
                 statTextViews[2].text = "Evo Progress"
-                statTextViews[3].setBackgroundResource(energyBars[user.mainDigitalMonster?.evoPoints!!/ user.mainDigitalMonster?.digital_monster?.requiredEvoPoints!!])
+                statTextViews[3].setBackgroundResource(
+                    energyBars[((user.mainDigitalMonster?.currentEvoPoints ?: 0) * 4 / (user.mainDigitalMonster?.digitalMonster?.requiredEvoPoints ?: 1)).coerceIn(0, 4)]
+                )
             }
         }
     }
 
-    fun setUpNewUserDigitalMonster(digitalMonsters: List<DigitalMonster>, imageView: ImageView) {
-        this.digitalMonsters = digitalMonsters
-        this.imageView = imageView
+    fun setUpSelectableDigitalMonster(selectableDigitalMonsters: List<DigitalMonster>) {
+        this.selectableDigitalMonsters = selectableDigitalMonsters
         caseButtons[1].isClickable = false
-        if (this.digitalMonsters?.isNotEmpty() == true) {
+        if (this.selectableDigitalMonsters?.isNotEmpty() == true) {
             val allSprites = mutableListOf<Bitmap>()
-            this.digitalMonsters?.forEach { monster ->
+            this.selectableDigitalMonsters?.forEach { monster ->
                 monster.sprites?.firstOrNull()?.let { firstSprite ->
                     allSprites.add(firstSprite)
                 }
@@ -181,46 +285,84 @@ class CaseController(private val context: Context, private val scope: CoroutineS
         }
     }
 
-    private fun pullInItems(type: String) {
-        scope.launch {
-            try {
-                // Fetching remote items
-                items = fetchService.fetchItems(type)
-
-                // Log merged items
-                items!!.forEach { item ->
-                    Log.d("Item", "Merged item name: ${item.name}")
-                }
-            } catch (e: Exception) {
-                Log.e("Error", "Error pulling items: ${e.message}")
-            }
-        }
-    }
-
     private fun selectEgg() {
-        val eggId = digitalMonsters?.get(innerMenuCycle)!!.eggId
-        scope.launch {
-            user.mainDigitalMonster = fetchService.createUserDigitalMonster(eggId)
-            val digitalMonster = user.mainDigitalMonster?.digital_monster
-            digitalMonster?.setupSprite(context) {
-                imageView?.let {
-                    digitalMonster.animation(it, 1)
-                }
+        val selectedDigitalMonsterId = selectableDigitalMonsters?.get(innerMenuCycle)?.id ?: return
+        fetchService.createNewUserDigitalMonster(selectedDigitalMonsterId, "test") { newUserDigitalMonster ->
+            newUserDigitalMonster?.let { newMonster ->
+                user.mainDigitalMonster = newMonster
+                user.mainDigitalMonster!!.digitalMonster.animation(mainImage, 1)
                 caseButtons[1].isClickable = true
                 cancel()
             }
         }
     }
 
+    private fun performAction(actionType: String) {
+        user.mainDigitalMonster?.let { digitalMonster ->
+            if (digitalMonster.digitalMonster.stage == "Egg") {
+                cancel()
+                displayMessage("EGG not able to do this")
+                return
+            }
+
+            if (isHandlerRunning) {
+                stopAnimation(false)
+                return
+            }
+
+            val (animationDuration, animationStep) = when (actionType) {
+                "consumable", "cleaning" -> 5000L to 2
+                else -> 10000L to 3
+            }
+
+            if (actionType == "consumable" || digitalMonster.energy > 0) {
+                if (actionType != "consumable") {
+                    digitalMonster.energy -= 1
+                }
+                startAnimation(animationStep, animationDuration, actionType)
+            } else {
+                displayMessage("No Energy")
+            }
+        }
+    }
+
+    private fun switchLight() {
+        if(user.mainDigitalMonster!!.sleepStartedAt == null) {
+            updateBackground(true)
+            user.mainDigitalMonster!!.sleepStartedAt = Timestamp(System.currentTimeMillis() / 1000 * 1000).toString()
+        }
+        else {
+            updateBackground(false)
+            user.mainDigitalMonster!!.sleepStartedAt = null
+        }
+        cancel()
+    }
+
+    fun updateBackground(isAsleep: Boolean) {
+        val background: ConstraintLayout = caseBackground.findViewById(R.id.mainView)
+        if(isAsleep) {
+            background.setBackgroundResource(R.color.secondary)
+            mainImage.visibility = View.INVISIBLE
+        }
+        else {
+            background.setBackgroundResource(R.drawable.winterone)
+            mainImage.visibility = View.VISIBLE
+        }
+    }
+
+    @SuppressLint("SetTextI18n")
     private fun select(direction: Int) {
-        if (isMenuOpen) {            
+        if (isMenuOpen) {
             innerMenuCycle = (innerMenuCycle + direction + menuMax) % menuMax
             when (menuId) {
                 -10 ->  updateMenuIcon()
                 0 -> updateStatMenu()
+                1 -> updateMenuIcon()
+                2 -> updateMenuIcon()
                 7 -> updateMenuIcon()
+                8 -> updateMenuIcon()
             }
-            val countTextView = parentLayout.findViewById<TextView>(R.id.count)
+            val countTextView = menuLayout.findViewById<TextView>(R.id.count)
             countTextView.text = "${innerMenuCycle + 1} / $menuMax"
         }
         else {
@@ -234,7 +376,14 @@ class CaseController(private val context: Context, private val scope: CoroutineS
             isMenuOpen = false
             innerMenuCycle = 0
             menuId = -1
-            parentLayout.visibility = View.GONE
+            menuLayout.visibility = View.GONE
+            animationLayout.visibility = View.GONE
+            if(user.mainDigitalMonster!!.sleepStartedAt == null) {
+                mainImage.visibility = View.VISIBLE
+            }
+            if(isHandlerRunning) {
+                stopAnimation(true)
+            }
         }
         else {
             menuCycle = -1
@@ -243,19 +392,109 @@ class CaseController(private val context: Context, private val scope: CoroutineS
     }
 
     private fun accept() {
-        if(!isMenuOpen && menuCycle != -1) {
+        if (!isMenuOpen && menuCycle != -1) {
             isMenuOpen = true
             menuId = menuCycle
             updateMenuLayout()
+        } else {
+            when (menuId) {
+                -10 -> selectEgg()
+                1 -> performAction("consumable")
+                2 -> performAction("training")
+                7 -> pullInPurchaseItems(innerMenuCycle)
+            }
+        }
+    }
+
+    private fun pullInPurchaseItems(type: Int) {
+        var itemType = ""
+        when(type){
+            0 -> itemType = "case"
+            1 -> itemType = "attack"
+            2 -> itemType = "background"
+            3 -> itemType = "consumable"
+
+        }
+        fetchService.fetchAndAttachItemsForSale(user, itemType, context) {
+            if (user.itemsForSale != null) {
+                menuId = 8
+                innerMenuCycle = 0
+                updateMenuLayout()
+            }
+            else{
+                displayMessage("No Items")
+                cancel()
+                //Does not get here fix later maybe
+            }
+        }
+    }
+
+    private fun stopAnimation(calledFromCancel: Boolean) {
+        if(!calledFromCancel) {
+            if (isTraining) {
+                user.useTrainingEquipment(user.getTrainingEquipment()[innerMenuCycle])
+            }
+            cancel()
+        }
+        SpriteManager.stopSideAnimation()
+        user.mainDigitalMonster!!.digitalMonster.animation(mainImage, 1)
+        isHandlerRunning = false
+        isTraining = false
+        if (::runnable.isInitialized) {
+            handler.removeCallbacks(runnable)
+        }
+    }
+
+    private fun startAnimation(animationToPlay: Int, animationTimer: Long, animationType: String) {
+        menuLayout.visibility = View.GONE
+        animationLayout.visibility = View.VISIBLE
+        animationLayout.findViewById<ImageView>(R.id.animationBarImageView).visibility = View.INVISIBLE
+        if(animationType == "consumable") {
+            val usedItem = user.getUsedItem(innerMenuCycle)
+            usedItem.item.animation(animationLayout.findViewById(R.id.animationObjectImageView))
+            fetchService.updateInventoryItem(usedItem)
         }
         else {
-            when (menuId) {
-                -10 ->  selectEgg()
-                7 -> when(innerMenuCycle) {
-                    0 -> pullInItems("Usable")
+            val equipment = if (animationType == "training") {
+                isTraining = true
+                trainingEffort = 0
+                animationLayout.findViewById<ImageView>(R.id.animationBarImageView).visibility = View.VISIBLE
+                user.getTrainingEquipment()[innerMenuCycle]
+            } else {
+                user.getCleaningEquipment()
+            }
+            equipment?.trainingEquipment?.animation(animationLayout.findViewById(R.id.animationObjectImageView))
+        }
+        user.mainDigitalMonster!!.digitalMonster.animation(animationLayout.findViewById(R.id.animationUserImageView), animationToPlay)
+        isHandlerRunning = true
+        val startTime = System.currentTimeMillis()
+        runnable = object : Runnable {
+            override fun run() {
+
+                val currentTime = System.currentTimeMillis()
+                val elapsedTime = currentTime - startTime
+                if ( elapsedTime < animationTimer - 100L ) {
+                    if( isTraining ) {
+                        trainingEffort += 5
+                        if (trainingEffort > 100) {
+                            trainingEffort = 0
+                        }
+                        val effortImageView = animationLayout.findViewById<ImageView>(R.id.animationBarImageView)
+                        when (trainingEffort) {
+                            in 0..19 -> effortImageView.setBackgroundResource(R.drawable.energy_bar_0)
+                            in 20..39 -> effortImageView.setBackgroundResource(R.drawable.energy_bar_25)
+                            in 40..59 -> effortImageView.setBackgroundResource(R.drawable.energy_bar_50)
+                            in 60..79 -> effortImageView.setBackgroundResource(R.drawable.energy_bar_75)
+                            in 80..100 -> effortImageView.setBackgroundResource(R.drawable.energy_bar_100)
+                        }
+                    }
+                    handler.postDelayed(this, 100)
+                } else {
+                    stopAnimation(false)
                 }
             }
         }
+        handler.post(runnable)
     }
 
     private fun switchMenu() {
@@ -263,5 +502,9 @@ class CaseController(private val context: Context, private val scope: CoroutineS
             isSettings = !isSettings
             setupImageResources()
         }
+    }
+
+    private fun displayMessage(message: String) {
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
     }
 }

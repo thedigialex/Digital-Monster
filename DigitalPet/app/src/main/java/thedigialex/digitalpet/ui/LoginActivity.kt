@@ -1,9 +1,7 @@
 package thedigialex.digitalpet.ui
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
@@ -11,25 +9,18 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import thedigialex.digitalpet.R
-import thedigialex.digitalpet.model.entities.User
-import thedigialex.digitalpet.network.RetrofitInstance
-import thedigialex.digitalpet.util.TokenManager
-import java.net.SocketTimeoutException
+import thedigialex.digitalpet.api.FetchService
 
 class LoginActivity : AppCompatActivity() {
     private var isLoginMode = true
+    private lateinit var fetchService: FetchService
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
-
-        TokenManager.getToken(applicationContext)?.let { validateTokenAndNavigate() }
-
+        fetchService = FetchService(this) { isLoading -> showLoading(isLoading) }
+        if(fetchService.checkToken()){ validateToken() }
         findViewById<Button>(R.id.actionButton).setOnClickListener { handleAction() }
         findViewById<Button>(R.id.switchButton).setOnClickListener { toggleMode() }
     }
@@ -59,102 +50,57 @@ class LoginActivity : AppCompatActivity() {
         findViewById<TextView>(R.id.formTitle).text = getString(if (isLoginMode) R.string.login else R.string.register)
     }
 
-    private fun performLogin(email: String, password: String) = performAuthAction {
-        val response = RetrofitInstance.getApi(applicationContext).loginUser(email, password)
-        if (response.isSuccessful && response.body()?.status == true) {
-            response.body()?.let {
-                TokenManager.saveToken(applicationContext, it.token)
-                navigateToMainActivity(it.user)
+    private fun performLogin(email: String, password: String) {
+        fetchService.performLogin(
+            email = email,
+            password = password,
+            onLoginSuccess = {
+                navigateToMainActivity()
+            },
+            onLoginFailure = { errorMessage ->
+                showToast(errorMessage)
             }
-        } else showToast("Login failed: ${response.errorBody()?.string()}")
+        )
     }
 
-    private fun performRegistration(name: String, email: String, password: String) = performAuthAction {
-        val response = RetrofitInstance.getApi(applicationContext).registerUser(name, email, password)
-        if (response.isSuccessful && response.body()?.status == true) {
-            showToast("Registration successful! Please log in.")
-            toggleMode()
-        } else showToast("Registration failed: ${response.errorBody()?.string()}")
-    }
-
-    private fun validateTokenAndNavigate() = performAuthAction {
-        Log.d("LoginActivity", "Validating token...")
-        val response = RetrofitInstance.getApi(applicationContext).validateToken()
-        if (response.isSuccessful) {
-            try {
-                val userResponse = response.body()
-                if (userResponse?.status == true) {
-                    navigateToMainActivity(userResponse.user)
-                } else {
-                    handleInvalidToken()
-                }
-            } catch (e: Exception) {
-                Log.e("LoginActivity", "Error parsing response: ${e.message}")
-                handleInvalidToken()  // Handle parsing errors or unexpected response format
+    private fun performRegistration(name: String, email: String, password: String) {
+        fetchService.performRegistration(
+            name = name,
+            email = email,
+            password = password,
+            onLoginSuccess = {
+                navigateToMainActivity()
+            },
+            onLoginFailure = { errorMessage ->
+                showToast(errorMessage)
             }
-        } else if (response.code() == 401) {
-            handleInvalidToken()
-        } else {
-            Log.e("LoginActivity", "Unexpected error: ${response.errorBody()?.string()}")
-            handleInvalidToken()
-        }
+        )
     }
 
-    private fun handleInvalidToken() {
-        TokenManager.clearToken(applicationContext)
-        showToast("Session expired or invalid token. Please log in again.")
-        startActivity(Intent(this, LoginActivity::class.java))
-        finish()
+    private fun validateToken() {
+        fetchService.validateToken(
+            onLoginSuccess = {
+                navigateToMainActivity()
+            },
+            onLoginFailure = { errorMessage ->
+                showToast(errorMessage)
+            }
+        )
     }
 
-
-    private fun performAuthAction(action: suspend () -> Unit) {
+    private fun showLoading(isLoading: Boolean) {
         val progressBar = findViewById<ProgressBar>(R.id.progressBar)
         val actionButton = findViewById<Button>(R.id.actionButton)
-
-        showLoading(progressBar, actionButton, true)
-        CoroutineScope(Dispatchers.IO).launch {
-            try {
-                action()
-            } catch (e: SocketTimeoutException) {
-                withContext(Dispatchers.Main) {
-                    showToast("Connection timed out. Please check your network connection and try again.")
-                }
-            } catch (e: Exception) {
-                withContext(Dispatchers.Main) {
-                    Log.e("performAuthAction", "Unexpected error: ${e.message}")
-                    showToast("An unexpected error occurred. Please try again.")
-                }
-            } finally {
-                withContext(Dispatchers.Main) {
-                    showLoading(progressBar, actionButton, false)
-                }
-            }
-        }
-    }
-
-    private fun showLoading(progressBar: ProgressBar, button: Button, isLoading: Boolean) {
         progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
-        button.isClickable = !isLoading
+        actionButton.isClickable = !isLoading
     }
 
     private fun showToast(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 
-    private fun saveUserData(user: User) {
-        getSharedPreferences("UserData", Context.MODE_PRIVATE).edit().apply {
-            putLong("userId", user.id)
-            putString("userName", user.name)
-            putString("userEmail", user.email)
-            putInt("userBits", user.bits)
-            apply()
-        }
-    }
-
-    private fun navigateToMainActivity(user: User) {
-        saveUserData(user)
-        startActivity(Intent(this, MainActivity::class.java))
+    private fun navigateToMainActivity() {
+        startActivity(Intent(this, DashboardActivity::class.java))
         finish()
     }
 }
