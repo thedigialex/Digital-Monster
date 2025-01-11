@@ -28,9 +28,9 @@
             </p>
 
             <div class="mt-6">
-                <x-input-label for="password" value="{{ __('Password') }}" class="sr-only" />
+                <x-inputs.label for="password" value="{{ __('Password') }}" class="sr-only" />
 
-                <x-text-input
+                <x-inputs.text
                     id="password"
                     name="password"
                     type="password"

@@ -17,10 +17,10 @@ return new class extends Migration
 
         Schema::create('digital_monsters', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->nullable();
+            $table->string('name');
             $table->foreignId('egg_group_id')->constrained('egg_groups')->onDelete('cascade');
-            $table->string('sprite_image_0')->nullable();
-            $table->string('element_0')->nullable();
+            $table->string('sprite_image_0');
+            $table->string('element_0');
             $table->string('sprite_image_1')->nullable();
             $table->string('element_1')->nullable();
             $table->string('sprite_image_2')->nullable();

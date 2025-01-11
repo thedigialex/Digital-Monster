@@ -11,11 +11,11 @@ return new class extends Migration
         Schema::create('items', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('type');
+            $table->enum('type', ['Attack', 'Background', 'Case', 'Consumable', 'Material']);
             $table->string('effect')->nullable();
             $table->integer('price');
-            $table->string('rarity');
-            $table->boolean('isAvailable')->default(true);
+            $table->enum('rarity', ['Free', 'Common', 'Uncommon', 'Rare', 'Legendary', 'Mystic']);
+            $table->integer('isAvailable')->default(1);
             $table->string('image')->nullable();
             $table->timestamps();
         });

@@ -9,6 +9,8 @@ Route::middleware('check-api-key')->group(function () {
     Route::post('/login', [ApiAuthenticatedSessionController::class, 'login']);
 
     Route::middleware('auth:sanctum')->group(function () {
+        Route::get('/files/{filename}', [ApiUserController::class, 'getFile']);
+
         Route::get('/check-token', [ApiAuthenticatedSessionController::class, 'checkToken']);
         Route::post('/logout', [ApiAuthenticatedSessionController::class, 'logout']);
 

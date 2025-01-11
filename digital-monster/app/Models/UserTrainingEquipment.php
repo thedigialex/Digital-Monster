@@ -2,16 +2,13 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class UserTrainingEquipment extends Model
 {
-    use HasFactory;
     protected $fillable = [
         'user_id',
         'training_equipment_id',
-        'stat_increase',
         'level',
     ];
 

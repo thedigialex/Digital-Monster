@@ -18,6 +18,7 @@ return new class extends Migration
             $table->integer('tamer_level')->default(1);
             $table->integer('tamer_exp')->default(0);
             $table->integer('bits')->default(0);
+            $table->integer('max_monster_amount')->default(5);
             $table->integer('score')->default(0);
             $table->rememberToken();
             $table->timestamps();

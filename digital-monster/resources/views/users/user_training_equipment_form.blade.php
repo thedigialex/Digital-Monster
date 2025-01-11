@@ -22,7 +22,7 @@
 
             <div class="flex flex-col md:flex-row md:space-x-4">
                 <div class="flex-1">
-                    <x-input-label for="training_equipment_id">Training Equipment</x-input-label>
+                    <x-inputs.label for="training_equipment_id">Training Equipment</x-inputs.input-label>
                     <x-text-dropdown id="training_equipment_id" name="training_equipment_id" class="form-control w-full" required>
                         <option value="" disabled {{ !isset($trainingEquipment) ? 'selected' : '' }}>Select Equipment</option>
                         @foreach($allTrainingEquipments as $equipment)
@@ -34,12 +34,12 @@
                     </x-text-dropdown>
                 </div>
                 <div class="flex-1">
-                    <x-input-label for="level">Level</x-input-label>
-                    <x-text-input type="number" name="level" class="form-control w-full" value="{{ isset($trainingEquipment) ? $trainingEquipment->level : 1 }}" required></x-text-input>
+                    <x-inputs.label for="level">Level</x-inputs.input-label>
+                    <x-inputs.text type="number" name="level" class="form-control w-full" value="{{ isset($trainingEquipment) ? $trainingEquipment->level : 1 }}" required></x-inputs.text>
                 </div>
                 <div class="flex-1">
-                    <x-input-label for="stat_increase">Stat Increase</x-input-label>
-                    <x-text-input type="number" name="stat_increase" class="form-control w-full" value="{{ isset($trainingEquipment) ? $trainingEquipment->stat_increase : 1 }}" required></x-text-input>
+                    <x-inputs.label for="stat_increase">Stat Increase</x-inputs.input-label>
+                    <x-inputs.text type="number" name="stat_increase" class="form-control w-full" value="{{ isset($trainingEquipment) ? $trainingEquipment->stat_increase : 1 }}" required></x-inputs.text>
                 </div>
             </div>
 

@@ -19,13 +19,14 @@ class UserController extends Controller
         return view('users.index', compact('users'));
     }
 
-    //User Digital Monster
-    public function showUserDigitalMonsters(Request $request)
+    public function profile(Request $request)
     {
-        $user = User::with('digitalMonsters')->findOrFail($request->input('id'));
-        return view('users.user_digital_monster_index', compact('user'));
+        $user = User::with(['digitalMonsters', 'inventories.item', 'trainingEquipments.trainingEquipment'])
+            ->findOrFail($request->input('id'));
+        return view('users.profile', compact('user'));
     }
 
+    //User Digital Monster
     public function editUserDigitalMonster(Request $request)
     {
         $allDigitalMonsters = DigitalMonster::with('eggGroup')->get();
@@ -89,12 +90,6 @@ class UserController extends Controller
     }
 
     //Inventory
-    public function showUserInventory(Request $request)
-    {
-        $user = User::with('inventories.item')->findOrFail($request->input('id'));
-        return view('users.user_inventory_index', compact('user'));
-    }
-
     public function editUserInventory(Request $request)
     {
         $allItems = Item::all();
@@ -143,12 +138,6 @@ class UserController extends Controller
     }
 
     //User Training Equipment
-    public function showUserTrainingEquipment(Request $request)
-    {
-        $user = User::with('trainingEquipments.trainingEquipment')->findOrFail($request->input('id'));
-        return view('users.user_training_equipment_index', compact('user'));
-    }
-
     public function editUserTrainingEquipment(Request $request)
     {
         $allTrainingEquipments = TrainingEquipment::all();

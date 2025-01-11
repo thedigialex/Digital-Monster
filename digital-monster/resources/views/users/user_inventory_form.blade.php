@@ -22,8 +22,8 @@
 
             <div class="flex flex-col md:flex-row md:space-x-4">
                 <div class="flex-1">
-                    <x-input-label for="item_id">Item</x-input-label>
-                    <x-text-dropdown id="item_id" name="item_id" class="form-control w-full" required onchange="toggleIsEquipped()">
+                    <x-inputs.label for="item_id">Item</x-inputs.input-label>
+                    <x-inputs.dropdown id="item_id" name="item_id" class="form-control w-full" required onchange="toggleIsEquipped()">
                         <option value="" disabled {{ !isset($inventoryItem) ? 'selected' : '' }}>Select Item</option>
                         @foreach($allItems as $item)
                         <option value="{{ $item->id }}" data-type="{{ $item->type }}"
@@ -31,14 +31,14 @@
                             {{ $item->name }}
                         </option>
                         @endforeach
-                    </x-text-dropdown>
+                    </x-inputs.dropdown>
                 </div>
                 <div class="flex-1">
-                    <x-input-label for="quantity">Quantity</x-input-label>
-                    <x-text-input type="number" name="quantity" class="form-control w-full" value="{{ isset($inventoryItem) ? $inventoryItem->quantity : 1 }}" required></x-text-input>
+                    <x-inputs.label for="quantity">Quantity</x-inputs.input-label>
+                    <x-inputs.text type="number" name="quantity" class="form-control w-full" value="{{ isset($inventoryItem) ? $inventoryItem->quantity : 1 }}" required></x-inputs.text>
                 </div>
                 <div class="flex-1" id="equippedContainer" style="display: {{ isset($inventoryItem) && !$inventoryItem->isConsumable ? 'block' : 'none' }}">
-                    <x-input-label for="isEquipped">Is Equipped</x-input-label>
+                    <x-inputs.label for="isEquipped">Is Equipped</x-inputs.input-label>
                     <input type="checkbox" name="isEquipped" id="isEquipped"
                         {{ isset($inventoryItem) && $inventoryItem->isEquipped ? 'checked' : '' }}
                         class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500">

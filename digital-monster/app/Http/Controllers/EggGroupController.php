@@ -7,25 +7,25 @@ use Illuminate\Http\Request;
 
 class EggGroupController extends Controller
 {
+    protected $fieldTypes = ['Tyrannos', 'Insecta', 'Brute', 'Flora', 'Abyss', 'Arcane'];
+
     public function index()
     {
         $eggGroups = EggGroup::all()->groupBy('field_type');
-        $fieldTypes = config('egg_field_types');
-        return view('egg_groups.index', compact('eggGroups', 'fieldTypes'));
+        return view('egg_groups.index', ['eggGroups' => $eggGroups, 'fieldTypes' => $this->fieldTypes]);
     }
 
     public function edit(Request $request)
     {
         $eggGroup = EggGroup::find($request->input('id'));
-        $fieldTypes = config('egg_field_types');
-        return view('egg_groups.form', compact('eggGroup', 'fieldTypes'));
+        return view('egg_groups.form', ['eggGroup' => $eggGroup, 'fieldTypes' => $this->fieldTypes]);
     }
 
     public function update(Request $request)
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'field_type' => 'required|string|max:255',
+            'field_type' => 'required|string',
         ]);
 
         if ($request->has('id')) {

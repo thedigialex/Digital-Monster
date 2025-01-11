@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Storage;
 use App\Models\UserDigitalMonster;
 use App\Models\DigitalMonster;
+use Illuminate\Http\Request;
 use App\Models\Inventory;
 use App\Models\Item;
-use Illuminate\Http\Request;
+
 
 class ApiUserController extends Controller
 {
@@ -254,5 +256,10 @@ class ApiUserController extends Controller
                 'inventoryItem' => $inventoryItem,
             ]);
         }
+    }
+
+    public function getFile($filename)
+    {
+        return response()->file(storage_path("app/private/{$filename}"));
     }
 }

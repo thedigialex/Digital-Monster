@@ -10,9 +10,11 @@ return new class extends Migration
     {
         Schema::create('training_equipment', function (Blueprint $table) {
             $table->id();
-            $table->string('image');
             $table->string('name');
-            $table->enum('stat', ['strength', 'agility', 'defense', 'mind', 'cleaning']);
+            $table->integer('max_level');
+            $table->integer('upgrade_item_id')->nullable();
+            $table->enum('stat', ['Strength', 'Agility', 'Defense', 'Mind', 'Cleaning']);
+            $table->string('image')->nullable();
             $table->timestamps();
         });
 
@@ -20,7 +22,6 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('training_equipment_id')->constrained('training_equipment')->onDelete('cascade');
-            $table->integer('stat_increase');
             $table->integer('level');
             $table->timestamps();
         });

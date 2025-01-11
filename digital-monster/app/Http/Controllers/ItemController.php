@@ -8,26 +8,19 @@ use Illuminate\Support\Facades\Storage;
 
 class ItemController extends Controller
 {
+    protected $itemTypes = ['Case', 'Attack', 'Background', 'Consumable', 'Material'];
+    protected $rarityTypes = ['Free', 'Common', 'Uncommon', 'Rare', 'Legendary', 'Mythical'];
+
     public function index()
     {
         $items = Item::all()->groupBy('type');
-        $rarityLabels = [
-            0 => 'Free',
-            1 => 'Common',
-            2 => 'Uncommon',
-            3 => 'Rare',
-            4 => 'Legendary',
-            5 => 'Mythical',
-        ];
-        $itemTypes = config('item_types');
-        return view('items.index', compact('items', 'rarityLabels', 'itemTypes'));
+        return view('items.index', ['items' => $items,  'rarityTypes' => $this->rarityTypes, 'itemTypes' => $this->itemTypes]);
     }
 
     public function edit(Request $request)
-    {    
+    {
         $item = Item::find($request->input('id'));
-        $itemTypes = config('item_types');
-        return view('items.form', compact('item', 'itemTypes'));
+        return view('items.form', ['item' => $item, 'rarityTypes' => $this->rarityTypes, 'itemTypes', 'itemTypes' => $this->itemTypes]);
     }
 
     public function update(Request $request)
@@ -35,22 +28,21 @@ class ItemController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'type' => 'required|string',
-            'effect' => 'nullable|string',
             'price' => 'required|numeric|min:0',
+            'isAvailable' => 'required|numeric',
             'rarity' => 'required|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        $itemData = $request->only(['name', 'type', 'effect', 'price', 'rarity']);
+        $itemData = $request->only(['name', 'type', 'effect', 'price', 'rarity', 'isAvailable']);
 
         if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('item_images', 'public');
+            $path = $request->file('image')->store('itemImages', 'public');
             $itemData['image'] = $path;
 
             if ($request->has('id')) {
                 $item = Item::findOrFail($request->input('id'));
                 if ($item->image) {
-                    Storage::delete($item->image);
+                    Storage::disk('public')->delete($item->image);
                 }
             }
         }
@@ -70,7 +62,7 @@ class ItemController extends Controller
     public function destroy(Item $item)
     {
         if ($item->image) {
-            Storage::delete($item->image);
+            Storage::disk('public')->delete($item->image);
         }
 
         $item->delete();
