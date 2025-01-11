@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 
 class EggGroupController extends Controller
 {
-    protected $fieldTypes = ['Tyrannos', 'Insecta', 'Brute', 'Flora', 'Abyss', 'Arcane'];
+    protected $fieldTypes = ['Tyrannos', 'Insecta', 'Beast', 'Flora', 'Abyss', 'Arcane'];
 
     public function index()
     {

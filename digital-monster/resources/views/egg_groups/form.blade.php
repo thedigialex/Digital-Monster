@@ -11,6 +11,11 @@
             </a>
         </div>
     </x-slot>
+
+    @if (session('error'))
+    <x-alerts.error>{{ session('error') }}</x-alert-error>
+    @endif
+
     <x-container>
         <form action="{{ route('egg_groups.update') }}" method="POST" class="space-y-4">
             @csrf

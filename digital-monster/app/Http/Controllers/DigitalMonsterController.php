@@ -15,7 +15,12 @@ class DigitalMonsterController extends Controller
 
     public function index()
     {
-        $eggGroups = EggGroup::with('digitalMonsters')->get();
+        $eggGroups = EggGroup::all();
+        if ($eggGroups->isEmpty()) {
+            return redirect()->route('egg_groups.edit')
+                ->with('error', 'No egg groups available. Create an egg groups first.')
+                ->withInput();
+        }
         return view('digital_monsters.index', compact('eggGroups'));
     }
 
@@ -23,9 +28,6 @@ class DigitalMonsterController extends Controller
     {
         $digitalMonster = DigitalMonster::find($request->input('id'));
         $eggGroups = EggGroup::all();
-        if ($eggGroups->isEmpty()) {
-            return redirect()->route('egg_groups.edit')->with('error', 'No egg groups available. Please add egg groups first.');
-        }
         $allDigitalMonsters = DigitalMonster::all();
         return view('digital_monsters.form', ['digitalMonster' => $digitalMonster, 'eggGroups' => $eggGroups, 'stages' => $this->stages, 'elements' => $this->elements, 'allDigitalMonsters' => $allDigitalMonsters]);
     }

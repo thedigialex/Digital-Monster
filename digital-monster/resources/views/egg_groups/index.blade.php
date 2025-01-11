@@ -15,7 +15,7 @@
     </x-slot>
 
     @if (session('success'))
-    <x-alert-success>{{ session('success') }}</x-alert-success>
+    <x-alerts.success>{{ session('success') }}</x-alerts.success>
     @endif
 
     <x-container>

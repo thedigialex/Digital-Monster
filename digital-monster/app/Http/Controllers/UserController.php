@@ -35,7 +35,7 @@ class UserController extends Controller
         }
         $userDigitalMonster = UserDigitalMonster::find($request->input('id'));
         $user = User::findOrFail($request->input('userId'));
-        return view('users.user_digital_monster_form', compact('user', 'userDigitalMonster', 'allDigitalMonsters'));
+        return view('digital_monsters.user-form', compact('user', 'userDigitalMonster', 'allDigitalMonsters'));
     }
 
     public function updateUserDigitalMonster(Request $request)
@@ -77,7 +77,7 @@ class UserController extends Controller
         } else {
             $userDigitalMonster = UserDigitalMonster::create($validated);
         }
-        return redirect()->route('user.digital_monsters', ['id' => $validated['user_id']])
+        return redirect()->route('user.profile', ['id' => $validated['user_id']])
             ->with('success', 'Digital Monster saved successfully.');
     }
 
@@ -85,7 +85,7 @@ class UserController extends Controller
     {
         $userDigitalMonster = UserDigitalMonster::findOrFail($id);
         $userDigitalMonster->delete();
-        return redirect()->route('user.digital_monsters', ['id' => $userDigitalMonster->user_id])
+        return redirect()->route('user.profile', ['id' => $userDigitalMonster->user_id])
             ->with('success', 'Digital Monster deleted successfully.');
     }
 
@@ -95,7 +95,7 @@ class UserController extends Controller
         $allItems = Item::all();
         $inventoryItem = Inventory::find($request->input('id'));
         $user = User::findOrFail($request->input('userId'));
-        return view('users.user_inventory_form', compact('user', 'inventoryItem', 'allItems'));
+        return view('items.user-form', compact('user', 'inventoryItem', 'allItems'));
     }
 
     public function updateUserInventory(Request $request)
@@ -125,7 +125,7 @@ class UserController extends Controller
         } else {
             Inventory::create($validated);
         }
-        return redirect()->route('user.inventory', ['id' => $validated['user_id']])
+        return redirect()->route('user.profile', ['id' => $validated['user_id']])
             ->with('success', 'Inventory item saved successfully.');
     }
 
@@ -133,7 +133,7 @@ class UserController extends Controller
     {
         $inventoryItem = Inventory::findOrFail($id);
         $inventoryItem->delete();
-        return redirect()->route('user.inventory', ['id' => $inventoryItem->user_id])
+        return redirect()->route('user.profile', ['id' => $inventoryItem->user_id])
             ->with('success', 'Item deleted successfully.');
     }
 
@@ -143,7 +143,7 @@ class UserController extends Controller
         $allTrainingEquipments = TrainingEquipment::all();
         $userTrainingEquipment = UserTrainingEquipment::find($request->input('id'));
         $user = User::findOrFail($request->input('userId'));
-        return view('users.user_training_equipment_form', compact('user', 'userTrainingEquipment', 'allTrainingEquipments'));
+        return view('training_equipment.user-form', compact('user', 'userTrainingEquipment', 'allTrainingEquipments'));
     }
 
     public function updateUserTrainingEquipment(Request $request)
@@ -161,7 +161,7 @@ class UserController extends Controller
         } else {
             UserTrainingEquipment::create($validated);
         }
-        return redirect()->route('user.training_equipment', ['id' => $validated['user_id']])
+        return redirect()->route('user.profile', ['id' => $validated['user_id']])
             ->with('success', 'Training equipment saved successfully.');
     }
 
@@ -169,7 +169,7 @@ class UserController extends Controller
     {
         $userTrainingEquipment = UserTrainingEquipment::findOrFail($id);
         $userTrainingEquipment->delete();
-        return redirect()->route('user.training_equipment', ['id' => $userTrainingEquipment->user_id])
+        return redirect()->route('user.profile', ['id' => $userTrainingEquipment->user_id])
             ->with('success', 'Training equipment deleted successfully.');
     }
 }

@@ -42,7 +42,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('digital_monster_id')->constrained()->onDelete('cascade');
-            $table->boolean('isMain')->default(false);
+            $table->integer('isMain')->default(0);
             $table->string('name')->nullable();
             $table->enum('type', ['Data', 'Virus', 'Vaccine'])->default('Data');
             $table->integer('level')->default(1);
