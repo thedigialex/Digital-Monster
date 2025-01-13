@@ -6,6 +6,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import thedigialex.digitalpet.model.entities.DigitalMonster
 import thedigialex.digitalpet.model.entities.InventoryItem
 import thedigialex.digitalpet.model.entities.User
 import thedigialex.digitalpet.model.entities.UserDigitalMonster
@@ -14,7 +15,7 @@ import thedigialex.digitalpet.util.DataManager
 
 class FetchService(private val context: Context) {
 
-    private fun performAuthAction(isLoading: Boolean = false, action: suspend () -> Unit) {
+    private fun performAuthAction(action: suspend () -> Unit) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 action()
@@ -148,11 +149,65 @@ class FetchService(private val context: Context) {
     }
 
 
+    fun setupSpriteAndReturnItem(inventoryItem: InventoryItem, onSuccess: (InventoryItem?) -> Unit) {
+        performAuthAction{
+            inventoryItem.item.setupSprite(context) {
+                onSuccess(inventoryItem)
+            }
+        }
+    }
+
+    fun setupSpriteAndReturnTrainingEquipment(userTrainingEquipment: UserTrainingEquipment, onSuccess: (UserTrainingEquipment?) -> Unit) {
+        performAuthAction {
+            userTrainingEquipment.trainingEquipment.setupSprite(context) {
+                onSuccess(userTrainingEquipment)
+            }
+        }
+    }
+
+    fun setUpSpriteImages(userDigitalMonster: UserDigitalMonster, onSuccess: (UserDigitalMonster?) -> Unit) {
+        performAuthAction {
+            val spriteType = when (userDigitalMonster.digital_monster.stage) {
+                "Egg", "Fresh", "Child" -> "Data"
+                else -> userDigitalMonster.type
+            }
+            setupSpriteAndReturn(userDigitalMonster, spriteType, onSuccess)
+        }
+    }
+    private fun setupSpriteAndReturn(userDigitalMonster: UserDigitalMonster, type: String, onSuccess: (UserDigitalMonster?) -> Unit) {
+        performAuthAction {
+            userDigitalMonster.digital_monster.setupSprite(context, type) {
+                onSuccess(userDigitalMonster)
+            }
+        }
+    }
+
+    fun setUpDigitalMonsterSpriteImages(digitalMonster: DigitalMonster, type: String, onSuccess: (DigitalMonster?) -> Unit) {
+        performAuthAction {
+            val spriteType = when (digitalMonster.stage) {
+                "Egg", "Fresh", "Child" -> "Data"
+                else -> type
+            }
+            setupDigitalMonsterSpriteAndReturn(digitalMonster, spriteType, onSuccess)
+        }
+    }
+    private fun setupDigitalMonsterSpriteAndReturn(digitalMonster: DigitalMonster, type: String, onSuccess: (DigitalMonster?) -> Unit) {
+        performAuthAction {
+            digitalMonster.setupSprite(context, type) {
+                onSuccess(digitalMonster)
+            }
+        }
+    }
+
+
+
+
+
 
 
 
     fun fetchAndAttachItemsForSale(user: User, itemType: String, context: Context, onComplete: () -> Unit) {
-        performAuthAction(false) {
+        performAuthAction {
             val response = ApiClient.getApi(context).getItems(itemType)
             if (response.isSuccessful) {
                 response.body()?.let { itemResponse ->
@@ -185,7 +240,7 @@ class FetchService(private val context: Context) {
     }
 
     fun saveUserDigitalMonster(userDigitalMonster: UserDigitalMonster) {
-        performAuthAction(true) {
+        performAuthAction {
             ApiClient.getApi(context).saveUserDigitalMonster(
                 id = userDigitalMonster.id,
                 name = userDigitalMonster.name,
@@ -221,44 +276,11 @@ class FetchService(private val context: Context) {
    //}
 
     fun updateInventoryItem(inventoryItem: InventoryItem) {
-        performAuthAction(false) {
+        performAuthAction{
             ApiClient.getApi(context).updateInventoryItem(inventoryItem.id)
         }
     }
 
-    fun setupSpriteAndReturnItem(inventoryItem: InventoryItem, onSuccess: (InventoryItem?) -> Unit) {
-        performAuthAction(true) {
-            inventoryItem.item.setupSprite(context) {
-                onSuccess(inventoryItem)
-            }
-        }
-    }
-
-    fun setupSpriteAndReturnTrainingEquipment(userTrainingEquipment: UserTrainingEquipment, onSuccess: (UserTrainingEquipment?) -> Unit) {
-        performAuthAction(true) {
-            userTrainingEquipment.trainingEquipment.setupSprite(context) {
-                onSuccess(userTrainingEquipment)
-            }
-        }
-    }
-
-    fun setUpSpriteImages(userDigitalMonster: UserDigitalMonster, onSuccess: (UserDigitalMonster?) -> Unit) {
-        performAuthAction(true) {
-            val spriteType = when (userDigitalMonster.digitalMonster.stage) {
-                "Egg", "Fresh", "Child" -> "Data"
-                else -> userDigitalMonster.type
-            }
-            setupSpriteAndReturn(userDigitalMonster, spriteType, onSuccess)
-        }
-    }
-
-    private fun setupSpriteAndReturn(userDigitalMonster: UserDigitalMonster, type: String, onSuccess: (UserDigitalMonster?) -> Unit) {
-        performAuthAction(true) {
-            userDigitalMonster.digitalMonster.setupSprite(context, type) {
-                onSuccess(userDigitalMonster)
-            }
-        }
-    }
 
     //fun evoUserDigitalMonster(onSuccess: (UserDigitalMonster?) -> Unit) {
     //    performAuthAction(true) {

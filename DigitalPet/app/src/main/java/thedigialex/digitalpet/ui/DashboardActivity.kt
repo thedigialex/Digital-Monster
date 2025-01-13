@@ -1,7 +1,7 @@
 package thedigialex.digitalpet.ui
 
 import android.os.Bundle
-import android.view.View
+import android.util.Log
 import android.widget.ProgressBar
 import androidx.appcompat.app.AppCompatActivity
 import thedigialex.digitalpet.R
@@ -11,38 +11,86 @@ import thedigialex.digitalpet.model.entities.User
 import thedigialex.digitalpet.util.DataManager
 
 class DashboardActivity : AppCompatActivity() {
-    private lateinit var caseController: CaseController
     private lateinit var user: User
     private lateinit var fetchService: FetchService
+    private lateinit var caseController: CaseController
+    private var currentProgress: Int = 0
+    private lateinit var progressBar: ProgressBar
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_dashboard)
-       // fetchService = FetchService(this) { isLoading -> showLoading(isLoading) }
+        progressBar = findViewById(R.id.progressBar)
+        fetchService = FetchService(this)
+        setUpData()
+
+
+
+        Log.d("User Data", user.toString())
+        //var equipment = user.eggs?.get(0)
+        //equipment?.animation(findViewById(R.id.emotionImageView), 1)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        //if(user.mainDigitalMonster != null) {
+        //    fetchService.saveUserDigitalMonster(user.mainDigitalMonster!!)
+        //}
+    }
+
+    private fun setUpData() {
         user = DataManager.getUser(applicationContext)!!
-        caseController = CaseController(findViewById(R.id.caseBackground),this, fetchService, user)
-        if (user.mainDigitalMonster == null) {
-           //fetchService.getEggs { eggs ->
-           //    caseController.setUpSelectableDigitalMonster(eggs)
-           //}
+        user.eggs = DataManager.getDigitalMonsterEggs(applicationContext)
+        user.userDigitalMonster = DataManager.getUserDigitalMonsters(applicationContext)
+        user.inventoryItems = DataManager.getInventoryItems(applicationContext)
+        user.trainingEquipments = DataManager.getUserTrainingEquipment(applicationContext)
+        val totalLength = user.eggs?.size!! +
+                user.userDigitalMonster?.size!! +
+                user.inventoryItems?.size!! +
+                user.trainingEquipments?.size!!
+        progressBar.max = totalLength
+        setUpImages()
+    }
+
+    private fun setUpImages() {
+        user.eggs?. let{ eggs ->
+            for (i in eggs.indices) {
+                fetchService.setUpDigitalMonsterSpriteImages(eggs[i], "Data") { updatedMonster ->
+                    updatedMonster?.let {
+                        user.eggs = user.eggs!!.toMutableList().apply {
+                            this[i] = it
+                        }
+                        updateLoading()
+                    }
+                }
+            }
         }
-        else {
-            fetchService.setUpSpriteImages(user.mainDigitalMonster!!) { updatedMonster ->
-                user.mainDigitalMonster = updatedMonster
-                user.mainDigitalMonster!!.digitalMonster.animation(findViewById(R.id.mainImageView), 1)
-                caseController.updateBackground(user.mainDigitalMonster!!.sleepStartedAt != null)
+        user.userDigitalMonster?. let{ userDigitalMonsters ->
+            for (i in userDigitalMonsters.indices) {
+                fetchService.setUpSpriteImages(userDigitalMonsters[i]) { updatedMonster ->
+                    updatedMonster?.let {
+                        user.userDigitalMonster = user.userDigitalMonster!!.toMutableList().apply {
+                            this[i] = it
+                        }
+                        updateLoading()
+                    }
+                }
             }
         }
         user.inventoryItems?.let { items ->
             for (i in items.indices) {
-                if (items[i].item.type == "consumable") {
+                if (items[i].item.type == "Consumable") {
                     fetchService.setupSpriteAndReturnItem(items[i]) { updatedItem ->
                         updatedItem?.let {
                             user.inventoryItems = user.inventoryItems!!.toMutableList().apply {
                                 this[i] = it
                             }
                         }
+                        updateLoading()
                     }
+                }
+                else{
+                    updateLoading()
                 }
             }
         }
@@ -54,21 +102,19 @@ class DashboardActivity : AppCompatActivity() {
                             this[i] = it
                         }
                     }
+                    updateLoading()
                 }
             }
         }
+        caseController = CaseController(findViewById(R.id.caseBackground),this, fetchService, user)
     }
 
-    override fun onPause() {
-        super.onPause()
-        if(user.mainDigitalMonster != null) {
-            fetchService.saveUserDigitalMonster(user.mainDigitalMonster!!)
+    private fun updateLoading() {
+        currentProgress += 1
+        if(currentProgress >= progressBar.max) {
+            currentProgress = 0
         }
-    }
-
-    private fun showLoading(isLoading: Boolean) {
-        val progressBar = findViewById<ProgressBar>(R.id.progressBar)
-        progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+        progressBar.progress = currentProgress
     }
 
   // fun evoTest(view: View)  {

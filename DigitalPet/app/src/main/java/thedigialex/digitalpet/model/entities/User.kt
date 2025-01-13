@@ -8,13 +8,16 @@ data class User(
     val tamer_exp: Int,
     val bits: Int,
     val score: Int,
+
+    var eggs: List<DigitalMonster>? = null,
+    var userDigitalMonster: List<UserDigitalMonster>? = null,
     var mainDigitalMonster: UserDigitalMonster? = null,
     var inventoryItems: List<InventoryItem>? = null,
     var trainingEquipments: List<UserTrainingEquipment>? = null,
     var itemsForSale: List<Item>? = null
 ) {
     fun getConsumableItems(): List<InventoryItem> {
-        return inventoryItems?.filter { it.item.type == "consumable" } ?: emptyList()
+        return inventoryItems?.filter { it.item.type == "Consumable" } ?: emptyList()
     }
 
     fun getUsedItem(innerMenuCycle: Int): InventoryItem {

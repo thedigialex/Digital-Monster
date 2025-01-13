@@ -20,7 +20,7 @@ object SpriteManager {
 
     fun setupItemSprite(context: Context, item: Item, onSpritesReady: () -> Unit = {}): List<Bitmap>? {
         val tilesPerRow = 4
-        val imageUrl = context.getString(thedigialex.digitalpet.R.string.base_url) + item.image.replace("item_images/", "storage/item_images/")
+        val imageUrl = context.getString(thedigialex.digitalpet.R.string.base_url) + "storage/" + item.image
         var sprites: List<Bitmap>? = null
         Glide.with(context)
             .asBitmap()
@@ -38,7 +38,7 @@ object SpriteManager {
 
     fun setupTrainingEquipmentSprite(context: Context, trainingEquipment: TrainingEquipment, onSpritesReady: () -> Unit = {}): List<Bitmap>? {
         val tilesPerRow = 4
-        val imageUrl = context.getString(thedigialex.digitalpet.R.string.base_url) + trainingEquipment.image.replace("training_equipment_images/", "storage/training_equipment_images/")
+        val imageUrl = context.getString(thedigialex.digitalpet.R.string.base_url) + "storage/" + trainingEquipment.image
         var sprites: List<Bitmap>? = null
         Glide.with(context)
             .asBitmap()
@@ -56,11 +56,11 @@ object SpriteManager {
 
     fun setupSprite(context: Context, digitalMonster: DigitalMonster, type: String, onSpritesReady: () -> Unit = {}): List<Bitmap>? {
         val tilesPerRow = if (digitalMonster.stage == "Egg") 2 else 10
-        val baseUrl = context.getString(thedigialex.digitalpet.R.string.base_url)
+        val baseUrl = context.getString(thedigialex.digitalpet.R.string.base_url) + "storage/"
         val imageUrl = when (type) {
-            "Virus" -> baseUrl + digitalMonster.spriteImage1?.replace("sprite_images/", "storage/sprite_images/")
-            "Vaccine" -> baseUrl + digitalMonster.spriteImage2?.replace("sprite_images/", "storage/sprite_images/")
-            else -> baseUrl + digitalMonster.spriteImage0?.replace("sprite_images/", "storage/sprite_images/")
+            "Virus" -> baseUrl + digitalMonster.spriteImage1
+            "Vaccine" -> baseUrl + digitalMonster.spriteImage2
+            else -> baseUrl + digitalMonster.spriteImage0
         }
         var sprites: List<Bitmap>? = null
         Glide.with(context)

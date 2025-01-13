@@ -144,7 +144,7 @@ class LoginActivity : AppCompatActivity() {
                                 fetchService.getUserTrainingEquipment(
                                     dataRetrievalSuccess = {
                                         updateLoading()
-                                        //navigateToMainActivity()
+                                        navigateToMainActivity()
                                     },
                                     dataRetrievalFailure = { errorMessage ->
                                         showIssue(errorMessage)

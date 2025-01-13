@@ -65,15 +65,6 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
         setupButtons()
     }
 
-    private fun setupButtons() {
-        val actions = listOf(
-            { accept() }, { cancel() }, { select(-1) }, { select(1) }, { switchMenu() }
-        )
-        caseButtons.forEachIndexed { index, button ->
-            button.setOnClickListener { actions[index]() }
-        }
-    }
-
     private fun setupImageResources() {
         val defaultMenuImages = listOf(
             R.drawable.stat_menu, R.drawable.food_menu, R.drawable.train_menu,
@@ -90,6 +81,15 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
             filledMenuImageResources[i] = if (!isSettings) highlightedMenuImages[i] else R.drawable.stat_menu_highlight
         }
         updateMenuImages()
+    }
+
+    private fun setupButtons() {
+        val actions = listOf(
+            { accept() }, { cancel() }, { select(-1) }, { select(1) }, { switchMenu() }
+        )
+        caseButtons.forEachIndexed { index, button ->
+            button.setOnClickListener { actions[index]() }
+        }
     }
 
     private fun updateMenuImages() {
@@ -338,7 +338,7 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
         cancel()
     }
 
-    fun updateBackground(isAsleep: Boolean) {
+    private fun updateBackground(isAsleep: Boolean) {
         val background: ConstraintLayout = caseBackground.findViewById(R.id.mainView)
         if(isAsleep) {
             background.setBackgroundResource(R.color.secondary)
