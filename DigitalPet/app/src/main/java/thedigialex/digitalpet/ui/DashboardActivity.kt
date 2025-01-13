@@ -18,13 +18,13 @@ class DashboardActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_dashboard)
-        fetchService = FetchService(this) { isLoading -> showLoading(isLoading) }
+       // fetchService = FetchService(this) { isLoading -> showLoading(isLoading) }
         user = DataManager.getUser(applicationContext)!!
         caseController = CaseController(findViewById(R.id.caseBackground),this, fetchService, user)
         if (user.mainDigitalMonster == null) {
-            fetchService.getEggs { eggs ->
-                caseController.setUpSelectableDigitalMonster(eggs)
-            }
+           //fetchService.getEggs { eggs ->
+           //    caseController.setUpSelectableDigitalMonster(eggs)
+           //}
         }
         else {
             fetchService.setUpSpriteImages(user.mainDigitalMonster!!) { updatedMonster ->
@@ -71,12 +71,12 @@ class DashboardActivity : AppCompatActivity() {
         progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
     }
 
-    fun evoTest(view: View)  {
-        fetchService.evoUserDigitalMonster { newUserDigitalMonster ->
-            newUserDigitalMonster?.let { newMonster ->
-                user.mainDigitalMonster = newMonster
-                user.mainDigitalMonster!!.digitalMonster.animation(findViewById(R.id.mainImageView), 1)
-            }
-        }
-    }
+  // fun evoTest(view: View)  {
+  //     fetchService.evoUserDigitalMonster { newUserDigitalMonster ->
+  //         newUserDigitalMonster?.let { newMonster ->
+  //             user.mainDigitalMonster = newMonster
+  //             user.mainDigitalMonster!!.digitalMonster.animation(findViewById(R.id.mainImageView), 1)
+  //         }
+  //     }
+  // }
 }

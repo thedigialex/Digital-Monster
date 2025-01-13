@@ -6,38 +6,48 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import thedigialex.digitalpet.model.entities.DigitalMonster
 import thedigialex.digitalpet.model.entities.InventoryItem
 import thedigialex.digitalpet.model.entities.User
 import thedigialex.digitalpet.model.entities.UserDigitalMonster
 import thedigialex.digitalpet.model.entities.UserTrainingEquipment
 import thedigialex.digitalpet.util.DataManager
 
-class FetchService(private val context: Context, private val showLoading: (Boolean) -> Unit) {
+class FetchService(private val context: Context) {
 
-    fun checkToken(): Boolean {
-        val token = DataManager.getToken(context)
-        return token != null
-    }
-
-    private fun performAuthAction(isLoading: Boolean, action: suspend () -> Unit) {
-        showLoading(isLoading)
+    private fun performAuthAction(isLoading: Boolean = false, action: suspend () -> Unit) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 action()
             } catch (e: Exception) {
                 Log.e("network error", "An error occurred: ${e.message}")
             }
-            finally {
+        }
+    }
+
+    fun checkToken(): Boolean {
+        val token = DataManager.getToken(context)
+        return token != null
+    }
+
+    fun validateToken(onLoginSuccess: () -> Unit, onLoginFailure: (String) -> Unit) = performAuthAction {
+        val response = ApiClient.getApi(context).validateToken()
+        if (response.isSuccessful && response.body()?.status == true) {
+            response.body()?.let { loginResponse ->
+                DataManager.saveToken(context, loginResponse.token)
+                DataManager.saveUser(context, loginResponse.user)
                 withContext(Dispatchers.Main) {
-                    showLoading(false)
+                    onLoginSuccess()
                 }
+            }
+        } else {
+            withContext(Dispatchers.Main) {
+                onLoginFailure("Failed: ${response.body()?.message}")
             }
         }
     }
 
     fun performLogin(email: String, password: String, onLoginSuccess: () -> Unit, onLoginFailure: (String) -> Unit) {
-        performAuthAction(true) {
+        performAuthAction {
             val response = ApiClient.getApi(context).login(email, password)
             if (response.isSuccessful && response.body()?.status == true) {
                 response.body()?.let { loginResponse ->
@@ -49,13 +59,13 @@ class FetchService(private val context: Context, private val showLoading: (Boole
                 }
             } else {
                 withContext(Dispatchers.Main) {
-                    onLoginFailure("Login Failed")
+                    onLoginFailure("Failed: ${response.body()?.message}")
                 }
             }
         }
     }
 
-    fun performRegistration(name: String, email: String, password: String, onLoginSuccess: () -> Unit, onLoginFailure: (String) -> Unit)  = performAuthAction(true) {
+    fun performRegistration(name: String, email: String, password: String, onLoginSuccess: () -> Unit, onLoginFailure: (String) -> Unit)  = performAuthAction {
        val response = ApiClient.getApi(context).registerUser(name, email, password)
        if (response.isSuccessful && response.body()?.status == true) {
            response.body()?.let { loginResponse ->
@@ -67,53 +77,79 @@ class FetchService(private val context: Context, private val showLoading: (Boole
            }
        } else {
            withContext(Dispatchers.Main) {
-               onLoginFailure("Registration Failed")
+               onLoginFailure("Failed: ${response.body()?.message}")
            }
        }
    }
 
-    fun validateToken(onLoginSuccess: () -> Unit, onLoginFailure: (String) -> Unit) = performAuthAction(true) {
-        val response = ApiClient.getApi(context).checkToken()
+
+    fun getDigitalMonsterEggs(dataRetrievalSuccess: () -> Unit, dataRetrievalFailure: (String) -> Unit) = performAuthAction {
+        val response = ApiClient.getApi(context).getDigitalMonsterEggs()
         if (response.isSuccessful && response.body()?.status == true) {
-            response.body()?.let { loginResponse ->
-                DataManager.saveUser(context, loginResponse.user)
+            response.body()?.let { digitalMonstersResponse ->
+                DataManager.saveDigitalMonsterEggs(context, digitalMonstersResponse.digitalMonsters)
                 withContext(Dispatchers.Main) {
-                    onLoginSuccess()
+                    dataRetrievalSuccess()
                 }
             }
         } else {
             withContext(Dispatchers.Main) {
-                onLoginFailure("Token invalid")
+                dataRetrievalFailure("Failed: ${response.body()?.message}")
             }
         }
     }
 
-    fun getEggs(onEggsFetched: (List<DigitalMonster>) -> Unit) {
-        performAuthAction(true) {
-            val response = ApiClient.getApi(context).getEggs()
-            if (response.isSuccessful) {
-                response.body()?.let { digitalMonstersResponse ->
-                    val eggs = digitalMonstersResponse.digitalMonsters
-
-                    val eggsCount = eggs.size
-                    var readySpritesCount = 0
-                    fun checkAllSpritesReady() {
-                        if (readySpritesCount == eggsCount) {
-                            CoroutineScope(Dispatchers.Main).launch {
-                                onEggsFetched(eggs)
-                            }
-                        }
-                    }
-                    eggs.forEach { egg ->
-                        egg.setupSprite(context, "Data") {
-                            readySpritesCount++
-                            checkAllSpritesReady()
-                        }
-                    }
+    fun getUserDigitalMonsters(dataRetrievalSuccess: () -> Unit, dataRetrievalFailure: (String) -> Unit) = performAuthAction {
+        val response = ApiClient.getApi(context).getUserDigitalMonsters()
+        if (response.isSuccessful && response.body()?.status == true) {
+            response.body()?.let { userDigitalMonstersResponse ->
+                DataManager.saveUserDigitalMonsters(context, userDigitalMonstersResponse.userDigitalMonsters)
+                withContext(Dispatchers.Main) {
+                    dataRetrievalSuccess()
                 }
             }
+        } else {
+            withContext(Dispatchers.Main) {
+                dataRetrievalFailure("Failed: ${response.body()?.message}")
+            }
         }
     }
+
+    fun getUserTrainingEquipment(dataRetrievalSuccess: () -> Unit, dataRetrievalFailure: (String) -> Unit) = performAuthAction {
+        val response = ApiClient.getApi(context).getTrainingEquipment()
+        if (response.isSuccessful && response.body()?.status == true) {
+            response.body()?.let { userTrainingEquipmentResponse ->
+                DataManager.saveUserTrainingEquipment(context, userTrainingEquipmentResponse.userTrainingEquipment)
+              withContext(Dispatchers.Main) {
+                  dataRetrievalSuccess()
+              }
+            }
+        } else {
+            withContext(Dispatchers.Main) {
+                dataRetrievalFailure("Failed: ${response.body()?.message}")
+            }
+        }
+    }
+
+    fun getInventoryItems(dataRetrievalSuccess: () -> Unit, dataRetrievalFailure: (String) -> Unit) = performAuthAction {
+        val response = ApiClient.getApi(context).getInventoryItems()
+        if (response.isSuccessful && response.body()?.status == true) {
+            response.body()?.let { inventoryItemResponse ->
+                DataManager.saveInventoryItems(context, inventoryItemResponse.inventoryItems)
+                withContext(Dispatchers.Main) {
+                    dataRetrievalSuccess()
+                }
+            }
+        } else {
+            withContext(Dispatchers.Main) {
+                dataRetrievalFailure("Failed: ${response.body()?.message}")
+            }
+        }
+    }
+
+
+
+
 
     fun fetchAndAttachItemsForSale(user: User, itemType: String, context: Context, onComplete: () -> Unit) {
         performAuthAction(false) {
@@ -173,16 +209,16 @@ class FetchService(private val context: Context, private val showLoading: (Boole
         }
     }
 
-    fun createNewUserDigitalMonster(digitalMonsterId: Int, name: String, onSuccess: (UserDigitalMonster?) -> Unit) {
-        performAuthAction(true) {
-            val response = ApiClient.getApi(context).createUserDigitalMonster(digitalMonsterId, name)
-            if (response.isSuccessful && response.body()?.status == true) {
-                response.body()?.userDigitalMonster?.let { userDigitalMonster ->
-                    setupSpriteAndReturn(userDigitalMonster, "Data", onSuccess)
-                }
-            }
-        }
-    }
+   //fun createNewUserDigitalMonster(digitalMonsterId: Int, name: String, onSuccess: (UserDigitalMonster?) -> Unit) {
+   //    performAuthAction(true) {
+   //        val response = ApiClient.getApi(context).createUserDigitalMonster(digitalMonsterId, name)
+   //        if (response.isSuccessful && response.body()?.status == true) {
+   //            response.body()?.userDigitalMonster?.let { userDigitalMonster ->
+   //                setupSpriteAndReturn(userDigitalMonster, "Data", onSuccess)
+   //            }
+   //        }
+   //    }
+   //}
 
     fun updateInventoryItem(inventoryItem: InventoryItem) {
         performAuthAction(false) {
@@ -224,18 +260,18 @@ class FetchService(private val context: Context, private val showLoading: (Boole
         }
     }
 
-    fun evoUserDigitalMonster(onSuccess: (UserDigitalMonster?) -> Unit) {
-        performAuthAction(true) {
-            val response = ApiClient.getApi(context).evolve()
-            if (response.isSuccessful && response.body()?.status == true) {
-                response.body()?.userDigitalMonster?.let { userDigitalMonster ->
-                    val spriteType = when (userDigitalMonster.digitalMonster.stage) {
-                        "Egg", "Fresh", "Child" -> "Data"
-                        else -> userDigitalMonster.type
-                    }
-                    setupSpriteAndReturn(userDigitalMonster, spriteType, onSuccess)
-                }
-            }
-        }
-    }
+    //fun evoUserDigitalMonster(onSuccess: (UserDigitalMonster?) -> Unit) {
+    //    performAuthAction(true) {
+    //        val response = ApiClient.getApi(context).evolve()
+    //        if (response.isSuccessful && response.body()?.status == true) {
+    //            response.body()?.userDigitalMonster?.let { userDigitalMonster ->
+    //                val spriteType = when (userDigitalMonster.digitalMonster.stage) {
+    //                    "Egg", "Fresh", "Child" -> "Data"
+    //                    else -> userDigitalMonster.type
+    //                }
+    //                setupSpriteAndReturn(userDigitalMonster, spriteType, onSuccess)
+    //            }
+    //        }
+    //    }
+    //}
 }

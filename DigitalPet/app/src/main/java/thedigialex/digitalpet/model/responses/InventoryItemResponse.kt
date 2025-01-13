@@ -5,5 +5,5 @@ import thedigialex.digitalpet.model.entities.InventoryItem
 data class InventoryItemResponse(
     val status: Boolean,
     val message: String,
-    val inventoryItem: InventoryItem
+    val inventoryItems: List <InventoryItem>
 )

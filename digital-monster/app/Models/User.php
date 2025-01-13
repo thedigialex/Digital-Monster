@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -10,7 +9,7 @@ use App\Models\Item;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, Notifiable;
 
     protected $fillable = [
         'name',
@@ -55,32 +54,32 @@ class User extends Authenticatable
     {
         parent::boot();
 
-        static::created(function ($user) {
-            $basicTrainingEquipments = TrainingEquipment::whereIn('name', ['Strength', 'Agility', 'Defense', 'Mind', 'Clean'])->get();
-
-            foreach ($basicTrainingEquipments as $equipment) {
-                $user->trainingEquipments()->create([
-                    'training_equipment_id' => $equipment->id,
-                    'stat_increase' => 3,
-                    'level' => 1,
-                ]);
-            }
-
-            $itemsWithZeroRarity = Item::where('rarity', 0)->get();
-            foreach ($itemsWithZeroRarity as $item) {
-                if ($item->type === 'consumable') {
-                    $user->inventories()->create([
-                        'item_id' => $item->id,
-                        'quantity' => 10,
-                    ]);
-                } else {
-                    $user->inventories()->create([
-                        'item_id' => $item->id,
-                        'quantity' => 1,
-                        'isEquipped' => true,
-                    ]);
-                }
-            }
-        });
+        //static::created(function ($user) {
+        //    $basicTrainingEquipments = TrainingEquipment::whereIn('name', ['Strength', 'Agility', 'Defense', 'Mind', 'Clean'])->get();
+//
+        //    foreach ($basicTrainingEquipments as $equipment) {
+        //        $user->trainingEquipments()->create([
+        //            'training_equipment_id' => $equipment->id,
+        //            'stat_increase' => 3,
+        //            'level' => 1,
+        //        ]);
+        //    }
+//
+        //    $itemsWithZeroRarity = Item::where('rarity', 0)->get();
+        //    foreach ($itemsWithZeroRarity as $item) {
+        //        if ($item->type === 'consumable') {
+        //            $user->inventories()->create([
+        //                'item_id' => $item->id,
+        //                'quantity' => 10,
+        //            ]);
+        //        } else {
+        //            $user->inventories()->create([
+        //                'item_id' => $item->id,
+        //                'quantity' => 1,
+        //                'isEquipped' => true,
+        //            ]);
+        //        }
+        //    }
+        //});
     }
 }

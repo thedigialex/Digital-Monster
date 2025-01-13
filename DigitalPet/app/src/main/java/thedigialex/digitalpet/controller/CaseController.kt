@@ -286,15 +286,15 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
     }
 
     private fun selectEgg() {
-        val selectedDigitalMonsterId = selectableDigitalMonsters?.get(innerMenuCycle)?.id ?: return
-        fetchService.createNewUserDigitalMonster(selectedDigitalMonsterId, "test") { newUserDigitalMonster ->
-            newUserDigitalMonster?.let { newMonster ->
-                user.mainDigitalMonster = newMonster
-                user.mainDigitalMonster!!.digitalMonster.animation(mainImage, 1)
-                caseButtons[1].isClickable = true
-                cancel()
-            }
-        }
+       //val selectedDigitalMonsterId = selectableDigitalMonsters?.get(innerMenuCycle)?.id ?: return
+       //fetchService.createNewUserDigitalMonster(selectedDigitalMonsterId, "test") { newUserDigitalMonster ->
+       //    newUserDigitalMonster?.let { newMonster ->
+       //        user.mainDigitalMonster = newMonster
+       //        user.mainDigitalMonster!!.digitalMonster.animation(mainImage, 1)
+       //        caseButtons[1].isClickable = true
+       //        cancel()
+       //    }
+       //}
     }
 
     private fun performAction(actionType: String) {

@@ -1,6 +1,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background">
@@ -9,9 +10,12 @@
         android:id="@+id/logoHeader"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
         android:rotationX="0"
         android:rotationY="180"
         android:scaleType="center"
+        app:layout_constraintBottom_toTopOf="@+id/progressBar"
         app:layout_constraintEnd_toEndOf="@+id/linearLayout"
         app:layout_constraintStart_toStartOf="@+id/linearLayout"
         app:layout_constraintTop_toTopOf="parent"
@@ -19,25 +23,17 @@
 
     <ProgressBar
         android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="32dp"
         android:layout_centerInParent="true"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@+id/logoHeader"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/logoHeader" />
-
-    <Button
-        android:id="@+id/switchButton"
-        style="@style/roundedButton"
-        android:layout_width="0dp"
-        android:layout_height="60dp"
-        android:layout_marginEnd="24dp"
-        android:text="@string/register"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:indeterminate="false"
+        android:max="100"
+        android:progress="50"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
         app:layout_constraintEnd_toEndOf="@+id/linearLayout"
-        app:layout_constraintStart_toStartOf="@+id/linearLayout" />
+        app:layout_constraintStart_toStartOf="@+id/linearLayout"
+        app:layout_constraintTop_toBottomOf="@+id/logoHeader" />
 
     <LinearLayout
 
@@ -45,21 +41,46 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:background="@drawable/bottom_boarder"
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/logoHeader">
+        app:layout_constraintTop_toBottomOf="@+id/progressBar">
 
-        <TextView
-            android:id="@+id/formTitle"
-            style="@style/fontHeader"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/top_boarder"
-            android:padding="16dp"
-            android:text="@string/login" />
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/formTitle"
+                style="@style/tabHeader"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:padding="16dp"
+                android:text="@string/login" />
+
+            <Button
+                android:id="@+id/switchButton"
+                style="@style/tabButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/register" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/errorText"
+            style="@style/errorText"
+            android:layout_width="match_parent"
+            android:layout_height="32dp"
+            android:text="Issue"
+            android:visibility="gone" />
 
         <EditText
             android:id="@+id/nameEditText"

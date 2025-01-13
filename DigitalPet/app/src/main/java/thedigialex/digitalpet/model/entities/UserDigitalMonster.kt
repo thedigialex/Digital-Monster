@@ -3,7 +3,6 @@ package thedigialex.digitalpet.model.entities
 data class UserDigitalMonster(
     val id: Int,
     val userId: Long,
-    val digitalMonsterId: Int,
     val isMain: Int,
     var name: String,
     val type: String,
@@ -24,5 +23,6 @@ data class UserDigitalMonster(
     val maxTrainings: Int,
     val currentEvoPoints: Int,
     var sleepStartedAt: String?,
+    val digital_monster: DigitalMonster,
     val digitalMonster: DigitalMonster
 )

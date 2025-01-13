@@ -150,7 +150,6 @@ class UserController extends Controller
     {
         $validated = $request->validate([
             'training_equipment_id' => 'required|exists:training_equipment,id',
-            'stat_increase' => 'required|integer|min:1',
             'level' => 'required|integer|min:1',
             'user_id' => 'required|exists:users,id'
         ]);

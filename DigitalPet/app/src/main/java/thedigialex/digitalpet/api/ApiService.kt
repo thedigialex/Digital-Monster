@@ -11,6 +11,7 @@ import thedigialex.digitalpet.model.responses.InventoryItemResponse
 import thedigialex.digitalpet.model.responses.ItemResponse
 import thedigialex.digitalpet.model.responses.LoginResponse
 import thedigialex.digitalpet.model.responses.UserDigitalMonsterResponse
+import thedigialex.digitalpet.model.responses.UserTrainingEquipmentResponse
 
 interface ApiService {
 
@@ -22,14 +23,23 @@ interface ApiService {
     @POST("api/register")
     suspend fun registerUser(@Field("name") name: String, @Field("email") email: String, @Field("password") password: String): Response<LoginResponse>
 
-    @GET("api/check-token")
-    suspend fun checkToken(): Response<LoginResponse>
+    @GET("api/validate-token")
+    suspend fun validateToken(): Response<LoginResponse>
+
+    @GET("api/eggs")
+    suspend fun getDigitalMonsterEggs(): Response<DigitalMonstersResponse>
+    @GET("api/user/user-digital-monsters")
+    suspend fun getUserDigitalMonsters(): Response<UserDigitalMonsterResponse>
+    @GET("api/user/training-equipment")
+    suspend fun getTrainingEquipment(): Response<UserTrainingEquipmentResponse>
+    @GET("api/user/inventory")
+    suspend fun getInventoryItems(): Response<InventoryItemResponse>
+
 
     @POST("api/logout")
     fun logout(): Call<Void>
 
-    @GET("api/eggs")
-    suspend fun getEggs(): Response<DigitalMonstersResponse>
+
 
     @FormUrlEncoded
     @POST("api/items")

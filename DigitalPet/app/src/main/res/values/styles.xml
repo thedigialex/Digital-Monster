@@ -5,9 +5,24 @@
         <item name="android:background">@drawable/rounded_button</item>
         <item name="android:gravity">center</item>
         <item name="android:textColor">@color/primary</item>
-        <item name="android:textColorHighlight">@color/accent</item>
-        <item name="android:textColorHint">@color/accent</item>
-        <item name="android:textColorLink">@color/text</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+    <style name="tabButton">
+        <item name="android:layout_marginTop">8dp</item>
+        <item name="android:layout_marginLeft">4dp</item>
+        <item name="android:layout_marginRight">8dp</item>
+        <item name="android:background">@drawable/tab_button</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/text</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+    <style name="tabHeader">
+        <item name="android:layout_marginTop">8dp</item>
+        <item name="android:layout_marginLeft">8dp</item>
+        <item name="android:layout_marginRight">4dp</item>
+        <item name="android:background">@drawable/tab_header</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/text</item>
         <item name="android:textSize">12sp</item>
     </style>
     <style name="deviceButton">
@@ -35,6 +50,11 @@
         <item name="android:textColorHighlight">@color/accent</item>
         <item name="android:textColorHint">@color/accent</item>
         <item name="android:textColorLink">@color/text</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+    <style name="errorText">
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/error</item>
         <item name="android:textSize">12sp</item>
     </style>
     <style name="fontSubHeader">

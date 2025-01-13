@@ -7,22 +7,30 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import thedigialex.digitalpet.R
 import thedigialex.digitalpet.api.FetchService
 
 class LoginActivity : AppCompatActivity() {
     private var isLoginMode = true
+    private var currentProgress: Int = 0
+    private lateinit var errorText: TextView
+    private lateinit var progressBar: ProgressBar
+    private lateinit var actionButton: Button
     private lateinit var fetchService: FetchService
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
-        fetchService = FetchService(this) { isLoading -> showLoading(isLoading) }
-        if(fetchService.checkToken()){ validateToken() }
-        findViewById<Button>(R.id.actionButton).setOnClickListener { handleAction() }
+        progressBar = findViewById(R.id.progressBar)
+        actionButton = findViewById(R.id.actionButton)
+        errorText = findViewById(R.id.errorText)
         findViewById<Button>(R.id.switchButton).setOnClickListener { toggleMode() }
+
+        fetchService = FetchService(this)
+        if(fetchService.checkToken()){ validateToken() }
+
+        findViewById<Button>(R.id.actionButton).setOnClickListener { handleAction() }
     }
 
     private fun handleAction() {
@@ -31,17 +39,39 @@ class LoginActivity : AppCompatActivity() {
         val password = findViewById<EditText>(R.id.passwordEditText).text.toString()
         val confirmPassword = findViewById<EditText>(R.id.confirmPasswordEditText).text.toString()
 
-        when {
-            email.isEmpty() -> showToast("Enter a valid email address")
-            password.isEmpty() -> showToast("Password cannot be empty")
-            isLoginMode -> performLogin(email, password)
-            name.isEmpty() -> showToast("Name cannot be empty")
-            password != confirmPassword -> showToast("Passwords do not match")
-            else -> performRegistration(name, email, password)
+        var issue = false
+        errorText.visibility = View.GONE
+        actionButton.isClickable = false
+        if(password.isEmpty()) {
+            showIssue("Enter Password")
+            issue = true
+        }
+        if(email.isEmpty()) {
+            showIssue("Enter Email Address")
+            issue = true
+        }
+
+        if(isLoginMode && !issue) {
+            performLogin(email, password)
+        }
+
+        if(!isLoginMode) {
+            if(password != confirmPassword) {
+                showIssue("Passwords do not match")
+                issue = true
+            }
+            if(name.isEmpty()) {
+                showIssue("Enter Name")
+                issue = true
+            }
+            if(!issue) {
+                performRegistration(name, email, password)
+            }
         }
     }
 
     private fun toggleMode() {
+        errorText.visibility = View.GONE
         isLoginMode = !isLoginMode
         findViewById<EditText>(R.id.nameEditText).visibility = if (isLoginMode) View.GONE else View.VISIBLE
         findViewById<EditText>(R.id.confirmPasswordEditText).visibility = if (isLoginMode) View.GONE else View.VISIBLE
@@ -50,15 +80,33 @@ class LoginActivity : AppCompatActivity() {
         findViewById<TextView>(R.id.formTitle).text = getString(if (isLoginMode) R.string.login else R.string.register)
     }
 
+    private fun showIssue(errorMessage: String){
+        errorText.text = errorMessage
+        errorText.visibility = View.VISIBLE
+        actionButton.isClickable = true
+    }
+
+    private fun validateToken() {
+        actionButton.isClickable = false
+        fetchService.validateToken(
+            onLoginSuccess = {
+                fetchAndStoreData()
+            },
+            onLoginFailure = { errorMessage ->
+                showIssue(errorMessage)
+            }
+        )
+    }
+
     private fun performLogin(email: String, password: String) {
         fetchService.performLogin(
             email = email,
             password = password,
             onLoginSuccess = {
-                navigateToMainActivity()
+                fetchAndStoreData()
             },
             onLoginFailure = { errorMessage ->
-                showToast(errorMessage)
+                showIssue(errorMessage)
             }
         )
     }
@@ -69,34 +117,55 @@ class LoginActivity : AppCompatActivity() {
             email = email,
             password = password,
             onLoginSuccess = {
-                navigateToMainActivity()
+                fetchAndStoreData()
             },
             onLoginFailure = { errorMessage ->
-                showToast(errorMessage)
+                showIssue(errorMessage)
             }
         )
     }
 
-    private fun validateToken() {
-        fetchService.validateToken(
-            onLoginSuccess = {
-                navigateToMainActivity()
+    private fun updateLoading() {
+        currentProgress += 20
+        progressBar.progress = currentProgress
+    }
+
+    private fun fetchAndStoreData() {
+        updateLoading()
+        fetchService.getDigitalMonsterEggs(
+            dataRetrievalSuccess = {
+                updateLoading()
+                fetchService.getUserDigitalMonsters(
+                    dataRetrievalSuccess = {
+                        updateLoading()
+                        fetchService.getInventoryItems(
+                            dataRetrievalSuccess = {
+                                updateLoading()
+                                fetchService.getUserTrainingEquipment(
+                                    dataRetrievalSuccess = {
+                                        updateLoading()
+                                        //navigateToMainActivity()
+                                    },
+                                    dataRetrievalFailure = { errorMessage ->
+                                        showIssue(errorMessage)
+                                    }
+                                )
+                            },
+                            dataRetrievalFailure = { errorMessage ->
+                                showIssue(errorMessage)
+                            }
+                        )
+                    },
+                    dataRetrievalFailure = { errorMessage ->
+                        showIssue(errorMessage)
+                    }
+                )
             },
-            onLoginFailure = { errorMessage ->
-                showToast(errorMessage)
+            dataRetrievalFailure = { errorMessage ->
+                showIssue(errorMessage)
             }
         )
-    }
 
-    private fun showLoading(isLoading: Boolean) {
-        val progressBar = findViewById<ProgressBar>(R.id.progressBar)
-        val actionButton = findViewById<Button>(R.id.actionButton)
-        progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
-        actionButton.isClickable = !isLoading
-    }
-
-    private fun showToast(message: String) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 
     private fun navigateToMainActivity() {
