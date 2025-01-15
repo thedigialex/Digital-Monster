@@ -13,9 +13,11 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import thedigialex.digitalpet.R
 import thedigialex.digitalpet.api.FetchService
-import thedigialex.digitalpet.model.entities.DigitalMonster
 import thedigialex.digitalpet.model.entities.User
 import thedigialex.digitalpet.util.SpriteManager
 import java.sql.Timestamp
@@ -33,7 +35,6 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
     private val emptyMenuImageResources = IntArray(8)
     private val filledMenuImageResources = IntArray(8)
     private var imageResources: MutableList<Bitmap> = mutableListOf()
-    private var selectableDigitalMonsters: List<DigitalMonster>? = null
 
     private val handler = Handler(Looper.getMainLooper())
     private lateinit var runnable: Runnable
@@ -63,6 +64,13 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
     init {
         setupImageResources()
         setupButtons()
+        user.mainDigitalMonster = user.findMainDigitalMonster()
+        if(user.mainDigitalMonster == null) {
+            setUpEggs()
+        }
+        else{
+            user.mainDigitalMonster!!.digital_monster.animation(mainImage, 1)
+        }
     }
 
     private fun setupImageResources() {
@@ -89,6 +97,24 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
         )
         caseButtons.forEachIndexed { index, button ->
             button.setOnClickListener { actions[index]() }
+        }
+    }
+
+    private fun setUpEggs() {
+        caseButtons[1].isClickable = false
+        if (user.eggs?.isNotEmpty() == true) {
+            val allSprites = mutableListOf<Bitmap>()
+            user.eggs?.forEach { monster ->
+                monster.sprites?.firstOrNull()?.let { firstSprite ->
+                    allSprites.add(firstSprite)
+                }
+                menuMax++
+            }
+            imageResources = allSprites
+            menuId = -10
+            isMenuOpen = true
+            updateMenuLayout()
+            updateMenuIcon()
         }
     }
 
@@ -238,7 +264,7 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
         when (innerMenuCycle) {
             0 -> {
                 statTextViews[0].text = "Level\n${user.mainDigitalMonster?.level}"
-                statTextViews[1].text = "Stage\n${user.mainDigitalMonster?.digitalMonster?.stage}"
+                statTextViews[1].text = "Stage\n${user.mainDigitalMonster?.digital_monster?.stage}"
                 statTextViews[2].text = "Training\n${user.mainDigitalMonster?.trainings} / ${user.mainDigitalMonster?.maxTrainings}"
                 statTextViews[3].text = "Battle\n${user.mainDigitalMonster?.wins} / ${user.mainDigitalMonster?.let { it.wins + it.losses }}"
             }
@@ -260,46 +286,29 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
                 statTextViews[1].setBackgroundResource(energyBars[energyIndex])
                 statTextViews[2].text = "Evo Progress"
                 statTextViews[3].setBackgroundResource(
-                    energyBars[((user.mainDigitalMonster?.currentEvoPoints ?: 0) * 4 / (user.mainDigitalMonster?.digitalMonster?.requiredEvoPoints ?: 1)).coerceIn(0, 4)]
+                    energyBars[((user.mainDigitalMonster?.currentEvoPoints ?: 0) * 4 / (user.mainDigitalMonster?.digital_monster?.requiredEvoPoints ?: 1)).coerceIn(0, 4)]
                 )
             }
         }
     }
 
-    fun setUpSelectableDigitalMonster(selectableDigitalMonsters: List<DigitalMonster>) {
-        this.selectableDigitalMonsters = selectableDigitalMonsters
-        caseButtons[1].isClickable = false
-        if (this.selectableDigitalMonsters?.isNotEmpty() == true) {
-            val allSprites = mutableListOf<Bitmap>()
-            this.selectableDigitalMonsters?.forEach { monster ->
-                monster.sprites?.firstOrNull()?.let { firstSprite ->
-                    allSprites.add(firstSprite)
-                }
-                menuMax++
-            }
-            imageResources = allSprites
-            menuId = -10
-            isMenuOpen = true
-            updateMenuLayout()
-            updateMenuIcon()
-        }
-    }
-
     private fun selectEgg() {
-       //val selectedDigitalMonsterId = selectableDigitalMonsters?.get(innerMenuCycle)?.id ?: return
-       //fetchService.createNewUserDigitalMonster(selectedDigitalMonsterId, "test") { newUserDigitalMonster ->
-       //    newUserDigitalMonster?.let { newMonster ->
-       //        user.mainDigitalMonster = newMonster
-       //        user.mainDigitalMonster!!.digitalMonster.animation(mainImage, 1)
-       //        caseButtons[1].isClickable = true
-       //        cancel()
-       //    }
-       //}
+        val selectedDigitalMonsterId = user.eggs?.get(innerMenuCycle)?.id ?: return
+        fetchService.createNewUserDigitalMonster(selectedDigitalMonsterId, "new egg") { newUserDigitalMonster ->
+            newUserDigitalMonster?.let { newMonster ->
+                CoroutineScope(Dispatchers.Main).launch {
+                    user.mainDigitalMonster = newMonster
+                    user.mainDigitalMonster!!.digital_monster.animation(mainImage, 1)
+                    caseButtons[1].isClickable = true
+                    cancel()
+                }
+            }
+        }
     }
 
     private fun performAction(actionType: String) {
         user.mainDigitalMonster?.let { digitalMonster ->
-            if (digitalMonster.digitalMonster.stage == "Egg") {
+            if (digitalMonster.digital_monster.stage == "Egg") {
                 cancel()
                 displayMessage("EGG not able to do this")
                 return
@@ -437,7 +446,7 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
             cancel()
         }
         SpriteManager.stopSideAnimation()
-        user.mainDigitalMonster!!.digitalMonster.animation(mainImage, 1)
+        user.mainDigitalMonster!!.digital_monster.animation(mainImage, 1)
         isHandlerRunning = false
         isTraining = false
         if (::runnable.isInitialized) {
@@ -465,7 +474,7 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
             }
             equipment?.trainingEquipment?.animation(animationLayout.findViewById(R.id.animationObjectImageView))
         }
-        user.mainDigitalMonster!!.digitalMonster.animation(animationLayout.findViewById(R.id.animationUserImageView), animationToPlay)
+        user.mainDigitalMonster!!.digital_monster.animation(animationLayout.findViewById(R.id.animationUserImageView), animationToPlay)
         isHandlerRunning = true
         val startTime = System.currentTimeMillis()
         runnable = object : Runnable {

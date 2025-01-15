@@ -60,17 +60,15 @@ class UserController extends Controller
             'trainings' => 'required|integer|min:0',
             'maxTrainings' => 'required|integer|min:0',
             'currentEvoPoints' => 'required|integer|min:0',
-            'user_id' => 'required|exists:users,id'
+            'user_id' => 'required|exists:users,id',
+            'isMain' => 'required|integer'
         ]);
 
-        if ($request->has('isMain')) {
-            $validated['isMain'] = true;
+        if ($request->input('isMain') == 1) {
             UserDigitalMonster::where('user_id', $validated['user_id'])
                 ->where('id', '!=', $request->input('id'))
-                ->update(['isMain' => false]);
-        } else {
-            $validated['isMain'] = false;
-        }
+                ->update(['isMain' => 0]);
+        }        
         if ($request->has('id')) {
             $userDigitalMonster = UserDigitalMonster::findOrFail($request->input('id'));
             $userDigitalMonster->update($validated);

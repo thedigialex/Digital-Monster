@@ -86,11 +86,11 @@ class ApiUserController extends Controller
         $userDigitalMonster->sleepStartedAt = null;
         $userDigitalMonster->save();
 
-        $userDigitalMonster->digitalMonster = $digitalMonster;
+        $userDigitalMonster->digital_monster = $digitalMonster;
         return response()->json([
             'status' => true,
             'message' => 'User Digital Monster created successfully.',
-            'userDigitalMonster' => $userDigitalMonster,
+            'userDigitalMonsters' => [$userDigitalMonster],
         ]);
     }
 

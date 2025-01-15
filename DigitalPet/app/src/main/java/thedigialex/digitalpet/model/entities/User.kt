@@ -16,6 +16,10 @@ data class User(
     var trainingEquipments: List<UserTrainingEquipment>? = null,
     var itemsForSale: List<Item>? = null
 ) {
+    fun findMainDigitalMonster(): UserDigitalMonster? {
+        return userDigitalMonster?.firstOrNull { it.isMain == 1 }
+    }
+
     fun getConsumableItems(): List<InventoryItem> {
         return inventoryItems?.filter { it.item.type == "Consumable" } ?: emptyList()
     }

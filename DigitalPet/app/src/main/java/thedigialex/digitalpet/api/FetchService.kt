@@ -264,16 +264,27 @@ class FetchService(private val context: Context) {
         }
     }
 
-   //fun createNewUserDigitalMonster(digitalMonsterId: Int, name: String, onSuccess: (UserDigitalMonster?) -> Unit) {
-   //    performAuthAction(true) {
-   //        val response = ApiClient.getApi(context).createUserDigitalMonster(digitalMonsterId, name)
-   //        if (response.isSuccessful && response.body()?.status == true) {
-   //            response.body()?.userDigitalMonster?.let { userDigitalMonster ->
-   //                setupSpriteAndReturn(userDigitalMonster, "Data", onSuccess)
-   //            }
-   //        }
-   //    }
-   //}
+    fun createNewUserDigitalMonster(digitalMonsterId: Int, name: String, onSuccess: (UserDigitalMonster?) -> Unit) {
+        performAuthAction {
+            val response = ApiClient.getApi(context).createUserDigitalMonster(digitalMonsterId, name)
+            if (response.isSuccessful && response.body()?.status == true) {
+                response.body()?.userDigitalMonsters?.let { userDigitalMonsters ->
+                    for (i in userDigitalMonsters.indices) {
+                        setUpSpriteImages(userDigitalMonsters[i]) { updatedMonster ->
+                            updatedMonster?.let {
+                                CoroutineScope(Dispatchers.Main).launch {
+                                    onSuccess(updatedMonster)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+   }
+
+
+
 
     fun updateInventoryItem(inventoryItem: InventoryItem) {
         performAuthAction{

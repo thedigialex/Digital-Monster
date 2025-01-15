@@ -24,5 +24,4 @@ data class UserDigitalMonster(
     val currentEvoPoints: Int,
     var sleepStartedAt: String?,
     val digital_monster: DigitalMonster,
-    val digitalMonster: DigitalMonster
 )

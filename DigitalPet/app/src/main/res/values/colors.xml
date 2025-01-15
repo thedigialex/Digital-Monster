@@ -9,4 +9,6 @@
     <color name="success"> #5CBF70</color>
     <color name="error"> #BF360C</color>
     <color name="transparent_frame">#40FAF2D1</color>
+
+    <color name="frame"> #FBF3D2</color>
 </resources>

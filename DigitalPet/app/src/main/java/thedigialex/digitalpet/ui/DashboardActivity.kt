@@ -53,7 +53,7 @@ class DashboardActivity : AppCompatActivity() {
     }
 
     private fun setUpImages() {
-        user.eggs?. let{ eggs ->
+        user.eggs?.let{ eggs ->
             for (i in eggs.indices) {
                 fetchService.setUpDigitalMonsterSpriteImages(eggs[i], "Data") { updatedMonster ->
                     updatedMonster?.let {
@@ -65,7 +65,7 @@ class DashboardActivity : AppCompatActivity() {
                 }
             }
         }
-        user.userDigitalMonster?. let{ userDigitalMonsters ->
+        user.userDigitalMonster?.let{ userDigitalMonsters ->
             for (i in userDigitalMonsters.indices) {
                 fetchService.setUpSpriteImages(userDigitalMonsters[i]) { updatedMonster ->
                     updatedMonster?.let {
@@ -106,13 +106,14 @@ class DashboardActivity : AppCompatActivity() {
                 }
             }
         }
-        caseController = CaseController(findViewById(R.id.caseBackground),this, fetchService, user)
+
     }
 
     private fun updateLoading() {
         currentProgress += 1
         if(currentProgress >= progressBar.max) {
             currentProgress = 0
+            caseController = CaseController(findViewById(R.id.caseBackground),this, fetchService, user)
         }
         progressBar.progress = currentProgress
     }
