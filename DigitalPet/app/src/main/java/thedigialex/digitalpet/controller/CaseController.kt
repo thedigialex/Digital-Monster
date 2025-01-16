@@ -9,9 +9,9 @@ import android.os.Looper
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -36,9 +36,21 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
     private val filledMenuImageResources = IntArray(8)
     private var imageResources: MutableList<Bitmap> = mutableListOf()
 
+    private var menuController: MenuController = MenuController( caseBackground.findViewById(R.id.menuLayout))
+
+    //menu elements
+    private var menuLayout: ViewGroup = caseBackground.findViewById(R.id.menuLayout)
+    private var title: TextView = menuLayout.findViewById(R.id.title)
+    private var count: TextView = menuLayout.findViewById(R.id.count)
+    private var alertText: TextView = menuLayout.findViewById(R.id.alertText)
+    private var editText: EditText = menuLayout.findViewById(R.id.editInput)
+    private var iconImage: ImageView = menuLayout.findViewById(R.id.iconImage)
+    private var statsViewLayout: ConstraintLayout = menuLayout.findViewById(R.id.statsViewLayout)
+
+
     private val handler = Handler(Looper.getMainLooper())
     private lateinit var runnable: Runnable
-    private var menuLayout: ViewGroup = caseBackground.findViewById(R.id.menuLayout)
+
     private var animationLayout: ViewGroup = caseBackground.findViewById(R.id.animationLayout)
     private var mainImage: ImageView = caseBackground.findViewById(R.id.mainImageView)
     private var menuImages: Array<ImageView> =
@@ -128,27 +140,29 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
     private fun updateMenuLayout() {
         menuLayout.visibility = View.VISIBLE
         mainImage.visibility = View.GONE
-        val titleTextView = menuLayout.findViewById<TextView>(R.id.title)
-        menuLayout.findViewById<ImageView>(R.id.iconImage).visibility = View.GONE
-        menuLayout.findViewById<ConstraintLayout>(R.id.statsViewLayout).visibility = View.GONE
+        alertText.visibility = View.GONE
+        editText.visibility = View.GONE
+        iconImage.visibility = View.GONE
+        statsViewLayout.visibility = View.GONE
         when (menuId) {
             -10 ->  {
-                titleTextView.text = context.getString(R.string.select_egg)
-                menuLayout.findViewById<ImageView>(R.id.iconImage).visibility = View.VISIBLE
+                title.text = context.getString(R.string.select_egg)
+                iconImage.visibility = View.VISIBLE
+                editText.visibility = View.VISIBLE
             }
             0 -> {
                 if (!isSettings) {
-                    titleTextView.text = context.getString(R.string.stats)
+                    title.text = context.getString(R.string.stats)
                     menuMax = 4
                     menuLayout.findViewById<ConstraintLayout>(R.id.statsViewLayout).visibility = View.VISIBLE
                     updateStatMenu()
                 } else {
-                    titleTextView.text = "Settings 0"
+                    title.text = "Settings 0"
                 }
             }
             1 -> {
                 if (!isSettings) {
-                    titleTextView.text = "Food"
+                    title.text = "Food"
                     val consumableItems = user.getConsumableItems()
                     if (consumableItems.isEmpty()) {
                         displayMessage("No Items")
@@ -166,12 +180,12 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
                         updateMenuIcon()
                     }
                 } else {
-                    titleTextView.text = "Settings 1"
+                    title.text = "Settings 1"
                 }
             }
             2 ->  {
                 if (!isSettings) {
-                    titleTextView.text = "Training"
+                    title.text = "Training"
                     val trainingEquipment = user.getTrainingEquipment()
                     if (trainingEquipment.isEmpty()) {
                         displayMessage("No Training Equipment")
@@ -189,7 +203,7 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
                         updateMenuIcon()
                     }
                 } else {
-                    titleTextView.text = "Settings 1"
+                    title.text = "Settings 1"
                 }
             }
             3 -> {
@@ -197,7 +211,7 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
                     performAction("cleaning")
                 }
                 else {
-                    titleTextView.text = "Settings 3"
+                    title.text = "Settings 3"
                 }
             }
             4 ->  {
@@ -205,14 +219,14 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
                     switchLight()
                 }
                 else {
-                    titleTextView.text = "Settings 3"
+                    title.text = "Settings 3"
                 }
             }
-            5 ->  titleTextView.text = if (!isSettings) "Accept 5" else "Settings 5"
-            6 ->  titleTextView.text = if (!isSettings) "Accept 6" else "Settings 6"
+            5 ->  title.text = if (!isSettings) "Accept 5" else "Settings 5"
+            6 ->  title.text = if (!isSettings) "Accept 6" else "Settings 6"
             7 -> {
                 if (!isSettings) {
-                    titleTextView.text = "Shop"
+                    title.text = "Shop"
                     menuMax = 4
                     menuLayout.findViewById<ImageView>(R.id.iconImage).visibility = View.VISIBLE
                     imageResources = mutableListOf(
@@ -223,11 +237,11 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
                     )
                     updateMenuIcon()
                 } else {
-                    titleTextView.text = "Settings 7"
+                    title.text = "Settings 7"
                 }
             }
             8 -> {
-                titleTextView.text = "item for sale"
+                title.text = "item for sale"
                 menuMax = user.itemsForSale!!.size
                 val allSprites = mutableListOf<Bitmap>()
                 user.itemsForSale!!.forEach { item ->
@@ -240,8 +254,7 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
                 updateMenuIcon()
             }
         }
-        val countTextView = menuLayout.findViewById<TextView>(R.id.count)
-        countTextView.text = "${innerMenuCycle + 1} / $menuMax"
+        count.text = "${innerMenuCycle + 1} / $menuMax"
     }
 
     @SuppressLint("SetTextI18n")
@@ -293,17 +306,24 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
     }
 
     private fun selectEgg() {
-        val selectedDigitalMonsterId = user.eggs?.get(innerMenuCycle)?.id ?: return
-        fetchService.createNewUserDigitalMonster(selectedDigitalMonsterId, "new egg") { newUserDigitalMonster ->
-            newUserDigitalMonster?.let { newMonster ->
-                CoroutineScope(Dispatchers.Main).launch {
-                    user.mainDigitalMonster = newMonster
-                    user.mainDigitalMonster!!.digital_monster.animation(mainImage, 1)
-                    caseButtons[1].isClickable = true
-                    cancel()
+        val name = menuLayout.findViewById<EditText>(R.id.editInput).text.toString()
+        if(name.isEmpty() || name.length >12){
+            displayMessage("name error")
+        }
+        else{
+            val selectedDigitalMonsterId = user.eggs?.get(innerMenuCycle)?.id ?: return
+            fetchService.createNewUserDigitalMonster(selectedDigitalMonsterId, name) { newUserDigitalMonster ->
+                newUserDigitalMonster?.let { newMonster ->
+                    CoroutineScope(Dispatchers.Main).launch {
+                        user.mainDigitalMonster = newMonster
+                        user.mainDigitalMonster!!.digital_monster.animation(mainImage, 1)
+                        caseButtons[1].isClickable = true
+                        cancel()
+                    }
                 }
             }
         }
+
     }
 
     private fun performAction(actionType: String) {
@@ -514,6 +534,7 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
     }
 
     private fun displayMessage(message: String) {
-        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+        alertText.text = message
+        alertText.visibility = View.VISIBLE
     }
 }
