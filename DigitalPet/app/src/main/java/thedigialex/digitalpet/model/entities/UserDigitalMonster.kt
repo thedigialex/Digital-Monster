@@ -20,7 +20,7 @@ data class UserDigitalMonster(
     val wins: Int,
     val losses: Int,
     var trainings: Int,
-    val maxTrainings: Int,
+    var maxTrainings: Int,
     val currentEvoPoints: Int,
     var sleepStartedAt: String?,
     val digital_monster: DigitalMonster,

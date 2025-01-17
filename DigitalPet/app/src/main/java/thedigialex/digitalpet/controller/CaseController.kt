@@ -29,8 +29,6 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
     private var isHandlerRunning: Boolean = false
     private var menuMax: Int = 0
     private var trainingEffort: Int = 0
-    private var isMenuOpen: Boolean = false
-    private var isSettings = false
     private var isTraining: Boolean = false
     private val emptyMenuImageResources = IntArray(8)
     private val filledMenuImageResources = IntArray(8)
@@ -78,7 +76,16 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
         setupButtons()
         user.mainDigitalMonster = user.findMainDigitalMonster()
         if(user.mainDigitalMonster == null) {
-            setUpEggs()
+            caseButtons[1].isClickable = false
+            var menuLimit = 0;
+            val allSprites = mutableListOf<Bitmap>()
+            user.eggs?.forEach { monster ->
+                monster.sprites?.firstOrNull()?.let { firstSprite ->
+                    allSprites.add(firstSprite)
+                }
+                menuLimit++
+            }
+            menuController.openMenu(-10, menuLimit, allSprites)
         }
         else{
             user.mainDigitalMonster!!.digital_monster.animation(mainImage, 1)
@@ -97,8 +104,8 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
             R.drawable.game_menu_highlight, R.drawable.shop_menu_highlight
         )
         for (i in defaultMenuImages.indices) {
-            emptyMenuImageResources[i] = if (!isSettings) defaultMenuImages[i] else R.drawable.stat_menu
-            filledMenuImageResources[i] = if (!isSettings) highlightedMenuImages[i] else R.drawable.stat_menu_highlight
+            emptyMenuImageResources[i] = if (!menuController.isSettings) defaultMenuImages[i] else R.drawable.stat_menu
+            filledMenuImageResources[i] = if (!menuController.isSettings) highlightedMenuImages[i] else R.drawable.stat_menu_highlight
         }
         updateMenuImages()
     }
@@ -109,24 +116,6 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
         )
         caseButtons.forEachIndexed { index, button ->
             button.setOnClickListener { actions[index]() }
-        }
-    }
-
-    private fun setUpEggs() {
-        caseButtons[1].isClickable = false
-        if (user.eggs?.isNotEmpty() == true) {
-            val allSprites = mutableListOf<Bitmap>()
-            user.eggs?.forEach { monster ->
-                monster.sprites?.firstOrNull()?.let { firstSprite ->
-                    allSprites.add(firstSprite)
-                }
-                menuMax++
-            }
-            imageResources = allSprites
-            menuId = -10
-            isMenuOpen = true
-            updateMenuLayout()
-            updateMenuIcon()
         }
     }
 
@@ -151,17 +140,17 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
                 editText.visibility = View.VISIBLE
             }
             0 -> {
-                if (!isSettings) {
+                if (!menuController.isSettings) {
                     title.text = context.getString(R.string.stats)
                     menuMax = 4
                     menuLayout.findViewById<ConstraintLayout>(R.id.statsViewLayout).visibility = View.VISIBLE
-                    updateStatMenu()
+
                 } else {
                     title.text = "Settings 0"
                 }
             }
             1 -> {
-                if (!isSettings) {
+                if (!menuController.isSettings) {
                     title.text = "Food"
                     val consumableItems = user.getConsumableItems()
                     if (consumableItems.isEmpty()) {
@@ -184,7 +173,7 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
                 }
             }
             2 ->  {
-                if (!isSettings) {
+                if (!menuController.isSettings) {
                     title.text = "Training"
                     val trainingEquipment = user.getTrainingEquipment()
                     if (trainingEquipment.isEmpty()) {
@@ -207,7 +196,7 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
                 }
             }
             3 -> {
-                if(!isSettings) {
+                if(!menuController.isSettings) {
                     performAction("cleaning")
                 }
                 else {
@@ -215,17 +204,17 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
                 }
             }
             4 ->  {
-                if(!isSettings) {
+                if(!menuController.isSettings) {
                     switchLight()
                 }
                 else {
                     title.text = "Settings 3"
                 }
             }
-            5 ->  title.text = if (!isSettings) "Accept 5" else "Settings 5"
-            6 ->  title.text = if (!isSettings) "Accept 6" else "Settings 6"
+            5 ->  title.text = if (!menuController.isSettings) "Accept 5" else "Settings 5"
+            6 ->  title.text = if (!menuController.isSettings) "Accept 6" else "Settings 6"
             7 -> {
-                if (!isSettings) {
+                if (!menuController.isSettings) {
                     title.text = "Shop"
                     menuMax = 4
                     menuLayout.findViewById<ImageView>(R.id.iconImage).visibility = View.VISIBLE
@@ -263,52 +252,9 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
         iconImage.setImageBitmap(imageResources[innerMenuCycle])
     }
 
-    @SuppressLint("SetTextI18n")
-    private fun updateStatMenu() {
-        val statTextViews = listOf(
-            R.id.statTextTopLeft,
-            R.id.statTextTopRight,
-            R.id.statTextBottomLeft,
-            R.id.statTextBottomRight
-        ).map { menuLayout.findViewById<TextView>(it).apply { text = null; background = null } }
-        val energyBars = listOf(
-            R.drawable.energy_bar_0, R.drawable.energy_bar_25, R.drawable.energy_bar_50,
-            R.drawable.energy_bar_75, R.drawable.energy_bar_100)
-        when (innerMenuCycle) {
-            0 -> {
-                statTextViews[0].text = "Level\n${user.mainDigitalMonster?.level}"
-                statTextViews[1].text = "Stage\n${user.mainDigitalMonster?.digital_monster?.stage}"
-                statTextViews[2].text = "Training\n${user.mainDigitalMonster?.trainings} / ${user.mainDigitalMonster?.maxTrainings}"
-                statTextViews[3].text = "Battle\n${user.mainDigitalMonster?.wins} / ${user.mainDigitalMonster?.let { it.wins + it.losses }}"
-            }
-            1 -> {
-                statTextViews[0].text = "Strength\n${user.mainDigitalMonster?.strength}"
-                statTextViews[1].text = "Defense\n${user.mainDigitalMonster?.defense}"
-                statTextViews[2].text = "Agility\n${user.mainDigitalMonster?.agility}"
-                statTextViews[3].text = "Mind\n${user.mainDigitalMonster?.mind}"
-            }
-            2 -> {
-                statTextViews[0].text = context.getString(R.string.hunger)
-                statTextViews[1].setBackgroundResource(energyBars[user.mainDigitalMonster?.hunger!!])
-                statTextViews[2].text = "Exercise"
-                statTextViews[3].setBackgroundResource(energyBars[user.mainDigitalMonster?.exercise!!])
-            }
-            3 -> {
-                statTextViews[0].text = "Energy"
-                val energyIndex = ((user.mainDigitalMonster?.energy ?: 0) * 4 / (user.mainDigitalMonster?.maxEnergy ?: 1)).coerceIn(0, 4)
-                statTextViews[1].setBackgroundResource(energyBars[energyIndex])
-                statTextViews[2].text = "Evo Progress"
-                statTextViews[3].setBackgroundResource(
-                    energyBars[((user.mainDigitalMonster?.currentEvoPoints ?: 0) * 4 / (user.mainDigitalMonster?.digital_monster?.requiredEvoPoints ?: 1)).coerceIn(0, 4)]
-                )
-            }
-        }
-    }
-
-    private fun selectEgg() {
-        val name = menuLayout.findViewById<EditText>(R.id.editInput).text.toString()
+    private fun selectEgg(name: String) {
         if(name.isEmpty() || name.length >12){
-            displayMessage("name error")
+            menuController.displayMessage("name error")
         }
         else{
             val selectedDigitalMonsterId = user.eggs?.get(innerMenuCycle)?.id ?: return
@@ -323,7 +269,6 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
                 }
             }
         }
-
     }
 
     private fun performAction(actionType: String) {
@@ -379,21 +324,9 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
         }
     }
 
-    @SuppressLint("SetTextI18n")
     private fun select(direction: Int) {
-        if (isMenuOpen) {
-            innerMenuCycle = (innerMenuCycle + direction + menuMax) % menuMax
-            when (menuId) {
-                -10 ->  updateMenuIcon()
-                0 -> updateStatMenu()
-                1 -> updateMenuIcon()
-                2 -> updateMenuIcon()
-                7 -> updateMenuIcon()
-                8 -> updateMenuIcon()
-            }
-            val countTextView = menuLayout.findViewById<TextView>(R.id.count)
-            countTextView.text = "${innerMenuCycle + 1} / $menuMax"
-        }
+        if (menuController.isMenuOpen)
+            menuController.cycleMenu(direction)
         else {
             menuCycle = (menuCycle + direction + 8) % 8
             updateMenuImages()
@@ -401,11 +334,8 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
     }
 
     private fun cancel() {
-        if(isMenuOpen) {
-            isMenuOpen = false
-            innerMenuCycle = 0
-            menuId = -1
-            menuLayout.visibility = View.GONE
+        if(menuController.isMenuOpen) {
+            menuController.reset()
             animationLayout.visibility = View.GONE
             if(user.mainDigitalMonster!!.sleepStartedAt == null) {
                 mainImage.visibility = View.VISIBLE
@@ -421,14 +351,48 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
     }
 
     private fun accept() {
-        if (!isMenuOpen && menuCycle != -1) {
-            isMenuOpen = true
-            menuId = menuCycle
-            updateMenuLayout()
+        if (!menuController.isMenuOpen) {
+            val allSprites = mutableListOf<Bitmap>()
+            var maxCycle = 0
+            when (menuCycle) {
+                0 -> {
+                    val stats: Array<String> = Array(12) { "0" }
+                    stats[0] = user.mainDigitalMonster?.level.toString()
+                    stats[1] = user.mainDigitalMonster?.digital_monster?.stage.toString()
+                    stats[2] = "${user.mainDigitalMonster?.trainings } / ${user.mainDigitalMonster?.maxTrainings }"
+                    stats[3] ="${user.mainDigitalMonster!!.wins } / ${(user.mainDigitalMonster!!.losses) + (user.mainDigitalMonster!!.wins) }"
+                    stats[4] = user.mainDigitalMonster?.strength.toString()
+                    stats[5] = user.mainDigitalMonster?.defense.toString()
+                    stats[6] = user.mainDigitalMonster?.agility.toString()
+                    stats[7] = user.mainDigitalMonster?.mind.toString()
+                    stats[8] = user.mainDigitalMonster?.hunger.toString()
+                    stats[9] = user.mainDigitalMonster?.exercise.toString()
+                    stats[10] = "${(user.mainDigitalMonster!!.energy * 4) / (user.mainDigitalMonster!!.maxEnergy)}"
+                    stats[11] = "${(user.mainDigitalMonster!!.currentEvoPoints * 4) / (user.mainDigitalMonster!!.digital_monster.requiredEvoPoints)}"
+
+                    menuController.stats = stats;
+                    maxCycle = 4
+                }
+                1 -> {
+                    maxCycle = user.getConsumableItems().size
+                    user.getConsumableItems().forEach { inventoryItem ->
+                        inventoryItem.item.sprites?.firstOrNull()?.let { firstSprite ->
+                            allSprites.add(firstSprite)
+                        }
+                    }
+                }
+            }
+            if(menuCycle != -1){
+                menuController.openMenu(menuCycle, maxCycle, allSprites)
+            }
         } else {
-            when (menuId) {
-                -10 -> selectEgg()
-                1 -> performAction("consumable")
+            when (menuController.currentOpenMenuId) {
+                -10 -> selectEgg(menuController.editText.text.toString())
+                1 -> {
+                    if(menuController.menuImageResources.isNotEmpty()) {
+                        performAction("consumable")
+                    }
+                }
                 2 -> performAction("training")
                 7 -> pullInPurchaseItems(innerMenuCycle)
             }
@@ -527,8 +491,8 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
     }
 
     private fun switchMenu() {
-        if(!isMenuOpen){
-            isSettings = !isSettings
+        if(!menuController.isMenuOpen){
+            menuController.isSettings = !menuController.isSettings
             setupImageResources()
         }
     }
