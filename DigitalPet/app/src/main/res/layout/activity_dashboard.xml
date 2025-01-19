@@ -123,7 +123,7 @@
                 android:id="@+id/mainView"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:background="@drawable/winterone"
+                android:background="@drawable/testimage"
                 app:layout_constraintBottom_toTopOf="@+id/bottomMenu"
                 app:layout_constraintEnd_toEndOf="@+id/topMenu"
                 app:layout_constraintHorizontal_bias="0.0"
@@ -136,8 +136,7 @@
                     android:layout_height="48dp"
                     android:onClick="evoTest"
                     app:layout_constraintBottom_toTopOf="@+id/mainImageView"
-                    app:layout_constraintStart_toEndOf="@+id/mainImageView"
-                    app:srcCompat="@drawable/cdchampsix" />
+                    app:layout_constraintStart_toEndOf="@+id/mainImageView" />
 
                 <ImageView
                     android:id="@+id/mainImageView"

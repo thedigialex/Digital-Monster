@@ -34,16 +34,20 @@ interface ApiService {
     suspend fun getTrainingEquipment(): Response<UserTrainingEquipmentResponse>
     @GET("api/user/inventory")
     suspend fun getInventoryItems(): Response<InventoryItemResponse>
+    @FormUrlEncoded
+    @POST("api/items")
+    suspend fun getItems(@Field("type") type: String): Response<ItemResponse>
 
+    @FormUrlEncoded
+    @POST("api/item/buy")
+    suspend fun buyItem(@Field("id") id: Int): Response<InventoryItemResponse>
 
     @POST("api/logout")
     fun logout(): Call<Void>
 
 
 
-    @FormUrlEncoded
-    @POST("api/items")
-    suspend fun getItems(@Field("type") type: String): Response<ItemResponse>
+
 
     @FormUrlEncoded
     @POST("api/user-digital-monster/create")

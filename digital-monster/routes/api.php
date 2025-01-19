@@ -26,7 +26,7 @@ Route::middleware('check-api-key')->group(function () {
         Route::post('/user-digital-monster/save', [ApiUserController::class, 'saveUserDigitalMonster']);
         
         Route::post('/items', [ApiUserController::class, 'getItems']);
-        Route::post('/purchase-item', [ApiUserController::class, 'purchaseItem']);
+        Route::post('/item/buy', [ApiUserController::class, 'buyItem']);
         Route::post('/inventory-item/update', [ApiUserController::class, 'updateInventoryItem']);
     });
 });

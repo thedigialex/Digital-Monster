@@ -132,6 +132,39 @@ class FetchService(private val context: Context) {
         }
     }
 
+    fun getItemsForSale(user: User, itemType: String, context: Context, onSuccess: () -> Unit) {
+        performAuthAction {
+            val response = ApiClient.getApi(context).getItems(itemType)
+            if (response.isSuccessful) {
+                response.body()?.let { itemResponse ->
+                    val items = itemResponse.items
+                    if (items.isEmpty()) {
+                        user.itemsForSale = null
+                        onSuccess()
+                    }
+                    else{
+                        val itemCount = items.size
+                        var readySpritesCount = 0
+                        fun checkAllSpritesReady() {
+                            if (readySpritesCount == itemCount) {
+                                CoroutineScope(Dispatchers.Main).launch {
+                                    user.itemsForSale = items
+                                    onSuccess()
+                                }
+                            }
+                        }
+                        items.forEach { item ->
+                            item.setupSprite(context) {
+                                readySpritesCount++
+                                checkAllSpritesReady()
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     fun getInventoryItems(dataRetrievalSuccess: () -> Unit, dataRetrievalFailure: (String) -> Unit) = performAuthAction {
         val response = ApiClient.getApi(context).getInventoryItems()
         if (response.isSuccessful && response.body()?.status == true) {
@@ -144,6 +177,41 @@ class FetchService(private val context: Context) {
         } else {
             withContext(Dispatchers.Main) {
                 dataRetrievalFailure("Failed: ${response.body()?.message}")
+            }
+        }
+    }
+
+    fun buyItem(user: User, id: Int, context: Context, onSuccess: () -> Unit) {
+        performAuthAction {
+            val response = ApiClient.getApi(context).buyItem(id)
+            if (response.isSuccessful) {
+                response.body()?.let { inventoryItemResponse ->
+                    val newItem = inventoryItemResponse.inventoryItems
+                    val itemCount = newItem.size
+                    var readySpritesCount = 0
+                    fun checkAllSpritesReady() {
+                        if (readySpritesCount == itemCount) {
+                            CoroutineScope(Dispatchers.Main).launch {
+                                val newInventoryItem = newItem[0]
+                                val inventory = user.inventoryItems as MutableList<InventoryItem>
+                                val existingItemIndex = inventory.indexOfFirst { it.id == newInventoryItem.id }
+                                if (existingItemIndex != -1) {
+                                    inventory[existingItemIndex] = newInventoryItem
+                                } else {
+                                    inventory.add(newInventoryItem)
+                                }
+                                user.inventoryItems = inventory
+                                onSuccess()
+                            }
+                        }
+                    }
+                    newItem.forEach { item ->
+                        item.item.setupSprite(context) {
+                            readySpritesCount++
+                            checkAllSpritesReady()
+                        }
+                    }
+                }
             }
         }
     }
@@ -161,6 +229,26 @@ class FetchService(private val context: Context) {
         performAuthAction {
             userTrainingEquipment.trainingEquipment.setupSprite(context) {
                 onSuccess(userTrainingEquipment)
+            }
+        }
+    }
+
+
+    fun createNewUserDigitalMonster(digitalMonsterId: Int, name: String, onSuccess: (UserDigitalMonster?) -> Unit) {
+        performAuthAction {
+            val response = ApiClient.getApi(context).createUserDigitalMonster(digitalMonsterId, name)
+            if (response.isSuccessful && response.body()?.status == true) {
+                response.body()?.userDigitalMonsters?.let { userDigitalMonsters ->
+                    for (i in userDigitalMonsters.indices) {
+                        setUpSpriteImages(userDigitalMonsters[i]) { updatedMonster ->
+                            updatedMonster?.let {
+                                CoroutineScope(Dispatchers.Main).launch {
+                                    onSuccess(updatedMonster)
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
     }
@@ -201,44 +289,6 @@ class FetchService(private val context: Context) {
 
 
 
-
-
-
-
-
-    fun fetchAndAttachItemsForSale(user: User, itemType: String, context: Context, onComplete: () -> Unit) {
-        performAuthAction {
-            val response = ApiClient.getApi(context).getItems(itemType)
-            if (response.isSuccessful) {
-                response.body()?.let { itemResponse ->
-                    val items = itemResponse.items
-                    if (items.isEmpty()) {
-                        user.itemsForSale = null
-                        onComplete()
-                    }
-                    else{
-                        val itemCount = items.size
-                        var readySpritesCount = 0
-                        fun checkAllSpritesReady() {
-                            if (readySpritesCount == itemCount) {
-                                CoroutineScope(Dispatchers.Main).launch {
-                                    user.itemsForSale = items
-                                    onComplete()
-                                }
-                            }
-                        }
-                        items.forEach { item ->
-                            item.setupSprite(context) {
-                                readySpritesCount++
-                                checkAllSpritesReady()
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-
     fun saveUserDigitalMonster(userDigitalMonster: UserDigitalMonster) {
         performAuthAction {
             ApiClient.getApi(context).saveUserDigitalMonster(
@@ -263,25 +313,6 @@ class FetchService(private val context: Context) {
                 sleepStartedAt = userDigitalMonster.sleepStartedAt)
         }
     }
-
-    fun createNewUserDigitalMonster(digitalMonsterId: Int, name: String, onSuccess: (UserDigitalMonster?) -> Unit) {
-        performAuthAction {
-            val response = ApiClient.getApi(context).createUserDigitalMonster(digitalMonsterId, name)
-            if (response.isSuccessful && response.body()?.status == true) {
-                response.body()?.userDigitalMonsters?.let { userDigitalMonsters ->
-                    for (i in userDigitalMonsters.indices) {
-                        setUpSpriteImages(userDigitalMonsters[i]) { updatedMonster ->
-                            updatedMonster?.let {
-                                CoroutineScope(Dispatchers.Main).launch {
-                                    onSuccess(updatedMonster)
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-   }
 
 
 

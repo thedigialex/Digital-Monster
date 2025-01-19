@@ -6,7 +6,7 @@ data class User(
     val email: String,
     val tamer_level: Int,
     val tamer_exp: Int,
-    val bits: Int,
+    var bits: Int,
     val score: Int,
 
     var eggs: List<DigitalMonster>? = null,
@@ -64,11 +64,12 @@ data class User(
         }
     }
 
-    fun getTrainingEquipment(): List<UserTrainingEquipment> {
-        return trainingEquipments?.filter { it.trainingEquipment.stat != "cleaning" } ?: emptyList()
-    }
-
-    fun getCleaningEquipment(): UserTrainingEquipment? {
-        return trainingEquipments?.firstOrNull { it.trainingEquipment.stat == "cleaning" }
+    fun getEquipmentByType(type: String = "Training"): List<UserTrainingEquipment> {
+        return trainingEquipments?.filter { equipment ->
+            when (type) {
+                "Training" -> equipment.trainingEquipment.stat != "Cleaning" && equipment.trainingEquipment.stat != "Lighting"
+                else -> equipment.trainingEquipment.stat == type
+            }
+        } ?: emptyList()
     }
 }

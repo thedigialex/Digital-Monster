@@ -164,14 +164,14 @@ class ApiUserController extends Controller
     //Items
     public function getItems(Request $request)
     {
-        $request->validate([
-            'type' => 'required|string',
-        ]);
-    
         $user = $request->user();
         $itemType = $request->type;
-    
-        $items = Item::where('type', $itemType)->get();
+        $itemsQuery = Item::where('type', $itemType)->where('isAvailable', 1);
+        if ($itemType !== 'Consumable' && $itemType !== 'Material') {
+            $ownedItemIds = $user->inventories->pluck('item_id')->toArray();
+            $itemsQuery->whereNotIn('id', $ownedItemIds);
+        }
+        $items = $itemsQuery->get();
     
         return response()->json([
             'status' => true,
@@ -180,13 +180,10 @@ class ApiUserController extends Controller
         ]);
     }
     
-    public function purchaseItem(Request $request)
+    public function buyItem(Request $request)
     {
         $user = $request->user();
-        $validated = $request->validate([
-            'item_id' => 'required|exists:items,id',
-        ]);
-        $item = Item::findOrFail($validated['item_id']);
+        $item = Item::findOrFail($request->id);
         $user->bits -= $item->price;
         $user->save();
         $inventoryItem = Inventory::where('user_id', $user->id)
@@ -200,13 +197,14 @@ class ApiUserController extends Controller
                 'user_id' => $user->id,
                 'item_id' => $item->id,
                 'quantity' => 1,
-                'isEquipped' => false,
+                'isEquipped' => 0,
             ]);
         }
+        $inventoryItem = $inventoryItem->load('item');
         return response()->json([
             'status' => true,
             'message' => 'Item purchased successfully.',
-            'inventoryItem' => $inventoryItem,
+            'inventoryItems' => [$inventoryItem],
         ]);
     }
 

@@ -13,7 +13,7 @@ return new class extends Migration
             $table->string('name');
             $table->integer('max_level');
             $table->integer('upgrade_item_id')->nullable();
-            $table->enum('stat', ['Strength', 'Agility', 'Defense', 'Mind', 'Cleaning']);
+            $table->enum('stat', ['Strength', 'Agility', 'Defense', 'Mind', 'Cleaning', 'Lighting']);
             $table->string('image')->nullable();
             $table->timestamps();
         });

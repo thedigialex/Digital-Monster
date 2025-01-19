@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Storage;
 
 class TrainingEquipmentController extends Controller
 {
-    protected $stats = ['Strength', 'Agility', 'Defense', 'Mind', 'Cleaning'];
+    protected $stats = ['Strength', 'Agility', 'Defense', 'Mind', 'Cleaning', 'Lighting'];
     
     public function index()
     {

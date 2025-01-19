@@ -20,23 +20,28 @@ class MenuController(private val menuLayout: ViewGroup) {
     private var statsViewLayout: ConstraintLayout = menuLayout.findViewById(R.id.statsViewLayout)
 
     var currentOpenMenuId: Int = -1
-    private var menuCycle: Int = 0
+    var menuCycle: Int = 0
     private var menuMaxCycle: Int = 0
     var isMenuOpen: Boolean = false
     var isSettings: Boolean = false
     var stats: Array<String> = Array(12) { "0" }
     var menuImageResources: MutableList<Bitmap> = mutableListOf()
-
+    var subMenuImageResources = mutableListOf<Int>()
 
     fun cycleMenu(direction: Int) {
-        if(menuMaxCycle != 0){
+        alertText.visibility = View.GONE
+        if(menuMaxCycle != 0) {
             menuCycle = (menuCycle + direction + menuMaxCycle) % menuMaxCycle
             when (currentOpenMenuId) {
                 -10 ->  updateIconImage()
                 0 -> cycleStatMenu()
                 1 -> updateIconImage()
                 2 -> updateIconImage()
-                7 -> updateIconImage()
+                3 -> updateIconImage()
+                4 -> updateIconImage()
+                5 -> updateSubMenuIconImage()
+                6 -> updateSubMenuIconImage()
+                7 -> updateSubMenuIconImage()
                 8 -> updateIconImage()
             }
             count.text = "${menuCycle + 1} / $menuMaxCycle"
@@ -101,56 +106,77 @@ class MenuController(private val menuLayout: ViewGroup) {
             }
             2 ->  {
                 if (!isSettings) {
-
                     title.text = "Training"
-                    if (menuMaxCycle == 0) {
+                    if (menuImageResources.isEmpty()) {
                         displayMessage("No Training Equipment")
                     } else {
                         iconImage.visibility = View.VISIBLE
-                        //updateMenuIcon()
+                        updateIconImage()
                     }
                 } else {
                     title.text = "Settings 1"
                 }
             }
             3 -> {
-                if(!isSettings) {
-                    //performAction("cleaning")
-                }
-                else {
-                    title.text = "Settings 3"
+                if (!isSettings) {
+                    title.text = "Cleaning"
+                    if (menuImageResources.isEmpty()) {
+                        displayMessage("No Cleaning Equipment")
+                    } else {
+                        iconImage.visibility = View.VISIBLE
+                        updateIconImage()
+                    }
+                } else {
+                    title.text = "Settings 1"
                 }
             }
             4 ->  {
-                if(!isSettings) {
-                    //switchLight()
-                }
-                else {
-                    title.text = "Settings 3"
-                }
-            }
-            5 ->  title.text = if (!isSettings) "Accept 5" else "Settings 5"
-            6 ->  title.text = if (!isSettings) "Accept 6" else "Settings 6"
-            7 -> {
                 if (!isSettings) {
-                    title.text = "Shop"
-                    if (menuMaxCycle == 0) {
-                        displayMessage("No Items")
+                    title.text = "Lighting"
+                    if (menuImageResources.isEmpty()) {
+                        displayMessage("No Lighting Equipment")
                     } else {
                         iconImage.visibility = View.VISIBLE
-                        //updateMenuIcon()
+                        updateIconImage()
                     }
                 } else {
-                    title.text = "Settings 7"
+                    title.text = "Settings 1"
+                }
+            }
+            5 ->  {
+                if (!isSettings) {
+                    title.text = "Battle"
+                    iconImage.visibility = View.VISIBLE
+                    updateSubMenuIconImage()
+                } else {
+                    title.text = "Settings 1"
+                }
+            }
+            6 ->  {
+                if (!isSettings) {
+                    title.text = "Game"
+                    iconImage.visibility = View.VISIBLE
+                    updateSubMenuIconImage()
+                } else {
+                    title.text = "Settings 1"
+                }
+            }
+            7 ->  {
+                if (!isSettings) {
+                    title.text = "Shop"
+                    iconImage.visibility = View.VISIBLE
+                    updateSubMenuIconImage()
+                } else {
+                    title.text = "Settings 1"
                 }
             }
             8 -> {
-                title.text = "Items For Sale"
-                if (menuMaxCycle == 0) {
-                    displayMessage("No Items")
-                } else {
+                if (!isSettings) {
+                    title.text = "Item for sale"
                     iconImage.visibility = View.VISIBLE
-                    //updateMenuIcon()
+                    updateIconImage()
+                } else {
+                    title.text = "Settings 1"
                 }
             }
         }
@@ -169,16 +195,16 @@ class MenuController(private val menuLayout: ViewGroup) {
             R.drawable.energy_bar_75, R.drawable.energy_bar_100)
         when (menuCycle) {
             0 -> {
-                statTextViews[0].text = "Level\n${stats.get(0)}"
-                statTextViews[1].text = "Stage\n${stats.get(1)}"
-                statTextViews[2].text = "Training\n${stats.get(2)}"
-                statTextViews[3].text = "Battle\n${stats.get(3)}"
+                statTextViews[0].text = "Level\n${stats[0]}"
+                statTextViews[1].text = "Stage\n${stats[1]}"
+                statTextViews[2].text = "Training\n${stats[2]}"
+                statTextViews[3].text = "Battle\n${stats[3]}"
             }
             1 -> {
-                statTextViews[0].text = "Strength\n${stats.get(4)}"
-                statTextViews[1].text = "Defense\n${stats.get(5)}"
-                statTextViews[2].text = "Agility\n${stats.get(6)}"
-                statTextViews[3].text = "Mind\n${stats.get(7)}"
+                statTextViews[0].text = "Strength\n${stats[4]}"
+                statTextViews[1].text = "Defense\n${stats[5]}"
+                statTextViews[2].text = "Agility\n${stats[6]}"
+                statTextViews[3].text = "Mind\n${stats[7]}"
             }
             2 -> {
                 statTextViews[0].text = "Hunger"
@@ -196,7 +222,12 @@ class MenuController(private val menuLayout: ViewGroup) {
     }
 
     private fun updateIconImage() {
-        val  iconImage = menuLayout.findViewById<ImageView>(R.id.iconImage)
-        iconImage.setImageBitmap(menuImageResources?.get(menuCycle))
+        iconImage.setImageBitmap(menuImageResources[menuCycle])
+        iconImage.background = null
+    }
+
+    private fun updateSubMenuIconImage() {
+        iconImage.setBackgroundResource(subMenuImageResources[menuCycle])
+        iconImage.setImageBitmap(null)
     }
 }
