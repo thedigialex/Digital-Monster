@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\ApiAuthenticatedSessionController;
 use App\Http\Controllers\ApiUserController;
 use App\Http\Controllers\ApiGetDataController;
+use App\Http\Controllers\ApiPostDataController;
 
 Route::middleware('check-api-key')->group(function () {
     Route::post('/register', [ApiAuthenticatedSessionController::class, 'register']);
@@ -18,15 +19,14 @@ Route::middleware('check-api-key')->group(function () {
         Route::get('/user/training-equipment', [ApiGetDataController::class, 'getUserTrainingEquipment']);
         Route::get('/user/inventory', [ApiGetDataController::class, 'getUserInventories']);
        
-
         Route::get('/user-digital-monsters', [ApiUserController::class, 'getUserDigitalMonsters']);
-        Route::get('/user-digital-monster/switch', [ApiUserController::class, 'switchUserDigitalMonster']);
-        Route::post('/user-digital-monster/create', [ApiUserController::class, 'createUserDigitalMonster']);
+        //Route::get('/user-digital-monster/switch', [ApiUserController::class, 'switchUserDigitalMonster']);
+        Route::post('/user-digital-monster/create', [ApiPostDataController::class, 'createUserDigitalMonster']);
         Route::post('/user-digital-monster/evolve', [ApiUserController::class, 'evolve']);
-        Route::post('/user-digital-monster/save', [ApiUserController::class, 'saveUserDigitalMonster']);
+        Route::post('/user-digital-monster/update', [ApiPostDataController::class, 'updateUserDigitalMonster']);
         
-        Route::post('/items', [ApiUserController::class, 'getItems']);
-        Route::post('/item/buy', [ApiUserController::class, 'buyItem']);
-        Route::post('/inventory-item/update', [ApiUserController::class, 'updateInventoryItem']);
+        Route::post('/items', [ApiPostDataController::class, 'getItems']);
+        Route::post('/item/buy', [ApiPostDataController::class, 'buyItem']);
+        Route::post('/inventory-item/update', [ApiPostDataController::class, 'updateInventoryItem']);
     });
 });

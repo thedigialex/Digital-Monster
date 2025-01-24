@@ -76,6 +76,7 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
             menuController.openMenu(-10, menuLimit, allSprites)
         } else {
             user.mainDigitalMonster!!.digital_monster.animation(mainImage, 1)
+            mainImage.setOnClickListener{ pet() }
         }
     }
 
@@ -132,6 +133,7 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
                     CoroutineScope(Dispatchers.Main).launch {
                         user.mainDigitalMonster = newMonster
                         user.mainDigitalMonster!!.digital_monster.animation(mainImage, 1)
+                        mainImage.setOnClickListener{ pet() }
                         caseButtons[1].isClickable = true
                         cancel()
                     }
@@ -458,5 +460,15 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
             menuController.isSettings = !menuController.isSettings
             setupImageResources()
         }
+    }
+
+    private fun pet() {
+        if(user.mainDigitalMonster?.digital_monster?.stage == "Egg"){
+            user.mainDigitalMonster!!.apply {
+                currentEvoPoints = (currentEvoPoints + 5).coerceAtMost(digital_monster.requiredEvoPoints)
+                fetchService.saveUserDigitalMonster(user.mainDigitalMonster!!)
+            }
+        }
+
     }
 }

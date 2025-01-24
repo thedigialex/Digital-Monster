@@ -291,7 +291,7 @@ class FetchService(private val context: Context) {
 
     fun saveUserDigitalMonster(userDigitalMonster: UserDigitalMonster) {
         performAuthAction {
-            ApiClient.getApi(context).saveUserDigitalMonster(
+            ApiClient.getApi(context).userDigitalMonsterUpdate(
                 id = userDigitalMonster.id,
                 name = userDigitalMonster.name,
                 level = userDigitalMonster.level,
