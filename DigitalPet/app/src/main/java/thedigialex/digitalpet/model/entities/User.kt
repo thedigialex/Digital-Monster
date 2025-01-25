@@ -72,4 +72,8 @@ data class User(
             }
         } ?: emptyList()
     }
+
+    fun getEquippedItem(type: String): Item? {
+        return inventoryItems?.firstOrNull { it.item.type == type && it.isEquipped == 1 }?.item
+    }
 }

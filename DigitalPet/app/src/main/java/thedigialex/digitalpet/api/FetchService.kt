@@ -287,11 +287,9 @@ class FetchService(private val context: Context) {
         }
     }
 
-
-
-    fun saveUserDigitalMonster(userDigitalMonster: UserDigitalMonster) {
+    fun saveUserDigitalMonster(userDigitalMonster: UserDigitalMonster, onSaveComplete: ((Boolean) -> Unit)? = null) {
         performAuthAction {
-            ApiClient.getApi(context).userDigitalMonsterUpdate(
+            val response = ApiClient.getApi(context).userDigitalMonsterUpdate(
                 id = userDigitalMonster.id,
                 name = userDigitalMonster.name,
                 level = userDigitalMonster.level,
@@ -310,10 +308,31 @@ class FetchService(private val context: Context) {
                 trainings = userDigitalMonster.trainings,
                 maxTrainings = userDigitalMonster.maxTrainings,
                 currentEvoPoints = userDigitalMonster.currentEvoPoints,
-                sleepStartedAt = userDigitalMonster.sleepStartedAt)
+                sleepStartedAt = userDigitalMonster.sleepStartedAt
+            )
+            withContext(Dispatchers.Main) {
+                onSaveComplete?.invoke(response.isSuccessful)
+            }
         }
     }
-
+    fun evolveUserDigitalMonster(dataRetrievalSuccess: (UserDigitalMonster?) -> Unit) {
+        performAuthAction {
+            val response = ApiClient.getApi(context).evolve()
+            if (response.isSuccessful && response.body()?.status == true) {
+                response.body()?.userDigitalMonsters?.let { userDigitalMonsters ->
+                    for (i in userDigitalMonsters.indices) {
+                        setUpSpriteImages(userDigitalMonsters[i]) { updatedMonster ->
+                            updatedMonster?.let {
+                                CoroutineScope(Dispatchers.Main).launch {
+                                    dataRetrievalSuccess(updatedMonster)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 
 
 
@@ -324,18 +343,4 @@ class FetchService(private val context: Context) {
     }
 
 
-    //fun evoUserDigitalMonster(onSuccess: (UserDigitalMonster?) -> Unit) {
-    //    performAuthAction(true) {
-    //        val response = ApiClient.getApi(context).evolve()
-    //        if (response.isSuccessful && response.body()?.status == true) {
-    //            response.body()?.userDigitalMonster?.let { userDigitalMonster ->
-    //                val spriteType = when (userDigitalMonster.digitalMonster.stage) {
-    //                    "Egg", "Fresh", "Child" -> "Data"
-    //                    else -> userDigitalMonster.type
-    //                }
-    //                setupSpriteAndReturn(userDigitalMonster, spriteType, onSuccess)
-    //            }
-    //        }
-    //    }
-    //}
 }

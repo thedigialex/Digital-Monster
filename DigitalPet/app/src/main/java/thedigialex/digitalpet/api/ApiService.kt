@@ -28,12 +28,16 @@ interface ApiService {
 
     @GET("api/eggs")
     suspend fun getDigitalMonsterEggs(): Response<DigitalMonstersResponse>
+
     @GET("api/user/user-digital-monsters")
     suspend fun getUserDigitalMonsters(): Response<UserDigitalMonsterResponse>
+
     @GET("api/user/training-equipment")
     suspend fun getTrainingEquipment(): Response<UserTrainingEquipmentResponse>
+
     @GET("api/user/inventory")
     suspend fun getInventoryItems(): Response<InventoryItemResponse>
+
     @FormUrlEncoded
     @POST("api/items")
     suspend fun getItems(@Field("type") type: String): Response<ItemResponse>

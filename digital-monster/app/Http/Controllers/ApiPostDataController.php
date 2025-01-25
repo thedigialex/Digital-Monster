@@ -8,7 +8,6 @@ use App\Models\DigitalMonster;
 use App\Models\UserDigitalMonster;
 use App\Models\Inventory;
 use App\Models\Item;
-use Illuminate\Support\Facades\Log;
 
 class ApiPostDataController extends Controller
 {
@@ -51,14 +50,13 @@ class ApiPostDataController extends Controller
         ]);
     }
 
-    public function updateUserDigitalMonster(Request $request) {
-        Log::info('Received updateUserDigitalMonster request:', $request->all());
-
+    public function updateUserDigitalMonster(Request $request)
+    {
         $request->merge([
-            'sleepStartedAt' => $request->input('sleepStartedAt') !== null 
-                ? preg_replace('/\.\d+$/', '', $request->input('sleepStartedAt')) 
+            'sleepStartedAt' => $request->input('sleepStartedAt') !== null
+                ? preg_replace('/\.\d+$/', '', $request->input('sleepStartedAt'))
                 : null,
-        ]);        
+        ]);
         $validated = $request->validate([
             'id' => 'required|integer|exists:user_digital_monsters,id',
             'name' => 'sometimes|string|max:255',
@@ -100,6 +98,28 @@ class ApiPostDataController extends Controller
         ]);
     }
 
+    public function evolve(Request $request)
+    {
+        $user = $request->user();
+        $userDigitalMonster = $user->getMainUserDigitalMonster()->evolve();
+        if ($userDigitalMonster) {
+            $userDigitalMonster->refresh();
+            $userDigitalMonster->digital_monster = DigitalMonster::find($userDigitalMonster->digital_monster_id);
+            return response()->json([
+                'status' => true,
+                'message' => 'Monster evolved successfully.',
+                'userDigitalMonsters' => [$userDigitalMonster],
+            ]);
+        } else {
+            return response()->json([
+                'status' => false,
+                'message' => 'Not enough evolution points to evolve this monster.',
+            ], 400);
+        }
+    }
+
+
+
     //Items
     public function getItems(Request $request)
     {
@@ -111,14 +131,14 @@ class ApiPostDataController extends Controller
             $itemsQuery->whereNotIn('id', $ownedItemIds);
         }
         $items = $itemsQuery->get();
-    
+
         return response()->json([
             'status' => true,
             'message' => "Items of type '$itemType' fetched successfully.",
             'items' => $items,
         ]);
     }
-    
+
     public function buyItem(Request $request)
     {
         $user = $request->user();

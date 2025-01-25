@@ -18,7 +18,11 @@ data class Item(
     var sprites: List<Bitmap>? = null
 
     fun setupSprite(context: Context, onSpritesReady: () -> Unit = {}) {
-        sprites = SpriteManager.setupItemSprite(context, this) {
+        var frames = 1
+        if(type == "Consumable") {
+            frames = 4
+        }
+        sprites = SpriteManager.setupItemSprite(context, this, frames) {
             onSpritesReady()
         }
     }

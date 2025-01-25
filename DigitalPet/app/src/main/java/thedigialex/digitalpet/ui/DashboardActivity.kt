@@ -79,17 +79,12 @@ class DashboardActivity : AppCompatActivity() {
         }
         user.inventoryItems?.let { items ->
             for (i in items.indices) {
-                if (items[i].item.type == "Consumable") {
-                    fetchService.setupSpriteAndReturnItem(items[i]) { updatedItem ->
-                        updatedItem?.let {
-                            user.inventoryItems = user.inventoryItems!!.toMutableList().apply {
-                                this[i] = it
-                            }
+                fetchService.setupSpriteAndReturnItem(items[i]) { updatedItem ->
+                    updatedItem?.let {
+                        user.inventoryItems = user.inventoryItems!!.toMutableList().apply {
+                            this[i] = it
                         }
-                        updateLoading()
                     }
-                }
-                else{
                     updateLoading()
                 }
             }

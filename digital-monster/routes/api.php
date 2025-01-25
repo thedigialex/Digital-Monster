@@ -22,7 +22,7 @@ Route::middleware('check-api-key')->group(function () {
         Route::get('/user-digital-monsters', [ApiUserController::class, 'getUserDigitalMonsters']);
         //Route::get('/user-digital-monster/switch', [ApiUserController::class, 'switchUserDigitalMonster']);
         Route::post('/user-digital-monster/create', [ApiPostDataController::class, 'createUserDigitalMonster']);
-        Route::post('/user-digital-monster/evolve', [ApiUserController::class, 'evolve']);
+        Route::post('/user-digital-monster/evolve', [ApiPostDataController::class, 'evolve']);
         Route::post('/user-digital-monster/update', [ApiPostDataController::class, 'updateUserDigitalMonster']);
         
         Route::post('/items', [ApiPostDataController::class, 'getItems']);

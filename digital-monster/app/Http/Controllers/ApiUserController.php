@@ -55,25 +55,6 @@ class ApiUserController extends Controller
         ]);
     }
 
-    public function evolve(Request $request)
-    {
-        $user = $request->user();
-        $userDigitalMonster = $user->getMainUserDigitalMonster()->evolve();
-        if ($userDigitalMonster) {
-            $userDigitalMonster->digitalMonster = DigitalMonster::find($userDigitalMonster->digital_monster_id);
-            return response()->json([
-                'status' => true,
-                'message' => 'Monster evolved successfully.',
-                'userDigitalMonster' => $userDigitalMonster,
-            ]);
-        } else {
-            return response()->json([
-                'status' => false,
-                'message' => 'Not enough evolution points to evolve this monster.',
-            ], 400);
-        }
-    }
-
     public function saveUserDigitalMonster(Request $request)
     {
         $request->merge([

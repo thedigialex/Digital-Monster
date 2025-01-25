@@ -18,8 +18,7 @@ object SpriteManager {
     private var sideAnimationRunnable: Runnable? = null
     private val handler = Handler(Looper.getMainLooper())
 
-    fun setupItemSprite(context: Context, item: Item, onSpritesReady: () -> Unit = {}): List<Bitmap>? {
-        val tilesPerRow = 4
+    fun setupItemSprite(context: Context, item: Item, frames:Int, onSpritesReady: () -> Unit = {}): List<Bitmap>? {
         val imageUrl = context.getString(thedigialex.digitalpet.R.string.base_url) + "storage/" + item.image
         var sprites: List<Bitmap>? = null
         Glide.with(context)
@@ -27,7 +26,7 @@ object SpriteManager {
             .load(imageUrl)
             .into(object : CustomTarget<Bitmap>() {
                 override fun onResourceReady(resource: Bitmap, transition: com.bumptech.glide.request.transition.Transition<in Bitmap>?) {
-                    sprites = splitSpriteSheet(resource, tilesPerRow)
+                    sprites = splitSpriteSheet(resource, frames)
                     item.sprites = sprites
                     onSpritesReady()
                 }

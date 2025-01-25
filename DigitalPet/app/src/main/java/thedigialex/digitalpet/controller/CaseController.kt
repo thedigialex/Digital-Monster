@@ -2,6 +2,7 @@ package thedigialex.digitalpet.controller
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
@@ -39,6 +40,7 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
 
     private var animationLayout: ViewGroup = caseBackground.findViewById(R.id.animationLayout)
     private var mainImage: ImageView = caseBackground.findViewById(R.id.mainImageView)
+    private var emotionImageView: ImageView = caseBackground.findViewById(R.id.emotionImageView)
     private var menuImages: Array<ImageView> =
         arrayOf(
             caseBackground.findViewById(R.id.topMenu_0),
@@ -77,7 +79,12 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
         } else {
             user.mainDigitalMonster!!.digital_monster.animation(mainImage, 1)
             mainImage.setOnClickListener{ pet() }
+            updateBackground(false)
+            if(user.mainDigitalMonster!!.currentEvoPoints >= user.mainDigitalMonster!!.digital_monster.requiredEvoPoints) {
+                emotionImageView.setBackgroundResource(R.color.success)
+            }
         }
+
     }
 
     private fun setupImageResources() {
@@ -238,7 +245,11 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
             background.setBackgroundResource(R.color.secondary)
             mainImage.visibility = View.INVISIBLE
         } else {
-            background.setBackgroundResource(R.drawable.winterone)
+            val sprites =  user.getEquippedItem("Background")?.sprites
+            if (!sprites.isNullOrEmpty()) {
+                val bitmapDrawable = BitmapDrawable(context.resources, sprites[0])
+                background.background = bitmapDrawable
+            }
             mainImage.visibility = View.VISIBLE
         }
     }
@@ -463,12 +474,27 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
     }
 
     private fun pet() {
-        if(user.mainDigitalMonster?.digital_monster?.stage == "Egg"){
-            user.mainDigitalMonster!!.apply {
-                currentEvoPoints = (currentEvoPoints + 5).coerceAtMost(digital_monster.requiredEvoPoints)
-                fetchService.saveUserDigitalMonster(user.mainDigitalMonster!!)
+        if (user.mainDigitalMonster!!.currentEvoPoints >= user.mainDigitalMonster!!.digital_monster.requiredEvoPoints) {
+            fetchService.saveUserDigitalMonster(user.mainDigitalMonster!!) { success ->
+                if (success) {
+                    fetchService.evolveUserDigitalMonster { evolvedMonster ->
+                        evolvedMonster?.let { monster ->
+                            CoroutineScope(Dispatchers.Main).launch {
+                                user.mainDigitalMonster = monster
+                                user.mainDigitalMonster!!.digital_monster.animation(mainImage, 1)
+                            }
+                        }
+                    }
+                }
             }
         }
-
+        else {
+            if(user.mainDigitalMonster?.digital_monster?.stage == "Egg"){
+                user.mainDigitalMonster!!.apply {
+                    currentEvoPoints = (currentEvoPoints + 5).coerceAtMost(digital_monster.requiredEvoPoints)
+                    fetchService.saveUserDigitalMonster(user.mainDigitalMonster!!)
+                }
+            }
+        }
     }
 }

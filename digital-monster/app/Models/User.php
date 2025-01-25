@@ -37,7 +37,7 @@ class User extends Authenticatable
 
     public function getMainUserDigitalMonster()
     {
-        return $this->digitalMonsters()->where('isMain', true)->first();
+        return $this->digitalMonsters()->where('isMain', 1)->first();
     }
 
     public function inventories()
