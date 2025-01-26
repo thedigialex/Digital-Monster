@@ -32,7 +32,6 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
     private var menuController: MenuController =
         MenuController(caseBackground.findViewById(R.id.menuLayout))
 
-    //menu elements
     private var menuLayout: ViewGroup = caseBackground.findViewById(R.id.menuLayout)
 
     private val handler = Handler(Looper.getMainLooper())
@@ -152,29 +151,46 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
     private fun performAction(actionType: String) {
         if (menuController.menuImageResources.isNotEmpty() || menuController.subMenuImageResources.isNotEmpty()) {
             if (user.mainDigitalMonster?.digital_monster?.stage != "Egg") {
-                if (actionType == "lighting") {
-                    //turn light off or on
+                if (actionType == "Lighting") {
+                    switchLight()
                 } else {
-                    if (actionType != "game") {
-                        if (isHandlerRunning) {
-                            stopAnimation(false)
-                        }
-                        val (animationDuration, animationStep) = when (actionType) {
-                            "consumable", "cleaning" -> 5000L to 2
-                            "battle" -> 10000L to 4
-                            else -> 10000L to 3
-                        }
-                        if (actionType == "consumable" || actionType == "cleaning") {
-                            startAnimation(animationStep, animationDuration, actionType)
-                        }
-                        if (user.mainDigitalMonster?.energy!! > 0) {
-                            user.mainDigitalMonster!!.energy -= 1
-                            startAnimation(animationStep, animationDuration, actionType)
+                    if(user.mainDigitalMonster!!.sleepStartedAt != null) {
+                        menuController.displayMessage("Unable to preform action.")
+                    }
+                    else {
+                        if (actionType != "Game") {
+                            if (isHandlerRunning) {
+                                stopAnimation(false)
+                            }
+                            else {
+                                val (animationDuration, animationStep) = when (actionType) {
+                                    "Consumable", "Cleaning" -> 5000L to 2
+                                    "Battle" -> 10000L to 4
+                                    else -> 10000L to 3
+                                }
+                                if (actionType == "Consumable" || actionType == "Cleaning") {
+                                    if(actionType == "Consumable" && user.mainDigitalMonster!!.hunger < 4) {
+                                        startAnimation(animationStep, animationDuration, actionType)
+                                    }
+                                    else{
+                                        menuController.displayMessage("Not Hungry")
+                                    }
+                                    if(actionType == "Cleaning") {
+                                        startAnimation(animationStep, animationDuration, actionType)
+                                    }
+                                }
+                                else{
+                                    if (user.mainDigitalMonster?.energy!! > 0) {
+                                        user.mainDigitalMonster!!.energy -= 1
+                                        startAnimation(animationStep, animationDuration, actionType)
+                                    } else {
+                                        menuController.displayMessage("No Energy")
+                                    }
+                                }
+                            }
                         } else {
-                            menuController.displayMessage("No Energy")
+                            //game
                         }
-                    } else {
-                        //game
                     }
                 }
             } else {
@@ -269,6 +285,7 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
             animationLayout.visibility = View.GONE
             if (user.mainDigitalMonster!!.sleepStartedAt == null) {
                 mainImage.visibility = View.VISIBLE
+                emotionImageView.visibility = View.VISIBLE
             }
             if (isHandlerRunning) {
                 stopAnimation(true)
@@ -376,17 +393,26 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
                 }
             }
             if (menuCycle != -1) {
+                mainImage.visibility = View.INVISIBLE
+                emotionImageView.visibility = View.INVISIBLE
                 menuController.openMenu(menuCycle, maxCycle, allSprites)
             }
         } else {
             when (menuController.currentOpenMenuId) {
                 -10 -> selectEgg(menuController.editText.text.toString())
-                1 -> performAction("consumable")
-                2 -> performAction("training")
-                3 -> performAction("cleaning")
-                4 -> performAction("lighting")
-                5 -> performAction("battle")
-                6 -> performAction("game")
+                1 -> performAction("Consumable")
+                2 -> {
+                    if(!isTraining) {
+                        performAction("Training")
+                    }
+                    else {
+
+                    }
+                }
+                3 -> performAction("Cleaning")
+                4 -> performAction("Lighting")
+                5 -> performAction("Battle")
+                6 -> performAction("Game")
                 7 -> openShopMenu()
                 8 -> buyItem()
             }
@@ -394,6 +420,7 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
     }
 
     private fun stopAnimation(calledFromCancel: Boolean) {
+        animationLayout.visibility = View.GONE
         if (!calledFromCancel) {
             if (isTraining) {
                 user.useTrainingEquipment(user.getEquipmentByType()[menuController.menuCycle])
@@ -411,15 +438,15 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
 
     private fun startAnimation(animationToPlay: Int, animationTimer: Long, animationType: String) {
         menuLayout.visibility = View.GONE
-        animationLayout.visibility = View.VISIBLE
         animationLayout.findViewById<ImageView>(R.id.animationBarImageView).visibility =
             View.INVISIBLE
-        if (animationType == "consumable") {
+        animationLayout.visibility = View.VISIBLE
+        if (animationType == "Consumable") {
             val usedItem = user.getUsedItem(menuController.menuCycle)
             usedItem.item.animation(animationLayout.findViewById(R.id.animationObjectImageView))
             fetchService.updateInventoryItem(usedItem)
         } else {
-            val equipment = if (animationType == "training") {
+            val equipment = if (animationType == "Training") {
                 isTraining = true
                 trainingEffort = 0
                 animationLayout.findViewById<ImageView>(R.id.animationBarImageView).visibility =
@@ -430,15 +457,18 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
             }
             equipment.trainingEquipment.animation(animationLayout.findViewById(R.id.animationObjectImageView))
         }
+        
         user.mainDigitalMonster!!.digital_monster.animation(
             animationLayout.findViewById(R.id.animationUserImageView),
             animationToPlay
         )
         isHandlerRunning = true
+        if (::runnable.isInitialized) {
+            handler.removeCallbacks(runnable)
+        }
         val startTime = System.currentTimeMillis()
         runnable = object : Runnable {
             override fun run() {
-
                 val currentTime = System.currentTimeMillis()
                 val elapsedTime = currentTime - startTime
                 if (elapsedTime < animationTimer - 100L) {
@@ -458,8 +488,11 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
                         }
                     }
                     handler.postDelayed(this, 100)
-                } else {
+                } else { 
+                    if(isHandlerRunning) {
                     stopAnimation(false)
+                }
+                    
                 }
             }
         }

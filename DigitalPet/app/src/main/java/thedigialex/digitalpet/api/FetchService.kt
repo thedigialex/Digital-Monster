@@ -83,7 +83,6 @@ class FetchService(private val context: Context) {
        }
    }
 
-
     fun getDigitalMonsterEggs(dataRetrievalSuccess: () -> Unit, dataRetrievalFailure: (String) -> Unit) = performAuthAction {
         val response = ApiClient.getApi(context).getDigitalMonsterEggs()
         if (response.isSuccessful && response.body()?.status == true) {
@@ -216,7 +215,6 @@ class FetchService(private val context: Context) {
         }
     }
 
-
     fun setupSpriteAndReturnItem(inventoryItem: InventoryItem, onSuccess: (InventoryItem?) -> Unit) {
         performAuthAction{
             inventoryItem.item.setupSprite(context) {
@@ -232,7 +230,6 @@ class FetchService(private val context: Context) {
             }
         }
     }
-
 
     fun createNewUserDigitalMonster(digitalMonsterId: Int, name: String, onSuccess: (UserDigitalMonster?) -> Unit) {
         performAuthAction {
@@ -262,6 +259,7 @@ class FetchService(private val context: Context) {
             setupSpriteAndReturn(userDigitalMonster, spriteType, onSuccess)
         }
     }
+
     private fun setupSpriteAndReturn(userDigitalMonster: UserDigitalMonster, type: String, onSuccess: (UserDigitalMonster?) -> Unit) {
         performAuthAction {
             userDigitalMonster.digital_monster.setupSprite(context, type) {
@@ -279,6 +277,7 @@ class FetchService(private val context: Context) {
             setupDigitalMonsterSpriteAndReturn(digitalMonster, spriteType, onSuccess)
         }
     }
+
     private fun setupDigitalMonsterSpriteAndReturn(digitalMonster: DigitalMonster, type: String, onSuccess: (DigitalMonster?) -> Unit) {
         performAuthAction {
             digitalMonster.setupSprite(context, type) {
@@ -315,6 +314,7 @@ class FetchService(private val context: Context) {
             }
         }
     }
+
     fun evolveUserDigitalMonster(dataRetrievalSuccess: (UserDigitalMonster?) -> Unit) {
         performAuthAction {
             val response = ApiClient.getApi(context).evolve()
@@ -334,13 +334,9 @@ class FetchService(private val context: Context) {
         }
     }
 
-
-
     fun updateInventoryItem(inventoryItem: InventoryItem) {
         performAuthAction{
             ApiClient.getApi(context).updateInventoryItem(inventoryItem.id)
         }
     }
-
-
 }

@@ -7,8 +7,8 @@
 
     <ImageView
         android:id="@+id/animationObjectImageView"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="96dp"
+        android:layout_height="96dp"
         android:layout_marginStart="8dp"
         app:layout_constraintBottom_toBottomOf="@+id/animationUserImageView"
         app:layout_constraintEnd_toStartOf="@+id/animationUserImageView"
@@ -18,23 +18,19 @@
 
     <ImageView
         android:id="@+id/animationUserImageView"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="96dp"
+        android:layout_height="96dp"
         android:layout_marginEnd="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/animationObjectImageView"
-        app:layout_constraintTop_toBottomOf="@+id/animationBarImageView"
         app:srcCompat="@drawable/battle_menu_highlight" />
 
     <ImageView
         android:id="@+id/animationBarImageView"
         android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
+        android:layout_height="120dp"
         android:background="@drawable/energy_bar_0"
-        app:layout_constraintBottom_toTopOf="@+id/animationUserImageView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

@@ -31,22 +31,30 @@ data class User(
         val effects = selectedItem.item.effect.split("|")
         for (effect in effects) {
             val changes = effect.split(",")
-            for (change in changes) {
-                when (change[0]) {
-                    'H' -> {
-                        mainDigitalMonster!!.hunger ++
+            if (changes.size > 1) {
+                val changeType = changes[0]
+                val changeValue = changes[1].toInt()
+
+                when (changeType) {
+                    "H" -> {
+                        mainDigitalMonster!!.hunger += changeValue
                         if (mainDigitalMonster!!.hunger > 4) {
                             mainDigitalMonster!!.hunger = 4
                         }
                     }
-                    'S' -> {
-                        mainDigitalMonster!!.strength += change[1].toString().toInt()
+                    "S" -> {
+                        mainDigitalMonster!!.strength += changeValue
+                    }
+                    "E" -> {
+                        mainDigitalMonster!!.currentEvoPoints += changeValue
+                        if (mainDigitalMonster!!.currentEvoPoints > mainDigitalMonster!!.digital_monster.requiredEvoPoints) {
+                            mainDigitalMonster!!.currentEvoPoints = mainDigitalMonster!!.digital_monster.requiredEvoPoints
+                        }
                     }
                     // Add more cases as needed
                 }
             }
         }
-
         inventoryItems = inventoryItems?.filter { it.quantity > 0 }
         return selectedItem
     }

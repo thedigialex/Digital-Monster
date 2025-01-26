@@ -23,19 +23,14 @@ class DashboardActivity : AppCompatActivity() {
         progressBar = findViewById(R.id.progressBar)
         fetchService = FetchService(this)
         setUpData()
-
-
-
         Log.d("User Data", user.toString())
-        //var equipment = user.eggs?.get(0)
-        //equipment?.animation(findViewById(R.id.emotionImageView), 1)
     }
 
     override fun onPause() {
         super.onPause()
-        //if(user.mainDigitalMonster != null) {
-        //    fetchService.saveUserDigitalMonster(user.mainDigitalMonster!!)
-        //}
+        if(user.mainDigitalMonster != null) {
+            fetchService.saveUserDigitalMonster(user.mainDigitalMonster!!)
+        }
     }
 
     private fun setUpData() {
@@ -112,13 +107,4 @@ class DashboardActivity : AppCompatActivity() {
         }
         progressBar.progress = currentProgress
     }
-
-  // fun evoTest(view: View)  {
-  //     fetchService.evoUserDigitalMonster { newUserDigitalMonster ->
-  //         newUserDigitalMonster?.let { newMonster ->
-  //             user.mainDigitalMonster = newMonster
-  //             user.mainDigitalMonster!!.digitalMonster.animation(findViewById(R.id.mainImageView), 1)
-  //         }
-  //     }
-  // }
 }

@@ -176,7 +176,7 @@ class ApiPostDataController extends Controller
 
         $inventoryItem = Inventory::findOrFail($validated['inventory_id']);
 
-        if ($inventoryItem->item->type == 'consumable') {
+        if ($inventoryItem->item->type == 'Consumable') {
             $inventoryItem->quantity--;
 
             if ($inventoryItem->quantity == 0) {

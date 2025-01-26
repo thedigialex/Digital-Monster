@@ -38,6 +38,7 @@
             android:layout_centerInParent="true"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
             android:max="100"
             android:progress="50"
             android:visibility="visible"
@@ -50,7 +51,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/caseBackground"
         android:layout_width="0dp"
-        android:layout_height="680dp"
+        android:layout_height="wrap_content"
         android:background="@drawable/test"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -121,7 +122,6 @@
                 android:background="@color/frame"
                 app:layout_constraintBottom_toTopOf="@+id/bottomMenu"
                 app:layout_constraintEnd_toEndOf="@+id/topMenu"
-                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="@+id/topMenu"
                 app:layout_constraintTop_toBottomOf="@+id/topMenu">
 
@@ -129,6 +129,8 @@
                     android:id="@+id/emotionImageView"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginBottom="8dp"
                     android:onClick="evoTest"
                     app:layout_constraintBottom_toTopOf="@+id/mainImageView"
                     app:layout_constraintStart_toEndOf="@+id/mainImageView" />
@@ -159,8 +161,8 @@
                     layout="@layout/animation_layout"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
-                    android:layout_marginStart="24dp"
-                    android:layout_marginEnd="24dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="16dp"
                     android:visibility="gone"
                     app:layout_constraintBottom_toTopOf="@+id/bottomStatusBar"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -266,9 +268,11 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/buttonLayout"
             android:layout_width="0dp"
-            android:layout_height="200dp"
+            android:layout_height="220dp"
             android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/frameLayout"
             app:layout_constraintStart_toStartOf="@+id/frameLayout"
@@ -278,6 +282,8 @@
                 android:id="@+id/switchButton"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
                 android:background="@drawable/case_button"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
