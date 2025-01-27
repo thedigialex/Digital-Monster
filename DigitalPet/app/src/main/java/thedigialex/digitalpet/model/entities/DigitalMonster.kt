@@ -35,12 +35,12 @@ data class DigitalMonster(
                 2 -> SpriteManager.animateSprite(imageView, sprites!!, listOf(0, 2))    // Eat animation
                 3 -> SpriteManager.animateSprite(imageView, sprites!!, listOf(3, 4))    // Battle animation
                 4 -> SpriteManager.animateSprite(imageView, sprites!!, listOf(5, 6))    // Tired animation
-                5 -> SpriteManager.animateSprite(imageView, sprites!!, listOf(7, 8))    // Sad animation
-                6 -> SpriteManager.animateSprite(imageView, sprites!!, listOf(0, 9))   // Happy animation
+                5 -> SpriteManager.animateSprite(imageView, sprites!!, listOf(0, 7))    // Sad animation
+                6 -> SpriteManager.animateSprite(imageView, sprites!!, listOf(0, 8))   // Happy animation
                 7 -> {
-                    val flippedImage = SpriteManager.flipBitmap(sprites!![10])
+                    val flippedImage = SpriteManager.flipBitmap(sprites!![9])
                     sprites = sprites!! + flippedImage
-                    SpriteManager.animateSprite(imageView, sprites!!, listOf(10, sprites!!.size - 1)) // Deny animation
+                    SpriteManager.animateSprite(imageView, sprites!!, listOf(9, sprites!!.size - 1)) // Deny animation
                 }
             }
         }

@@ -6,6 +6,4 @@
     <item
         android:drawable="@drawable/dirttwo"
         android:duration="400"/>
-
-
 </animation-list>

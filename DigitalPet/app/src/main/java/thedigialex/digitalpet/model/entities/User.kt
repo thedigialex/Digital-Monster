@@ -1,5 +1,7 @@
 package thedigialex.digitalpet.model.entities
 
+import android.util.Log
+
 data class User(
     val id: Int,
     val name: String,
@@ -64,11 +66,18 @@ data class User(
         if(mainDigitalMonster!!.trainings < mainDigitalMonster!!.maxTrainings) {
             mainDigitalMonster!!.trainings += 1
             when (userTrainingEquipment.trainingEquipment.stat) {
-                "strength" -> mainDigitalMonster!!.strength += userTrainingEquipment.statIncrease
-                "agility" -> mainDigitalMonster!!.agility += userTrainingEquipment.statIncrease
-                "defense" -> mainDigitalMonster!!.defense += userTrainingEquipment.statIncrease
-                "mind" -> mainDigitalMonster!!.mind += userTrainingEquipment.statIncrease
+                "Strength" -> mainDigitalMonster!!.strength += userTrainingEquipment.level
+                "Agility" -> mainDigitalMonster!!.agility += userTrainingEquipment.level
+                "Defense" -> mainDigitalMonster!!.defense += userTrainingEquipment.level
+                "Mind" -> mainDigitalMonster!!.mind += userTrainingEquipment.level
             }
+            Log.d("training", userTrainingEquipment.toString())
+        }
+        if ((1..5).random() == 1) {
+            mainDigitalMonster!!.hunger = maxOf(mainDigitalMonster!!.hunger - 1, 0)
+        }
+        if ((1..5).random() == 1) {
+            mainDigitalMonster!!.clean = minOf(mainDigitalMonster!!.clean + 1, 4)
         }
     }
 

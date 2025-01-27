@@ -2,6 +2,7 @@ package thedigialex.digitalpet.controller
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.drawable.AnimationDrawable
 import android.graphics.drawable.BitmapDrawable
 import android.os.Handler
 import android.os.Looper
@@ -25,7 +26,7 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
     private var menuCycle: Int = -1
     private var isHandlerRunning: Boolean = false
     private var trainingEffort: Int = 0
-    private var isTraining: Boolean = false
+    private var trainingState: Int = 0
     private val emptyMenuImageResources = IntArray(8)
     private val filledMenuImageResources = IntArray(8)
 
@@ -83,7 +84,6 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
                 emotionImageView.setBackgroundResource(R.color.success)
             }
         }
-
     }
 
     private fun setupImageResources() {
@@ -181,8 +181,13 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
                                 }
                                 else{
                                     if (user.mainDigitalMonster?.energy!! > 0) {
-                                        user.mainDigitalMonster!!.energy -= 1
-                                        startAnimation(animationStep, animationDuration, actionType)
+                                        if(user.mainDigitalMonster!!.clean < 4) {
+                                            user.mainDigitalMonster!!.energy -= 1
+                                            startAnimation(animationStep, animationDuration, actionType)
+                                        }
+                                        else {
+                                            menuController.displayMessage("Too Dirty")
+                                        }
                                     } else {
                                         menuController.displayMessage("No Energy")
                                     }
@@ -402,11 +407,12 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
                 -10 -> selectEgg(menuController.editText.text.toString())
                 1 -> performAction("Consumable")
                 2 -> {
-                    if(!isTraining) {
-                        performAction("Training")
+                    if(trainingState == 1) {
+                        trainingState = 2
+                        startAnimation(5, 5000L, "Result")
                     }
-                    else {
-
+                    if(trainingState == 0) {
+                        performAction("Training")
                     }
                 }
                 3 -> performAction("Cleaning")
@@ -422,15 +428,25 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
     private fun stopAnimation(calledFromCancel: Boolean) {
         animationLayout.visibility = View.GONE
         if (!calledFromCancel) {
-            if (isTraining) {
-                user.useTrainingEquipment(user.getEquipmentByType()[menuController.menuCycle])
-            }
             cancel()
+        }
+        if (trainingState == 2) {
+            user.useTrainingEquipment(user.getEquipmentByType()[menuController.menuCycle])
+            val dirtImageIds = listOf(
+                R.id.dirtImageOne,
+                R.id.dirtImageTwo,
+                R.id.dirtImageThree,
+                R.id.dirtImageFour
+            )
+            for (i in 0 until user.mainDigitalMonster!!.clean) {
+                val imageView = caseBackground.findViewById<ImageView>(dirtImageIds[i])
+                playDirt(imageView)
+            }
         }
         SpriteManager.stopSideAnimation()
         user.mainDigitalMonster!!.digital_monster.animation(mainImage, 1)
         isHandlerRunning = false
-        isTraining = false
+        trainingState = 0
         if (::runnable.isInitialized) {
             handler.removeCallbacks(runnable)
         }
@@ -438,16 +454,16 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
 
     private fun startAnimation(animationToPlay: Int, animationTimer: Long, animationType: String) {
         menuLayout.visibility = View.GONE
-        animationLayout.findViewById<ImageView>(R.id.animationBarImageView).visibility =
-            View.INVISIBLE
+        animationLayout.findViewById<ImageView>(R.id.animationBarImageView).visibility = View.INVISIBLE
         animationLayout.visibility = View.VISIBLE
         if (animationType == "Consumable") {
             val usedItem = user.getUsedItem(menuController.menuCycle)
             usedItem.item.animation(animationLayout.findViewById(R.id.animationObjectImageView))
             fetchService.updateInventoryItem(usedItem)
-        } else {
+        }
+        if(animationType == "Training" || animationType == "Cleaning") {
             val equipment = if (animationType == "Training") {
-                isTraining = true
+                trainingState = 1
                 trainingEffort = 0
                 animationLayout.findViewById<ImageView>(R.id.animationBarImageView).visibility =
                     View.VISIBLE
@@ -472,7 +488,7 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
                 val currentTime = System.currentTimeMillis()
                 val elapsedTime = currentTime - startTime
                 if (elapsedTime < animationTimer - 100L) {
-                    if (isTraining) {
+                    if (trainingState == 1) {
                         trainingEffort += 5
                         if (trainingEffort > 100) {
                             trainingEffort = 0
@@ -528,6 +544,22 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
                     fetchService.saveUserDigitalMonster(user.mainDigitalMonster!!)
                 }
             }
+        }
+    }
+
+    private fun playDirt(imageView: ImageView) {
+        imageView.visibility = View.VISIBLE
+        imageView.setBackgroundResource(R.drawable.dirtanimation)
+        val animationDrawable = imageView.background as AnimationDrawable
+        animationDrawable.start()
+    }
+    private fun stopDirt(vararg imageViews: ImageView) {
+        for (imageView in imageViews) {
+            val background = imageView.background
+            if (background is AnimationDrawable) {
+                background.stop()
+            }
+            imageView.visibility = View.GONE
         }
     }
 }
