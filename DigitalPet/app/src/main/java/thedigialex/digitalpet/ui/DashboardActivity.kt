@@ -103,7 +103,8 @@ class DashboardActivity : AppCompatActivity() {
         currentProgress += 1
         if(currentProgress >= progressBar.max) {
             currentProgress = 0
-            caseController = CaseController(findViewById(R.id.caseBackground),this, fetchService, user)
+            val screenWidth = resources.displayMetrics.widthPixels
+            caseController = CaseController(findViewById(R.id.caseBackground),this, fetchService, user, screenWidth)
         }
         progressBar.progress = currentProgress
     }
