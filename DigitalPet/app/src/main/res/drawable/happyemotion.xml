@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animation-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:drawable="@drawable/happyzero"
+        android:duration="400"/>
+    <item
+        android:drawable="@drawable/happyone"
+        android:duration="400"/>
+
+</animation-list>
