@@ -337,6 +337,7 @@ class FetchService(private val context: Context) {
     fun updateInventoryItem(inventoryItem: InventoryItem) {
         performAuthAction{
             ApiClient.getApi(context).updateInventoryItem(inventoryItem.id)
+            ApiClient.getApi(context).updateInventoryItem(inventoryItem.id)
         }
     }
 }

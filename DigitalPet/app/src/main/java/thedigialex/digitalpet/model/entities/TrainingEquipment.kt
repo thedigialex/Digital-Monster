@@ -20,9 +20,13 @@ data class TrainingEquipment(
     }
 
     fun animation(imageView: ImageView) {
-        SpriteManager.stopAnimation()
+        stopAnimation()
         if (!sprites.isNullOrEmpty()) {
             SpriteManager.animateSideSprite(imageView, sprites!!, listOf(0, 1, 2, 3))
         }
+    }
+
+    fun stopAnimation() {
+        SpriteManager.stopSideAnimation()
     }
 }

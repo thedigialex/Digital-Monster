@@ -57,8 +57,8 @@ object SpriteManager {
         val tilesPerRow = if (digitalMonster.stage == "Egg") 2 else 10
         val baseUrl = context.getString(thedigialex.digitalpet.R.string.base_url) + "storage/"
         val imageUrl = when (type) {
-            "Virus" -> baseUrl + digitalMonster.spriteImage1
-            "Vaccine" -> baseUrl + digitalMonster.spriteImage2
+            "Vaccine" -> baseUrl + digitalMonster.spriteImage1
+            "Virus" -> baseUrl + digitalMonster.spriteImage2
             else -> baseUrl + digitalMonster.spriteImage0
         }
         var sprites: List<Bitmap>? = null

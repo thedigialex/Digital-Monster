@@ -20,13 +20,13 @@ import thedigialex.digitalpet.R
 import thedigialex.digitalpet.api.FetchService
 import thedigialex.digitalpet.model.entities.Item
 import thedigialex.digitalpet.model.entities.User
+import thedigialex.digitalpet.model.entities.UserTrainingEquipment
 import thedigialex.digitalpet.util.SpriteManager
 import java.sql.Timestamp
 import kotlin.random.Random
 
 class CaseController(private val caseBackground: ConstraintLayout, private val context: Context, private val fetchService: FetchService, private val user: User, private val screenWidth: Int) {
     private var menuCycle: Int = -1
-    private var isHandlerRunning: Boolean = false
     private var isAnimating: Boolean = false
     private var trainingEffort: Int = 0
     private var trainingState: Int = 0
@@ -39,7 +39,10 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
     private var menuLayout: ViewGroup = caseBackground.findViewById(R.id.menuLayout)
 
     private val handler = Handler(Looper.getMainLooper())
+    private var isHandlerRunning: Boolean = false
     private lateinit var runnable: Runnable
+
+    private lateinit var trainingEquipment: UserTrainingEquipment
 
     private var animationLayout: ViewGroup = caseBackground.findViewById(R.id.animationLayout)
     private var mainImage: ImageView = caseBackground.findViewById(R.id.mainImageView)
@@ -84,6 +87,7 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
             user.mainDigitalMonster!!.digital_monster.animation(mainImage, 1)
             mainImage.setOnClickListener{ pet() }
             updateBackground(user.mainDigitalMonster!!.sleepStartedAt != null)
+            checkClean()
         }
     }
 
@@ -165,7 +169,7 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
                             }
                             else {
                                 val (animationDuration, animationStep) = when (actionType) {
-                                    "Consumable", "Cleaning" -> 5000L to 2
+                                    "Consumable", "Cleaning" -> 4450L to 2
                                     "Battle" -> 10000L to 4
                                     else -> 10000L to 3
                                 }
@@ -245,6 +249,7 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
         if(user.bits > item.price) {
             fetchService.buyItem(user, item.id, context) {
                 user.bits -= item.price
+                caseBackground.findViewById<TextView>(R.id.subNameTitleView).text = "Bits: " + user.bits.toString()
                 CoroutineScope(Dispatchers.Main).launch {
                     menuController.displayMessage("Item Bought")
                 }
@@ -469,6 +474,7 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
                 2 -> {
                     if(trainingState == 1) {
                         trainingState = 2
+                        trainingEquipment.trainingEquipment.stopAnimation()
                         var animationToPlay = 5
                         if(trainingEffort > 70) {
                             animationToPlay = 6
@@ -496,16 +502,7 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
         }
         if (trainingState == 2) {
             user.useTrainingEquipment(user.getEquipmentByType("Training")[menuController.menuCycle], trainingEffort/20)
-            val dirtImageIds = listOf(
-                R.id.dirtImageOne,
-                R.id.dirtImageTwo,
-                R.id.dirtImageThree,
-                R.id.dirtImageFour
-            )
-            for (i in 0 until user.mainDigitalMonster!!.clean) {
-                val imageView = caseBackground.findViewById<ImageView>(dirtImageIds[i])
-                playDirt(imageView)
-            }
+            checkClean()
             checkEvoPoints(false)
         }
         SpriteManager.stopSideAnimation()
@@ -527,7 +524,7 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
             fetchService.updateInventoryItem(usedItem)
         }
         if(animationType == "Training" || animationType == "Cleaning") {
-            val equipment = if (animationType == "Training") {
+            trainingEquipment = if (animationType == "Training") {
                 trainingState = 1
                 trainingEffort = 0
                 animationLayout.findViewById<ImageView>(R.id.animationBarImageView).visibility =
@@ -536,7 +533,7 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
             } else {
                 user.getEquipmentByType("Cleaning")[menuController.menuCycle]
             }
-            equipment.trainingEquipment.animation(animationLayout.findViewById(R.id.animationObjectImageView))
+            trainingEquipment.trainingEquipment.animation(animationLayout.findViewById(R.id.animationObjectImageView))
         }
         
         user.mainDigitalMonster!!.digital_monster.animation(
@@ -609,6 +606,19 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
                     fetchService.saveUserDigitalMonster(user.mainDigitalMonster!!)
                 }
             }
+        }
+    }
+
+    private fun checkClean() {
+        val dirtImageIds = listOf(
+            R.id.dirtImageOne,
+            R.id.dirtImageTwo,
+            R.id.dirtImageThree,
+            R.id.dirtImageFour
+        )
+        for (i in 0 until user.mainDigitalMonster!!.clean) {
+            val imageView = caseBackground.findViewById<ImageView>(dirtImageIds[i])
+            playDirt(imageView)
         }
     }
 
