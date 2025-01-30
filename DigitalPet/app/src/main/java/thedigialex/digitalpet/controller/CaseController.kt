@@ -30,11 +30,13 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
     private var isAnimating: Boolean = false
     private var trainingEffort: Int = 0
     private var trainingState: Int = 0
+    private var oldXValue: Int = 0
     private val emptyMenuImageResources = IntArray(8)
     private val filledMenuImageResources = IntArray(8)
 
     private var menuController: MenuController =
         MenuController(caseBackground.findViewById(R.id.menuLayout))
+    private var gameController: GameController = GameController()
 
     private var menuLayout: ViewGroup = caseBackground.findViewById(R.id.menuLayout)
 
@@ -154,69 +156,84 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
     }
 
     private fun performAction(actionType: String) {
-        if (menuController.menuImageResources.isNotEmpty() || menuController.subMenuImageResources.isNotEmpty()) {
-            if (user.mainDigitalMonster?.digital_monster?.stage != "Egg") {
-                if (actionType == "Lighting") {
-                    switchLight()
-                } else {
-                    if(user.mainDigitalMonster!!.sleepStartedAt != null) {
-                        menuController.displayMessage("Unable to preform action.")
+        if(actionCheck(actionType)) {
+            if (actionType == "Lighting") {
+                switchLight()
+            } else {
+                if (isHandlerRunning) {
+                    stopAnimation(false)
+                }
+                else {
+                    val (animationDuration, animationStep) = when (actionType) {
+                        "Consumable", "Cleaning" -> 4450L to 2
+                        "Battle" -> 10000L to 4
+                        else -> 10000L to 3
                     }
-                    else {
-                        if (actionType != "Game") {
-                            if (isHandlerRunning) {
-                                stopAnimation(false)
+                    if (actionType == "Consumable" || actionType == "Cleaning") {
+                        if(actionType == "Consumable" && user.mainDigitalMonster!!.hunger < 4) {
+                            startAnimation(animationStep, animationDuration, actionType)
+                        }
+                        else{
+                            menuController.displayMessage("Not Hungry")
+                        }
+                        if(actionType == "Cleaning") {
+                            startAnimation(animationStep, animationDuration, actionType)
+                            user.mainDigitalMonster!!.clean = 0
+                            val dirtImageIds = listOf(
+                                R.id.dirtImageOne,
+                                R.id.dirtImageTwo,
+                                R.id.dirtImageThree,
+                                R.id.dirtImageFour
+                            )
+                            for (i in 0 until 4) {
+                                val imageView = caseBackground.findViewById<ImageView>(dirtImageIds[i])
+                                stopDirt(imageView)
                             }
-                            else {
-                                val (animationDuration, animationStep) = when (actionType) {
-                                    "Consumable", "Cleaning" -> 4450L to 2
-                                    "Battle" -> 10000L to 4
-                                    else -> 10000L to 3
-                                }
-                                if (actionType == "Consumable" || actionType == "Cleaning") {
-                                    if(actionType == "Consumable" && user.mainDigitalMonster!!.hunger < 4) {
-                                        startAnimation(animationStep, animationDuration, actionType)
-                                    }
-                                    else{
-                                        menuController.displayMessage("Not Hungry")
-                                    }
-                                    if(actionType == "Cleaning") {
-                                        startAnimation(animationStep, animationDuration, actionType)
-                                        user.mainDigitalMonster!!.clean = 0
-                                        val dirtImageIds = listOf(
-                                            R.id.dirtImageOne,
-                                            R.id.dirtImageTwo,
-                                            R.id.dirtImageThree,
-                                            R.id.dirtImageFour
-                                        )
-                                        for (i in 0 until 4) {
-                                            val imageView = caseBackground.findViewById<ImageView>(dirtImageIds[i])
-                                            stopDirt(imageView)
-                                        }
-                                    }
-                                }
-                                else{
-                                    if (user.mainDigitalMonster?.energy!! > 0) {
-                                        if(user.mainDigitalMonster!!.clean < 4) {
-                                            user.mainDigitalMonster!!.energy -= 1
-                                            startAnimation(animationStep, animationDuration, actionType)
-                                        }
-                                        else {
-                                            menuController.displayMessage("Too Dirty")
-                                        }
-                                    } else {
-                                        menuController.displayMessage("No Energy")
-                                    }
-                                }
-                            }
-                        } else {
-                            //game
+                        }
+                    }
+                    else{
+                        if(checkEnergy()) {
+                            startAnimation(animationStep, animationDuration, actionType)
                         }
                     }
                 }
-            } else {
-                menuController.displayMessage("Unable to preform action.")
             }
+        }
+    }
+
+    private fun performGameAction(actionType: String) {
+        if(actionCheck(actionType)) {
+            if(checkEnergy()) {
+                gameController.setup(actionType, "cycle number")
+            }
+        }
+    }
+
+    private fun actionCheck(actionType: String): Boolean {
+        if ((menuController.menuImageResources.isNotEmpty() ||
+                    menuController.subMenuImageResources.isNotEmpty()) &&
+            user.mainDigitalMonster?.digital_monster?.stage != "Egg" &&
+            (actionType == "Lighting" || user.mainDigitalMonster?.sleepStartedAt == null)) {
+            return true
+        } else {
+            menuController.displayMessage("Unable to perform action.")
+            return false
+        }
+    }
+
+    private fun checkEnergy(): Boolean {
+        if (user.mainDigitalMonster?.energy!! > 0) {
+            if(user.mainDigitalMonster!!.clean < 4) {
+                user.mainDigitalMonster!!.energy -= 1
+                return true
+            }
+            else {
+                menuController.displayMessage("Too Dirty")
+                return false
+            }
+        } else {
+            menuController.displayMessage("No Energy")
+            return false
         }
     }
 
@@ -322,7 +339,8 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
         fun startRandomMovement() {
             if (!isAnimating) return
             val randomX = Random.nextInt(-screenWidth + ( mainImage.width / 2), screenWidth - ( mainImage.width / 2)) / 4
-            mainImage.scaleX = if (randomX <= 0) 1f else -1f
+            mainImage.scaleX = if (randomX < oldXValue) 1f else -1f
+            oldXValue = randomX
             ObjectAnimator.ofFloat(mainImage, "translationX", randomX.toFloat()).apply {
                 duration = 1500
                 start()
@@ -445,7 +463,7 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
                 6 -> {
                     maxCycle = 4
                     menuController.subMenuImageResources = mutableListOf(
-                        R.drawable.game_menu,
+                        R.drawable.miningone,
                         R.drawable.game_menu_highlight,
                         R.drawable.battle_menu,
                         R.drawable.battle_menu_highlight
@@ -487,8 +505,8 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
                 }
                 3 -> performAction("Cleaning")
                 4 -> performAction("Lighting")
-                5 -> performAction("Battle")
-                6 -> performAction("Game")
+                5 ->  performGameAction("Battle")
+                6 -> performGameAction("Game")
                 7 -> openShopMenu()
                 8 -> buyItem()
             }
@@ -535,7 +553,7 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
             }
             trainingEquipment.trainingEquipment.animation(animationLayout.findViewById(R.id.animationObjectImageView))
         }
-        
+
         user.mainDigitalMonster!!.digital_monster.animation(
             animationLayout.findViewById(R.id.animationUserImageView),
             animationToPlay
@@ -566,7 +584,7 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
                         }
                     }
                     handler.postDelayed(this, 100)
-                } else { 
+                } else {
                     if(isHandlerRunning) {
                         stopAnimation(false)
                     }

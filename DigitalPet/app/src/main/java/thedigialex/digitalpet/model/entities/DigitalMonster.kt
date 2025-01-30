@@ -31,7 +31,7 @@ data class DigitalMonster(
         SpriteManager.stopAnimation()
         if (!sprites.isNullOrEmpty()) {
             when (animationType) {
-                1 -> SpriteManager.animateSprite(imageView, sprites!!, listOf(0, 1))    // Walk - Idle animation
+                1 -> SpriteManager.animateSprite(imageView, sprites!!, listOf(0, 1, 0, 1, 2, 1))    // Walk - Idle animation
                 2 -> SpriteManager.animateSprite(imageView, sprites!!, listOf(0, 2))    // Eat animation
                 3 -> SpriteManager.animateSprite(imageView, sprites!!, listOf(3, 4))    // Battle animation
                 4 -> SpriteManager.animateSprite(imageView, sprites!!, listOf(5, 6))    // Tired animation
