@@ -54,17 +54,14 @@
     <TextView
         android:id="@+id/detailsText"
         android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginEnd="32dp"
-        android:layout_marginBottom="32dp"
-        android:fontFamily="@font/press_start_2p"
+        android:layout_height="48dp"
+        android:gravity="center"
         android:text="TextView"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
+        style="@style/fontParagraphDark"
+        android:visibility="visible"
+        app:layout_constraintBottom_toTopOf="@+id/iconImage"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/title" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/statsViewLayout"

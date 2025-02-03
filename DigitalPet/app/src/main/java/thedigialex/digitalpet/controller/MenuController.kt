@@ -15,34 +15,36 @@ class MenuController(private val menuLayout: ViewGroup) {
     private var title: TextView = menuLayout.findViewById(R.id.title)
     private var count: TextView = menuLayout.findViewById(R.id.count)
     private var alertText: TextView = menuLayout.findViewById(R.id.alertText)
-    var editText: EditText = menuLayout.findViewById(R.id.editInput)
+    private var detailsText: TextView = menuLayout.findViewById(R.id.detailsText)
     private var iconImage: ImageView = menuLayout.findViewById(R.id.iconImage)
     private var statsViewLayout: ConstraintLayout = menuLayout.findViewById(R.id.statsViewLayout)
+    var editText: EditText = menuLayout.findViewById(R.id.editInput)
 
     var currentOpenMenuId: Int = -1
     var menuCycle: Int = 0
-    private var menuMaxCycle: Int = 0
     var isMenuOpen: Boolean = false
     var isSettings: Boolean = false
     var stats: Array<String> = Array(12) { "0" }
-    var menuImageResources: MutableList<Bitmap> = mutableListOf()
     var subMenuImageResources = mutableListOf<Int>()
+    var menuImageResources: MutableList<Bitmap> = mutableListOf()
+    private var allTitles: MutableList<String> = mutableListOf()
+    private var menuMaxCycle: Int = 0
 
     fun cycleMenu(direction: Int) {
         alertText.visibility = View.GONE
         if(menuMaxCycle != 0) {
             menuCycle = (menuCycle + direction + menuMaxCycle) % menuMaxCycle
             when (currentOpenMenuId) {
-                -10 ->  updateIconImage()
+                -10 ->  updateIconImage(false)
                 0 -> cycleStatMenu()
-                1 -> updateIconImage()
-                2 -> updateIconImage()
-                3 -> updateIconImage()
-                4 -> updateIconImage()
-                5 -> updateSubMenuIconImage()
-                6 -> updateSubMenuIconImage()
-                7 -> updateSubMenuIconImage()
-                8 -> updateIconImage()
+                1 -> updateIconImage(false)
+                2 -> updateIconImage(false)
+                3 -> updateIconImage(false)
+                4 -> updateIconImage(false)
+                5 -> updateIconImage(true)
+                6 -> updateIconImage(true)
+                7 -> updateIconImage(true)
+                8 -> updateIconImage(false)
             }
             count.text = "${menuCycle + 1} / $menuMaxCycle"
         }
@@ -62,25 +64,27 @@ class MenuController(private val menuLayout: ViewGroup) {
         menuCycle = 0
     }
 
-    fun openMenu(menuIdToOpen: Int, maxCycle: Int, imageResources: MutableList<Bitmap>) {
+    fun openMenu(menuIdToOpen: Int, maxCycle: Int, imageResources: MutableList<Bitmap>, titles: MutableList<String>) {
         isMenuOpen = true
         menuMaxCycle = maxCycle
         currentOpenMenuId = menuIdToOpen
         menuImageResources = imageResources
+        allTitles = titles
         menuCycle = 0
 
         menuLayout.visibility = View.VISIBLE
         alertText.visibility = View.GONE
         editText.visibility = View.GONE
         iconImage.visibility = View.GONE
+        detailsText.visibility = View.GONE
         statsViewLayout.visibility = View.GONE
 
         when (currentOpenMenuId) {
             -10 ->  {
                 title.text = "Select an Egg"
-                iconImage.visibility = View.VISIBLE
+                showIconImage()
                 editText.visibility = View.VISIBLE
-                updateIconImage()
+                updateIconImage(false)
             }
             0 -> {
                 if (!isSettings) {
@@ -97,8 +101,8 @@ class MenuController(private val menuLayout: ViewGroup) {
                     if (menuImageResources.isEmpty()) {
                         displayMessage("No Consumable Items")
                     } else {
-                        iconImage.visibility = View.VISIBLE
-                        updateIconImage()
+                        showIconImage()
+                        updateIconImage(false)
                     }
                 } else {
                     title.text = "Settings 1"
@@ -110,8 +114,8 @@ class MenuController(private val menuLayout: ViewGroup) {
                     if (menuImageResources.isEmpty()) {
                         displayMessage("No Training Equipment")
                     } else {
-                        iconImage.visibility = View.VISIBLE
-                        updateIconImage()
+                        showIconImage()
+                        updateIconImage(false)
                     }
                 } else {
                     title.text = "Settings 1"
@@ -123,8 +127,8 @@ class MenuController(private val menuLayout: ViewGroup) {
                     if (menuImageResources.isEmpty()) {
                         displayMessage("No Cleaning Equipment")
                     } else {
-                        iconImage.visibility = View.VISIBLE
-                        updateIconImage()
+                        showIconImage()
+                        updateIconImage(false)
                     }
                 } else {
                     title.text = "Settings 1"
@@ -136,8 +140,8 @@ class MenuController(private val menuLayout: ViewGroup) {
                     if (menuImageResources.isEmpty()) {
                         displayMessage("No Lighting Equipment")
                     } else {
-                        iconImage.visibility = View.VISIBLE
-                        updateIconImage()
+                        showIconImage()
+                        updateIconImage(false)
                     }
                 } else {
                     title.text = "Settings 1"
@@ -146,8 +150,8 @@ class MenuController(private val menuLayout: ViewGroup) {
             5 ->  {
                 if (!isSettings) {
                     title.text = "Battle"
-                    iconImage.visibility = View.VISIBLE
-                    updateSubMenuIconImage()
+                    showIconImage()
+                    updateIconImage(true)
                 } else {
                     title.text = "Settings 1"
                 }
@@ -155,8 +159,8 @@ class MenuController(private val menuLayout: ViewGroup) {
             6 ->  {
                 if (!isSettings) {
                     title.text = "Game"
-                    iconImage.visibility = View.VISIBLE
-                    updateSubMenuIconImage()
+                    showIconImage()
+                    updateIconImage(true)
                 } else {
                     title.text = "Settings 1"
                 }
@@ -164,8 +168,8 @@ class MenuController(private val menuLayout: ViewGroup) {
             7 ->  {
                 if (!isSettings) {
                     title.text = "Shop"
-                    iconImage.visibility = View.VISIBLE
-                    updateSubMenuIconImage()
+                    showIconImage()
+                    updateIconImage(true)
                 } else {
                     title.text = "Settings 1"
                 }
@@ -173,8 +177,8 @@ class MenuController(private val menuLayout: ViewGroup) {
             8 -> {
                 if (!isSettings) {
                     title.text = "Item for sale"
-                    iconImage.visibility = View.VISIBLE
-                    updateIconImage()
+                    showIconImage()
+                    updateIconImage(false)
                 } else {
                     title.text = "Settings 1"
                 }
@@ -221,13 +225,20 @@ class MenuController(private val menuLayout: ViewGroup) {
         }
     }
 
-    private fun updateIconImage() {
-        iconImage.setImageBitmap(menuImageResources[menuCycle])
-        iconImage.background = null
+    private fun showIconImage() {
+        iconImage.visibility = View.VISIBLE
+        detailsText.visibility = View.VISIBLE
     }
 
-    private fun updateSubMenuIconImage() {
-        iconImage.setBackgroundResource(subMenuImageResources[menuCycle])
-        iconImage.setImageBitmap(null)
+    private fun updateIconImage(updateSub: Boolean) {
+        if(updateSub) {
+            iconImage.setImageBitmap(null)
+            iconImage.setBackgroundResource(subMenuImageResources[menuCycle])
+        }
+        else {
+            iconImage.background = null
+            iconImage.setImageBitmap(menuImageResources[menuCycle])
+        }
+        detailsText.text = allTitles[menuCycle]
     }
 }

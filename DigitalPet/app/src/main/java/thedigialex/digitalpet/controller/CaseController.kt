@@ -1,6 +1,7 @@
 package thedigialex.digitalpet.controller
 
 import android.animation.ObjectAnimator
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.drawable.AnimationDrawable
@@ -25,9 +26,11 @@ import thedigialex.digitalpet.util.SpriteManager
 import java.sql.Timestamp
 import kotlin.random.Random
 
+@SuppressLint("SetTextI18n")
 class CaseController(private val caseBackground: ConstraintLayout, private val context: Context, private val fetchService: FetchService, private val user: User, private val screenWidth: Int) {
     private var menuCycle: Int = -1
     private var isAnimating: Boolean = false
+    private var miningEffort: Int = -1
     private var trainingEffort: Int = 0
     private var trainingState: Int = 0
     private var oldXValue: Int = 0
@@ -36,8 +39,6 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
 
     private var menuController: MenuController =
         MenuController(caseBackground.findViewById(R.id.menuLayout))
-    private var gameController: GameController = GameController()
-
     private var menuLayout: ViewGroup = caseBackground.findViewById(R.id.menuLayout)
 
     private val handler = Handler(Looper.getMainLooper())
@@ -68,6 +69,12 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
             caseBackground.findViewById(R.id.rightButton),
             caseBackground.findViewById(R.id.switchButton),
         )
+    private var dirtImageIds = listOf(
+        R.id.dirtImageOne,
+        R.id.dirtImageTwo,
+        R.id.dirtImageThree,
+        R.id.dirtImageFour
+    )
 
     init {
         setupImageResources()
@@ -78,13 +85,15 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
             caseButtons[1].isClickable = false
             var menuLimit = 0
             val allSprites = mutableListOf<Bitmap>()
+            val allTitles = mutableListOf<String>()
             user.eggs?.forEach { monster ->
                 monster.sprites?.firstOrNull()?.let { firstSprite ->
                     allSprites.add(firstSprite)
                 }
+                allTitles.add(monster.name)
                 menuLimit++
             }
-            menuController.openMenu(-10, menuLimit, allSprites)
+            menuController.openMenu(-10, menuLimit, allSprites, allTitles)
         } else {
             user.mainDigitalMonster!!.digital_monster.animation(mainImage, 1)
             mainImage.setOnClickListener{ pet() }
@@ -157,67 +166,45 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
 
     private fun performAction(actionType: String) {
         if(actionCheck(actionType)) {
-            if (actionType == "Lighting") {
-                switchLight()
-            } else {
-                if (isHandlerRunning) {
-                    stopAnimation(false)
-                }
-                else {
-                    val (animationDuration, animationStep) = when (actionType) {
-                        "Consumable", "Cleaning" -> 4450L to 2
-                        "Battle" -> 10000L to 4
-                        else -> 10000L to 3
-                    }
-                    if (actionType == "Consumable" || actionType == "Cleaning") {
-                        if(actionType == "Consumable" && user.mainDigitalMonster!!.hunger < 4) {
-                            startAnimation(animationStep, animationDuration, actionType)
-                        }
-                        else{
-                            menuController.displayMessage("Not Hungry")
-                        }
-                        if(actionType == "Cleaning") {
-                            startAnimation(animationStep, animationDuration, actionType)
-                            user.mainDigitalMonster!!.clean = 0
-                            val dirtImageIds = listOf(
-                                R.id.dirtImageOne,
-                                R.id.dirtImageTwo,
-                                R.id.dirtImageThree,
-                                R.id.dirtImageFour
-                            )
-                            for (i in 0 until 4) {
-                                val imageView = caseBackground.findViewById<ImageView>(dirtImageIds[i])
-                                stopDirt(imageView)
-                            }
-                        }
-                    }
-                    else{
-                        if(checkEnergy()) {
-                            startAnimation(animationStep, animationDuration, actionType)
-                        }
+            when (actionType) {
+                "Lighting" -> switchLight()
+                "Consumable" -> {
+                    if (user.mainDigitalMonster!!.hunger < 4) {
+                        startAnimation(2, 4500L, actionType)
+                    } else {
+                        menuController.displayMessage("Not Hungry")
                     }
                 }
-            }
-        }
-    }
-
-    private fun performGameAction(actionType: String) {
-        if(actionCheck(actionType)) {
-            if(checkEnergy()) {
-                gameController.setup(actionType, "cycle number")
+                "Cleaning" -> {
+                    startAnimation(2, 4500L, actionType)
+                    user.mainDigitalMonster!!.clean = 0
+                    for (i in 0 until 4) {
+                        val imageView = caseBackground.findViewById<ImageView>(dirtImageIds[i])
+                        stopDirt(imageView)
+                    }
+                }
+                else -> if(checkEnergy()) {
+                    startAnimation(3, 9000L, actionType)
+                }
             }
         }
     }
 
     private fun actionCheck(actionType: String): Boolean {
-        if ((menuController.menuImageResources.isNotEmpty() ||
-                    menuController.subMenuImageResources.isNotEmpty()) &&
-            user.mainDigitalMonster?.digital_monster?.stage != "Egg" &&
-            (actionType == "Lighting" || user.mainDigitalMonster?.sleepStartedAt == null)) {
-            return true
-        } else {
-            menuController.displayMessage("Unable to perform action.")
+        if (isHandlerRunning) {
+            stopAnimation(false)
             return false
+        }
+        else {
+            if ((menuController.menuImageResources.isNotEmpty() ||
+                        menuController.subMenuImageResources.isNotEmpty()) &&
+                user.mainDigitalMonster?.digital_monster?.stage != "Egg" &&
+                (actionType == "Lighting" || user.mainDigitalMonster?.sleepStartedAt == null)) {
+                return true
+            } else {
+                menuController.displayMessage("Unable to perform action.")
+                return false
+            }
         }
     }
 
@@ -247,12 +234,14 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
         fetchService.getItemsForSale(user, itemType, context) {
             if (user.itemsForSale != null) {
                 val allSprites = mutableListOf<Bitmap>()
+                val allTitles = mutableListOf<String>()
                 user.itemsForSale!!.forEach { item ->
                     item.sprites?.firstOrNull()?.let { firstSprite ->
                         allSprites.add(firstSprite)
                     }
+                    allTitles.add("Price: " + item.price)
                 }
-                menuController.openMenu(8, user.itemsForSale!!.size, allSprites)
+                menuController.openMenu(8, user.itemsForSale!!.size, allSprites, allTitles)
             } else {
                 CoroutineScope(Dispatchers.Main).launch {
                     menuController.displayMessage("No Items")
@@ -387,6 +376,7 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
     private fun accept() {
         if (!menuController.isMenuOpen) {
             val allSprites = mutableListOf<Bitmap>()
+            val allTitles = mutableListOf<String>()
             var maxCycle = 0
             when (menuCycle) {
                 0 -> {
@@ -410,16 +400,15 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
                     menuController.stats = stats
                     maxCycle = 4
                 }
-
                 1 -> {
                     maxCycle = user.getConsumableItems().size
                     user.getConsumableItems().forEach { inventoryItem ->
                         inventoryItem.item.sprites?.firstOrNull()?.let { firstSprite ->
                             allSprites.add(firstSprite)
                         }
+                        allTitles.add(inventoryItem.item.name)
                     }
                 }
-
                 2 -> {
                     maxCycle = user.getEquipmentByType("Training").size
                     user.getEquipmentByType("Training").forEach { userTrainingEquipment ->
@@ -427,9 +416,9 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
                             ?.let { firstSprite ->
                                 allSprites.add(firstSprite)
                             }
+                        allTitles.add(userTrainingEquipment.trainingEquipment.name)
                     }
                 }
-
                 3 -> {
                     maxCycle = user.getEquipmentByType("Cleaning").size
                     user.getEquipmentByType(("Cleaning")).forEach { userTrainingEquipment ->
@@ -437,9 +426,9 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
                             ?.let { firstSprite ->
                                 allSprites.add(firstSprite)
                             }
+                        allTitles.add(userTrainingEquipment.trainingEquipment.name)
                     }
                 }
-
                 4 -> {
                     maxCycle = user.getEquipmentByType("Lighting").size
                     user.getEquipmentByType("Lighting").forEach { userTrainingEquipment ->
@@ -447,9 +436,9 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
                             ?.let { firstSprite ->
                                 allSprites.add(firstSprite)
                             }
+                        allTitles.add(userTrainingEquipment.trainingEquipment.name)
                     }
                 }
-
                 5 -> {
                     maxCycle = 4
                     menuController.subMenuImageResources = mutableListOf(
@@ -459,17 +448,13 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
                         R.drawable.battle_menu_highlight
                     )
                 }
-
                 6 -> {
-                    maxCycle = 4
+                    maxCycle = 1
                     menuController.subMenuImageResources = mutableListOf(
-                        R.drawable.miningone,
-                        R.drawable.game_menu_highlight,
-                        R.drawable.battle_menu,
-                        R.drawable.battle_menu_highlight
+                        R.drawable.miningone
                     )
+                    allTitles.add("Mining")
                 }
-
                 7 -> {
                     maxCycle = 4
                     menuController.subMenuImageResources = mutableListOf(
@@ -478,12 +463,16 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
                         R.drawable.battle_menu,
                         R.drawable.battle_menu_highlight
                     )
+                    allTitles.add("Backgrounds")
+                    allTitles.add("Attacks")
+                    allTitles.add("Case")
+                    allTitles.add("Consumable")
                 }
             }
             if (menuCycle != -1) {
                 mainImage.visibility = View.INVISIBLE
                 emotionImageView.visibility = View.INVISIBLE
-                menuController.openMenu(menuCycle, maxCycle, allSprites)
+                menuController.openMenu(menuCycle, maxCycle, allSprites, allTitles)
             }
         } else {
             when (menuController.currentOpenMenuId) {
@@ -505,8 +494,15 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
                 }
                 3 -> performAction("Cleaning")
                 4 -> performAction("Lighting")
-                5 ->  performGameAction("Battle")
-                6 -> performGameAction("Game")
+                5 -> performAction("Battle")
+                6 -> {
+                    if(miningEffort == -1){
+                        miningEffort = 0
+                        performAction("Game")
+                    }
+                    else { miningEffort = (miningEffort + 5).coerceAtMost(100)
+                    }
+                }
                 7 -> openShopMenu()
                 8 -> buyItem()
             }
@@ -518,14 +514,18 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
         if (!calledFromCancel) {
             cancel()
         }
+        if(miningEffort != -1) {
+            user.bits += miningEffort / 2
+        }
         if (trainingState == 2) {
             user.useTrainingEquipment(user.getEquipmentByType("Training")[menuController.menuCycle], trainingEffort/20)
             checkClean()
-            checkEvoPoints(false)
         }
+        checkEvoPoints(false)
         SpriteManager.stopSideAnimation()
         user.mainDigitalMonster!!.digital_monster.animation(mainImage, 1)
         isHandlerRunning = false
+        miningEffort = -1
         trainingState = 0
         if (::runnable.isInitialized) {
             handler.removeCallbacks(runnable)
@@ -534,7 +534,9 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
 
     private fun startAnimation(animationToPlay: Int, animationTimer: Long, animationType: String) {
         menuLayout.visibility = View.GONE
-        animationLayout.findViewById<ImageView>(R.id.animationBarImageView).visibility = View.INVISIBLE
+        val effortImageView = animationLayout.findViewById<ImageView>(R.id.animationBarImageView)
+        val animationImageView = animationLayout.findViewById<ImageView>(R.id.animationObjectImageView)
+        effortImageView.visibility = View.INVISIBLE
         animationLayout.visibility = View.VISIBLE
         if (animationType == "Consumable") {
             val usedItem = user.getUsedItem(menuController.menuCycle)
@@ -545,19 +547,19 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
             trainingEquipment = if (animationType == "Training") {
                 trainingState = 1
                 trainingEffort = 0
-                animationLayout.findViewById<ImageView>(R.id.animationBarImageView).visibility =
-                    View.VISIBLE
+                effortImageView.visibility = View.VISIBLE
                 user.getEquipmentByType("Training")[menuController.menuCycle]
             } else {
                 user.getEquipmentByType("Cleaning")[menuController.menuCycle]
             }
             trainingEquipment.trainingEquipment.animation(animationLayout.findViewById(R.id.animationObjectImageView))
         }
-
         user.mainDigitalMonster!!.digital_monster.animation(
             animationLayout.findViewById(R.id.animationUserImageView),
             animationToPlay
         )
+        animationImageView.background = null
+        animationImageView.setImageBitmap(null)
         isHandlerRunning = true
         if (::runnable.isInitialized) {
             handler.removeCallbacks(runnable)
@@ -573,14 +575,21 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
                         if (trainingEffort > 100) {
                             trainingEffort = 0
                         }
-                        val effortImageView =
-                            animationLayout.findViewById<ImageView>(R.id.animationBarImageView)
                         when (trainingEffort) {
                             in 0..19 -> effortImageView.setBackgroundResource(R.drawable.energy_bar_0)
                             in 20..39 -> effortImageView.setBackgroundResource(R.drawable.energy_bar_25)
                             in 40..59 -> effortImageView.setBackgroundResource(R.drawable.energy_bar_50)
                             in 60..79 -> effortImageView.setBackgroundResource(R.drawable.energy_bar_75)
                             in 80..100 -> effortImageView.setBackgroundResource(R.drawable.energy_bar_100)
+                        }
+                    }
+                    if(miningEffort != -1) {
+                        when (miningEffort) {
+                            in 0..19 -> animationImageView.setBackgroundResource(R.drawable.miningone)
+                            in 20..39 -> animationImageView.setBackgroundResource(R.drawable.miningtwo)
+                            in 40..59 -> animationImageView.setBackgroundResource(R.drawable.miningthree)
+                            in 60..79 -> animationImageView.setBackgroundResource(R.drawable.miningfour)
+                            in 80..100 -> animationImageView.setBackgroundResource(R.drawable.miningfive)
                         }
                     }
                     handler.postDelayed(this, 100)
@@ -628,12 +637,6 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
     }
 
     private fun checkClean() {
-        val dirtImageIds = listOf(
-            R.id.dirtImageOne,
-            R.id.dirtImageTwo,
-            R.id.dirtImageThree,
-            R.id.dirtImageFour
-        )
         for (i in 0 until user.mainDigitalMonster!!.clean) {
             val imageView = caseBackground.findViewById<ImageView>(dirtImageIds[i])
             playDirt(imageView)

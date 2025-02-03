@@ -13,8 +13,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/animationUserImageView"
         app:layout_constraintEnd_toStartOf="@+id/animationUserImageView"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/animationUserImageView"
-        app:srcCompat="@drawable/battle_menu" />
+        app:layout_constraintTop_toTopOf="@+id/animationUserImageView" />
 
     <ImageView
         android:id="@+id/animationUserImageView"

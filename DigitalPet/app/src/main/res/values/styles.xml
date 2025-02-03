@@ -5,7 +5,7 @@
         <item name="android:background">@drawable/rounded_button</item>
         <item name="android:gravity">center</item>
         <item name="android:textColor">@color/primary</item>
-        <item name="android:textSize">12sp</item>
+        <item name="android:textSize">14sp</item>
     </style>
     <style name="tabButton">
         <item name="android:layout_marginTop">8dp</item>
@@ -14,7 +14,7 @@
         <item name="android:background">@drawable/tab_button</item>
         <item name="android:gravity">center</item>
         <item name="android:textColor">@color/text</item>
-        <item name="android:textSize">12sp</item>
+        <item name="android:textSize">14sp</item>
     </style>
     <style name="tabHeader">
         <item name="android:layout_marginTop">8dp</item>
@@ -23,7 +23,7 @@
         <item name="android:background">@drawable/tab_header</item>
         <item name="android:gravity">center</item>
         <item name="android:textColor">@color/text</item>
-        <item name="android:textSize">12sp</item>
+        <item name="android:textSize">14sp</item>
     </style>
     <style name="deviceButton">
         <item name="android:layout_width">64dp</item>
@@ -50,12 +50,12 @@
         <item name="android:textColorHighlight">@color/accent</item>
         <item name="android:textColorHint">@color/accent</item>
         <item name="android:textColorLink">@color/text</item>
-        <item name="android:textSize">12sp</item>
+        <item name="android:textSize">14sp</item>
     </style>
     <style name="errorText">
         <item name="android:gravity">center</item>
         <item name="android:textColor">@color/error</item>
-        <item name="android:textSize">12sp</item>
+        <item name="android:textSize">14sp</item>
     </style>
     <style name="fontSubHeader">
         <item name="android:gravity">center</item>
@@ -63,7 +63,7 @@
         <item name="android:textColorHighlight">@color/accent</item>
         <item name="android:textColorHint">@color/accent</item>
         <item name="android:textColorLink">@color/text</item>
-        <item name="android:textSize">12sp</item>
+        <item name="android:textSize">14sp</item>
     </style>
     <style name="fontParagraph">
         <item name="android:lineSpacingExtra">8dp</item>
@@ -72,7 +72,7 @@
         <item name="android:textColorHighlight">@color/accent</item>
         <item name="android:textColorHint">@color/accent</item>
         <item name="android:textColorLink">@color/text</item>
-        <item name="android:textSize">10sp</item>
+        <item name="android:textSize">14sp</item>
     </style>
     <style name="fontParagraphDark">
         <item name="android:lineSpacingExtra">8dp</item>
@@ -81,7 +81,7 @@
         <item name="android:textColorHighlight">@color/accent</item>
         <item name="android:textColorHint">@color/accent</item>
         <item name="android:textColorLink">@color/primary</item>
-        <item name="android:textSize">10sp</item>
+        <item name="android:textSize">12sp</item>
     </style>
     <style name="fontInput">
         <item name="android:textColor">@color/text</item>
