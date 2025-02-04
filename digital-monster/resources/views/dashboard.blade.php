@@ -24,8 +24,13 @@
             </div>
             <div id="stats-content">
                 <x-fonts.paragraph id="stat-name"><strong>Name:</strong> <span></span></x-fonts.paragraph>
-                <x-fonts.paragraph  id="stat-type"><strong>Type:</strong> <span></span></x-fonts.paragraph>
-                <x-fonts.paragraph  id="stat-stage"><strong>Stage:</strong> <span></span></x-fonts.paragraph>
+                <x-fonts.paragraph id="stat-stage"><strong>Stage:</strong> <span></span></x-fonts.paragraph>
+                <x-fonts.paragraph id="stat-stats" style="display: flex;">
+                    <span id="stat-strength"></span> |
+                    <span id="stat-agility"></span> |
+                    <span id="stat-defense"></span> |
+                    <span id="stat-mind"></span>
+                </x-fonts.paragraph>
             </div>
         </div>
     </x-container>
@@ -35,8 +40,11 @@
         const statsPanel = document.getElementById('stats-panel');
         const closeStatsButton = document.getElementById('close-stats');
         const statName = document.getElementById('stat-name').querySelector('span');
-        const statType = document.getElementById('stat-type').querySelector('span');
         const statStage = document.getElementById('stat-stage').querySelector('span');
+        const statStrength = document.getElementById('stat-strength');
+        const statAgility = document.getElementById('stat-agility');
+        const statDefense = document.getElementById('stat-defense');
+        const statMind = document.getElementById('stat-mind');
         const userMonsters = JSON.parse(container.getAttribute('data-monsters'));
         const screenWidth = container.offsetWidth;
         const screenHeight = container.offsetHeight;
@@ -115,8 +123,12 @@
             // Click event to show monster stats
             monsterDiv.addEventListener('click', () => {
                 statName.textContent = monster.name;
-                statType.textContent = monster.type;
                 statStage.textContent = monster.digital_monster.stage;
+                statStrength.textContent = `Strength: ${monster.strength}`;
+                statAgility.textContent = `Agility: ${monster.agility}`;
+                statDefense.textContent = `Defense: ${monster.defense}`;
+                statMind.textContent = `Mind: ${monster.mind}`;
+
                 statsPanel.classList.remove('hidden');
                 container.classList.add('rounded-b-none');
             });
@@ -179,6 +191,11 @@
             #close-stats {
                 font-size: 2rem;
                 cursor: pointer;
+            }
+            #stat-stats {
+                display: flex;
+                gap: 5px;
+                align-items: center;
             }
         `;
         document.head.appendChild(style);

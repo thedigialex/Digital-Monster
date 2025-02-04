@@ -95,7 +95,7 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
             }
             menuController.openMenu(-10, menuLimit, allSprites, allTitles)
         } else {
-            user.mainDigitalMonster!!.digital_monster.animation(mainImage, 1)
+            user.mainDigitalMonster!!.digital_monster.animation(mainImage, if (user.mainDigitalMonster!!.energy != 0) 1 else 4)
             mainImage.setOnClickListener{ pet() }
             updateBackground(user.mainDigitalMonster!!.sleepStartedAt != null)
             checkClean()
@@ -317,7 +317,9 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
                 emotionImage.stop()
             }
             mainImage.visibility = View.VISIBLE
-            startWalkingAnimation()
+            if(user.mainDigitalMonster!!.energy > 0) {
+                startWalkingAnimation()
+            }
             checkEvoPoints(false)
         }
     }
@@ -523,7 +525,10 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
         }
         checkEvoPoints(false)
         SpriteManager.stopSideAnimation()
-        user.mainDigitalMonster!!.digital_monster.animation(mainImage, 1)
+        user.mainDigitalMonster!!.digital_monster.animation(mainImage, if (user.mainDigitalMonster!!.energy != 0) 1 else 4)
+        if(user.mainDigitalMonster!!.energy == 0) {
+            stopWalkingAnimation()
+        }
         isHandlerRunning = false
         miningEffort = -1
         trainingState = 0
