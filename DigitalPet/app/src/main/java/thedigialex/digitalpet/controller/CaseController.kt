@@ -32,7 +32,7 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
     private var isAnimating: Boolean = false
     private var miningEffort: Int = -1
     private var trainingEffort: Int = 0
-    private var trainingState: Int = 0
+    private var actionState: Int = 0
     private var oldXValue: Int = 0
     private val emptyMenuImageResources = IntArray(8)
     private val filledMenuImageResources = IntArray(8)
@@ -48,6 +48,7 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
     private lateinit var trainingEquipment: UserTrainingEquipment
 
     private var animationLayout: ViewGroup = caseBackground.findViewById(R.id.animationLayout)
+    private var battleLayout: ViewGroup = caseBackground.findViewById(R.id.battleLayout)
     private var mainImage: ImageView = caseBackground.findViewById(R.id.mainImageView)
     private var emotionImageView: ImageView = caseBackground.findViewById(R.id.emotionImageView)
     private var menuImages: Array<ImageView> =
@@ -184,10 +185,29 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
                     }
                 }
                 else -> if(checkEnergy()) {
-                    startAnimation(3, 9000L, actionType)
+                    if(actionType == "Battle") {
+                        setUpBattle()
+                    }
+                    else{
+                        startAnimation(3, 9000L, actionType)
+                    }
                 }
             }
         }
+    }
+
+    private fun setUpBattle() {
+        actionState = 1
+        val barImageView = battleLayout.findViewById<ImageView>(R.id.barImageView)
+        barImageView.visibility = View.VISIBLE
+        val userImageView = battleLayout.findViewById<ImageView>(R.id.userImageView)
+        userImageView.visibility = View.GONE
+        val enemyImageView = battleLayout.findViewById<ImageView>(R.id.enemyImageView)
+        enemyImageView.visibility = View.GONE
+        val attackImageView = battleLayout.findViewById<ImageView>(R.id.attackImageView)
+        attackImageView.visibility = View.GONE
+        battleLayout.visibility = View.VISIBLE
+        menuLayout.visibility = View.GONE
     }
 
     private fun actionCheck(actionType: String): Boolean {
@@ -219,6 +239,7 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
                 return false
             }
         } else {
+            miningEffort = -1
             menuController.displayMessage("No Energy")
             return false
         }
@@ -359,7 +380,7 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
     private fun cancel() {
         if (menuController.isMenuOpen) {
             menuController.reset()
-            animationLayout.visibility = View.GONE
+            removeLayouts()
             if (user.mainDigitalMonster!!.sleepStartedAt == null) {
                 mainImage.visibility = View.VISIBLE
             }
@@ -446,9 +467,11 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
                     menuController.subMenuImageResources = mutableListOf(
                         R.drawable.battle_menu,
                         R.drawable.battle_menu_highlight,
-                        R.drawable.battle_menu,
-                        R.drawable.battle_menu_highlight
+                        R.drawable.battle_menu
                     )
+                    allTitles.add("Quick")
+                    allTitles.add("Story")
+                    allTitles.add("Online")
                 }
                 6 -> {
                     maxCycle = 1
@@ -481,8 +504,8 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
                 -10 -> selectEgg(menuController.editText.text.toString())
                 1 -> performAction("Consumable")
                 2 -> {
-                    if(trainingState == 1) {
-                        trainingState = 2
+                    if(actionState == 1) {
+                        actionState = 2
                         trainingEquipment.trainingEquipment.stopAnimation()
                         var animationToPlay = 5
                         if(trainingEffort > 70) {
@@ -490,7 +513,7 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
                         }
                         startAnimation(animationToPlay, 5000L, "Result")
                     }
-                    if(trainingState == 0) {
+                    if(actionState == 0) {
                         performAction("Training")
                     }
                 }
@@ -511,15 +534,20 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
         }
     }
 
-    private fun stopAnimation(calledFromCancel: Boolean) {
+    private fun removeLayouts() {
         animationLayout.visibility = View.GONE
+        battleLayout.visibility = View.GONE
+    }
+
+    private fun stopAnimation(calledFromCancel: Boolean) {
+        removeLayouts()
         if (!calledFromCancel) {
             cancel()
         }
         if(miningEffort != -1) {
             user.bits += miningEffort / 2
         }
-        if (trainingState == 2) {
+        if (actionState == 2) {
             user.useTrainingEquipment(user.getEquipmentByType("Training")[menuController.menuCycle], trainingEffort/20)
             checkClean()
         }
@@ -531,7 +559,7 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
         }
         isHandlerRunning = false
         miningEffort = -1
-        trainingState = 0
+        actionState = 0
         if (::runnable.isInitialized) {
             handler.removeCallbacks(runnable)
         }
@@ -541,6 +569,8 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
         menuLayout.visibility = View.GONE
         val effortImageView = animationLayout.findViewById<ImageView>(R.id.animationBarImageView)
         val animationImageView = animationLayout.findViewById<ImageView>(R.id.animationObjectImageView)
+        animationImageView.background = null
+        animationImageView.setImageBitmap(null)
         effortImageView.visibility = View.INVISIBLE
         animationLayout.visibility = View.VISIBLE
         if (animationType == "Consumable") {
@@ -550,7 +580,7 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
         }
         if(animationType == "Training" || animationType == "Cleaning") {
             trainingEquipment = if (animationType == "Training") {
-                trainingState = 1
+                actionState = 1
                 trainingEffort = 0
                 effortImageView.visibility = View.VISIBLE
                 user.getEquipmentByType("Training")[menuController.menuCycle]
@@ -563,8 +593,6 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
             animationLayout.findViewById(R.id.animationUserImageView),
             animationToPlay
         )
-        animationImageView.background = null
-        animationImageView.setImageBitmap(null)
         isHandlerRunning = true
         if (::runnable.isInitialized) {
             handler.removeCallbacks(runnable)
@@ -575,7 +603,7 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
                 val currentTime = System.currentTimeMillis()
                 val elapsedTime = currentTime - startTime
                 if (elapsedTime < animationTimer - 100L) {
-                    if (trainingState == 1) {
+                    if (actionState == 1) {
                         trainingEffort += 5
                         if (trainingEffort > 100) {
                             trainingEffort = 0
