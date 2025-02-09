@@ -8,6 +8,7 @@ import android.graphics.drawable.AnimationDrawable
 import android.graphics.drawable.BitmapDrawable
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
@@ -21,6 +22,7 @@ import thedigialex.digitalpet.R
 import thedigialex.digitalpet.api.FetchService
 import thedigialex.digitalpet.model.entities.Item
 import thedigialex.digitalpet.model.entities.User
+import thedigialex.digitalpet.model.entities.UserDigitalMonster
 import thedigialex.digitalpet.model.entities.UserTrainingEquipment
 import thedigialex.digitalpet.util.SpriteManager
 import java.sql.Timestamp
@@ -46,6 +48,7 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
     private lateinit var runnable: Runnable
 
     private lateinit var trainingEquipment: UserTrainingEquipment
+    private lateinit var  enemyDigitalMonster: UserDigitalMonster
 
     private var animationLayout: ViewGroup = caseBackground.findViewById(R.id.animationLayout)
     private var battleLayout: ViewGroup = caseBackground.findViewById(R.id.battleLayout)
@@ -208,6 +211,68 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
         attackImageView.visibility = View.GONE
         battleLayout.visibility = View.VISIBLE
         menuLayout.visibility = View.GONE
+
+        isHandlerRunning = true
+        if (::runnable.isInitialized) {
+            handler.removeCallbacks(runnable)
+        }
+        val startTime = System.currentTimeMillis()
+        runnable = object : Runnable {
+            override fun run() {
+                val currentTime = System.currentTimeMillis()
+                val elapsedTime = currentTime - startTime
+                if (elapsedTime < 9000L - 100L) {
+                    if (actionState == 1) {
+                        trainingEffort += 5
+                        if (trainingEffort > 100) {
+                            trainingEffort = 0
+                        }
+                        when (trainingEffort) {
+                            in 0..19 -> barImageView.setBackgroundResource(R.drawable.energy_bar_0)
+                            in 20..39 -> barImageView.setBackgroundResource(R.drawable.energy_bar_25)
+                            in 40..59 -> barImageView.setBackgroundResource(R.drawable.energy_bar_50)
+                            in 60..79 -> barImageView.setBackgroundResource(R.drawable.energy_bar_75)
+                            in 80..100 -> barImageView.setBackgroundResource(R.drawable.energy_bar_100)
+                        }
+                    }
+                    handler.postDelayed(this, 100)
+                } else {
+                    if(isHandlerRunning) {
+                        actionState = 2
+                        battle()
+                    }
+                }
+            }
+        }
+        handler.post(runnable)
+    }
+
+    private fun battle() {
+        fetchService.getDigitalMonster(1,
+            dataRetrievalSuccess = { userDigitalMonster ->
+                fetchService.setUpSpriteImages(userDigitalMonster) { updatedMonster ->
+                    updatedMonster?.let {
+                        if (::runnable.isInitialized) {
+                            handler.removeCallbacks(runnable)
+                        }
+                        val barImageView = battleLayout.findViewById<ImageView>(R.id.barImageView)
+                        barImageView.visibility = View.GONE
+                        val userImageView = battleLayout.findViewById<ImageView>(R.id.userImageView)
+                        userImageView.visibility = View.VISIBLE
+                        val enemyImageView = battleLayout.findViewById<ImageView>(R.id.enemyImageView)
+                        enemyImageView.visibility = View.VISIBLE
+                        val attackImageView = battleLayout.findViewById<ImageView>(R.id.attackImageView)
+                        attackImageView.visibility = View.VISIBLE
+                        enemyDigitalMonster = it
+                        enemyDigitalMonster.digital_monster.sideAnimation(enemyImageView, 3)
+                        user.mainDigitalMonster!!.digital_monster.animation(userImageView, 3)
+                    }
+                }
+            },
+            dataRetrievalFailure = { errorMessage ->
+                Log.e("DigitalMonster", errorMessage)
+            }
+        )
     }
 
     private fun actionCheck(actionType: String): Boolean {
@@ -463,14 +528,12 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
                     }
                 }
                 5 -> {
-                    maxCycle = 4
+                    maxCycle = 2
                     menuController.subMenuImageResources = mutableListOf(
                         R.drawable.battle_menu,
-                        R.drawable.battle_menu_highlight,
-                        R.drawable.battle_menu
+                        R.drawable.battle_menu_highlight
                     )
                     allTitles.add("Quick")
-                    allTitles.add("Story")
                     allTitles.add("Online")
                 }
                 6 -> {
@@ -519,7 +582,15 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
                 }
                 3 -> performAction("Cleaning")
                 4 -> performAction("Lighting")
-                5 -> performAction("Battle")
+                5 -> {
+                    if(actionState == 1) {
+                        actionState = 2
+                        battle()
+                    }
+                    if(actionState == 0) {
+                        performAction("Battle")
+                    }
+                }
                 6 -> {
                     if(miningEffort == -1){
                         miningEffort = 0
@@ -567,10 +638,10 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
 
     private fun startAnimation(animationToPlay: Int, animationTimer: Long, animationType: String) {
         menuLayout.visibility = View.GONE
-        val effortImageView = animationLayout.findViewById<ImageView>(R.id.animationBarImageView)
         val animationImageView = animationLayout.findViewById<ImageView>(R.id.animationObjectImageView)
         animationImageView.background = null
         animationImageView.setImageBitmap(null)
+        val effortImageView = animationLayout.findViewById<ImageView>(R.id.animationBarImageView)
         effortImageView.visibility = View.INVISIBLE
         animationLayout.visibility = View.VISIBLE
         if (animationType == "Consumable") {

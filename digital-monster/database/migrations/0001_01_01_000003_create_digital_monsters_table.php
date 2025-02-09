@@ -47,6 +47,8 @@ return new class extends Migration
             $table->enum('type', ['Data', 'Virus', 'Vaccine'])->default('Data');
             $table->integer('level')->default(1);
             $table->integer('exp')->default(0);
+            $table->integer('attack')->default(0);
+            $table->integer('colosseum')->default(1);
             $table->integer('strength')->default(0);
             $table->integer('agility')->default(0);
             $table->integer('defense')->default(0);

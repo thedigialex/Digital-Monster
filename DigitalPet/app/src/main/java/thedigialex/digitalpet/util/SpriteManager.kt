@@ -107,7 +107,7 @@ object SpriteManager {
         handler.post(runnable)
     }
 
-    fun animateSideSprite(imageView: ImageView, sprites: List<Bitmap>, frames: List<Int>, interval: Long = 1000) {
+    fun animateSideSprite(imageView: ImageView, sprites: List<Bitmap>, frames: List<Int>, interval: Long = 500) {
         sideAnimationRunnable?.let { handler.removeCallbacks(it) }
         var currentIndex = 0
         val runnable = object : Runnable {

@@ -15,6 +15,7 @@ Route::middleware('check-api-key')->group(function () {
         Route::post('/logout', [ApiAuthenticatedSessionController::class, 'logout']);
 
         Route::get('/eggs', [ApiGetDataController::class, 'getEggs']);
+        Route::post('/digital-monster', [ApiPostDataController::class, 'getDigitalMonster']);
         Route::get('/user/user-digital-monsters', [ApiGetDataController::class, 'getUserDigitalMonsters']);
         Route::get('/user/training-equipment', [ApiGetDataController::class, 'getUserTrainingEquipment']);
         Route::get('/user/inventory', [ApiGetDataController::class, 'getUserInventories']);

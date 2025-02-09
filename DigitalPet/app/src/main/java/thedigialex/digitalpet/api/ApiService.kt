@@ -29,6 +29,10 @@ interface ApiService {
     @GET("api/eggs")
     suspend fun getDigitalMonsterEggs(): Response<DigitalMonstersResponse>
 
+    @FormUrlEncoded
+    @POST("api/digital-monster")
+    suspend fun getDigitalMonster(@Field("colosseum") colosseum: Int): Response<DigitalMonstersResponse>
+
     @GET("api/user/user-digital-monsters")
     suspend fun getUserDigitalMonsters(): Response<UserDigitalMonsterResponse>
 
@@ -61,6 +65,8 @@ interface ApiService {
         @Field("name") name: String,
         @Field("level") level: Int,
         @Field("exp") exp: Int,
+        @Field("attack") attack: Int,
+        @Field("colosseum") colosseum: Int,
         @Field("strength") strength: Int,
         @Field("agility") agility: Int,
         @Field("defense") defense: Int,

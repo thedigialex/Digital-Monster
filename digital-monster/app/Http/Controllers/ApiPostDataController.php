@@ -24,6 +24,8 @@ class ApiPostDataController extends Controller
         $userDigitalMonster->type = $types[array_rand($types)];
         $userDigitalMonster->isMain = 1;
         $userDigitalMonster->level = 1;
+        $userDigitalMonster->attack = 1;
+        $userDigitalMonster->colosseum = 1;
         $userDigitalMonster->exp = 0;
         $userDigitalMonster->strength = 0;
         $userDigitalMonster->agility = 0;
@@ -61,6 +63,8 @@ class ApiPostDataController extends Controller
             'id' => 'required|integer|exists:user_digital_monsters,id',
             'name' => 'sometimes|string|max:255',
             'level' => 'sometimes|integer|min:1',
+            'attack' => 'sometimes|integer|min:1',
+            'colosseum' => 'sometimes|integer|min:1',
             'exp' => 'sometimes|integer|min:0',
             'strength' => 'sometimes|integer|min:0',
             'agility' => 'sometimes|integer|min:0',
@@ -117,8 +121,6 @@ class ApiPostDataController extends Controller
             ], 400);
         }
     }
-
-
 
     //Items
     public function getItems(Request $request)
@@ -213,5 +215,31 @@ class ApiPostDataController extends Controller
                 'inventoryItem' => $inventoryItem,
             ]);
         }
+    }
+
+    public function getDigitalMonster(Request $request) {
+        $validated = $request->validate([
+            'colosseum' => 'required|integer',
+        ]);
+        $colosseumLevel = $validated['colosseum'];
+        $stage = 'Mega';
+        if ($colosseumLevel >= 1 && $colosseumLevel <= 10) {
+            $stage = 'Rookie';
+        } elseif ($colosseumLevel >= 11 && $colosseumLevel <= 25) {
+            $stage = 'Champion';
+        } elseif ($colosseumLevel >= 26 && $colosseumLevel <= 40) {
+            $stage = 'Ultimate';
+        } 
+
+        $digitalMonster = DigitalMonster::where('stage', $stage)
+        ->inRandomOrder()
+        ->first();    
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Digital Monsters',
+            'stage' => $stage,
+            'digitalMonsters' => [$digitalMonster],
+        ]);
     }
 }

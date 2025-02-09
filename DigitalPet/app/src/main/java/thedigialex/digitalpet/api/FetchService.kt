@@ -99,6 +99,70 @@ class FetchService(private val context: Context) {
         }
     }
 
+    fun getDigitalMonster(colosseum: Int, dataRetrievalSuccess: () -> Unit, dataRetrievalFailure: (String) -> Unit) = performAuthAction {
+        val response = ApiClient.getApi(context).getDigitalMonster(colosseum)
+        if (response.isSuccessful && response.body()?.status == true) {
+            response.body()?.let { digitalMonstersResponse ->
+                withContext(Dispatchers.Main) {
+                    dataRetrievalSuccess()
+                }
+            }
+        } else {
+            withContext(Dispatchers.Main) {
+                dataRetrievalFailure("Failed: ${response.body()?.message}")
+            }
+        }
+    }
+
+    fun getDigitalMonster(
+        colosseum: Int,
+        dataRetrievalSuccess: (UserDigitalMonster) -> Unit,
+        dataRetrievalFailure: (String) -> Unit
+    ) = performAuthAction {
+        val response = ApiClient.getApi(context).getDigitalMonster(colosseum)
+        if (response.isSuccessful && response.body()?.status == true) {
+            response.body()?.let { digitalMonsterResponse ->
+                val randomDigitalMonster = digitalMonsterResponse.digitalMonsters
+                val randomType = listOf("Data", "Virus", "Vaccine").random()
+                val newUserDigitalMonster = UserDigitalMonster(
+                    id = 0,
+                    userId = 0L,
+                    isMain = 0,
+                    name = "Placeholder Name",
+                    type = randomType,
+                    level = 1,
+                    attack = 1,
+                    colosseum = colosseum,
+                    exp = 0,
+                    strength = (10..20).random(),
+                    agility = (10..20).random(),
+                    defense = (10..20).random(),
+                    mind = (10..20).random(),
+                    hunger = 4,
+                    exercise = 4,
+                    clean = 0,
+                    energy = 1,
+                    maxEnergy = 1,
+                    wins = 0,
+                    losses = 0,
+                    trainings = 0,
+                    maxTrainings = 0,
+                    currentEvoPoints = 0,
+                    sleepStartedAt = null,
+                    digital_monster = randomDigitalMonster[0],
+                )
+
+                withContext(Dispatchers.Main) {
+                    dataRetrievalSuccess(newUserDigitalMonster)
+                }
+            }
+        } else {
+            withContext(Dispatchers.Main) {
+                dataRetrievalFailure("Failed: ${response.body()?.message}")
+            }
+        }
+    }
+
     fun getUserDigitalMonsters(dataRetrievalSuccess: () -> Unit, dataRetrievalFailure: (String) -> Unit) = performAuthAction {
         val response = ApiClient.getApi(context).getUserDigitalMonsters()
         if (response.isSuccessful && response.body()?.status == true) {
@@ -292,6 +356,8 @@ class FetchService(private val context: Context) {
                 id = userDigitalMonster.id,
                 name = userDigitalMonster.name,
                 level = userDigitalMonster.level,
+                attack = userDigitalMonster.attack,
+                colosseum = userDigitalMonster.colosseum,
                 exp = userDigitalMonster.exp,
                 strength = userDigitalMonster.strength,
                 agility = userDigitalMonster.agility,

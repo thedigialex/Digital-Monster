@@ -5,13 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 class UserDigitalMonster extends Model
-{
+{    
     protected $fillable = [
         'user_id',
         'digital_monster_id',
         'isMain',
         'name',
         'type',
+        'attack',
+        'colosseum',
         'level',
         'exp',
         'strength',

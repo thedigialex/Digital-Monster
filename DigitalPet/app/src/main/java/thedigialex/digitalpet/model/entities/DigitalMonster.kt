@@ -45,4 +45,23 @@ data class DigitalMonster(
             }
         }
     }
+
+    fun sideAnimation(imageView: ImageView, animationType: Int) {
+        SpriteManager.stopSideAnimation()
+        if (!sprites.isNullOrEmpty()) {
+            when (animationType) {
+                1 -> SpriteManager.animateSideSprite(imageView, sprites!!, listOf(0, 1, 0, 1, 2, 1))    // Walk - Idle animation
+                2 -> SpriteManager.animateSideSprite(imageView, sprites!!, listOf(0, 2))    // Eat animation
+                3 -> SpriteManager.animateSideSprite(imageView, sprites!!, listOf(3, 4))    // Battle animation
+                4 -> SpriteManager.animateSideSprite(imageView, sprites!!, listOf(5, 6))    // Tired animation
+                5 -> SpriteManager.animateSideSprite(imageView, sprites!!, listOf(0, 7))    // Sad animation
+                6 -> SpriteManager.animateSideSprite(imageView, sprites!!, listOf(0, 8))   // Happy animation
+                7 -> {
+                    val flippedImage = SpriteManager.flipBitmap(sprites!![9])
+                    sprites = sprites!! + flippedImage
+                    SpriteManager.animateSideSprite(imageView, sprites!!, listOf(9, sprites!!.size - 1)) // Deny animation
+                }
+            }
+        }
+    }
 }

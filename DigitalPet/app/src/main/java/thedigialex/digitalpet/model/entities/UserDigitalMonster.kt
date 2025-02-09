@@ -6,6 +6,8 @@ data class UserDigitalMonster(
     val isMain: Int,
     var name: String,
     val type: String,
+    val attack: Int,
+    val colosseum: Int,
     val level: Int,
     val exp: Int,
     var strength: Int,
