@@ -248,13 +248,11 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
     }
 
     private fun battle() {
+        actionState = 3
         fetchService.getDigitalMonster(1,
             dataRetrievalSuccess = { userDigitalMonster ->
                 fetchService.setUpSpriteImages(userDigitalMonster) { updatedMonster ->
                     updatedMonster?.let {
-                        if (::runnable.isInitialized) {
-                            handler.removeCallbacks(runnable)
-                        }
                         val barImageView = battleLayout.findViewById<ImageView>(R.id.barImageView)
                         barImageView.visibility = View.GONE
                         val userImageView = battleLayout.findViewById<ImageView>(R.id.userImageView)
@@ -266,6 +264,39 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
                         enemyDigitalMonster = it
                         enemyDigitalMonster.digital_monster.sideAnimation(enemyImageView, 3)
                         user.mainDigitalMonster!!.digital_monster.animation(userImageView, 3)
+                        isHandlerRunning = true
+                        if (::runnable.isInitialized) {
+                            handler.removeCallbacks(runnable)
+                        }
+                        val startTime = System.currentTimeMillis()
+
+                        runnable = object : Runnable {
+                            override fun run() {
+                                val currentTime = System.currentTimeMillis()
+                                val elapsedTime = currentTime - startTime
+
+                                if (elapsedTime < 9000L - 100L) {
+                                    val leftX = -battleLayout.width / 2f
+                                    val rightX = battleLayout.width / 2f
+                                    val currentX = attackImageView.translationX
+
+                                    // Determine the target position based on current position
+                                    val targetX = if (currentX <= leftX) rightX else leftX
+
+                                    ObjectAnimator.ofFloat(attackImageView, "translationX", targetX).apply {
+                                        duration = 1000
+                                        start()
+                                    }
+                                    handler.postDelayed(this, 1500)
+                                } else {
+                                    if (isHandlerRunning) {
+
+                                        cancel()
+                                    }
+                                }
+                            }
+                        }
+                        handler.post(runnable)
                     }
                 }
             },
@@ -629,6 +660,7 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
             stopWalkingAnimation()
         }
         isHandlerRunning = false
+        trainingEffort = 0
         miningEffort = -1
         actionState = 0
         if (::runnable.isInitialized) {
@@ -652,7 +684,6 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
         if(animationType == "Training" || animationType == "Cleaning") {
             trainingEquipment = if (animationType == "Training") {
                 actionState = 1
-                trainingEffort = 0
                 effortImageView.visibility = View.VISIBLE
                 user.getEquipmentByType("Training")[menuController.menuCycle]
             } else {
