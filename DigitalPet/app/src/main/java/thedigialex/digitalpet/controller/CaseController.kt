@@ -279,14 +279,16 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
                                     val leftX = -battleLayout.width / 2f
                                     val rightX = battleLayout.width / 2f
                                     val currentX = attackImageView.translationX
-
-                                    // Determine the target position based on current position
                                     val targetX = if (currentX <= leftX) rightX else leftX
 
                                     ObjectAnimator.ofFloat(attackImageView, "translationX", targetX).apply {
                                         duration = 1000
                                         start()
                                     }
+                                    enemyImageView.setBackgroundResource(R.drawable.hurtemotion)
+                                    val animationDrawable = enemyImageView.background as AnimationDrawable
+                                    animationDrawable.start()
+
                                     handler.postDelayed(this, 1500)
                                 } else {
                                     if (isHandlerRunning) {
