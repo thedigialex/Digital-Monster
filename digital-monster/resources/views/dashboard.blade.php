@@ -2,21 +2,22 @@
     <x-slot name="header">
         <div class="flex flex-col lg:flex-row justify-between items-center">
             <x-fonts.sub-header>
-                {{ __('Dashboard') }}
+                {{ $user->name }}'s Farm
             </x-fonts.sub-header>
         </div>
     </x-slot>
 
     <x-container>
-        <!-- Monster Container -->
+        <div class="bg-accent text-white text-center p-3  rounded-t-lg shadow-md">
+            <x-fonts.paragraph><strong>{{ $totalMonsters }}</strong> digital monsters are roaming your farm.</x-fonts.paragraph>
+        </div>
         <div
             id="monster-container"
-            class="relative w-full h-[500px] overflow-hidden rounded-b-lg shadow-lg rounded-t-lg"
+            class="relative w-full h-[500px] overflow-hidden rounded-b-lg shadow-lg"
             data-monsters='@json($userMonsters)'
             style="background-image: url('/images/background-dashboard.png'); background-size: cover; background-position: center;">
         </div>
 
-        <!-- Stats Panel -->
         <div id="stats-panel" class="hidden bg-neutral w-full p-4 shadow-lg rounded-b-lg">
             <div class="flex justify-between items-center">
                 <x-fonts.sub-header id="stats-title">Monster Stats</x-fonts.sub-header>

@@ -36,6 +36,7 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
     private var trainingEffort: Int = 0
     private var actionState: Int = 0
     private var oldXValue: Int = 0
+    private var battleResult: Int = 0
     private val emptyMenuImageResources = IntArray(8)
     private val filledMenuImageResources = IntArray(8)
 
@@ -249,6 +250,7 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
 
     private fun battle() {
         actionState = 3
+        caseBackground.findViewById<View>(R.id.bottomButton).isClickable = false
         fetchService.getDigitalMonster(1,
             dataRetrievalSuccess = { userDigitalMonster ->
                 fetchService.setUpSpriteImages(userDigitalMonster) { updatedMonster ->
@@ -259,43 +261,88 @@ class CaseController(private val caseBackground: ConstraintLayout, private val c
                         userImageView.visibility = View.VISIBLE
                         val enemyImageView = battleLayout.findViewById<ImageView>(R.id.enemyImageView)
                         enemyImageView.visibility = View.VISIBLE
+
+                        val playerDamageImageView = battleLayout.findViewById<ImageView>(R.id.playerDamageImageView)
+                        playerDamageImageView.visibility = View.INVISIBLE
+                        val enemyDamageImageView = battleLayout.findViewById<ImageView>(R.id.enemyDamageImageView)
+                        enemyDamageImageView.visibility = View.INVISIBLE
                         val attackImageView = battleLayout.findViewById<ImageView>(R.id.attackImageView)
                         attackImageView.visibility = View.VISIBLE
+
                         enemyDigitalMonster = it
                         enemyDigitalMonster.digital_monster.sideAnimation(enemyImageView, 3)
                         user.mainDigitalMonster!!.digital_monster.animation(userImageView, 3)
+
                         isHandlerRunning = true
                         if (::runnable.isInitialized) {
                             handler.removeCallbacks(runnable)
                         }
-                        val startTime = System.currentTimeMillis()
-
+                        var animationCounter = 0
+                        var battleCounter = 0
                         runnable = object : Runnable {
                             override fun run() {
-                                val currentTime = System.currentTimeMillis()
-                                val elapsedTime = currentTime - startTime
-
-                                if (elapsedTime < 9000L - 100L) {
-                                    val leftX = -battleLayout.width / 2f
-                                    val rightX = battleLayout.width / 2f
-                                    val currentX = attackImageView.translationX
-                                    val targetX = if (currentX <= leftX) rightX else leftX
-
-                                    ObjectAnimator.ofFloat(attackImageView, "translationX", targetX).apply {
-                                        duration = 1000
-                                        start()
+                                if (!isHandlerRunning) return
+                                animationCounter++
+                                val leftX = -battleLayout.width / 2f
+                                val rightX = 96f
+                                when (animationCounter) {
+                                    1 -> {
+                                        attackImageView.visibility = View.VISIBLE
+                                        val targetX = if (attackImageView.translationX <= leftX) rightX else leftX
+                                        ObjectAnimator.ofFloat(attackImageView, "translationX", targetX).apply {
+                                            duration = 800L
+                                            start()
+                                        }
                                     }
-                                    enemyImageView.setBackgroundResource(R.drawable.hurtemotion)
-                                    val animationDrawable = enemyImageView.background as AnimationDrawable
-                                    animationDrawable.start()
+                                    2 -> {
+                                        enemyImageView.visibility = View.INVISIBLE
+                                        attackImageView.visibility = View.INVISIBLE
+                                        enemyDamageImageView.visibility = View.VISIBLE
+                                        (enemyDamageImageView.background as AnimationDrawable).start()
+                                    }
 
-                                    handler.postDelayed(this, 1500)
-                                } else {
-                                    if (isHandlerRunning) {
-
+                                    3 -> {
+                                        enemyImageView.visibility = View.VISIBLE
+                                        attackImageView.visibility = View.VISIBLE
+                                        enemyDamageImageView.visibility = View.INVISIBLE
+                                        (enemyDamageImageView.background as AnimationDrawable).stop()
+                                        attackImageView.translationX = leftX
+                                        ObjectAnimator.ofFloat(attackImageView, "translationX", rightX).apply {
+                                            duration = 800L
+                                            start()
+                                        }
+                                    }
+                                    4 -> {
+                                        userImageView.visibility = View.INVISIBLE
+                                        attackImageView.visibility = View.INVISIBLE
+                                        playerDamageImageView.visibility = View.VISIBLE
+                                        (playerDamageImageView.background as AnimationDrawable).start()
+                                    }
+                                    5 -> {
+                                        userImageView.visibility = View.VISIBLE
+                                        attackImageView.visibility = View.INVISIBLE
+                                        playerDamageImageView.visibility = View.INVISIBLE
+                                        (playerDamageImageView.background as AnimationDrawable).stop()
+                                        battleCounter++
+                                        if (battleCounter < 3) {
+                                            animationCounter = 0
+                                        } else {
+                                            if(battleResult == 0) {
+                                                enemyDigitalMonster.digital_monster.sideAnimation(enemyImageView, 6)
+                                                user.mainDigitalMonster!!.digital_monster.animation(userImageView, 5)
+                                            }
+                                            else{
+                                                enemyDigitalMonster.digital_monster.sideAnimation(enemyImageView, 5)
+                                                user.mainDigitalMonster!!.digital_monster.animation(userImageView, 6)
+                                            }
+                                        }
+                                    }
+                                    10 -> {
+                                        caseBackground.findViewById<View>(R.id.bottomButton).isClickable = true
                                         cancel()
                                     }
                                 }
+                                handler.postDelayed(this, 800L)
                             }
                         }
                         handler.post(runnable)

@@ -41,4 +41,26 @@
         app:layout_constraintEnd_toStartOf="@+id/userImageView"
         app:layout_constraintTop_toTopOf="@+id/userImageView"
         app:srcCompat="@drawable/dirtone" />
+
+    <ImageView
+        android:id="@+id/enemyDamageImageView"
+        android:layout_width="96dp"
+        android:layout_height="96dp"
+        android:background="@drawable/hurtemotion"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/enemyImageView"
+        app:layout_constraintEnd_toEndOf="@+id/enemyImageView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/enemyImageView" />
+
+    <ImageView
+        android:id="@+id/playerDamageImageView"
+        android:layout_width="96dp"
+        android:layout_height="96dp"
+        android:background="@drawable/hurtemotion"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/userImageView"
+        app:layout_constraintEnd_toEndOf="@+id/userImageView"
+        app:layout_constraintStart_toStartOf="@+id/userImageView"
+        app:layout_constraintTop_toTopOf="@+id/userImageView" />
 </androidx.constraintlayout.widget.ConstraintLayout>
