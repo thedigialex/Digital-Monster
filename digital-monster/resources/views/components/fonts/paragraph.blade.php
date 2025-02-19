@@ -1,3 +1,3 @@
-<p {{ $attributes->merge(['class' => 'text-text']) }}>
+<p {{ $attributes->class(['text-text' => !isset($attributes['class']),]) }}>
     {{ $slot }}
 </p>

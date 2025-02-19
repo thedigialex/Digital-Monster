@@ -1,11 +1,16 @@
 @props(['active'])
 
 @php
-$classes = ($active ?? false)
-            ? 'inline-flex items-center px-1 pt-1 border-b-2 border-accent text-sm font-medium leading-5 text-accent focus:outline-none focus:border-accent transition duration-150 ease-in-out'
-            : 'inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium leading-5 text-text hover:text-accent_light hover:border-accent_light focus:outline-none focus:text-accentfocus:border-gray-300 transition duration-150 ease-in-out';
+$baseClasses = 'relative inline-flex items-center p-1 w-full font-medium transition duration-150 ease-in-out focus:outline-none';
+$activeClasses = 'text-accent after:w-full after:bg-accent after:scale-x-100';
+$inactiveClasses = 'text-text hover:text-accent after:w-0 after:bg-accent hover:after:w-full focus:text-accent focus:after:bg-accent focus:after:w-full';
+$afterClasses = 'after:absolute after:bottom-0 after:left-0 after:h-[2px] after:transition-all after:duration-300 after:origin-left';
+
+$classes = $active ? "$baseClasses $activeClasses $afterClasses" : "$baseClasses $inactiveClasses $afterClasses";
 @endphp
 
 <a {{ $attributes->merge(['class' => $classes]) }}>
-    {{ $slot }}
+    <span class="space-x-2 ml-4">
+        {{ $slot }}
+    </span>
 </a>
