@@ -8,9 +8,9 @@
     </x-slot>
 
     <x-container>
-        <div class="bg-accent text-center p-3 rounded-t-lg shadow-md border-b-4 border-primary">
-            <x-fonts.accent-header class="text-primary"><strong>{{ $totalMonsters }}</strong> digital monsters are roaming your farm.</x-fonts.accent-header>
-        </div>
+        <x-slot name="header">
+            <x-fonts.accent-header class="text-primary pb-2"><strong>{{ $totalMonsters }}</strong> digital monsters are roaming your farm.</x-fonts.accent-header>
+        </x-slot>
         <div
             id="monster-container"
             class="relative w-full h-[500px] overflow-hidden rounded-b-lg shadow-lg"
@@ -18,7 +18,7 @@
             style="background-image: url('/images/background-dashboard.png'); background-size: cover; background-position: center;">
         </div>
 
-        <div id="stats-panel" class="hidden bg-primary w-full p-4 shadow-lg rounded-b-lg">
+        <div id="stats-panel" class="hidden bg-secondary w-full p-4 shadow-lg rounded-b-lg">
             <div class="flex justify-between items-center">
                 <x-fonts.sub-header id="stats-title">Monster Stats</x-fonts.sub-header>
                 <button id="close-stats" class="text-accent font-bold text-4xl p-2">&times;</button>

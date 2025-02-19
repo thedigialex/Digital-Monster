@@ -18,7 +18,7 @@
     @endif
 
     <x-container>
-        <div class="flex justify-center space-x-4 bg-accent pt-4 rounded-t-md">
+        <x-slot name="header">
             @foreach ($stats as $index => $label)
             <button
                 onclick="switchTab(event, 'tab-{{ $index }}')"
@@ -26,9 +26,9 @@
                 {{ $label }}
             </button>
             @endforeach
-        </div>
+        </x-slot>
         @foreach ($stats as $index => $label)
-        <div id="tab-{{ $index }}" class="tabcontent {{ !$loop->first ? 'hidden' : '' }}">
+        <div id="tab-{{ $index }}" class="tabcontent {{ !$loop->first ? 'hidden' : '' }} bg-secondary rounded-b-lg">
             @if (isset($trainingEquipments[$label]) && $trainingEquipments[$label]->isNotEmpty())
             <table class="min-w-full border border-primary border-4">
                 <thead class="bg-primary">
@@ -48,7 +48,7 @@
                             </div>
                             @endif
                         </td>
-                        <td class="px-4 py-2 text-text"> 
+                        <td class="px-4 py-2 text-text">
                             <span class="font-bold">Name:</span> {{ $equipment->name }}
                         </td>
                         <td class="px-4 py-2 text-end space-x-4">
@@ -68,11 +68,9 @@
                 </tbody>
             </table>
             @else
-            <p class="text-text py-4">No equipment available for this stat.</p>
+            <x-fonts.paragraph class="text-text p-4">No equipment.</x-fonts.paragraph>
             @endif
         </div>
         @endforeach
-
     </x-container>
-
 </x-app-layout>

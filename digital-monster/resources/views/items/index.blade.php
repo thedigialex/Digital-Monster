@@ -18,17 +18,17 @@
     @endif
 
     <x-container>
-        <div class="flex justify-center space-x-4 bg-accent pt-4 rounded-t-md">
+        <x-slot name="header">
             @foreach($itemTypes as $type)
             <button onclick="switchTab(event, 'tab-{{ $type }}')"
                 class="tablinks {{ $loop->first ? 'active bg-primary' : 'bg-secondary' }} w-64 py-2 text-text font-semibold rounded-t-md hover:bg-primary">
                 {{ ucfirst($type) }}
             </button>
             @endforeach
-        </div>
+        </x-slot>
 
         @foreach($itemTypes as $type)
-        <div id="tab-{{ $type }}" class="tabcontent {{ !$loop->first ? 'hidden' : '' }}">
+        <div id="tab-{{ $type }}" class="tabcontent {{ !$loop->first ? 'hidden' : '' }} bg-secondary rounded-b-lg">
             @if(isset($items[$type]) && $items[$type]->isNotEmpty())
             <table class="min-w-full border border-primary border-4">
                 <thead class="bg-primary">
@@ -71,7 +71,7 @@
                 </tbody>
             </table>
             @else
-            <p class="text-text py-4">No items available in this category.</p>
+            <x-fonts.paragraph class="text-text p-4">No items.</x-fonts.paragraph>
             @endif
         </div>
         @endforeach

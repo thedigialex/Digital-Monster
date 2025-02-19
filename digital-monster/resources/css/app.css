@@ -20,3 +20,8 @@
         }
     }
 }
+
+::selection {
+    background-color: #e47e00;
+    color: #333333;
+}

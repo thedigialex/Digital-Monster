@@ -18,13 +18,13 @@
     @endif
 
     <x-container>
-        <div class="flex justify-center space-x-4 bg-accent pt-4 rounded-t-md">
+        <x-slot name="header">
             @foreach($eggGroups as $index => $eggGroup)
             <button onclick="switchTab(event, 'tab-{{ $index }}')" class="tablinks {{ $index === 0 ? 'active bg-primary' : 'bg-secondary' }} w-64 py-2 text-text font-semibold rounded-t-md hover:bg-primary ">
                 {{ $eggGroup->name }}
             </button>
             @endforeach
-        </div>
+        </x-slot>
         @foreach($eggGroups as $index => $eggGroup)
         <div id="tab-{{ $index }}" class="tabcontent {{ $index !== 0 ? 'hidden' : '' }} ">
             <table class="min-w-full border border-primary border-4">

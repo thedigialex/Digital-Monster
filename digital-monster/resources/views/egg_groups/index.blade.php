@@ -19,16 +19,17 @@
     @endif
 
     <x-container>
-        <div class="flex justify-center space-x-4 bg-accent pt-4 rounded-t-md">
+        <x-slot name="header">
             @foreach ($fieldTypes as $index => $label)
             <button onclick="switchTab(event, 'tab-{{ $index }}')"
                 class="tablinks {{ $loop->first ? 'active bg-primary' : 'bg-secondary' }} w-64 py-2 text-text font-semibold rounded-t-md hover:bg-primary">
                 {{ $label }}
             </button>
             @endforeach
-        </div>
+        </x-slot>
+
         @foreach ($fieldTypes as $index => $label)
-        <div id="tab-{{ $index }}" class="tabcontent {{ !$loop->first ? 'hidden' : '' }}">
+        <div id="tab-{{ $index }}" class="tabcontent {{ !$loop->first ? 'hidden' : '' }} bg-secondary rounded-b-lg">
             @if (isset($eggGroups[$label]) && $eggGroups[$label]->isNotEmpty())
             <table class="min-w-full border border-primary border-4">
                 <thead class="bg-primary">
@@ -48,7 +49,7 @@
                             <span class="font-bold">Name:</span> {{ $eggGroup->name }}
                         </td>
                         <td class="px-4 py-2 text-end space-x-4">
-                        <a href="{{ route('egg_groups.edit', ['id' => $eggGroup->id]) }}">
+                            <a href="{{ route('egg_groups.edit', ['id' => $eggGroup->id]) }}">
                                 <x-primary-button>
                                     Edit <i class="fa fa-edit ml-2"></i>
                                 </x-primary-button>
@@ -67,7 +68,8 @@
                 </tbody>
             </table>
             @else
-            <p class="text-text py-4">No egg groups available for this field type.</p>
+            <x-fonts.paragraph class="text-text p-4">No egg groups available for this field type.</x-fonts.paragraph>
+
             @endif
         </div>
         @endforeach

@@ -12,12 +12,12 @@
     @endif
 
     <x-container>
-        <div class="flex justify-between items-center mb-2">
-            <x-fonts.sub-header>
+        <x-slot name="header">
+            <x-fonts.accent-header class="text-primary pb-2">
                 Users
-            </x-fonts.sub-header>
-        </div>
-        <table class="min-w-full border border-primary border-4">
+            </x-fonts.accent-header>
+        </x-slot>
+        <table class="min-w-full border border-primary border-4 bg-secondary rounded-b-lg">
             <thead class="bg-primary">
                 <tr>
                     <th class="w-1/6 px-4 py-2 text-left text-text">Name</th>

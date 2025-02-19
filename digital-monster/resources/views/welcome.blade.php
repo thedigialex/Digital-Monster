@@ -14,7 +14,7 @@
 
 <body class="antialiased selection:bg-cyan-500 h-screen bg-primary">
     <div class="h-full flex flex-col lg:flex-row justify-center">
-        <div class="w-full lg:w-1/2 flex flex-col justify-center p-2 lg:p-32">
+        <div class="w-full lg:w-1/2 flex flex-col justify-center p-2 lg:p-32 square-grid-bg">
             <div class="bg-secondary rounded-lg justify-center">
                 <!-- Tab navigation -->
                 <div class="flex justify-center space-x-4 bg-accent pt-4 rounded-t-md">
@@ -48,7 +48,6 @@
             </div>
 
         </div>
-        <div class="stars-overlay"></div>
         <div class="hidden lg:flex flex-col lg:w-1/2 bg-secondary items-center justify-center">
             <x-application-logo class="fill-current" width="400" height="400" />
         </div>
