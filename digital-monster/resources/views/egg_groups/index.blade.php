@@ -1,5 +1,5 @@
 <x-app-layout>
-    <script src="{{ asset('js/switch-tab.js') }}"></script>
+
 
     <x-slot name="header">
         <div class="flex justify-between items-center">
@@ -18,18 +18,9 @@
     <x-alerts.success>{{ session('success') }}</x-alerts.success>
     @endif
 
-    <x-container>
-        <x-slot name="header">
-            @foreach ($fieldTypes as $index => $label)
-            <button onclick="switchTab(event, 'tab-{{ $index }}')"
-                class="tablinks {{ $loop->first ? 'active bg-primary' : 'bg-secondary' }} w-64 py-2 text-text font-semibold rounded-t-md hover:bg-primary">
-                {{ $label }}
-            </button>
-            @endforeach
-        </x-slot>
-
+    <x-container class="p-4">
         @foreach ($fieldTypes as $index => $label)
-        <div id="tab-{{ $index }}" class="tabcontent {{ !$loop->first ? 'hidden' : '' }} bg-secondary rounded-b-lg">
+        <x-accordion title="{{ $label }}" :open="$loop->first">
             @if (isset($eggGroups[$label]) && $eggGroups[$label]->isNotEmpty())
             <table class="min-w-full border border-primary border-4">
                 <thead class="bg-primary">
@@ -69,9 +60,8 @@
             </table>
             @else
             <x-fonts.paragraph class="text-text p-4">No egg groups available for this field type.</x-fonts.paragraph>
-
             @endif
-        </div>
+        </x-accordion>
         @endforeach
     </x-container>
 </x-app-layout>

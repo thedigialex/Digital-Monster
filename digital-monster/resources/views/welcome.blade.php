@@ -12,24 +12,24 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body class="antialiased selection:bg-cyan-500 h-screen bg-primary">
-    <div class="h-full flex flex-col lg:flex-row justify-center">
-        <div class="w-full lg:w-1/2 flex flex-col justify-center p-2 lg:p-32 square-grid-bg">
-            <div class="bg-secondary rounded-lg justify-center">
-                <!-- Tab navigation -->
-                <div class="flex justify-center space-x-4 bg-accent pt-4 rounded-t-md">
-                    <button id="login-tab" onclick="toggleForms('login')" class="w-64 py-2 text-text bg-secondary font-semibold rounded-t-md hover:bg-primary ">
+<body class="antialiased selection:bg-accent square-grid-bg">
+    <div class="min-h-screen flex flex-col lg:flex-row justify-center">
+        <div class="hidden sm:hidden md:hidden lg:flex flex-col lg:w-1/2 bg-secondary items-center justify-center">
+            <x-application-logo class="fill-current" width="400" height="400" />
+        </div>
+        <div class="w-full lg:w-1/2 flex flex-col justify-center">
+            <x-container>
+                <x-slot name="header">
+                    <button id="login-tab" onclick="toggleForms('login')" class="w-64 py-2 text-text bg-secondary font-semibold rounded-t-md hover:bg-primary">
                         Login
                     </button>
                     <button id="register-tab" onclick="toggleForms('register')" class="w-64 py-2 text-text bg-primary hover:bg-primary font-semibold rounded-t-md">
                         Register
                     </button>
-                    <button id="forgot-tab" onclick="showForm('forgot-form'); setActiveTab('forgot')" class="w-64 py-2 text-text bg-primary hover:bg-primary  font-semibold rounded-t-md">
+                    <button id="forgot-tab" onclick="showForm('forgot-form'); setActiveTab('forgot')" class="w-64 py-2 text-text bg-primary hover:bg-primary font-semibold rounded-t-md">
                         Forgot Password?
                     </button>
-                </div>
-
-                <!-- Forms container -->
+                </x-slot>
                 <div id="form-container" class="w-full p-2 lg:p-4">
                     <div id="login-form" class="form block">
                         @include('auth.login')
@@ -41,15 +41,11 @@
                         @include('auth.forgot-password')
                     </div>
 
-                    <div class=" py-2 text-center ">
+                    <div class="py-2 text-center">
                         <x-fonts.paragraph><span class="text-accent"> &copy; TheDigiAlex 2024</span></x-fonts.paragraph>
                     </div>
                 </div>
-            </div>
-
-        </div>
-        <div class="hidden lg:flex flex-col lg:w-1/2 bg-secondary items-center justify-center">
-            <x-application-logo class="fill-current" width="400" height="400" />
+            </x-container>
         </div>
     </div>
 
@@ -99,7 +95,5 @@
             selectedForm.classList.remove('hidden');
         }
     </script>
-
 </body>
-
 </html>

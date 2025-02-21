@@ -23,13 +23,13 @@
             @include('layouts.mobile_navigation')
         </div>
         <aside class="hidden md:flex w-64 bg-primary min-h-screen flex-col">
-            <div class="border-b-4 border-secondary p-6 text-center">
+            <div class="border-b-4 border-accent p-6 text-center">
                 <x-fonts.sub-header>Digital Portal</x-fonts.sub-header>
             </div>
 
             @include('layouts.navigation')
 
-            <div class="flex justify-center border-t-2 border-accent p-4">
+            <div class="flex justify-center border-t-4 border-secondary p-4">
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
                     <x-primary-button type="submit">
@@ -40,10 +40,8 @@
         </aside>
         <div class="flex-1 flex flex-col square-grid-bg">
             @isset($header)
-            <header class="bg-secondary shadow border-b-4 border-accent p-6">
-                <div>
-                    {{ $header }}
-                </div>
+            <header class="bg-primary border-b-4 border-accent p-6">
+            {{ $header }}
             </header>
             @endisset
             <main class="px-1 md:px-0">
@@ -52,5 +50,4 @@
         </div>
     </div>
 </body>
-
 </html>

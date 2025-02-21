@@ -18,7 +18,6 @@ export default {
                 primary: '#262626',
                 secondary: '#333333',
                 accent: '#e47e00',
-                accent_light: '#FF9818',
                 neutral: '#545454',
                 error: '#dc2626',
                 success: '#ADF8C7', 
