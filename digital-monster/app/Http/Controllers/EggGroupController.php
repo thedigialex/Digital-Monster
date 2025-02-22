@@ -36,8 +36,8 @@ class EggGroupController extends Controller
             EggGroup::create($request->all());
             $message = 'Egg group created successfully.';
         }
-
-        return redirect()->route('egg_groups.index')->with('success', $message);
+        
+        return redirect()->route('egg_groups.index')->with('success', $message);    
     }
 
     public function destroy(EggGroup $eggGroup)

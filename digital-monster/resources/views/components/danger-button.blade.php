@@ -1,3 +1,10 @@
-<button {{ $attributes->merge(['type' => 'submit', 'class' => 'inline-flex items-center px-4 py-2 bg-error rounded-md font-semibold text-xs text-text uppercase tracking-widest hover:bg-red-500 hover:text-secondary']) }}>
+@props(['icon' => null])
+
+<button
+    {{ $attributes->merge(['type' => 'submit', 'class' => 'inline-flex items-center px-6 py-2 bg-error rounded-md font-semibold text-xs text-text uppercase 
+        border-2 border-error hover:text-error hover:bg-primary active:bg-primary focus:bg-error focus:border-error']) }}>
     {{ $slot }}
+    @if ($icon)
+    <i class="fa {{ $icon }} ml-2"></i>
+    @endif
 </button>

@@ -41,7 +41,9 @@
         <div class="flex-1 flex flex-col square-grid-bg">
             @isset($header)
             <header class="bg-primary border-b-4 border-accent p-6">
-            {{ $header }}
+                <div class="flex justify-between items-center">
+                    {{ $header }}
+                </div>
             </header>
             @endisset
             <main class="px-1 md:px-0">
@@ -50,4 +52,5 @@
         </div>
     </div>
 </body>
+
 </html>

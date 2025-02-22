@@ -9,10 +9,10 @@
     </button>
     <div
         x-show="open"
-        x-transition:enter="transition-all duration-300"
+        x-transition:enter="transition-all duration-200"
         x-transition:enter-start="max-h-0 opacity-0"
         x-transition:enter-end="max-h-screen opacity-100"
-        x-transition:leave="transition-all duration-300"
+        x-transition:leave="transition-all duration-200"
         x-transition:leave-start="max-h-screen opacity-100"
         x-transition:leave-end="max-h-0 opacity-0"
         class="w-full bg-secondary p-4 rounded-b-lg overflow-hidden origin-top">

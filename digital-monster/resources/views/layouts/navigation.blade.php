@@ -5,7 +5,7 @@
     </x-nav-link>
 
     @if (Auth::user()->role === 'admin')
-    <x-nav-link :href="route('egg_groups.index')" :active="request()->routeIs('egg_groups.index')">
+    <x-nav-link :href="route('egg_groups.index')" :active="request()->routeIs(['egg_groups.index', 'egg_groups.edit'])">
         <i class="fas fa-egg"></i>
         <span>{{ __('Egg Groups') }}</span>
     </x-nav-link>
@@ -15,7 +15,7 @@
         <span>{{ __('Digital Monsters') }}</span>
     </x-nav-link>
 
-    <x-nav-link :href="route('items.index')" :active="request()->routeIs('items.index')">
+    <x-nav-link :href="route('items.index')" :active="request()->routeIs(['items.index', 'items.edit'])">
         <i class="fas fa-box-open"></i>
         <span>{{ __('Items') }}</span>
     </x-nav-link>
