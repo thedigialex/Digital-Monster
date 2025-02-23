@@ -1,11 +1,12 @@
-@props(['label' => null, 'disabled' => false])
+@props(['divClasses' => '', 'name' => '', 'value' => '', 'type' => 'text'])
 
-<div >
-    @if ($label)
-    <x-inputs.label for="{{ $attributes['id'] }}" class="pb-1">{{ $label }}</x-inputs.label>
-    @endif
+<div class="{{ $divClasses }}">
+    <x-inputs.label for="{{ $name }}" class="pb-1">{{ ucwords($name) }}</x-inputs.label>
     <input
         autocomplete="off"
-        {{ $disabled ? 'disabled' : '' }}
-        {!! $attributes->merge(['class' => 'text-text bg-neutral focus:border-accent focus:ring-accent rounded-md ']) !!}>
+        type="{{ $type }}"
+        name="{{ $name }}"
+        id="{{ $name }}"
+        value="{{ $value }}"
+        class="w-full text-text bg-neutral focus:border-accent focus:ring-accent rounded-md" />
 </div>

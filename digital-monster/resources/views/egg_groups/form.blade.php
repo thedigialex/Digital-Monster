@@ -10,10 +10,6 @@
         </a>
     </x-slot>
 
-    @if (session('error'))
-        <x-alerts.error>{{ session('error') }}</x-alert-error>
-    @endif
-        
     <x-container class="p-4">
         <div class="flex justify-end w-full">
             @if (isset($eggGroup))
@@ -32,15 +28,12 @@
         <form action="{{ route('egg_groups.update') }}" method="POST" class="space-y-4">
             @csrf
             @if (isset($eggGroup))
-                <input type="hidden" name="id" value="{{ $eggGroup->id }}">
+            <input type="hidden" name="id" value="{{ $eggGroup->id }}">
             @endif
             <x-container.single>
                 <x-inputs.text
-                    label="Egg Name"
-                    type="text"
                     name="name"
-                    id="name"
-                    class="form-control w-full"
+                    divClasses="w-full"
                     value="{{ isset($eggGroup) ? $eggGroup->name : '' }}"
                     required />
                 <x-inputs.dropdown name="field_type" id="field_type" class="form-control w-full" required label="Field Type">

@@ -1,32 +1,78 @@
-@props(['label' => null, 'name' => 'file', 'id' => 'file', 'accept' => 'image/*'])
+@props(['label' => null, 'name' => 'file', 'id' => 'file', 'accept' => 'image/*', 'currentImage' => null])
 
 <div class="flex flex-col">
     @if ($label)
     <x-inputs.label for="{{ $id }}" class="pb-1">{{ $label }}</x-inputs.label>
     @endif
 
-    <img id="{{ $id }}_preview" src="" class="hidden w-32 h-32 object-cover rounded-lg mb-2 border border-gray-300" />
+    <div class="relative w-full">
+        <input
+            type="file"
+            name="{{ $name }}"
+            id="{{ $id }}"
+            accept="{{ $accept }}"
+            onchange="previewImage(event, '{{ $id }}')"
+            class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
+        <input
+            type="text"
+            id="{{ $id }}_text"
+            readonly
+            placeholder="Choose a file..."
+            class="w-full text-text bg-neutral rounded-md p-2 cursor-pointer"
+            onclick="document.getElementById('{{ $id }}').click()">
+    </div>
 
-    <input
-        type="file"
-        name="{{ $name }}"
-        id="{{ $id }}"
-        accept="{{ $accept }}"
-        onchange="previewImage(event, '{{ $id }}')"
-        {!! $attributes->merge(['class' => 'border border-gray-300 rounded-md p-2 w-full focus:border-accent focus:ring-accent']) !!}>
+    <div class="flex justify-center items-center gap-4">
+        <div id="{{ $id }}_preview_container" class="mt-2 w-32 h-32 overflow-hidden hidden border-2 border-accent bg-accent rounded flex flex-col items-center relative">
+            <img id="{{ $id }}_preview" src="" class="w-full h-full object-cover" style="object-position: 0 0;" />
+            <button type="button" onclick="removeImage('{{ $id }}')" class="absolute top-1 right-1 bg-error text-text rounded p-2 text-xs">✕</button>
+        </div>
+
+        @if ($currentImage)
+        <div id="{{ $id }}_current_container" class="mt-2 w-32 h-32 overflow-hidden border-2 border-secondary bg-secondary rounded flex flex-col items-center">
+            <img src="{{ asset('storage/' . $currentImage) }}" alt="Item Image" class="w-full h-full object-cover" style="object-position: 0 0;" />
+        </div>
+        @endif
+    </div>
 
     <script>
         function previewImage(event, id) {
             const input = event.target;
             const preview = document.getElementById(id + '_preview');
+            const previewContainer = document.getElementById(id + '_preview_container');
+            const textInput = document.getElementById(id + '_text');
+            const currentImageContainer = document.getElementById(id + '_current_container');
 
             if (input.files && input.files[0]) {
+                textInput.value = input.files[0].name;
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     preview.src = e.target.result;
-                    preview.classList.remove('hidden');
+                    previewContainer.classList.remove('hidden');
+                    if (currentImageContainer) {
+                        currentImageContainer.classList.add('hidden');
+                    }
                 };
                 reader.readAsDataURL(input.files[0]);
+            } else {
+                previewContainer.classList.add('hidden');
+                if (currentImageContainer) {
+                    currentImageContainer.classList.remove('hidden');
+                }
+            }
+        }
+
+        function removeImage(id) {
+            const input = document.getElementById(id);
+            const previewContainer = document.getElementById(id + '_preview_container');
+            const textInput = document.getElementById(id + '_text');
+            const currentImageContainer = document.getElementById(id + '_current_container');
+
+            input.value = "";
+            textInput.value = "";
+            previewContainer.classList.add('hidden');
+            if (currentImageContainer) {
+                currentImageContainer.classList.remove('hidden');
             }
         }
     </script>
