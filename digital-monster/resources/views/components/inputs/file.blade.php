@@ -1,35 +1,39 @@
-@props(['label' => null, 'name' => 'file', 'id' => 'file', 'accept' => 'image/*', 'currentImage' => null])
+@props(['label' => null, 'name' => 'file', 'accept' => 'image/*', 'currentImage' => null])
 
-<div class="flex flex-col">
+<div id="{{ $name }}_div" class="flex flex-col">
     @if ($label)
-    <x-inputs.label for="{{ $id }}" class="pb-1">{{ $label }}</x-inputs.label>
+    <x-inputs.label for="{{ $name }}" class="pb-1">{{ $label }}</x-inputs.label>
     @endif
 
     <div class="relative w-full">
         <input
             type="file"
             name="{{ $name }}"
-            id="{{ $id }}"
+            id="{{ $name }}"
             accept="{{ $accept }}"
-            onchange="previewImage(event, '{{ $id }}')"
+            onchange="previewImage(event, '{{ $name }}')"
             class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
         <input
             type="text"
-            id="{{ $id }}_text"
+            id="{{ $name }}_text"
             readonly
             placeholder="Choose a file..."
-            class="w-full text-text bg-neutral rounded-md p-2 cursor-pointer"
-            onclick="document.getElementById('{{ $id }}').click()">
+            class="w-full text-text bg-neutral rounded-md p-2 cursor-pointer @error($name) border-error @enderror"
+            onclick=" document.getElementById('{{ $name }}').click()">
     </div>
 
+    @error($name)
+    <p class="text-error text-sm mt-1">Field is required</p>
+    @enderror
+
     <div class="flex justify-center items-center gap-4">
-        <div id="{{ $id }}_preview_container" class="mt-2 w-32 h-32 overflow-hidden hidden border-2 border-accent bg-accent rounded flex flex-col items-center relative">
-            <img id="{{ $id }}_preview" src="" class="w-full h-full object-cover" style="object-position: 0 0;" />
-            <button type="button" onclick="removeImage('{{ $id }}')" class="absolute top-1 right-1 bg-error text-text rounded p-2 text-xs">✕</button>
+        <div id="{{ $name }}_preview_container" class="mt-2 w-32 h-32 overflow-hidden hidden border-2 border-accent bg-accent rounded flex flex-col items-center relative">
+            <img id="{{ $name }}_preview" src="" class="w-full h-full object-cover" style="object-position: 0 0;" />
+            <button type="button" onclick="removeImage('{{ $name }}')" class="absolute top-1 right-1 bg-error text-text rounded p-2 text-xs">✕</button>
         </div>
 
         @if ($currentImage)
-        <div id="{{ $id }}_current_container" class="mt-2 w-32 h-32 overflow-hidden border-2 border-secondary bg-secondary rounded flex flex-col items-center">
+        <div id="{{ $name }}_current_container" class="mt-2 w-32 h-32 overflow-hidden border-2 border-secondary bg-secondary rounded flex flex-col items-center">
             <img src="{{ asset('storage/' . $currentImage) }}" alt="Item Image" class="w-full h-full object-cover" style="object-position: 0 0;" />
         </div>
         @endif

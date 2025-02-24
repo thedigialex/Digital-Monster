@@ -21,7 +21,15 @@ class DigitalMonsterController extends Controller
                 ->with('error', 'No egg groups available. Create an egg groups first.')
                 ->withInput();
         }
-        return view('digital_monsters.index', compact('eggGroups'));
+        $icons = [
+            'Tyrannos' => 'fa-dragon',
+            'Insecta' => 'fa-bug',
+            'Beast' => 'fa-paw',
+            'Flora' => 'fa-leaf',
+            'Abyss' => 'fa-water',
+            'Arcane' => 'fa-magic',
+        ];
+        return view('digital_monsters.index', ['eggGroups' => $eggGroups, 'icons' => $icons]);
     }
 
     public function edit(Request $request)
@@ -34,13 +42,19 @@ class DigitalMonsterController extends Controller
 
     public function update(Request $request)
     {
-        $request->validate([
+        $rules = [
             'name' => 'required|string|max:255',
             'stage' => 'required|string',
             'egg_group_id' => 'required|exists:egg_groups,id',
             'element_0' => 'required|string',
-        ]);
+        ];
 
+        if (!$request->has('id')) {
+            $rules['sprite_image_0'] = 'required|image|mimes:jpg,jpeg,png,gif|max:10240';
+        }
+
+        $request->validate($rules);
+        
         $evoPointsMap = [
             'Egg' => 5,
             'Fresh' => 20,

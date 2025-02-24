@@ -10,6 +10,14 @@
         </a>
     </x-slot>
 
+    @if ($errors->any())
+    <x-slot name="alert">
+        <x-alerts.error>
+            Saving data, please fix fields.
+        </x-alerts.error>
+    </x-slot>
+    @endif
+
     <x-container class="p-4">
         <div class="flex justify-end w-full">
             @if (isset($eggGroup))
@@ -36,14 +44,12 @@
                     divClasses="w-full"
                     value="{{ isset($eggGroup) ? $eggGroup->name : '' }}"
                     required />
-                <x-inputs.dropdown name="field_type" id="field_type" class="form-control w-full" required label="Field Type">
-                    <option value="" disabled {{ isset($eggGroup) && !$eggGroup->field_type ? 'selected' : '' }}>Select Field Type</option>
-                    @foreach($fieldTypes as $index => $label)
-                    <option value="{{ $label }}" {{ isset($eggGroup) && $eggGroup->field_type == $label ? 'selected' : '' }}>
-                        {{ $label }}
-                    </option>
-                    @endforeach
-                </x-inputs.dropdown>
+                <x-inputs.dropdown
+                    name="field_type"
+                    divClasses="w-full"
+                    required
+                    :options="$fieldTypes"
+                    :value="isset($eggGroup) ? $eggGroup->field_type : ''" />
                 <div class="flex justify-center">
                     <x-primary-button type="submit">{{ isset($eggGroup) ? 'Update' : 'Create' }} <i class="fa fa-save ml-2"></i> </x-primary-button>
                 </div>

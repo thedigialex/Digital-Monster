@@ -14,7 +14,19 @@ class ItemController extends Controller
     public function index()
     {
         $items = Item::all()->groupBy('type');
-        return view('items.index', ['items' => $items,  'rarityTypes' => $this->rarityTypes, 'itemTypes' => $this->itemTypes]);
+        $icons = [
+            'Case' => 'fa-box',
+            'Attack' => 'fa-bolt',
+            'Background' => 'fa-image',
+            'Consumable' => 'fa-utensils',
+            'Material' => 'fa-cogs',
+        ];
+        return view('items.index', [
+            'items' => $items,
+            'rarityTypes' => $this->rarityTypes,
+            'itemTypes' => $this->itemTypes,
+            'icons' => $icons,
+        ]);
     }
 
     public function edit(Request $request)

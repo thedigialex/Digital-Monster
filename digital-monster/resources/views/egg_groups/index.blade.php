@@ -16,7 +16,7 @@
 
     <x-container class="p-4">
         @foreach ($fieldTypes as $index => $label)
-        <x-accordion title="{{ $label }}" :open="$loop->first">
+        <x-accordion title="{{ $label }}" :open="$loop->first" :icon="$icons[$index]">
             @if (isset($eggGroups[$label]) && $eggGroups[$label]->isNotEmpty())
             <x-table.table>
                 <thead class="bg-primary">

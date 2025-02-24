@@ -1,7 +1,35 @@
-@props(['divClasses' => '', 'name' => '', 'onchange' => ''])
-<div class="{{ $divClasses }}">
-    <x-inputs.label for="{{ $name }}" class="pb-1">{{ ucwords($name) }}</x-inputs.label>
-    <select name="{{ $name }}" id="{{ $name }}" onchange="{{ $onchange }}" class="w-full text-text bg-neutral focus:border-accent focus:ring-accent rounded-md">
-        {{ $slot }}
+@props([
+'divClasses' => '',
+'name' => '',
+'onchange' => '',
+'options' => [],
+'value' => '',
+'useOptionKey' => 'false'
+])
+
+<div id="{{ $name }}_div" class="{{ $divClasses }}">
+    <x-inputs.label for="{{ $name }}" class="pb-1">{{ ucwords(str_replace('_', ' ', $name)) }}</x-inputs.label>
+
+    <select
+        name="{{ $name }}"
+        id="{{ $name }}"
+        @if($onchange) onchange="{{ $onchange }}" @endif
+        class="w-full text-text bg-neutral focus:border-accent focus:ring-accent rounded-md">
+        <option value="" selected>- Select Option -</option>
+        @foreach ($options as $optionKey => $optionValue)
+        @if($useOptionKey == 'true')
+        <option value="{{ $optionKey }}" {{ $value == $optionKey ? 'selected' : '' }}>
+            {{ ucfirst($optionValue) }}
+        </option>
+        @else
+        <option value="{{ $optionValue }}" {{ $value == $optionValue ? 'selected' : '' }}>
+            {{ ucfirst($optionValue) }}
+        </option>
+        @endif
+        @endforeach
     </select>
+
+    @error($name)
+    <p class="text-error text-sm mt-1">Field is required</p>
+    @enderror
 </div>

@@ -12,7 +12,15 @@ class EggGroupController extends Controller
     public function index()
     {
         $eggGroups = EggGroup::all()->groupBy('field_type');
-        return view('egg_groups.index', ['eggGroups' => $eggGroups, 'fieldTypes' => $this->fieldTypes]);
+        $icons = [
+            'fa-dragon',
+            'fa-bug',
+            'fa-paw',
+            'fa-leaf',
+            'fa-water',
+            'fa-magic',
+        ];
+        return view('egg_groups.index', ['eggGroups' => $eggGroups, 'fieldTypes' => $this->fieldTypes, 'icons' => $icons]);
     }
 
     public function edit(Request $request)
@@ -36,8 +44,8 @@ class EggGroupController extends Controller
             EggGroup::create($request->all());
             $message = 'Egg group created successfully.';
         }
-        
-        return redirect()->route('egg_groups.index')->with('success', $message);    
+
+        return redirect()->route('egg_groups.index')->with('success', $message);
     }
 
     public function destroy(EggGroup $eggGroup)

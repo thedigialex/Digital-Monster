@@ -16,7 +16,7 @@
 
     <x-container class="p-4">
         @foreach ($itemTypes as $type)
-        <x-accordion title="{{ ucfirst($type) }}" :open="$loop->first">
+        <x-accordion title="{{ ucfirst($type) }}" :open="$loop->first" :icon="$icons[$type]">
             @if (isset($items[$type]) && $items[$type]->isNotEmpty())
             <x-table.table>
                 <thead class="bg-primary">

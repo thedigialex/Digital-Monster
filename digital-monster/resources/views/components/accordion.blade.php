@@ -5,8 +5,12 @@
         x-bind:class="{'rounded-b-lg': !open, 'rounded-b-none': open}">
         <span class="text-primary mx-2 fa fa-angle-down" x-show="!open"></span>
         <span class="text-primary mx-2 fa fa-angle-up" x-show="open"></span>
-        <x-fonts.accent-header class="ml-2 text-primary"> {{ $title }}</x-fonts.accent-header>
+        @if(!empty($icon))
+        <span class="text-primary mx-2 fa {{ $icon }}"></span>
+        @endif
+        <x-fonts.accent-header class="text-primary"> {{ $title }}</x-fonts.accent-header>
     </button>
+
     <div
         x-show="open"
         x-transition:enter="transition-all duration-200"

@@ -10,6 +10,14 @@
         </a>
     </x-slot>
 
+    @if ($errors->any())
+    <x-slot name="alert">
+        <x-alerts.error>
+            Saving data, please fix fields.
+        </x-alerts.error>
+    </x-slot>
+    @endif
+
     <x-container class="p-4">
         <div class="flex justify-end w-full">
             @if (isset($item))
@@ -31,7 +39,7 @@
             <x-container.single>
                 <div class="flex flex-col md:flex-row gap-4">
                     <x-container.single class="md:w-1/3 w-full">
-                        <x-inputs.file label="Choose an Image" name="image" id="image" :currentImage="$item->image ?? null" />
+                        <x-inputs.file label="Choose an Image" name="image" :currentImage="$item->image ?? null" />
                     </x-container.single>
                     <x-container.single class="md:w-2/3 w-full">
                         <div class="flex flex-col lg:flex-row lg:space-x-4 space-y-4 lg:space-y-0">
@@ -50,10 +58,10 @@
                                 <x-inputs.dropdown
                                     name="isAvailable"
                                     divClasses="w-full lg:w-1/2"
-                                    required>
-                                    <option value="1" {{ isset($item) && $item->isAvailable == 1 ? 'selected' : '' }}>Yes</option>
-                                    <option value="0" {{ isset($item) && $item->isAvailable == 0 ? 'selected' : '' }}>No</option>
-                                </x-inputs.dropdown>
+                                    :options="['1' => 'Yes', '0' => 'No']"
+                                    useOptionKey="true"
+                                    :value="isset($item) ? ($item->isAvailable == 1 ? 'Yes' : 'No') : ''"
+                                    required />
                             </div>
                         </div>
                         <div class="flex flex-col lg:flex-row lg:space-x-4 space-y-4 lg:space-y-0">
@@ -61,27 +69,16 @@
                                 <x-inputs.dropdown
                                     name="rarity"
                                     divClasses="w-full lg:w-1/2"
-                                    required>
-                                    <option value="" disabled {{ isset($item) && !$item->rarity ? 'selected' : '' }}>Select a rarity</option>
-                                    @foreach ($rarityTypes as $rarity)
-                                    <option value="{{ $rarity }}" {{ isset($item) && $item->rarity === $rarity ? 'selected' : '' }}>
-                                        {{ ucfirst($rarity) }}
-                                    </option>
-                                    @endforeach
-                                </x-inputs.dropdown>
-
+                                    required
+                                    :options="$rarityTypes"
+                                    :value="isset($item) ? $item->rarity : ''" />
                                 <x-inputs.dropdown
                                     name="type"
                                     divClasses="w-full lg:w-1/2"
                                     onchange="toggleEffectField()"
-                                    required>
-                                    <option value="" disabled {{ isset($item) && !$item->type ? 'selected' : '' }}>Select a type</option>
-                                    @foreach ($itemTypes as $type)
-                                    <option value="{{ $type }}" {{ isset($item) && $item->type === $type ? 'selected' : '' }}>
-                                        {{ ucfirst($type) }}
-                                    </option>
-                                    @endforeach
-                                </x-inputs.dropdown>
+                                    required
+                                    :options="$itemTypes"
+                                    :value="isset($item) ? $item->type : ''" />
                             </div>
                             <div class="w-full lg:w-1/2" id="effectField">
                                 <x-inputs.text
@@ -94,7 +91,9 @@
                     </x-container.single>
                 </div>
                 <div class="flex justify-center">
-                    <x-primary-button type="submit">{{ isset($item) ? 'Update' : 'Create' }} <i class="fa fa-save ml-2"></i> </x-primary-button>
+                    <x-primary-button type="submit" icon="fa-save">
+                        {{ isset($item) ? 'Update' : 'Create' }}
+                    </x-primary-button>
                 </div>
             </x-container.single>
         </form>

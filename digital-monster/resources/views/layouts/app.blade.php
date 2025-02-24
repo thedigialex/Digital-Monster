@@ -6,14 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Digital Portal') }}</title>
+    <title>{{ config('app.name') }}</title>
 
-    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 
-    <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
@@ -23,13 +21,13 @@
             @include('layouts.mobile_navigation')
         </div>
         <aside class="hidden md:flex w-64 bg-primary min-h-screen flex-col">
-            <div class="border-b-4 border-accent p-6 text-center">
+            <div class="border-b-4 border-secondary p-6 text-center">
                 <x-fonts.sub-header>Digital Portal</x-fonts.sub-header>
             </div>
 
             @include('layouts.navigation')
 
-            <div class="flex justify-center border-t-4 border-secondary p-4">
+            <div class="flex justify-center border-t-4 border-secondary p-6">
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
                     <x-primary-button type="submit">
@@ -46,7 +44,10 @@
                 </div>
             </header>
             @endisset
-            <main class="px-1 md:px-0">
+            @isset($alert)
+                {{ $alert }}
+            @endisset
+            <main class="px-1 sm:px-0">
                 {{ $slot }}
             </main>
         </div>

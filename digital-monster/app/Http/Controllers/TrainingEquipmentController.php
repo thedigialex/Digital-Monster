@@ -14,7 +14,15 @@ class TrainingEquipmentController extends Controller
     public function index()
     {
         $trainingEquipments = TrainingEquipment::all()->groupBy('stat');
-        return view('training_equipment.index', ['trainingEquipments' => $trainingEquipments, 'stats' => $this->stats]);
+        $icons = [
+            'fa-dumbbell',
+            'fa-running',
+            'fa-shield-alt',
+            'fa-brain',
+            'fa-soap',
+            'fa-lightbulb',
+        ];
+        return view('training_equipment.index', ['trainingEquipments' => $trainingEquipments, 'stats' => $this->stats, 'icons' => $icons]);
     }
 
     public function edit(Request $request)

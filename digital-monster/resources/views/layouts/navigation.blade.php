@@ -10,7 +10,7 @@
         <span>{{ __('Egg Groups') }}</span>
     </x-nav-link>
 
-    <x-nav-link :href="route('digital_monsters.index')" :active="request()->routeIs('digital_monsters.index')">
+    <x-nav-link :href="route('digital_monsters.index')" :active="request()->routeIs(['digital_monsters.index', 'digital_monsters.edit'])">
         <i class="fas fa-dragon"></i>
         <span>{{ __('Digital Monsters') }}</span>
     </x-nav-link>
@@ -20,7 +20,7 @@
         <span>{{ __('Items') }}</span>
     </x-nav-link>
 
-    <x-nav-link :href="route('trainingEquipments.index')" :active="request()->routeIs('trainingEquipments.index')">
+    <x-nav-link :href="route('trainingEquipments.index')" :active="request()->routeIs(['trainingEquipments.index', 'trainingEquipments.edit'])">
         <i class="fas fa-dumbbell"></i>
         <span>{{ __('Training Equipment') }}</span>
     </x-nav-link>

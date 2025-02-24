@@ -1,76 +1,61 @@
 <x-app-layout>
-    <script src="{{ asset('js/switch-tab.js') }}"></script>
     <x-slot name="header">
-        <div class="flex justify-between items-center">
-            <x-fonts.sub-header>
-                {{ __('Training Equipment') }}
-            </x-fonts.sub-header>
-            <a href="{{ route('trainingEquipments.edit') }}">
-                <x-primary-button>
-                    Add New <i class="fa fa-plus ml-2"></i>
-                </x-primary-button>
-            </a>
-        </div>
+        <x-fonts.sub-header>
+            {{ __('Training Equipment') }}
+        </x-fonts.sub-header>
+        <a href="{{ route('trainingEquipments.edit') }}">
+            <x-primary-button icon="fa-plus">
+                Add New
+            </x-primary-button>
+        </a>
     </x-slot>
 
     @if (session('success'))
     <x-alerts.success>{{ session('success') }}</x-alerts.success>
     @endif
 
-    <x-container>
-        <x-slot name="header">
-            @foreach ($stats as $index => $label)
-            <button
-                onclick="switchTab(event, 'tab-{{ $index }}')"
-                class="tablinks {{ $loop->first ? 'active bg-primary' : 'bg-secondary' }} w-64 py-2 text-text font-semibold rounded-t-md hover:bg-primary">
-                {{ $label }}
-            </button>
-            @endforeach
-        </x-slot>
+    <x-container class="p-4">
         @foreach ($stats as $index => $label)
-        <div id="tab-{{ $index }}" class="tabcontent {{ !$loop->first ? 'hidden' : '' }} bg-secondary rounded-b-lg">
+        <x-accordion title="{{ $label }}" :open="$loop->first" :icon="$icons[$index]">
             @if (isset($trainingEquipments[$label]) && $trainingEquipments[$label]->isNotEmpty())
-            <table class="min-w-full border border-primary border-4">
+            <x-table.table>
                 <thead class="bg-primary">
                     <tr>
-                        <th class="w-1/6 px-4 py-2 text-left text-text">Image</th>
-                        <th class="w-1/3 px-4 py-2 text-left text-text">Details</th>
-                        <th class="w-1/5 px-4 py-2 text-left text-text">Actions</th>
+                        <x-table.header class="w-1/3 text-left">Image</x-table.header>
+                        <x-table.header class="w-1/3 text-left">Name</x-table.header>
+                        <x-table.header class="w-1/3"></x-table.header>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach ($trainingEquipments[$label] as $equipment)
                     <tr class="{{ $loop->even ? 'bg-neutral' : 'bg-secondary' }}">
-                        <td class="px-4 py-2">
+                        <x-table.data class="w-1/3">
                             @if (isset($equipment->image))
                             <div class="w-16 h-16 overflow-hidden">
                                 <img src="{{ asset('storage/' . $equipment->image) }}" alt="Equipment Image" class="w-full h-full object-cover" style="object-position: 0 0;">
                             </div>
                             @endif
-                        </td>
-                        <td class="px-4 py-2 text-text">
-                            <span class="font-bold">Name:</span> {{ $equipment->name }}
-                        </td>
-                        <td class="px-4 py-2 text-end space-x-4">
+                        </x-table.data>
+                        <x-table.data class="w-1/3">
+                            <x-fonts.paragraph class="font-bold text-accent">
+                                {{ $equipment->name }}
+                            </x-fonts.paragraph>
+                        </x-table.data>
+                        <x-table.data class="w-1/3 text-end">
                             <a href="{{ route('trainingEquipments.edit', ['id' => $equipment->id]) }}">
-                                <x-primary-button>
-                                    Edit <i class="fa fa-edit ml-2"></i>
+                                <x-primary-button icon="fa-edit">
+                                    Edit
                                 </x-primary-button>
                             </a>
-                            <form action="{{ route('trainingEquipments.destroy', $equipment->id) }}" method="POST" class="inline" onsubmit="return confirm('Are you sure you want to delete this training equipment?');">
-                                @csrf
-                                @method('DELETE')
-                                <x-danger-button type="submit">Delete <i class="fa fa-trash ml-2"></i> </x-danger-button>
-                            </form>
-                        </td>
+                        </x-table.data>
                     </tr>
                     @endforeach
                 </tbody>
-            </table>
+            </x-table.table>
             @else
             <x-fonts.paragraph class="text-text p-4">No equipment.</x-fonts.paragraph>
             @endif
-        </div>
+        </x-accordion>
         @endforeach
     </x-container>
 </x-app-layout>
