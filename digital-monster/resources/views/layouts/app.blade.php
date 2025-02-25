@@ -44,10 +44,8 @@
                 </div>
             </header>
             @endisset
-            @isset($alert)
-                {{ $alert }}
-            @endisset
-            <main class="px-1 sm:px-0">
+
+            <main class="px-0 lg:px-1">
                 {{ $slot }}
             </main>
         </div>

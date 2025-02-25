@@ -1,10 +1,17 @@
 @props(['class' => ''])
 
-<div class="max-w-7xl mx-auto my-14 shadow-lg shadow-secondary bg-primary rounded-lg {{ $class }}">
+<div class="max-w-7xl mx-auto my-8 lg:my-14 shadow-lg shadow-secondary bg-primary rounded-md">
     @isset($header)
-        <div class="flex justify-center bg-accent space-x-4 px-2 pt-2 rounded-t-lg border-b-4 border-primary">
-            {{ $header }}
-        </div>
+    <div class="bg-secondary space-x-4 p-4 rounded-t-lg border-b-4 border-accent">
+        {{ $header }}
+    </div>
     @endisset
-    {{ $slot }}
+    @isset($info)
+    <div class="bg-secondary py-6 px-4 mb-4 rounded-b-md">
+        {{ $info }}
+    </div>
+    @endisset
+    <div class="{{ $class }}">
+        {{ $slot }}
+    </div>
 </div>

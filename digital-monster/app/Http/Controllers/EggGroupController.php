@@ -22,11 +22,14 @@ class EggGroupController extends Controller
         ];
         return view('egg_groups.index', ['eggGroups' => $eggGroups, 'fieldTypes' => $this->fieldTypes, 'icons' => $icons]);
     }
-
-    public function edit(Request $request)
+    public function edit()
     {
-        $eggGroup = EggGroup::find($request->input('id'));
-        return view('egg_groups.form', ['eggGroup' => $eggGroup, 'fieldTypes' => $this->fieldTypes]);
+        $eggGroup = EggGroup::find(session('egg_group_id'));
+
+        return view('egg_groups.form', [
+            'eggGroup' => $eggGroup,
+            'fieldTypes' => $this->fieldTypes
+        ]);
     }
 
     public function update(Request $request)
@@ -36,8 +39,10 @@ class EggGroupController extends Controller
             'field_type' => 'required|string',
         ]);
 
-        if ($request->has('id')) {
-            $eggGroup = EggGroup::findOrFail($request->input('id'));
+        $id = session('egg_group_id');
+
+        if ($id) {
+            $eggGroup = EggGroup::findOrFail($id);
             $eggGroup->update($request->all());
             $message = 'Egg group updated successfully.';
         } else {

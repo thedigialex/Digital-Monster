@@ -7,6 +7,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\EggGroupController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\SessionController;
 use Illuminate\Support\Facades\Route;
 
 //Public
@@ -17,15 +18,20 @@ Route::get('/', function () {
 //Log In Required
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])
-    ->middleware(['auth'])
-    ->name('dashboard');
+        ->middleware(['auth'])
+        ->name('dashboard');
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    
+
     //Admin Only
     Route::middleware(['admin'])->group(function () {
+        Route::post('/session/store', [SessionController::class, 'store'])->name('session.store');
+        Route::get('/session/get/{model}', [SessionController::class, 'get'])->name('session.get');
+        Route::post('/session/clear', [SessionController::class, 'clear'])->name('session.clear');
+
+
         Route::get('/users', [UserController::class, 'index'])->name('users.index');
         Route::get('/user', [UserController::class, 'profile'])->name('user.profile');
 
@@ -56,7 +62,7 @@ Route::middleware('auth')->group(function () {
         Route::delete('/trainingEquipment/{trainingEquipment}', [TrainingEquipmentController::class, 'destroy'])->name('trainingEquipments.destroy');
         Route::get('/userTrainingEquipment/edit', [UserController::class, 'editUserTrainingEquipment'])->name('user.training_equipment.edit');
         Route::post('/userTrainingEquipment/update', [UserController::class, 'updateUserTrainingEquipment'])->name('user.training_equipment.update');
-        Route::delete('/userTrainingEquipment/{trainingEquipment}', [UserController::class, 'destroyUserTrainingEquipment'])->name('user.training_equipment.destroy'); 
+        Route::delete('/userTrainingEquipment/{trainingEquipment}', [UserController::class, 'destroyUserTrainingEquipment'])->name('user.training_equipment.destroy');
     });
 });
 

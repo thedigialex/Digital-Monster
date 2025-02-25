@@ -14,7 +14,7 @@
         name="{{ $name }}"
         id="{{ $name }}"
         @if($onchange) onchange="{{ $onchange }}" @endif
-        class="w-full text-text bg-neutral focus:border-accent focus:ring-accent rounded-md">
+        class="w-full text-text bg-neutral focus:border-accent focus:ring-accent rounded-md  @error($name) border-error @enderror">
         <option value="" selected>- Select Option -</option>
         @foreach ($options as $optionKey => $optionValue)
         @if($useOptionKey == 'true')

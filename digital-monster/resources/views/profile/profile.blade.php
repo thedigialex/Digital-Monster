@@ -1,30 +1,29 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex justify-between items-center">
-            <x-fonts.sub-header>
-                {{ __('User') }}: {{ $user->name }}
-                <span class="ml-2">
-                    <i class="fa fa-envelope" id="copyEmailIcon" style="cursor: pointer;" onclick="copyToClipboard('{{ $user->email }}')"></i>
-                </span>
-            </x-fonts.sub-header>
-            <a href="{{ route('users.index') }}">
-                <x-primary-button>
-                    Go Back <i class="fa fa-arrow-left ml-2"></i>
-                </x-primary-button>
-            </a>
-        </div>
+        <x-fonts.sub-header>
+            {{ __('User') }}: {{ $user->name }}
+            <span class="ml-2">
+                <i class="fa fa-envelope" id="copyEmailIcon" style="cursor: pointer;" onclick="copyToClipboard('{{ $user->email }}')"></i>
+            </span>
+        </x-fonts.sub-header>
+        <a href="{{ route('users.index') }}">
+            <x-primary-button>
+                Go Back <i class="fa fa-arrow-left ml-2"></i>
+            </x-primary-button>
+        </a>
     </x-slot>
 
     @if (session('success'))
     <x-alerts.success>{{ session('success') }}</x-alerts.success>
     @endif
 
+
     <x-container>
         <x-slot name="header">
-            <x-fonts.accent-header class="text-primary pb-2"><strong>User Details</x-fonts.accent-header>
+            <x-fonts.sub-header class="text-secondary pb-2">User Details</x-fonts.sub-header>
         </x-slot>
-        <div class="p-4 flex flex-col md:flex-row bg-secondary rounded-b-lg">
-            <div class="flex-1 bg-neutral p-4 rounded-md">
+        <div class="p-4 flex flex-col md:flex-row">
+            <div class="flex-1 bg-secondary p-4 rounded-md">
                 <x-fonts.accent-header><strong>Name:</strong> {{ $user->name }}</x-fonts.accent-header>
                 <hr class="my-2 border-accent">
                 <x-fonts.paragraph><strong>Tamer Level:</strong> {{ $user->tamer_level }}</x-fonts.paragraph>
@@ -33,7 +32,7 @@
                 <x-fonts.paragraph><strong>Max Monster Amount:</strong> {{ $user->max_monster_amount }}</x-fonts.paragraph>
                 <x-fonts.paragraph><strong>Score:</strong> {{ $user->score }}</x-fonts.paragraph>
             </div>
-            <div class="w-full md:w-1/4 bg-primary p-4 rounded-md md:ml-4">
+            <div class="w-full md:w-1/4 bg-neutral p-4 rounded-md md:ml-4">
                 <x-fonts.paragraph><strong>Role:</strong> {{ ucfirst($user->role) }}</x-fonts.paragraph>
                 <hr class="my-2">
                 <x-fonts.paragraph><strong>Email:</strong> {{ $user->email }} </x-fonts.paragraph>
@@ -45,16 +44,19 @@
     </x-container>
 
     <x-container>
-        <div class="flex justify-between items-center p-4 bg-secondary rounded-t-lg">
-            <x-fonts.sub-header>
-                User Digital Monster
-            </x-fonts.sub-header>
-            <a href="{{ route('user.digital_monsters.edit', ['userId' => $user->id]) }}">
-                <x-primary-button>
-                    Add new<i class="fa fa-plus ml-2"></i>
-                </x-primary-button>
-            </a>
-        </div>
+        <x-slot name="header">
+            <div class="flex justify-between items-center  pb-2">
+                <x-fonts.sub-header class="text-secondary">
+                    User Digital Monster
+                </x-fonts.sub-header>
+                <a href="{{ route('user.digital_monsters.edit', ['userId' => $user->id]) }}">
+                    <x-inputs.secondary-button>
+                        Add new<i class="fa fa-plus ml-2"></i>
+                    </x-inputs.secondary-button>
+                </a>
+            </div>
+        </x-slot>
+
         @if ($user->digitalMonsters->isEmpty())
         <x-fonts.paragraph>No digital monsters found for this user</x-fonts.paragraph>
         @else

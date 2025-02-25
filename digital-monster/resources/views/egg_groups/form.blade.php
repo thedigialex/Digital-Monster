@@ -4,9 +4,7 @@
             {{ isset($eggGroup) ? 'Update Egg Group' : 'Create Egg Group' }}
         </x-fonts.sub-header>
         <a href="{{ route('egg_groups.index') }}">
-            <x-primary-button icon="fa-arrow-left">
-                Go Back
-            </x-primary-button>
+            <x-primary-button icon="fa-arrow-left" label="Go Back"/>
         </a>
     </x-slot>
 
@@ -27,17 +25,12 @@
                 onsubmit="return confirm('Are you sure you want to delete this egg group?');">
                 @csrf
                 @method('DELETE')
-                <x-danger-button icon="fa-trash">
-                    Delete
-                </x-danger-button>
+                <x-danger-button/>
             </form>
             @endif
         </div>
         <form action="{{ route('egg_groups.update') }}" method="POST" class="space-y-4">
             @csrf
-            @if (isset($eggGroup))
-            <input type="hidden" name="id" value="{{ $eggGroup->id }}">
-            @endif
             <x-container.single>
                 <x-inputs.text
                     name="name"

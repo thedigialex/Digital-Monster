@@ -16,14 +16,14 @@ class UserController extends Controller
     public function index()
     {
         $users = User::all();
-        return view('users.index', compact('users'));
+        return view('profile.index', compact('users'));
     }
 
     public function profile(Request $request)
     {
         $user = User::with(['digitalMonsters', 'inventories.item', 'trainingEquipments.trainingEquipment'])
             ->findOrFail($request->input('id'));
-        return view('users.profile', compact('user'));
+        return view('profile.profile', compact('user'));
     }
 
     //User Digital Monster
