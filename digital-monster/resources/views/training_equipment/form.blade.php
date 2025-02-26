@@ -4,39 +4,22 @@
             {{ isset($trainingEquipment) ? 'Update Training Equipment' : 'Create Training Equipment' }}
         </x-fonts.sub-header>
         <a href="{{ route('trainingEquipments.index') }}">
-            <x-primary-button icon="fa-arrow-left">
-                Go Back
-            </x-primary-button>
+            <x-primary-button icon="fa-arrow-left" label="Go Back" />
         </a>
     </x-slot>
 
     @if ($errors->any())
-    <x-slot name="alert">
-        <x-alerts.error>
-            Saving data, please fix fields.
-        </x-alerts.error>
-    </x-slot>
+    <x-alerts.error>
+        Saving data, please fix fields.
+    </x-alerts.error>
     @endif
 
     <x-container class="p-4">
-        <div class="flex justify-end w-full">
-            @if (isset($trainingEquipment))
-            <form action="{{ route('trainingEquipments.destroy', $trainingEquipment->id) }}" method="POST" class="inline" onsubmit="return confirm('Are you sure you want to delete this training equipment?');">
-                @csrf
-                @method('DELETE')
-                <x-danger-button type="submit" icon="fa-trash">
-                    Delete
-                </x-danger-button>
-            </form>
-            @endif
-        </div>
-
+        @if (isset($trainingEquipment))
+        <x-forms.delete-form :action="route('trainingEquipments.destroy', $trainingEquipment->id)" label="Training Equipment" />
+        @endif
         <form action="{{ route('trainingEquipments.update') }}" method="POST" class="space-y-4" enctype="multipart/form-data">
             @csrf
-            @if (isset($trainingEquipment))
-            <input type="hidden" name="id" value="{{ $trainingEquipment->id }}">
-            @endif
-
             <x-container.single>
                 <div class="flex flex-col md:flex-row gap-4">
                     <x-container.single class="md:w-1/3 w-full">
@@ -73,9 +56,7 @@
                     </x-container.single>
                 </div>
                 <div class="flex justify-center">
-                    <x-primary-button type="submit" icon="fa-save">
-                        {{ isset($trainingEquipment) ? 'Update' : 'Create' }}
-                    </x-primary-button>
+                    <x-primary-button type="submit" label="{{ isset($trainingEquipment) ? 'Update' : 'Create' }}" icon="fa-save" />
                 </div>
             </x-container.single>
         </form>

@@ -37,6 +37,7 @@
             </div>
         </aside>
         <div class="flex-1 flex flex-col square-grid-bg">
+            
             @isset($header)
             <header class="bg-primary border-b-4 border-accent p-6">
                 <div class="flex justify-between items-center">

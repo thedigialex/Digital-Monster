@@ -6,11 +6,13 @@
         {{ $header }}
     </div>
     @endisset
+
     @isset($info)
     <div class="bg-secondary py-6 px-4 mb-4 rounded-b-md">
         {{ $info }}
     </div>
     @endisset
+    
     <div class="{{ $class }}">
         {{ $slot }}
     </div>

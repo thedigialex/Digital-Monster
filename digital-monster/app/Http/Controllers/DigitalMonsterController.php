@@ -34,7 +34,7 @@ class DigitalMonsterController extends Controller
 
     public function edit(Request $request)
     {
-        $digitalMonster = DigitalMonster::find($request->input('id'));
+        $digitalMonster = DigitalMonster::find(session('digital_monster_id'));
         $eggGroups = EggGroup::all();
         $allDigitalMonsters = DigitalMonster::all();
         return view('digital_monsters.form', ['digitalMonster' => $digitalMonster, 'eggGroups' => $eggGroups, 'stages' => $this->stages, 'elements' => $this->elements, 'allDigitalMonsters' => $allDigitalMonsters]);
@@ -49,7 +49,9 @@ class DigitalMonsterController extends Controller
             'element_0' => 'required|string',
         ];
 
-        if (!$request->has('id')) {
+        $id = session('digital_monster_id');
+
+        if (!$id) {
             $rules['sprite_image_0'] = 'required|image|mimes:jpg,jpeg,png,gif|max:10240';
         }
 
@@ -75,8 +77,8 @@ class DigitalMonsterController extends Controller
                 $path = $request->file($imageKey)->store('spriteImages', 'public');
                 $digitalMonsterData[$imageKey] = $path;
 
-                if ($request->has('id')) {
-                    $digitalMonster = DigitalMonster::findOrFail($request->input('id'));
+                if ($id) {
+                    $digitalMonster = DigitalMonster::findOrFail($id);
                     if ($digitalMonster->$imageKey) {
                         Storage::disk('public')->delete($digitalMonster->$imageKey);
                     }
@@ -84,8 +86,8 @@ class DigitalMonsterController extends Controller
             }
         }
 
-        if ($request->has('id')) {
-            $digitalMonster = DigitalMonster::findOrFail($request->input('id'));
+        if ($id) {
+            $digitalMonster = DigitalMonster::findOrFail($id);
             $digitalMonster->update($digitalMonsterData);
         } else {
             $digitalMonster = DigitalMonster::create($digitalMonsterData);
@@ -94,7 +96,7 @@ class DigitalMonsterController extends Controller
         $routeAId = $request->input('route_a');
         $routeBId = $request->input('route_b');
 
-        if ($request->has('id')) {
+        if ($id) {
             $evolutionRoute = EvolutionRoute::where('evolves_from', $digitalMonster->id)->first();
             $evolutionRoute->update([
                 'route_a' => $routeAId,
@@ -108,7 +110,7 @@ class DigitalMonsterController extends Controller
             ]);
         }
 
-        $message = $request->has('id') ? 'Digital Monster updated successfully.' : 'Digital Monster created successfully.';
+        $message = $id ? 'Digital Monster updated successfully.' : 'Digital Monster created successfully.';
         return redirect()->route('digital_monsters.index')->with('success', $message);
     }
 

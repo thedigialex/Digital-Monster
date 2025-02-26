@@ -29,9 +29,9 @@ class ItemController extends Controller
         ]);
     }
 
-    public function edit(Request $request)
+    public function edit()
     {
-        $item = Item::find($request->input('id'));
+        $item = Item::find(session('item_id'));
         return view('items.form', ['item' => $item, 'rarityTypes' => $this->rarityTypes, 'itemTypes', 'itemTypes' => $this->itemTypes]);
     }
 
@@ -47,20 +47,22 @@ class ItemController extends Controller
 
         $itemData = $request->only(['name', 'type', 'effect', 'price', 'rarity', 'isAvailable']);
 
+        $id = session('item_id');
+
         if ($request->hasFile('image')) {
             $path = $request->file('image')->store('itemImages', 'public');
             $itemData['image'] = $path;
 
-            if ($request->has('id')) {
-                $item = Item::findOrFail($request->input('id'));
+            if ($id) {
+                $item = Item::findOrFail($id);
                 if ($item->image) {
                     Storage::disk('public')->delete($item->image);
                 }
             }
         }
 
-        if ($request->has('id')) {
-            $item = Item::findOrFail($request->input('id'));
+        if ($id) {
+            $item = Item::findOrFail($id);
             $item->update($itemData);
             $message = 'Item updated successfully.';
         } else {

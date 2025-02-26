@@ -22,10 +22,10 @@ class EggGroupController extends Controller
         ];
         return view('egg_groups.index', ['eggGroups' => $eggGroups, 'fieldTypes' => $this->fieldTypes, 'icons' => $icons]);
     }
+    
     public function edit()
     {
         $eggGroup = EggGroup::find(session('egg_group_id'));
-
         return view('egg_groups.form', [
             'eggGroup' => $eggGroup,
             'fieldTypes' => $this->fieldTypes

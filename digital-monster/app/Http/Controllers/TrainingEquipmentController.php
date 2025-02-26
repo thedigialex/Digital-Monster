@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Storage;
 class TrainingEquipmentController extends Controller
 {
     protected $stats = ['Strength', 'Agility', 'Defense', 'Mind', 'Cleaning', 'Lighting'];
-    
+
     public function index()
     {
         $trainingEquipments = TrainingEquipment::all()->groupBy('stat');
@@ -25,13 +25,13 @@ class TrainingEquipmentController extends Controller
         return view('training_equipment.index', ['trainingEquipments' => $trainingEquipments, 'stats' => $this->stats, 'icons' => $icons]);
     }
 
-    public function edit(Request $request)
+    public function edit()
     {
         $materialItems = Item::where('type', 'Material')->get();
-        $trainingEquipment = TrainingEquipment::find($request->input('id'));
+        $trainingEquipment = TrainingEquipment::find(session('training_equipment_id'));
         return view('training_equipment.form', ['trainingEquipment' => $trainingEquipment, 'stats' => $this->stats, 'materialItems' => $materialItems]);
     }
-    
+
     public function update(Request $request)
     {
         $request->validate([
@@ -41,21 +41,23 @@ class TrainingEquipmentController extends Controller
         ]);
 
         $equipmentData = $request->only(['name', 'stat', 'max_level', 'upgrade_item_id']);
+        
+        $id = session('training_equipment_id');
 
         if ($request->hasFile('image')) {
             $path = $request->file('image')->store('trainingEquipmentImages', 'public');
             $equipmentData['image'] = $path;
 
-            if ($request->has('id')) {
-                $trainingEquipment = TrainingEquipment::findOrFail($request->input('id'));
+            if ($id) {
+                $trainingEquipment = TrainingEquipment::findOrFail($id);
                 if ($trainingEquipment->image) {
                     Storage::disk('public')->delete($trainingEquipment->image);
                 }
             }
         }
 
-        if ($request->has('id')) {
-            $trainingEquipment = TrainingEquipment::findOrFail($request->input('id'));
+        if ($id) {
+            $trainingEquipment = TrainingEquipment::findOrFail($id);
             $trainingEquipment->update($equipmentData);
             $message = 'Training Equipment updated successfully.';
         } else {

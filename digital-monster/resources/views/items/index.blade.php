@@ -3,18 +3,22 @@
         <x-fonts.sub-header>
             {{ __('Items') }}
         </x-fonts.sub-header>
-        <a href="{{ route('items.edit') }}">
-            <x-primary-button icon="fa-plus">
-                Add New
-            </x-primary-button>
-        </a>
+        <x-buttons.clear-button model="item" route="items.edit" icon="fa-plus" label="Add New" />
     </x-slot>
 
     @if (session('success'))
     <x-alerts.success>{{ session('success') }}</x-alerts.success>
     @endif
 
-    <x-container class="p-4">
+    <x-container class="p-1 lg:p-4">
+        <x-slot name="header">
+            <x-fonts.sub-header class="text-accent">Items</x-fonts.sub-header>
+        </x-slot>
+        <x-slot name="info">
+            <x-fonts.paragraph>
+                Egg groups are a way to categorize monsters based on their ability. Each egg group can be modified or created by the user, allowing for customization of how different species evolve. Each egg group contains a field that determines the specific monster type the eggs within the group will evolve into. This system makes it easier for trainers to organize their breeding programs and predict the potential evolutions of their monsters.
+            </x-fonts.paragraph>
+        </x-slot>
         @foreach ($itemTypes as $type)
         <x-accordion title="{{ ucfirst($type) }}" :open="$loop->first" :icon="$icons[$type]">
             @if (isset($items[$type]) && $items[$type]->isNotEmpty())
@@ -42,11 +46,7 @@
                             </x-fonts.paragraph>
                         </x-table.data>
                         <x-table.data class="w-1/3 text-end">
-                            <a href="{{ route('items.edit', ['id' => $item->id]) }}">
-                                <x-primary-button icon="fa-edit">
-                                    Edit
-                                </x-primary-button>
-                            </a>
+                            <x-buttons.session-button model="item" :id="$item->id" route="items.edit" />
                         </x-table.data>
                     </tr>
                     @endforeach

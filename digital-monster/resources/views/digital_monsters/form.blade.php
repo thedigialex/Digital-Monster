@@ -4,38 +4,23 @@
             {{ isset($digitalMonster) ? 'Update Digital Monster' : 'Create Digital Monster' }}
         </x-fonts.sub-header>
         <a href="{{ route('digital_monsters.index') }}">
-            <x-primary-button icon="fa-arrow-left">
-                Go Back
-            </x-primary-button>
+            <x-primary-button icon="fa-arrow-left" label="Go Back" />
         </a>
     </x-slot>
 
     @if ($errors->any())
-    <x-slot name="alert">
-        <x-alerts.error>
-            Saving data, please fix fields.
-        </x-alerts.error>
-    </x-slot>
+    <x-alerts.error>
+        Saving data, please fix fields.
+    </x-alerts.error>
     @endif
 
     <x-container class="p-4">
-        <div class="flex justify-end w-full">
-            @if (isset($digitalMonster))
-            <form action="{{ route('digital_monsters.destroy', $digitalMonster->id) }}" method="POST" class="inline" onsubmit="return confirm('Are you sure you want to delete this digital monster?');">
-                @csrf
-                @method('DELETE')
-                <x-danger-button type="submit" icon="fa-trash">
-                    Delete
-                </x-danger-button>
-            </form>
-            @endif
-        </div>
+        @if (isset($digitalMonster))
+        <x-forms.delete-form :action="route('digital_monsters.destroy', $digitalMonster->id)" label="Digital Monster" />
+        @endif
 
         <form action="{{ route('digital_monsters.update') }}" method="POST" class="space-y-4" enctype="multipart/form-data">
             @csrf
-            @if (isset($digitalMonster))
-            <input type="hidden" name="id" value="{{ $digitalMonster->id }}">
-            @endif
             <x-container.single>
                 <div class="flex flex-col md:flex-row gap-4">
                     <x-container.single class="md:w-1/3 w-full">
@@ -63,16 +48,13 @@
                                 divClasses="w-full"
                                 :options="($digitalMonster && $digitalMonster->egg_group_id) ? $allDigitalMonsters->where('egg_group_id', $digitalMonster->egg_group_id)->pluck('name', 'id')->toArray() : []"
                                 useOptionKey="true"
-                                :value="$digitalMonster && $digitalMonster->evolutionToRoutes ? $digitalMonster->evolutionToRoutes->where('route_'.$route, '!=', null)->pluck('route_'.$route)->first() ?? '' : ''"
-                                />
-                                @endforeach
+                                :value="$digitalMonster && $digitalMonster->evolutionToRoutes ? $digitalMonster->evolutionToRoutes->where('route_'.$route, '!=', null)->pluck('route_'.$route)->first() ?? '' : ''" />
+                            @endforeach
                         </div>
                     </x-container.single>
                 </div>
                 <div class="flex justify-center">
-                    <x-primary-button type="submit" icon="fa-save">
-                        {{ isset($digitalMonster) ? 'Update' : 'Create' }}
-                    </x-primary-button>
+                    <x-primary-button type="submit" label="{{ isset($digitalMonster) ? 'Update' : 'Create' }}" icon="fa-save" />
                 </div>
             </x-container.single>
         </form>
