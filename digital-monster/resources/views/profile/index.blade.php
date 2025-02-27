@@ -9,7 +9,16 @@
     <x-alerts.success>{{ session('success') }}</x-alerts.success>
     @endif
 
-    <x-container class="p-4">
+
+    <x-container class="p-1 lg:p-4">
+        <x-slot name="header">
+            <x-fonts.sub-header class="text-accent">Egg Groups</x-fonts.sub-header>
+        </x-slot>
+        <x-slot name="info">
+            <x-fonts.paragraph>
+                Egg groups are a way to categorize monsters based on their ability. Each egg group can be modified or created by the user, allowing for customization of how different species evolve. Each egg group contains a field that determines the specific monster type the eggs within the group will evolve into. This system makes it easier for trainers to organize their breeding programs and predict the potential evolutions of their monsters.
+            </x-fonts.paragraph>
+        </x-slot>
         <x-accordion title="Users" :open="true" icon="fa-user">
             @if ($users->isNotEmpty())
             <x-table.table>
@@ -34,11 +43,7 @@
                             </x-fonts.paragraph>
                         </x-table.data>
                         <x-table.data class="w-1/3 text-end">
-                            <a href="{{ route('user.profile', ['id' => $user->id]) }}">
-                                <x-primary-button>
-                                    View Account <i class="fa fa-eye ml-2"></i>
-                                </x-primary-button>
-                            </a>
+                            <x-buttons.session-button model="user" :id="$user->id" route="user.profile" />
                         </x-table.data>
                     </tr>
                     @endforeach

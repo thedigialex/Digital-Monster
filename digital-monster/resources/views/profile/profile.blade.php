@@ -7,9 +7,7 @@
             </span>
         </x-fonts.sub-header>
         <a href="{{ route('users.index') }}">
-            <x-primary-button>
-                Go Back <i class="fa fa-arrow-left ml-2"></i>
-            </x-primary-button>
+            <x-primary-button icon="fa-arrow-left" label="Go Back" />
         </a>
     </x-slot>
 
@@ -20,7 +18,7 @@
 
     <x-container>
         <x-slot name="header">
-            <x-fonts.sub-header class="text-secondary pb-2">User Details</x-fonts.sub-header>
+            <x-fonts.sub-header class="text-accent">User Details</x-fonts.sub-header>
         </x-slot>
         <div class="p-4 flex flex-col md:flex-row">
             <div class="flex-1 bg-secondary p-4 rounded-md">
@@ -45,14 +43,12 @@
 
     <x-container>
         <x-slot name="header">
-            <div class="flex justify-between items-center  pb-2">
-                <x-fonts.sub-header class="text-secondary">
+            <div class="flex justify-between items-center">
+                <x-fonts.sub-header class="text-accent">
                     User Digital Monster
                 </x-fonts.sub-header>
-                <a href="{{ route('user.digital_monsters.edit', ['userId' => $user->id]) }}">
-                    <x-inputs.secondary-button>
-                        Add new<i class="fa fa-plus ml-2"></i>
-                    </x-inputs.secondary-button>
+                <a href="{{ route('user.digital_monsters.edit') }}">
+                    <x-primary-button icon="fa-plus" label="Add New" />
                 </a>
             </div>
         </x-slot>
@@ -60,45 +56,36 @@
         @if ($user->digitalMonsters->isEmpty())
         <x-fonts.paragraph>No digital monsters found for this user</x-fonts.paragraph>
         @else
-        <table class="min-w-full border border-primary border-4">
+        <x-table.table>
             <thead class="bg-primary">
                 <tr>
-                    <th class="w-1/6 px-4 py-2 text-left text-text">Image</th>
-                    <th class="w-1/3 px-4 py-2 text-left text-text">Details</th>
-                    <th class="w-1/5 px-4 py-2 text-left text-text">Actions</th>
+                    <x-table.header class="w-1/3 text-left">Image</x-table.header>
+                    <x-table.header class="w-1/3 text-left">Name</x-table.header>
+                    <x-table.header class="w-1/3"></x-table.header>
                 </tr>
             </thead>
             <tbody>
                 @foreach ($user->digitalMonsters as $userDigitalMonster)
                 <tr class="{{ $loop->even ? 'bg-neutral' : 'bg-secondary' }}">
-                    <td class="px-4 py-2">
+                    <x-table.data class="w-1/3">
                         @if (isset($userDigitalMonster->digitalMonster->sprite_image_0))
                         <div class="w-16 h-16 overflow-hidden">
                             <img src="{{ asset('storage/' . $userDigitalMonster->digitalMonster->sprite_image_0) }}" alt="Item Image" class="w-full h-full object-cover" style="object-position: 0 0;">
                         </div>
                         @endif
-                    </td>
-                    <td class="px-4 py-2 text-text">
-                        <span class="font-bold">Main:</span> {{ $userDigitalMonster->isMain }}
-                        <span class="font-bold ml-4">Name:</span> {{ $userDigitalMonster->name }}
-                        <span class="font-bold ml-4">Type:</span> {{ $userDigitalMonster->type }}
-                    </td>
-                    <td class="px-4 py-2 text-end space-x-4">
-                        <a href="{{ route('user.digital_monsters.edit', ['userId' => $user->id, 'id' => $userDigitalMonster->id]) }}">
-                            <x-primary-button>
-                                Edit <i class="fa fa-edit ml-2"></i>
-                            </x-primary-button>
-                        </a>
-                        <form action="{{ route('user.digital_monsters.destroy', $userDigitalMonster->id) }}" method="POST" class="inline" onsubmit="return confirm('Are you sure you want to delete this User Digital Monster?');">
-                            @csrf
-                            @method('DELETE')
-                            <x-danger-button type="submit">Delete <i class="fa fa-trash ml-2"></i> </x-danger-button>
-                        </form>
-                    </td>
+                    </x-table.data>
+                    <x-table.data class="w-1/3">
+                        <x-fonts.paragraph class="font-bold {{ $userDigitalMonster->isMain == 1 ? 'text-accent' : 'text-error' }}">
+                            {{ $userDigitalMonster->name }}
+                        </x-fonts.paragraph>
+                    </x-table.data>
+                    <x-table.data class="w-1/3 text-end">
+                        <x-buttons.session-button model="user_digital_monster" :id="$userDigitalMonster->id" route="user.digital_monsters.edit" />
+                    </x-table.data>
                 </tr>
                 @endforeach
             </tbody>
-        </table>
+        </x-table.table>
         @endif
     </x-container>
 

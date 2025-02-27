@@ -20,6 +20,7 @@
         <div class="md:hidden">
             @include('layouts.mobile_navigation')
         </div>
+
         <aside class="hidden md:flex w-64 bg-primary min-h-screen flex-col">
             <div class="border-b-4 border-secondary p-6 text-center">
                 <x-fonts.sub-header>Digital Portal</x-fonts.sub-header>
@@ -36,8 +37,8 @@
                 </form>
             </div>
         </aside>
+
         <div class="flex-1 flex flex-col square-grid-bg">
-            
             @isset($header)
             <header class="bg-primary border-b-4 border-accent p-6">
                 <div class="flex justify-between items-center">
@@ -46,7 +47,7 @@
             </header>
             @endisset
 
-            <main class="px-0 lg:px-1">
+            <main>
                 {{ $slot }}
             </main>
         </div>

@@ -19,22 +19,22 @@ class UserController extends Controller
         return view('profile.index', compact('users'));
     }
 
-    public function profile(Request $request)
+    public function profile()
     {
         $user = User::with(['digitalMonsters', 'inventories.item', 'trainingEquipments.trainingEquipment'])
-            ->findOrFail($request->input('id'));
+            ->findOrFail(session('user_id'));
         return view('profile.profile', compact('user'));
     }
 
     //User Digital Monster
-    public function editUserDigitalMonster(Request $request)
+    public function editUserDigitalMonster()
     {
         $allDigitalMonsters = DigitalMonster::with('eggGroup')->get();
         if ($allDigitalMonsters->isEmpty()) {
             return redirect()->route('digital_monsters.index')->with('error', 'No digital monsters found.');
         }
-        $userDigitalMonster = UserDigitalMonster::find($request->input('id'));
-        $user = User::findOrFail($request->input('userId'));
+        $userDigitalMonster = UserDigitalMonster::find(session('user_id'));
+        $user = User::findOrFail(session('user_id'));
         return view('digital_monsters.user-form', compact('user', 'userDigitalMonster', 'allDigitalMonsters'));
     }
 
@@ -68,7 +68,7 @@ class UserController extends Controller
             UserDigitalMonster::where('user_id', $validated['user_id'])
                 ->where('id', '!=', $request->input('id'))
                 ->update(['isMain' => 0]);
-        }        
+        }
         if ($request->has('id')) {
             $userDigitalMonster = UserDigitalMonster::findOrFail($request->input('id'));
             $userDigitalMonster->update($validated);

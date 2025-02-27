@@ -39,10 +39,8 @@ class EggGroupController extends Controller
             'field_type' => 'required|string',
         ]);
 
-        $id = session('egg_group_id');
-
-        if ($id) {
-            $eggGroup = EggGroup::findOrFail($id);
+        if (session('egg_group_id')) {
+            $eggGroup = EggGroup::findOrFail(session('egg_group_id'));
             $eggGroup->update($request->all());
             $message = 'Egg group updated successfully.';
         } else {

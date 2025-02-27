@@ -1,24 +1,25 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex justify-between items-center">
-            <x-fonts.sub-header>
-                {{ isset($userDigitalMonster) ? 'Update Digital Monster' : 'Assign Digital Monster' }}
-            </x-fonts.sub-header>
-            <a href="{{ route('user.profile', ['id' => $user->id]) }}">
-                <x-primary-button>
-                    Go Back <i class="fa fa-arrow-left ml-2"></i>
-                </x-primary-button>
-            </a>
-        </div>
+        <x-fonts.sub-header>
+            {{ isset($userDigitalMonster) ? 'Update Digital Monster' : 'Assign Digital Monster' }}
+        </x-fonts.sub-header>
+        <a href="{{ route('user.profile') }}">
+            <x-primary-button icon="fa-arrow-left" label="Go Back" />
+        </a>
     </x-slot>
 
-    <x-container>
+    @if ($errors->any())
+    <x-alerts.error>
+        Saving data, please fix fields.
+    </x-alerts.error>
+    @endif
+    <x-container class="p-4">
+        @if (isset($userDigitalMonster))
+        <x-forms.delete-form :action="route('user.digital_monsters.destroy', $userDigitalMonster->id)" label="User Digital Mosnter" />
+        @endif
         <form action="{{ route('user.digital_monsters.update') }}" method="POST" class="space-y-4">
             @csrf
-            @if (isset($userDigitalMonster))
-            <input type="hidden" name="id" value="{{ $userDigitalMonster->id }}">
-            @endif
-            <input type="hidden" name="user_id" value="{{ $user->id }}">
+
             <div class="flex flex-col lg:flex-row lg:space-x-4 space-y-4 lg:space-y-0">
                 <div class="w-full lg:w-1/4 mx-auto">
                     <x-inputs.label for="digital_monster_id">Digital Monster</x-inputs.input-label>
