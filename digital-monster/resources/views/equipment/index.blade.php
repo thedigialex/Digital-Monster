@@ -1,9 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
-        <x-fonts.sub-header>
-            {{ __('Training Equipment') }}
-        </x-fonts.sub-header>
-        <x-buttons.clear-button model="training_equipment" route="trainingEquipments.edit" icon="fa-plus" label="Add New" />
+        <x-fonts.sub-header>Equipment</x-fonts.sub-header>
+        <x-buttons.clear-button model="equipment" route="equipment.edit" icon="fa-plus" label="Add New" />
     </x-slot>
 
     @if (session('success'))
@@ -21,7 +19,7 @@
         </x-slot>
         @foreach ($stats as $index => $label)
         <x-accordion title="{{ $label }}" :open="$loop->first" :icon="$icons[$index]">
-            @if (isset($trainingEquipments[$label]) && $trainingEquipments[$label]->isNotEmpty())
+            @if (isset($allEquipment[$label]))
             <x-table.table>
                 <thead class="bg-primary">
                     <tr>
@@ -31,14 +29,12 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($trainingEquipments[$label] as $equipment)
+                    @foreach ($allEquipment[$label] as $equipment)
                     <tr class="{{ $loop->even ? 'bg-neutral' : 'bg-secondary' }}">
                         <x-table.data class="w-1/3">
-                            @if (isset($equipment->image))
                             <div class="w-16 h-16 overflow-hidden">
                                 <img src="{{ asset('storage/' . $equipment->image) }}" alt="Equipment Image" class="w-full h-full object-cover" style="object-position: 0 0;">
                             </div>
-                            @endif
                         </x-table.data>
                         <x-table.data class="w-1/3">
                             <x-fonts.paragraph class="font-bold text-accent">
@@ -46,7 +42,7 @@
                             </x-fonts.paragraph>
                         </x-table.data>
                         <x-table.data class="w-1/3 text-end">
-                            <x-buttons.session-button model="training_equipment" :id="$equipment->id" route="trainingEquipments.edit" />
+                            <x-buttons.session-button model="equipment" :id="$equipment->id" route="equipment.edit" />
                         </x-table.data>
                     </tr>
                     @endforeach

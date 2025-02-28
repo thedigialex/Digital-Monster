@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\DigitalMonsterController;
 use App\Http\Controllers\ItemController;
-use App\Http\Controllers\TrainingEquipmentController;
+use App\Http\Controllers\EquipmentController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\EggGroupController;
@@ -69,13 +69,14 @@ Route::middleware('auth')->group(function () {
         Route::post('/userInventory/update', [UserController::class, 'updateUserInventory'])->name('user.inventory.update');
         Route::delete('/userInventory/{inventory}', [UserController::class, 'destroyUserInventory'])->name('user.inventory.destroy');
 
-        Route::get('/trainingEquipment', [TrainingEquipmentController::class, 'index'])->name('trainingEquipments.index');
-        Route::get('/trainingEquipment/edit', [TrainingEquipmentController::class, 'edit'])->name('trainingEquipments.edit');
-        Route::post('/trainingEquipment/update', [TrainingEquipmentController::class, 'update'])->name('trainingEquipments.update');
-        Route::delete('/trainingEquipment/{trainingEquipment}', [TrainingEquipmentController::class, 'destroy'])->name('trainingEquipments.destroy');
-        Route::get('/userTrainingEquipment/edit', [UserController::class, 'editUserTrainingEquipment'])->name('user.training_equipment.edit');
-        Route::post('/userTrainingEquipment/update', [UserController::class, 'updateUserTrainingEquipment'])->name('user.training_equipment.update');
-        Route::delete('/userTrainingEquipment/{trainingEquipment}', [UserController::class, 'destroyUserTrainingEquipment'])->name('user.training_equipment.destroy');
+        Route::get('/equipment', [EquipmentController::class, 'index'])->name('equipment.index');
+        Route::get('/equipment/edit', [EquipmentController::class, 'edit'])->name('equipment.edit');
+        Route::post('/equipment/update', [EquipmentController::class, 'update'])->name('equipment.update');
+        Route::delete('/equipment/delete', [EquipmentController::class, 'destroy'])->name('equipment.destroy');
+
+        Route::get('/userEquipment/edit', [UserController::class, 'editUserEquipment'])->name('user.equipment.edit');
+        Route::post('/userEquipment/update', [UserController::class, 'updateUserEquipment'])->name('user.equipment.update');
+        Route::delete('/userEquipment/delete', [UserController::class, 'destroyUserEquipment'])->name('user.equipment.destroy');
     });
 });
 

@@ -89,6 +89,8 @@
         @endif
     </x-container>
 
+
+
     <x-container>
         <div class="flex justify-between items-center p-4 bg-secondary rounded-t-lg">
             <x-fonts.sub-header>
@@ -150,58 +152,48 @@
     </x-container>
 
     <x-container>
-        <div class="flex justify-between items-center p-4 bg-secondary rounded-t-lg">
-            <x-fonts.sub-header>
-                Training Equipment
-            </x-fonts.sub-header>
-            <a href="{{ route('user.training_equipment.edit', ['userId' => $user->id]) }}">
-                <x-primary-button>
-                    Add new<i class="fa fa-plus ml-2"></i>
-                </x-primary-button>
-            </a>
-        </div>
-        <div class=" bg-secondary rounded-b-lg">
-            @if ($user->trainingEquipments->isEmpty())
-            <x-fonts.paragraph class="text-text p-4">No training equipment.</x-fonts.paragraph>
-            @else
-            <table class="min-w-full border border-primary border-4 bg-secondary">
+        <x-slot name="header">
+            <div class="flex justify-between items-center">
+                <x-fonts.sub-header class="text-accent">
+                    Equipment
+                </x-fonts.sub-header>
+
+                <x-buttons.clear-button model="user_equipment" route="user.equipment.edit" icon="fa-plus" label="Add New" />
+
+            </div>
+        </x-slot>
+        <div class="p-4">
+            @if (!$user->userEquipment->isEmpty())
+            <x-table.table>
                 <thead class="bg-primary">
                     <tr>
-                        <th class="w-1/6 px-4 py-2 text-left text-text">Image</th>
-                        <th class="w-1/3 px-4 py-2 text-left text-text">Details</th>
-                        <th class="w-1/5 px-4 py-2 text-left text-text">Actions</th>
+                        <x-table.header class="w-1/3 text-left">Image</x-table.header>
+                        <x-table.header class="w-1/3 text-left">Name</x-table.header>
+                        <x-table.header class="w-1/3"></x-table.header>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($user->trainingEquipments as $usertrainingEquipment)
+                    @foreach ($user->userEquipment as $userEquipment)
                     <tr class="{{ $loop->even ? 'bg-neutral' : 'bg-secondary' }}">
-                        <td class="px-4 py-2">
-                            @if (isset($usertrainingEquipment->trainingEquipment->image))
+                        <x-table.data class="w-1/3">
                             <div class="w-16 h-16 overflow-hidden">
-                                <img src="{{ asset('storage/' . $usertrainingEquipment->trainingEquipment->image) }}" alt="Equipment Image" class="w-full h-full object-cover" style="object-position: 0 0;">
+                                <img src="{{ asset('storage/' . $userEquipment->equipment->image) }}" alt="Equipment Image" class="w-full h-full object-cover" style="object-position: 0 0;">
                             </div>
-                            @endif
-                        </td>
-                        <td class="px-4 py-2 text-text">
-                            <span class="font-bold">Name:</span> {{ $usertrainingEquipment->trainingEquipment->name }}
-                            <span class="font-bold ml-4">Level:</span> {{ $usertrainingEquipment->level }}
-                        </td>
-                        <td class="px-4 py-2 text-end space-x-4">
-                            <a href="{{ route('user.training_equipment.edit', ['userId' => $user->id, 'id' => $usertrainingEquipment->id]) }}">
-                                <x-primary-button>
-                                    Edit <i class="fa fa-edit ml-2"></i>
-                                </x-primary-button>
-                            </a>
-                            <form action="{{ route('user.training_equipment.destroy', $usertrainingEquipment->id) }}" method="POST" class="inline" onsubmit="return confirm('Are you sure you want to delete this training equipment?');">
-                                @csrf
-                                @method('DELETE')
-                                <x-danger-button type="submit">Delete <i class="fa fa-trash ml-2"></i> </x-danger-button>
-                            </form>
-                        </td>
+                        </x-table.data>
+                        <x-table.data class="w-1/3">
+                            <x-fonts.paragraph class="font-bold text-accent">
+                                {{ $userEquipment->equipment->name }}
+                            </x-fonts.paragraph>
+                        </x-table.data>
+                        <x-table.data class="w-1/3 text-end">
+                            <x-buttons.session-button model="user_equipment" :id="$userEquipment->id" route="user.equipment.edit" />
+                        </x-table.data>
                     </tr>
                     @endforeach
                 </tbody>
-            </table>
+            </x-table.table>
+            @else
+            <x-fonts.paragraph class="text-text p-4">No Equipment</x-fonts.paragraph>
             @endif
         </div>
     </x-container>

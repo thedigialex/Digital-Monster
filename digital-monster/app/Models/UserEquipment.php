@@ -4,12 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class UserTrainingEquipment extends Model
+class UserEquipment extends Model
 {
     protected $fillable = [
-        'user_id',
-        'training_equipment_id',
         'level',
+        'user_id',
+        'equipment_id',
     ];
 
     public function user()
@@ -17,8 +17,8 @@ class UserTrainingEquipment extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function trainingEquipment()
+    public function equipment()
     {
-        return $this->belongsTo(TrainingEquipment::class);
+        return $this->belongsTo(Equipment::class);
     }
 }

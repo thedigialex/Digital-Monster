@@ -13,7 +13,7 @@
     </x-slot>
 
     <x-container>
-        <form action="{{ route('user.training_equipment.update') }}" method="POST" class="space-y-4" enctype="multipart/form-data">
+        <form action="{{ route('user.equipment.update') }}" method="POST" class="space-y-4" enctype="multipart/form-data">
             @csrf
             @if (isset($userTrainingEquipment))
             <input type="hidden" name="id" value="{{ $userTrainingEquipment->id }}">
@@ -27,12 +27,12 @@
                 <div class="flex-1 space-y-4">
                     <div class="flex flex-col lg:flex-row lg:space-x-4 space-y-4 lg:space-y-0">
                         <div class="flex-1">
-                            <x-inputs.label for="training_equipment_id">Training Equipment</x-inputs.input-label>
-                                <x-inputs.dropdown id="training_equipment_id" name="training_equipment_id" class="form-control w-full" required>
+                            <x-inputs.label for="equipment_id">Training Equipment</x-inputs.input-label>
+                                <x-inputs.dropdown id="equipment_id" name="equipment_id" class="form-control w-full" required>
                                     <option value="" {{ !isset($userTrainingEquipment) }}>Select Equipment</option>
                                     @foreach($allTrainingEquipments as $equipment)
                                     <option value="{{ $equipment->id }}"
-                                        {{ isset($userTrainingEquipment) && $userTrainingEquipment->training_equipment_id == $equipment->id ? 'selected' : '' }}>
+                                        {{ isset($userTrainingEquipment) && $userTrainingEquipment->equipment_id == $equipment->id ? 'selected' : '' }}>
                                         {{ $equipment->name }} Max Level: {{ $equipment->max_level }}
                                     </option>
                                     @endforeach

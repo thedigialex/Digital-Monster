@@ -45,9 +45,9 @@ class User extends Authenticatable
         return $this->hasMany(Inventory::class);
     }
 
-    public function trainingEquipments()
+    public function userEquipment()
     {
-        return $this->hasMany(UserTrainingEquipment::class);
+        return $this->hasMany(UserEquipment::class);
     }
 
     protected static function boot()
@@ -59,7 +59,7 @@ class User extends Authenticatable
 //
         //    foreach ($basicTrainingEquipments as $equipment) {
         //        $user->trainingEquipments()->create([
-        //            'training_equipment_id' => $equipment->id,
+        //            'equipment_id' => $equipment->id,
         //            'stat_increase' => 3,
         //            'level' => 1,
         //        ]);

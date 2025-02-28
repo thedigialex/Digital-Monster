@@ -7,8 +7,8 @@ use App\Models\UserDigitalMonster;
 use App\Models\DigitalMonster;
 use App\Models\Inventory;
 use App\Models\Item;
-use App\Models\TrainingEquipment;
-use App\Models\UserTrainingEquipment;
+use App\Models\Equipment;
+use App\Models\UserEquipment;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
@@ -21,9 +21,9 @@ class UserController extends Controller
 
     public function profile()
     {
-        $user = User::with(['digitalMonsters', 'inventories.item', 'trainingEquipments.trainingEquipment'])
+        $user = User::with(['digitalMonsters', 'inventories.item', 'userEquipment.equipment'])
             ->findOrFail(session('user_id'));
-        return view('profile.profile', compact('user'));
+        return view('pages.profile', compact('user'));
     }
 
     //User Digital Monster
@@ -136,18 +136,17 @@ class UserController extends Controller
     }
 
     //User Training Equipment
-    public function editUserTrainingEquipment(Request $request)
+    public function editUserEquipment(Request $request)
     {
-        $allTrainingEquipments = TrainingEquipment::all();
-        $userTrainingEquipment = UserTrainingEquipment::find($request->input('id'));
-        $user = User::findOrFail($request->input('userId'));
-        return view('training_equipment.user-form', compact('user', 'userTrainingEquipment', 'allTrainingEquipments'));
+        $allEquipment = Equipment::all();
+        $userEquipment = UserEquipment::find(session('user_equipment_id'));
+        return view('equipment.user-form', compact('userEquipment', 'allEquipment'));
     }
 
-    public function updateUserTrainingEquipment(Request $request)
+    public function updateUserEquipment(Request $request)
     {
         $validated = $request->validate([
-            'training_equipment_id' => 'required|exists:training_equipment,id',
+            'equipment_id' => 'required|exists:equipment,id',
             'level' => 'required|integer|min:1',
             'user_id' => 'required|exists:users,id'
         ]);
@@ -162,7 +161,7 @@ class UserController extends Controller
             ->with('success', 'Training equipment saved successfully.');
     }
 
-    public function destroyUserTrainingEquipment($id)
+    public function destroyUserEquipment($id)
     {
         $userTrainingEquipment = UserTrainingEquipment::findOrFail($id);
         $userTrainingEquipment->delete();

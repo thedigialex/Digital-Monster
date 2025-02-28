@@ -20,9 +20,9 @@
         <span>{{ __('Items') }}</span>
     </x-nav-link>
 
-    <x-nav-link :href="route('trainingEquipments.index')" :active="request()->routeIs(['trainingEquipments.index', 'trainingEquipments.edit'])">
+    <x-nav-link :href="route('equipment.index')" :active="request()->routeIs(['equipment.index', 'equipment.edit'])">
         <i class="fas fa-dumbbell"></i>
-        <span>{{ __('Training Equipment') }}</span>
+        <span> Equipment </span>
     </x-nav-link>
 
     <x-nav-link :href="route('users.index')" :active="request()->routeIs(['users.index', 'user.profile'])">
