@@ -136,36 +136,42 @@ class UserController extends Controller
     }
 
     //User Training Equipment
-    public function editUserEquipment(Request $request)
+    public function editUserEquipment()
     {
         $allEquipment = Equipment::all();
         $userEquipment = UserEquipment::find(session('user_equipment_id'));
-        return view('equipment.user-form', compact('userEquipment', 'allEquipment'));
+        return view('equipment.user_form', ['userEquipment' => $userEquipment, 'allEquipment' => $allEquipment]);
     }
 
     public function updateUserEquipment(Request $request)
     {
-        $validated = $request->validate([
+        $request->validate([
             'equipment_id' => 'required|exists:equipment,id',
             'level' => 'required|integer|min:1',
-            'user_id' => 'required|exists:users,id'
         ]);
 
-        if ($request->has('id')) {
-            $userTrainingEquipment = UserTrainingEquipment::findOrFail($request->input('id'));
-            $userTrainingEquipment->update($validated);
+        $userEquipmentData = $request->only(['equipment_id', 'level']);
+        $user = User::findOrFail(session('user_id'));
+        $userEquipmentData['user_id'] = $user->id;
+
+        if (session('user_equipment_id')) {
+            $userEquipment = UserEquipment::findOrFail(session('user_equipment_id'));
+            $userEquipment->update($userEquipmentData);
+            $message = 'User Equipment updated successfully.';
         } else {
-            UserTrainingEquipment::create($validated);
+            UserEquipment::create($userEquipmentData);
+            $message = 'User Equipment created successfully.';
         }
-        return redirect()->route('user.profile', ['id' => $validated['user_id']])
-            ->with('success', 'Training equipment saved successfully.');
+
+        return redirect()->route('user.profile')->with('success', $message);
     }
 
-    public function destroyUserEquipment($id)
+
+    public function destroyUserEquipment()
     {
-        $userTrainingEquipment = UserTrainingEquipment::findOrFail($id);
-        $userTrainingEquipment->delete();
-        return redirect()->route('user.profile', ['id' => $userTrainingEquipment->user_id])
-            ->with('success', 'Training equipment deleted successfully.');
+        $userEquipment = UserEquipment::findOrFail(session('user_equipment_id'));
+        $userEquipment->delete();
+        return redirect()->route('user.profile')
+            ->with('success', 'User Equipment deleted successfully.');
     }
 }

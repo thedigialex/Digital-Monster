@@ -73,7 +73,6 @@ Route::middleware('auth')->group(function () {
         Route::get('/equipment/edit', [EquipmentController::class, 'edit'])->name('equipment.edit');
         Route::post('/equipment/update', [EquipmentController::class, 'update'])->name('equipment.update');
         Route::delete('/equipment/delete', [EquipmentController::class, 'destroy'])->name('equipment.destroy');
-
         Route::get('/userEquipment/edit', [UserController::class, 'editUserEquipment'])->name('user.equipment.edit');
         Route::post('/userEquipment/update', [UserController::class, 'updateUserEquipment'])->name('user.equipment.update');
         Route::delete('/userEquipment/delete', [UserController::class, 'destroyUserEquipment'])->name('user.equipment.destroy');
