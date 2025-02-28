@@ -20,6 +20,6 @@ class DashboardController extends Controller
 
         $totalMonsters = $userMonsters->count();
 
-        return view('dashboard', compact('user', 'userMonsters', 'totalMonsters'));
+        return view('pages.dashboard', compact('user', 'userMonsters', 'totalMonsters'));
     }
 }

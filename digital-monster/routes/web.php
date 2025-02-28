@@ -9,10 +9,23 @@ use App\Http\Controllers\EggGroupController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\SessionController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 
 //Public
 Route::get('/', function () {
-    return view('welcome');
+    return view('pages.welcome');
+});
+
+Route::fallback(function () {
+    return response()->view('pages.404', [], 404);
+});
+
+Route::fallback(function () {
+    if (Auth::check()) {
+        return response()->view('pages.404', [], 404);
+    } else {
+        return response()->view('pages.welcome', [], 404);
+    }
 });
 
 //Log In Required
