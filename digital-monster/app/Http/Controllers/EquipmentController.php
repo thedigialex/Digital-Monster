@@ -54,7 +54,6 @@ class EquipmentController extends Controller
         return redirect()->route('equipment.index')->with('success', $message);
     }
 
-
     public function destroy()
     {
         $equipment = Equipment::findOrFail(session('equipment_id'));

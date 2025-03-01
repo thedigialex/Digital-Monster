@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\UserDigitalMonster;
 use App\Models\DigitalMonster;
-use App\Models\Inventory;
+use App\Models\UserItem;
 use App\Models\Item;
 use App\Models\Equipment;
 use App\Models\UserEquipment;
@@ -21,7 +21,7 @@ class UserController extends Controller
 
     public function profile()
     {
-        $user = User::with(['digitalMonsters', 'inventories.item', 'userEquipment.equipment'])
+        $user = User::with(['digitalMonsters', 'userItems.item', 'userEquipment.equipment'])
             ->findOrFail(session('user_id'));
         return view('pages.profile', compact('user'));
     }
@@ -88,43 +88,61 @@ class UserController extends Controller
     }
 
     //Inventory
-    public function editUserInventory(Request $request)
+    public function editUserItem()
     {
         $allItems = Item::all();
-        $inventoryItem = Inventory::find($request->input('id'));
-        $user = User::findOrFail($request->input('userId'));
-        return view('items.user-form', compact('user', 'inventoryItem', 'allItems'));
+        $userItem = UserItem::find(session('user_item_id'));
+        return view('item.user_form', ['userItem' => $userItem, 'allItems' => $allItems]);
     }
 
-    public function updateUserInventory(Request $request)
+    public function updateUserItem(Request $request)
     {
         $validated = $request->validate([
             'item_id' => 'required|exists:items,id',
             'quantity' => 'required|integer|min:1',
-            'user_id' => 'required|exists:users,id'
         ]);
 
-        $item = Item::findOrFail($request->input('item_id'));
-        if ($request->has('isEquipped') && $request->isEquipped == true) {
-            $validated['isEquipped'] = true;
-            Inventory::where('user_id', $request->input('user_id'))
-                ->whereHas('item', function ($query) use ($item) {
-                    $query->where('type', $item->type);
-                })
-                ->where('isEquipped', true)
-                ->update(['isEquipped' => false]);
+        $userItemData = $request->only(['item_id', 'quantity']);
+        $item = Item::findOrFail($validated['item_id']);
+        if (!in_array($item->type, ['Material', 'Consumable'])) {
+            $validated = array_merge($validated, $request->validate([
+                'equipped' => 'required|integer|in:0,1',
+            ]));
+        
+
+            if ($validated['equipped'] == 1) {
+                $userItems = UserItem::where('user_id', session('user_id'))
+                    ->whereHas('item', function ($query) use ($item) {
+                        $query->where('type', $item->type);
+                    })
+                    ->get();
+                foreach ($userItems as $userItem) {
+                    if ($userItem->equipped == 1) {
+                        $userItem->update(['equipped' => 0]);
+                    }
+                }
+            }
         } else {
-            $validated['isEquipped'] = false;
+            $userItemData['equipped'] = 0;
         }
 
-        if ($request->has('id')) {
-            $inventoryItem = Inventory::findOrFail($request->input('id'));
-            $inventoryItem->update($validated);
+
+        $user = User::findOrFail(session('user_id'));
+        $userItemData['user_id'] = $user->id;
+
+
+
+        if (session('user_item_id')) {
+            $userItem = UserItem::findOrFail(session('user_item_id'));
+            $userItem->update($userItemData);
+            $message = 'User Item updated successfully.';
         } else {
-            Inventory::create($validated);
+            UserItem::create($userItemData);
+            $message = 'User Item created successfully.';
         }
-        return redirect()->route('user.profile', ['id' => $validated['user_id']])
-            ->with('success', 'Inventory item saved successfully.');
+
+        return redirect()->route('user.profile')
+            ->with('success', 'User Item saved successfully.');
     }
 
     public function destroyUserInventory($id)
@@ -165,7 +183,6 @@ class UserController extends Controller
 
         return redirect()->route('user.profile')->with('success', $message);
     }
-
 
     public function destroyUserEquipment()
     {

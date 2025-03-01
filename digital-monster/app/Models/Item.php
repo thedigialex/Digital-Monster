@@ -6,10 +6,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class Item extends Model
 {
-    protected $fillable = ['name', 'type', 'effect', 'price', 'rarity', 'isAvailable', 'image'];
-
-    public function inventories()
-    {
-        return $this->hasMany(Inventory::class);
-    }
+    protected $fillable = ['name', 'type', 'max_quantity', 'effect', 'price', 'rarity', 'available', 'image'];
 }

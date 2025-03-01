@@ -21,7 +21,7 @@ class ItemController extends Controller
             'Consumable' => 'fa-utensils',
             'Material' => 'fa-cogs',
         ];
-        return view('items.index', [
+        return view('item.index', [
             'items' => $items,
             'rarityTypes' => $this->rarityTypes,
             'itemTypes' => $this->itemTypes,
@@ -32,53 +32,45 @@ class ItemController extends Controller
     public function edit()
     {
         $item = Item::find(session('item_id'));
-        return view('items.form', ['item' => $item, 'rarityTypes' => $this->rarityTypes, 'itemTypes', 'itemTypes' => $this->itemTypes]);
+        return view('item.form', ['item' => $item, 'rarityTypes' => $this->rarityTypes, 'itemTypes' => $this->itemTypes]);
     }
 
     public function update(Request $request)
     {
-        $request->validate([
+        $validationRules = ([
             'name' => 'required|string|max:255',
             'type' => 'required|string',
             'price' => 'required|numeric|min:0',
-            'isAvailable' => 'required|numeric',
+            'max_quantity' => 'required|numeric|min:1',
+            'available' => 'required|numeric',
             'rarity' => 'required|string',
         ]);
+        if (!session('item_id')) {
+            $validationRules['image'] = 'required|image|mimes:png,jpg|max:2048';
+        }
+        $request->validate($validationRules);
 
-        $itemData = $request->only(['name', 'type', 'effect', 'price', 'rarity', 'isAvailable']);
-
-        $id = session('item_id');
-
+        $itemData = $request->only(['name', 'type', 'effect', 'price', 'rarity', 'available', 'max_quantity']);
         if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('itemImages', 'public');
+            $path = $request->file('image')->store('item', 'public');
             $itemData['image'] = $path;
 
-            if ($id) {
-                $item = Item::findOrFail($id);
-                if ($item->image) {
-                    Storage::disk('public')->delete($item->image);
-                }
+            if (session('item_id')) {
+                $item = Item::findOrFail(session('item_id'));
+                Storage::disk('public')->delete($item->image);
             }
         }
 
-        if ($id) {
-            $item = Item::findOrFail($id);
-            $item->update($itemData);
-            $message = 'Item updated successfully.';
-        } else {
-            Item::create($itemData);
-            $message = 'Item created successfully.';
-        }
+        $item = session('item_id') ? Item::findOrFail(session('item_id'))->update($itemData) : Item::create($itemData);
+        $message = session('item_id') ? 'Item updated successfully.' : 'Item created successfully.';
 
         return redirect()->route('items.index')->with('success', $message);
     }
 
     public function destroy(Item $item)
     {
-        if ($item->image) {
-            Storage::disk('public')->delete($item->image);
-        }
-
+        $item = Item::findOrFail(session('item_id'));
+        Storage::disk('public')->delete($item->image);
         $item->delete();
         return redirect()->route('items.index')->with('success', 'Item deleted successfully.');
     }

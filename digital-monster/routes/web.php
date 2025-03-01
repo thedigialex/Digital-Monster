@@ -62,12 +62,14 @@ Route::middleware('auth')->group(function () {
         Route::delete('/userDigitalMonsters/{userDigitalMonster}', [UserController::class, 'destroyUserDigitalMonster'])->name('user.digital_monsters.destroy');
 
         Route::get('/items', [ItemController::class, 'index'])->name('items.index');
-        Route::get('/items/edit', [ItemController::class, 'edit'])->name('items.edit');
-        Route::post('/items/update', [ItemController::class, 'update'])->name('items.update');
-        Route::delete('/items/{item}', [ItemController::class, 'destroy'])->name('items.destroy');
-        Route::get('/userInventory/edit', [UserController::class, 'editUserInventory'])->name('user.inventory.edit');
-        Route::post('/userInventory/update', [UserController::class, 'updateUserInventory'])->name('user.inventory.update');
-        Route::delete('/userInventory/{inventory}', [UserController::class, 'destroyUserInventory'])->name('user.inventory.destroy');
+        Route::get('/item/edit', [ItemController::class, 'edit'])->name('item.edit');
+        Route::post('/item/update', [ItemController::class, 'update'])->name('item.update');
+        Route::delete('/item/delete', [ItemController::class, 'destroy'])->name('item.destroy');
+
+
+        Route::get('/userItem/edit', [UserController::class, 'editUserItem'])->name('user.item.edit');
+        Route::post('/userItem/update', [UserController::class, 'updateUserItem'])->name('user.item.update');
+        Route::delete('/userItem/delete', [UserController::class, 'destroyUserItem'])->name('user.item.destroy');
 
         Route::get('/equipment', [EquipmentController::class, 'index'])->name('equipment.index');
         Route::get('/equipment/edit', [EquipmentController::class, 'edit'])->name('equipment.edit');
