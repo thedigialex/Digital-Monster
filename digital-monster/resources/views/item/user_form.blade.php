@@ -20,8 +20,6 @@
         @endif
         <form action="{{ route('user.item.update') }}" method="POST" class="space-y-4" enctype="multipart/form-data">
             @csrf
-            <div id="all-items-data" data-items="{{ htmlspecialchars(json_encode($allItems->pluck('type', 'id')->toArray()), ENT_QUOTES, 'UTF-8') }}"></div>
-
             <x-container.single>
                 <div class="flex flex-col md:flex-row gap-4 w-full">
                     <x-inputs.dropdown

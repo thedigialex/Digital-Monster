@@ -65,8 +65,6 @@ Route::middleware('auth')->group(function () {
         Route::get('/item/edit', [ItemController::class, 'edit'])->name('item.edit');
         Route::post('/item/update', [ItemController::class, 'update'])->name('item.update');
         Route::delete('/item/delete', [ItemController::class, 'destroy'])->name('item.destroy');
-
-
         Route::get('/userItem/edit', [UserController::class, 'editUserItem'])->name('user.item.edit');
         Route::post('/userItem/update', [UserController::class, 'updateUserItem'])->name('user.item.update');
         Route::delete('/userItem/delete', [UserController::class, 'destroyUserItem'])->name('user.item.destroy');

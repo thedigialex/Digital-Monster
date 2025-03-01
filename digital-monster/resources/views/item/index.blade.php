@@ -41,7 +41,7 @@
                             @endif
                         </x-table.data>
                         <x-table.data class="w-1/3">
-                            <x-fonts.paragraph class="font-bold {{ $item->isAvailable == 1 ? 'text-accent' : 'text-error' }}">
+                            <x-fonts.paragraph class="font-bold {{ $item->available == 1 ? 'text-accent' : 'text-error' }}">
                                 {{ $item->name }}
                             </x-fonts.paragraph>
                         </x-table.data>

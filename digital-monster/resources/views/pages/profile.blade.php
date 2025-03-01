@@ -105,38 +105,26 @@
                 <thead class="bg-primary">
                     <tr>
                         <x-table.header class="w-1/3 text-left">Image</x-table.header>
-                        <x-table.header class="w-1/3 text-left">Name</x-table.header>
+                        <x-table.header class="w-1/3 text-left">Details</x-table.header>
                         <x-table.header class="w-1/3"></x-table.header>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach ($user->userItems as $userItem)
                     <tr class="{{ $loop->even ? 'bg-neutral' : 'bg-secondary' }}">
-                        <td class="px-4 py-2">
-                            @if (isset($userItem->item->image))
+                        <x-table.data class="w-1/3">
                             <div class="w-16 h-16 overflow-hidden">
                                 <img src="{{ asset('storage/' . $userItem->item->image) }}" alt="Item Image" class="w-full h-full object-cover" style="object-position: 0 0;">
                             </div>
-                            @endif
-                        </td>
-                        <td class="px-4 py-2 text-text">
-                            <span class="font-bold">Equipped:</span> {{ $userItem->equipped }}
-                            <span class="font-bold ml-4">Name:</span> {{ $userItem->item->name }}
-                            <span class="font-bold ml-4">Type:</span> {{ $userItem->item->type }}
-                            <span class="font-bold ml-4">Quantity:</span> {{ $userItem->quantity }}
-                        </td>
-                        <td class="px-4 py-2 text-end space-x-4">
-                            <a href="{{ route('user.item.edit', ['userId' => $user->id, 'id' => $userItem->id]) }}">
-                                <x-primary-button>
-                                    Edit <i class="fa fa-edit ml-2"></i>
-                                </x-primary-button>
-                            </a>
-                            <form action="{{ route('user.item.destroy') }}" method="POST" class="inline" onsubmit="return confirm('Are you sure you want to delete this item?');">
-                                @csrf
-                                @method('DELETE')
-                                <x-danger-button type="submit">Delete <i class="fa fa-trash ml-2"></i> </x-danger-button>
-                            </form>
-                        </td>
+                        </x-table.data>
+                        <x-table.data class="w-1/3">
+                            <x-fonts.paragraph class="font-bold {{ $userItem->equipped == 1 ? 'text-accent' : 'text-text' }}">
+                                {{ $userItem->item->name }} Amount: {{ $userItem->quantity }}
+                            </x-fonts.paragraph>
+                        </x-table.data>
+                        <x-table.data class="w-1/3 text-end">
+                            <x-buttons.session-button model="user_item" :id="$userItem->id" route="user.item.edit" />
+                        </x-table.data>
                     </tr>
                     @endforeach
                 </tbody>

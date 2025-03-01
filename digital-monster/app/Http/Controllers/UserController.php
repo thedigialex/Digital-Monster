@@ -87,7 +87,7 @@ class UserController extends Controller
             ->with('success', 'Digital Monster deleted successfully.');
     }
 
-    //Inventory
+    //User Item
     public function editUserItem()
     {
         $allItems = Item::all();
@@ -108,7 +108,7 @@ class UserController extends Controller
             $validated = array_merge($validated, $request->validate([
                 'equipped' => 'required|integer|in:0,1',
             ]));
-        
+
 
             if ($validated['equipped'] == 1) {
                 $userItems = UserItem::where('user_id', session('user_id'))
@@ -121,16 +121,14 @@ class UserController extends Controller
                         $userItem->update(['equipped' => 0]);
                     }
                 }
+                $userItemData['equipped'] = 1;
             }
         } else {
             $userItemData['equipped'] = 0;
         }
 
-
         $user = User::findOrFail(session('user_id'));
         $userItemData['user_id'] = $user->id;
-
-
 
         if (session('user_item_id')) {
             $userItem = UserItem::findOrFail(session('user_item_id'));
@@ -142,18 +140,18 @@ class UserController extends Controller
         }
 
         return redirect()->route('user.profile')
-            ->with('success', 'User Item saved successfully.');
+            ->with('success', $message);
     }
 
-    public function destroyUserInventory($id)
+    public function destroyUserItem()
     {
-        $inventoryItem = Inventory::findOrFail($id);
-        $inventoryItem->delete();
-        return redirect()->route('user.profile', ['id' => $inventoryItem->user_id])
-            ->with('success', 'Item deleted successfully.');
+        $userItem = UserItem::find(session('user_item_id'));
+        $userItem->delete();
+        return redirect()->route('user.profile')
+            ->with('success', 'User Item deleted successfully.');
     }
 
-    //User Training Equipment
+    //User Equipment
     public function editUserEquipment()
     {
         $allEquipment = Equipment::all();

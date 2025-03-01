@@ -25,7 +25,7 @@
         <span> Equipment </span>
     </x-nav-link>
 
-    <x-nav-link :href="route('users.index')" :active="request()->routeIs(['users.index', 'user.profile'])">
+    <x-nav-link :href="route('users.index')" :active="request()->routeIs(['users.index', 'user.profile', 'user.item.edit', 'user.equipment.edit'])">
         <i class="fas fa-users"></i>
         <span>{{ __('Users') }}</span>
     </x-nav-link>
