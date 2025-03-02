@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\DigitalMonsterController;
+use App\Http\Controllers\MonsterController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\EquipmentController;
 use App\Http\Controllers\ProfileController;
@@ -49,17 +49,22 @@ Route::middleware('auth')->group(function () {
         Route::get('/user', [UserController::class, 'profile'])->name('user.profile');
 
         Route::get('/eggGroups', [EggGroupController::class, 'index'])->name('egg_groups.index');
-        Route::get('/eggGroup/edit', [EggGroupController::class, 'edit'])->name('egg_groups.edit');
-        Route::post('/eggGroups/update', [EggGroupController::class, 'update'])->name('egg_groups.update');
-        Route::delete('/eggGroups/{eggGroup}', [EggGroupController::class, 'destroy'])->name('egg_groups.destroy');
+        Route::get('/eggGroup/edit', [EggGroupController::class, 'edit'])->name('egg_group.edit');
+        Route::post('/eggGroup/update', [EggGroupController::class, 'update'])->name('egg_group.update');
+        Route::delete('/eggGroup/delete', [EggGroupController::class, 'destroy'])->name('egg_group.destroy');
 
-        Route::get('/digitalMonsters', [DigitalMonsterController::class, 'index'])->name('digital_monsters.index');
-        Route::get('/digitalMonsters/edit', [DigitalMonsterController::class, 'edit'])->name('digital_monsters.edit');
-        Route::post('/digitalMonsters/update', [DigitalMonsterController::class, 'update'])->name('digital_monsters.update');
-        Route::delete('/digitalMonsters/{digitalMonster}', [DigitalMonsterController::class, 'destroy'])->name('digital_monsters.destroy');
-        Route::get('/userDigitalMonsters/edit', [UserController::class, 'editUserDigitalMonster'])->name('user.digital_monsters.edit');
+        Route::get('/monsters', [MonsterController::class, 'index'])->name('monsters.index');
+        Route::get('/monster/edit', [MonsterController::class, 'edit'])->name('monster.edit');
+        Route::post('/monster/update', [MonsterController::class, 'update'])->name('monster.update');
+        Route::delete('/monster/delete', [MonsterController::class, 'destroy'])->name('monster.destroy');
+        
+        
+        Route::get('/userDigitalMonsters/edit', [UserController::class, 'editUserDigitalMonster'])->name('user.monster.edit');
         Route::post('/userDigitalMonsters/update', [UserController::class, 'updateUserDigitalMonster'])->name('user.digital_monsters.update');
         Route::delete('/userDigitalMonsters/{userDigitalMonster}', [UserController::class, 'destroyUserDigitalMonster'])->name('user.digital_monsters.destroy');
+
+
+
 
         Route::get('/items', [ItemController::class, 'index'])->name('items.index');
         Route::get('/item/edit', [ItemController::class, 'edit'])->name('item.edit');

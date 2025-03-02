@@ -7,10 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 class EggGroup extends Model
 {
 
-    protected $fillable = ['name', 'field_type'];
+    protected $fillable = ['name', 'field'];
 
-    public function digitalMonsters()
+    public function monsters()
     {
-        return $this->hasMany(DigitalMonster::class);
+        return $this->hasMany(Monster::class);
     }
 }

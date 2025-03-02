@@ -31,7 +31,7 @@ class UserController extends Controller
     {
         $allDigitalMonsters = DigitalMonster::with('eggGroup')->get();
         if ($allDigitalMonsters->isEmpty()) {
-            return redirect()->route('digital_monsters.index')->with('error', 'No digital monsters found.');
+            return redirect()->route('monsters.index')->with('error', 'No digital monsters found.');
         }
         $userDigitalMonster = UserDigitalMonster::find(session('user_id'));
         $user = User::findOrFail(session('user_id'));

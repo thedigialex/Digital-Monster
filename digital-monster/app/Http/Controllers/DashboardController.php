@@ -2,8 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
-use App\Models\UserDigitalMonster;
+use App\Models\UserMonster;
 use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
@@ -11,9 +10,9 @@ class DashboardController extends Controller
     public function index()
     {
         $user = Auth::user();
-        $userMonsters = UserDigitalMonster::with('digitalMonster')
+        $userMonsters = UserMonster::with('monster')
             ->where('user_id', $user->id)
-            ->whereHas('digitalMonster', function ($query) {
+            ->whereHas('monster', function ($query) {
                 $query->where('stage', '!=', 'Egg');
             })
             ->get();

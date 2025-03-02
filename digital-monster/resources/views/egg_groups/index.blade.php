@@ -3,7 +3,7 @@
         <x-fonts.sub-header>
             {{ __('Egg Groups') }}
         </x-fonts.sub-header>
-        <x-buttons.clear-button model="egg_group" route="egg_groups.edit" icon="fa-plus" label="Add New" />
+        <x-buttons.clear-button model="egg_group" route="egg_group.edit" icon="fa-plus" label="Add New" />
     </x-slot>
 
     @if (session('success'))
@@ -19,7 +19,7 @@
                 Egg groups are a way to categorize monsters based on their ability. Each egg group can be modified or created by the user, allowing for customization of how different species evolve. Each egg group contains a field that determines the specific monster type the eggs within the group will evolve into. This system makes it easier for trainers to organize their breeding programs and predict the potential evolutions of their monsters.
             </x-fonts.paragraph>
         </x-slot>
-        @foreach ($fieldTypes as $index => $label)
+        @foreach ($fields as $index => $label)
         <x-accordion title="{{ $label }}" :open="$loop->first" :icon="$icons[$index]">
             @if (isset($eggGroups[$label]) && $eggGroups[$label]->isNotEmpty())
             <x-table.table>
@@ -36,14 +36,14 @@
                             <x-fonts.paragraph class="font-bold text-text">{{ $eggGroup->name }}</x-fonts.paragraph>
                         </x-table.data>
                         <x-table.data class="w-1/3 text-end">
-                            <x-buttons.session-button model="egg_group" :id="$eggGroup->id" route="egg_groups.edit" />
+                            <x-buttons.session-button model="egg_group" :id="$eggGroup->id" route="egg_group.edit" />
                         </x-table.data>
                     </tr>
                     @endforeach
                 </tbody>
             </x-table.table>
             @else
-            <x-fonts.paragraph class="text-text p-4">No egg groups available for this field type.</x-fonts.paragraph>
+            <x-fonts.paragraph class="text-text p-4">No egg groups available for this field</x-fonts.paragraph>
             @endif
         </x-accordion>
         @endforeach

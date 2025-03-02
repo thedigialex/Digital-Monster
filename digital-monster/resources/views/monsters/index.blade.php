@@ -3,7 +3,7 @@
         <x-fonts.sub-header>
             {{ __('Digital Monsters') }}
         </x-fonts.sub-header>
-        <x-buttons.clear-button model="digital_monster" route="digital_monsters.edit" icon="fa-plus" label="Add New" />
+        <x-buttons.clear-button model="monster" route="monster.edit" icon="fa-plus" label="Add New" />
     </x-slot>
 
     @if (session('success'))
@@ -20,8 +20,8 @@
             </x-fonts.paragraph>
         </x-slot>
         @foreach ($eggGroups as $index => $eggGroup)
-        <x-accordion title="{{ ucfirst($eggGroup->name) }}" :open="$loop->first" :icon="$icons[$eggGroup->field_type]">
-            @if ($eggGroup->digitalMonsters->isNotEmpty())
+        <x-accordion title="{{ ucfirst($eggGroup->name) }}" :open="$loop->first" :icon="$icons[$eggGroup->field]">
+            @if ($eggGroup->monsters->isNotEmpty())
             <x-table.table>
                 <thead class="bg-primary">
                     <tr>
@@ -32,30 +32,30 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($eggGroup->digitalMonsters as $digitalMonster)
+                    @foreach ($eggGroup->monsters as $monster)
                     <tr class="{{ $loop->even ? 'bg-neutral' : 'bg-secondary' }}">
                         <x-table.data class="w-1/4">
-                            @if (isset($digitalMonster->sprite_image_0))
+                            @if (isset($monster->image_0))
                             <div class="w-16 h-16 overflow-hidden">
-                                <img src="{{ asset('storage/' . $digitalMonster->sprite_image_0) }}" alt="Digital Monster Image" class="w-full h-full object-cover" style="object-position: 0 0;">
+                                <img src="{{ asset('storage/' . $monster->image_0) }}" alt="Monster Image" class="w-full h-full object-cover" style="object-position: 0 0;">
                             </div>
                             @endif
                         </x-table.data>
                         <x-table.data class="w-1/4">
-                            <x-fonts.paragraph class="font-bold text-text">{{ $digitalMonster->name }}</x-fonts.paragraph>
+                            <x-fonts.paragraph class="font-bold text-text">{{ $monster->name }}</x-fonts.paragraph>
                         </x-table.data>
                         <x-table.data class="w-1/4">
-                            <x-fonts.paragraph class="font-bold text-text">{{ $digitalMonster->stage }}</x-fonts.paragraph>
+                            <x-fonts.paragraph class="font-bold text-text">{{ $monster->stage }}</x-fonts.paragraph>
                         </x-table.data>
                         <x-table.data class="w-1/4 text-end space-x-4">
-                            <x-buttons.session-button model="digital_monster" :id="$digitalMonster->id" route="digital_monsters.edit" />
+                            <x-buttons.session-button model="monster" :id="$monster->id" route="monster.edit" />
                         </x-table.data>
                     </tr>
                     @endforeach
                 </tbody>
             </x-table.table>
             @else
-            <x-fonts.paragraph class="text-text p-4">No digital monsters.</x-fonts.paragraph>
+            <x-fonts.paragraph class="text-text p-4">No monsters</x-fonts.paragraph>
             @endif
         </x-accordion>
         @endforeach

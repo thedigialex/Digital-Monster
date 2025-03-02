@@ -30,14 +30,9 @@ class User extends Authenticatable
         ];
     }
 
-    public function digitalMonsters()
+    public function userMonsters()
     {
-        return $this->hasMany(UserDigitalMonster::class);
-    }
-
-    public function getMainUserDigitalMonster()
-    {
-        return $this->digitalMonsters()->where('isMain', 1)->first();
+        return $this->hasMany(UserMonster::class);
     }
 
     public function userItems()

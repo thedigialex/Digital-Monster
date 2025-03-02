@@ -52,7 +52,7 @@ class ItemController extends Controller
 
         $itemData = $request->only(['name', 'type', 'effect', 'price', 'rarity', 'available', 'max_quantity']);
         if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('item', 'public');
+            $path = $request->file('image')->store('items', 'public');
             $itemData['image'] = $path;
 
             if (session('item_id')) {

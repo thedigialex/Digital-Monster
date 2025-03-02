@@ -47,7 +47,7 @@
                 <x-fonts.sub-header class="text-accent">
                     User Digital Monster
                 </x-fonts.sub-header>
-                <a href="{{ route('user.digital_monsters.edit') }}">
+                <a href="{{ route('user.monster.edit') }}">
                     <x-primary-button icon="fa-plus" label="Add New" />
                 </a>
             </div>
@@ -80,7 +80,7 @@
                         </x-fonts.paragraph>
                     </x-table.data>
                     <x-table.data class="w-1/3 text-end">
-                        <x-buttons.session-button model="user_digital_monster" :id="$userDigitalMonster->id" route="user.digital_monsters.edit" />
+                        <x-buttons.session-button model="user_digital_monster" :id="$userDigitalMonster->id" route="user.monster.edit" />
                     </x-table.data>
                 </tr>
                 @endforeach
