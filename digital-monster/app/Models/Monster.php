@@ -4,18 +4,18 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class DigitalMonster extends Model
+class Monster extends Model
 {
     protected $fillable = [
         'name',
         'egg_group_id',
         'stage',
-        'required_evo_points', 
-        'sprite_image_0',
+        'evo_requirement', 
+        'image_0',
         'element_0',
-        'sprite_image_1',
+        'image_1',
         'element_1',
-        'sprite_image_2',
+        'image_2',
         'element_2',
     ];
 
@@ -24,8 +24,8 @@ class DigitalMonster extends Model
         return $this->belongsTo(EggGroup::class);
     }
 
-    public function evolutionToRoutes()
+    public function evolution()
     {
-        return $this->hasMany(EvolutionRoute::class, 'evolves_from');
+        return $this->hasOne(Evolution::class, 'base_monster_id');
     }
 }

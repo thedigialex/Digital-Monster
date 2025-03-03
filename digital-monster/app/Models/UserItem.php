@@ -4,9 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Inventory extends Model
+class UserItem extends Model
 {
-    protected $fillable = ['user_id', 'item_id', 'quantity', 'isEquipped'];
+    protected $fillable = ['user_id', 'item_id', 'quantity', 'equipped'];
 
     public function item()
     {

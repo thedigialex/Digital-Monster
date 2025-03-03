@@ -4,7 +4,8 @@
 'onchange' => '',
 'options' => [],
 'value' => '',
-'useOptionKey' => 'false'
+'useOptionKey' => 'false',
+'dataItems' => []
 ])
 
 <div id="{{ $name }}_div" class="{{ $divClasses }}">
@@ -18,7 +19,9 @@
         <option value="" selected>- Select Option -</option>
         @foreach ($options as $optionKey => $optionValue)
         @if($useOptionKey == 'true')
-        <option value="{{ $optionKey }}" {{ $value == $optionKey ? 'selected' : '' }}>
+        <option value="{{ $optionKey }}" {{ $value == $optionKey ? 'selected' : '' }} @if (isset($dataItems[$optionKey]))
+            data-item='@json($dataItems[$optionKey])'
+            @endif>
             {{ ucfirst($optionValue) }}
         </option>
         @else

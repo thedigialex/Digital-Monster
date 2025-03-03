@@ -5,7 +5,6 @@ namespace App\Models;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
-use App\Models\Item;
 
 class User extends Authenticatable
 {
@@ -30,24 +29,19 @@ class User extends Authenticatable
         ];
     }
 
-    public function digitalMonsters()
+    public function userMonsters()
     {
-        return $this->hasMany(UserDigitalMonster::class);
+        return $this->hasMany(UserMonster::class);
     }
 
-    public function getMainUserDigitalMonster()
+    public function userItems()
     {
-        return $this->digitalMonsters()->where('isMain', 1)->first();
+        return $this->hasMany(UserItem::class);
     }
 
-    public function inventories()
+    public function userEquipment()
     {
-        return $this->hasMany(Inventory::class);
-    }
-
-    public function trainingEquipments()
-    {
-        return $this->hasMany(UserTrainingEquipment::class);
+        return $this->hasMany(UserEquipment::class);
     }
 
     protected static function boot()
@@ -59,7 +53,7 @@ class User extends Authenticatable
 //
         //    foreach ($basicTrainingEquipments as $equipment) {
         //        $user->trainingEquipments()->create([
-        //            'training_equipment_id' => $equipment->id,
+        //            'equipment_id' => $equipment->id,
         //            'stat_increase' => 3,
         //            'level' => 1,
         //        ]);

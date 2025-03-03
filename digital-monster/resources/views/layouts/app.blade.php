@@ -30,9 +30,7 @@
                 <div class="flex justify-center border-t-4 border-secondary p-6">
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
-                        <x-primary-button type="submit">
-                            {{ __('Log Out') }} <i class="fa fa-sign-out ml-2"></i>
-                        </x-primary-button>
+                        <x-primary-button type="submit" icon="fa-sign-out" label="Log Out"/>
                     </form>
                 </div>
             </aside>

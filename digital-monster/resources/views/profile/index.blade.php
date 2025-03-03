@@ -1,18 +1,15 @@
 <x-app-layout>
     <x-slot name="header">
-        <x-fonts.sub-header>
-            {{ __('Users') }}
-        </x-fonts.sub-header>
+        <x-fonts.sub-header>Users</x-fonts.sub-header>
     </x-slot>
 
     @if (session('success'))
     <x-alerts.success>{{ session('success') }}</x-alerts.success>
     @endif
 
-
     <x-container class="p-1 lg:p-4">
         <x-slot name="header">
-            <x-fonts.sub-header class="text-accent">Egg Groups</x-fonts.sub-header>
+            <x-fonts.sub-header class="text-accent">Users</x-fonts.sub-header>
         </x-slot>
         <x-slot name="info">
             <x-fonts.paragraph>
@@ -43,7 +40,7 @@
                             </x-fonts.paragraph>
                         </x-table.data>
                         <x-table.data class="w-1/3 text-end">
-                            <x-buttons.session-button model="user" :id="$user->id" route="user.profile" />
+                            <x-buttons.session-button model="user" :id="$user->id" route="user.profile" label="View" icon="fa-eye"/>
                         </x-table.data>
                     </tr>
                     @endforeach

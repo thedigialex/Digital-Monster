@@ -9,16 +9,14 @@
     </x-slot>
 
     @if ($errors->any())
-    <x-alerts.error>
-        Saving data, please fix fields.
-    </x-alerts.error>
+    <x-alerts.error/>
     @endif
 
     <x-container class="p-4">
         @if (isset($item))
-        <x-forms.delete-form :action="route('items.destroy',  $item->id)" label="Item" />
+        <x-forms.delete-form :action="route('item.destroy')" label="Item" />
         @endif
-        <form action="{{ route('items.update') }}" method="POST" class="space-y-4" enctype="multipart/form-data">
+        <form action="{{ route('item.update') }}" method="POST" class="space-y-4" enctype="multipart/form-data">
             @csrf
             <x-container.single>
                 <div class="flex flex-col md:flex-row gap-4">
@@ -39,12 +37,11 @@
                                     divClasses="w-full lg:w-1/2"
                                     value="{{ old('price', isset($item) ? $item->price : '') }}"
                                     required />
-                                <x-inputs.dropdown
-                                    name="isAvailable"
+                                <x-inputs.text
+                                    name="max_quantity"
+                                    type="number"
                                     divClasses="w-full lg:w-1/2"
-                                    :options="['1' => 'Yes', '0' => 'No']"
-                                    useOptionKey="true"
-                                    :value="old('isAvailable', isset($item) ? $item->isAvailable : '')"
+                                    value="{{ old('max_quantity', isset($item) ? $item->max_quantity : '') }}"
                                     required />
                             </div>
                         </div>
@@ -52,29 +49,36 @@
                             <div class="w-full flex space-x-4">
                                 <x-inputs.dropdown
                                     name="rarity"
-                                    divClasses="w-full lg:w-1/2"
+                                    divClasses="w-full lg:w-1/3"
                                     required
                                     :options="$rarityTypes"
                                     :value="old('rarity', isset($item) ? $item->rarity : '')" />
                                 <x-inputs.dropdown
                                     name="type"
-                                    divClasses="w-full lg:w-1/2"
+                                    divClasses="w-full lg:w-1/3"
                                     onchange="toggleEffectField()"
                                     required
                                     :options="$itemTypes"
                                     :value="old('type', isset($item) ? $item->type : '')" />
-                            </div>
-                            <div class="w-full lg:w-1/2" id="effectField">
-                                <x-inputs.text
-                                    name="effect"
-                                    divClasses="w-full"
-                                    value="{{ old('effect', isset($item) ? $item->effect : '') }}"
+                                <x-inputs.dropdown
+                                    name="available"
+                                    divClasses="w-full lg:w-1/3"
+                                    :options="['1' => 'Yes', '0' => 'No']"
+                                    useOptionKey="true"
+                                    :value="old('available', isset($item) ? $item->available : '')"
                                     required />
                             </div>
                         </div>
+                        <div class="flex flex-col lg:flex-row lg:space-x-4 space-y-4 lg:space-y-0 w-full" id="effectField">
+                            <x-inputs.text
+                                name="effect"
+                                divClasses="w-full"
+                                value="{{ old('effect', isset($item) ? $item->effect : '') }}"
+                                required />
+                        </div>
                     </x-container.single>
                 </div>
-                <div class="flex justify-center">
+                <div class="flex justify-center py-4">
                     <x-primary-button type="submit" label="{{ isset($item) ? 'Update' : 'Create' }}" icon="fa-save" />
                 </div>
             </x-container.single>

@@ -4,18 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class TrainingEquipment extends Model
+class Equipment extends Model
 {
      protected $fillable = [
-        'image',
         'name',
         'stat',
+        'image',
         'max_level',
         'upgrade_item_id',
     ];
-
-    public function userTrainingEquipments()
-    {
-        return $this->hasMany(UserTrainingEquipment::class);
-    }
 }

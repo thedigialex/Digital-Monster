@@ -1,8 +1,8 @@
 <?php
 
-use App\Http\Controllers\DigitalMonsterController;
+use App\Http\Controllers\MonsterController;
 use App\Http\Controllers\ItemController;
-use App\Http\Controllers\TrainingEquipmentController;
+use App\Http\Controllers\EquipmentController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\EggGroupController;
@@ -49,33 +49,36 @@ Route::middleware('auth')->group(function () {
         Route::get('/user', [UserController::class, 'profile'])->name('user.profile');
 
         Route::get('/eggGroups', [EggGroupController::class, 'index'])->name('egg_groups.index');
-        Route::get('/eggGroup/edit', [EggGroupController::class, 'edit'])->name('egg_groups.edit');
-        Route::post('/eggGroups/update', [EggGroupController::class, 'update'])->name('egg_groups.update');
-        Route::delete('/eggGroups/{eggGroup}', [EggGroupController::class, 'destroy'])->name('egg_groups.destroy');
+        Route::get('/eggGroup/edit', [EggGroupController::class, 'edit'])->name('egg_group.edit');
+        Route::post('/eggGroup/update', [EggGroupController::class, 'update'])->name('egg_group.update');
+        Route::delete('/eggGroup/delete', [EggGroupController::class, 'destroy'])->name('egg_group.destroy');
 
-        Route::get('/digitalMonsters', [DigitalMonsterController::class, 'index'])->name('digital_monsters.index');
-        Route::get('/digitalMonsters/edit', [DigitalMonsterController::class, 'edit'])->name('digital_monsters.edit');
-        Route::post('/digitalMonsters/update', [DigitalMonsterController::class, 'update'])->name('digital_monsters.update');
-        Route::delete('/digitalMonsters/{digitalMonster}', [DigitalMonsterController::class, 'destroy'])->name('digital_monsters.destroy');
-        Route::get('/userDigitalMonsters/edit', [UserController::class, 'editUserDigitalMonster'])->name('user.digital_monsters.edit');
-        Route::post('/userDigitalMonsters/update', [UserController::class, 'updateUserDigitalMonster'])->name('user.digital_monsters.update');
-        Route::delete('/userDigitalMonsters/{userDigitalMonster}', [UserController::class, 'destroyUserDigitalMonster'])->name('user.digital_monsters.destroy');
+        Route::get('/monsters', [MonsterController::class, 'index'])->name('monsters.index');
+        Route::get('/monster/edit', [MonsterController::class, 'edit'])->name('monster.edit');
+        Route::post('/monster/update', [MonsterController::class, 'update'])->name('monster.update');
+        Route::delete('/monster/delete', [MonsterController::class, 'destroy'])->name('monster.destroy');
+        Route::get('/userMonster/edit', [UserController::class, 'editUserMonster'])->name('user.monster.edit');
+        Route::post('/userMonster/update', [UserController::class, 'updateUserMonster'])->name('user.monster.update');
+        Route::delete('/userMonster/delete', [UserController::class, 'destroyUserMonster'])->name('user.monster.destroy');
+
+
+
 
         Route::get('/items', [ItemController::class, 'index'])->name('items.index');
-        Route::get('/items/edit', [ItemController::class, 'edit'])->name('items.edit');
-        Route::post('/items/update', [ItemController::class, 'update'])->name('items.update');
-        Route::delete('/items/{item}', [ItemController::class, 'destroy'])->name('items.destroy');
-        Route::get('/userInventory/edit', [UserController::class, 'editUserInventory'])->name('user.inventory.edit');
-        Route::post('/userInventory/update', [UserController::class, 'updateUserInventory'])->name('user.inventory.update');
-        Route::delete('/userInventory/{inventory}', [UserController::class, 'destroyUserInventory'])->name('user.inventory.destroy');
+        Route::get('/item/edit', [ItemController::class, 'edit'])->name('item.edit');
+        Route::post('/item/update', [ItemController::class, 'update'])->name('item.update');
+        Route::delete('/item/delete', [ItemController::class, 'destroy'])->name('item.destroy');
+        Route::get('/userItem/edit', [UserController::class, 'editUserItem'])->name('user.item.edit');
+        Route::post('/userItem/update', [UserController::class, 'updateUserItem'])->name('user.item.update');
+        Route::delete('/userItem/delete', [UserController::class, 'destroyUserItem'])->name('user.item.destroy');
 
-        Route::get('/trainingEquipment', [TrainingEquipmentController::class, 'index'])->name('trainingEquipments.index');
-        Route::get('/trainingEquipment/edit', [TrainingEquipmentController::class, 'edit'])->name('trainingEquipments.edit');
-        Route::post('/trainingEquipment/update', [TrainingEquipmentController::class, 'update'])->name('trainingEquipments.update');
-        Route::delete('/trainingEquipment/{trainingEquipment}', [TrainingEquipmentController::class, 'destroy'])->name('trainingEquipments.destroy');
-        Route::get('/userTrainingEquipment/edit', [UserController::class, 'editUserTrainingEquipment'])->name('user.training_equipment.edit');
-        Route::post('/userTrainingEquipment/update', [UserController::class, 'updateUserTrainingEquipment'])->name('user.training_equipment.update');
-        Route::delete('/userTrainingEquipment/{trainingEquipment}', [UserController::class, 'destroyUserTrainingEquipment'])->name('user.training_equipment.destroy');
+        Route::get('/equipment', [EquipmentController::class, 'index'])->name('equipment.index');
+        Route::get('/equipment/edit', [EquipmentController::class, 'edit'])->name('equipment.edit');
+        Route::post('/equipment/update', [EquipmentController::class, 'update'])->name('equipment.update');
+        Route::delete('/equipment/delete', [EquipmentController::class, 'destroy'])->name('equipment.destroy');
+        Route::get('/userEquipment/edit', [UserController::class, 'editUserEquipment'])->name('user.equipment.edit');
+        Route::post('/userEquipment/update', [UserController::class, 'updateUserEquipment'])->name('user.equipment.update');
+        Route::delete('/userEquipment/delete', [UserController::class, 'destroyUserEquipment'])->name('user.equipment.destroy');
     });
 });
 

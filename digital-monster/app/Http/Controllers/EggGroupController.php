@@ -7,11 +7,11 @@ use Illuminate\Http\Request;
 
 class EggGroupController extends Controller
 {
-    protected $fieldTypes = ['Tyrannos', 'Insecta', 'Beast', 'Flora', 'Abyss', 'Arcane'];
+    protected $fields = ['Tyrannos', 'Insecta', 'Beast', 'Flora', 'Abyss', 'Arcane'];
 
     public function index()
     {
-        $eggGroups = EggGroup::all()->groupBy('field_type');
+        $eggGroups = EggGroup::all()->groupBy('field');
         $icons = [
             'fa-dragon',
             'fa-bug',
@@ -20,7 +20,7 @@ class EggGroupController extends Controller
             'fa-water',
             'fa-magic',
         ];
-        return view('egg_groups.index', ['eggGroups' => $eggGroups, 'fieldTypes' => $this->fieldTypes, 'icons' => $icons]);
+        return view('egg_groups.index', ['eggGroups' => $eggGroups, 'fields' => $this->fields, 'icons' => $icons]);
     }
     
     public function edit()
@@ -28,7 +28,7 @@ class EggGroupController extends Controller
         $eggGroup = EggGroup::find(session('egg_group_id'));
         return view('egg_groups.form', [
             'eggGroup' => $eggGroup,
-            'fieldTypes' => $this->fieldTypes
+            'fields' => $this->fields
         ]);
     }
 
@@ -36,7 +36,7 @@ class EggGroupController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'field_type' => 'required|string',
+            'field' => 'required|string',
         ]);
 
         if (session('egg_group_id')) {
@@ -51,8 +51,9 @@ class EggGroupController extends Controller
         return redirect()->route('egg_groups.index')->with('success', $message);
     }
 
-    public function destroy(EggGroup $eggGroup)
+    public function destroy()
     {
+        $eggGroup = EggGroup::findOrFail(session('egg_group_id'));
         $eggGroup->delete();
         return redirect()->route('egg_groups.index')->with('success', 'Egg group deleted successfully.');
     }

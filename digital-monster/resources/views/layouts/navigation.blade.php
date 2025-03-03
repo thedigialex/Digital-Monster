@@ -1,38 +1,38 @@
 <nav class="flex-1 mt-4 space-y-4">
     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
         <i class="fas fa-tachometer-alt"></i>
-        <span>{{ __('Dashboard') }}</span>
+        <span>Dashboard</span>
     </x-nav-link>
 
     @if (Auth::user()->role === 'admin')
-    <x-nav-link :href="route('egg_groups.index')" :active="request()->routeIs(['egg_groups.index', 'egg_groups.edit'])">
+    <x-nav-link :href="route('egg_groups.index')" :active="request()->routeIs(['egg_groups.index', 'egg_group.edit'])">
         <i class="fas fa-egg"></i>
-        <span>{{ __('Egg Groups') }}</span>
+        <span>Egg Groups</span>
     </x-nav-link>
 
-    <x-nav-link :href="route('digital_monsters.index')" :active="request()->routeIs(['digital_monsters.index', 'digital_monsters.edit'])">
+    <x-nav-link :href="route('monsters.index')" :active="request()->routeIs(['monsters.index', 'monster.edit'])">
         <i class="fas fa-dragon"></i>
-        <span>{{ __('Digital Monsters') }}</span>
+        <span>Monsters</span>
     </x-nav-link>
 
-    <x-nav-link :href="route('items.index')" :active="request()->routeIs(['items.index', 'items.edit'])">
+    <x-nav-link :href="route('items.index')" :active="request()->routeIs(['items.index', 'item.edit'])">
         <i class="fas fa-box-open"></i>
-        <span>{{ __('Items') }}</span>
+        <span>Items</span>
     </x-nav-link>
 
-    <x-nav-link :href="route('trainingEquipments.index')" :active="request()->routeIs(['trainingEquipments.index', 'trainingEquipments.edit'])">
+    <x-nav-link :href="route('equipment.index')" :active="request()->routeIs(['equipment.index', 'equipment.edit'])">
         <i class="fas fa-dumbbell"></i>
-        <span>{{ __('Training Equipment') }}</span>
+        <span>Equipment</span>
     </x-nav-link>
 
-    <x-nav-link :href="route('users.index')" :active="request()->routeIs(['users.index', 'user.profile'])">
+    <x-nav-link :href="route('users.index')" :active="request()->routeIs(['users.index'])">
         <i class="fas fa-users"></i>
-        <span>{{ __('Users') }}</span>
+        <span>Users</span>
     </x-nav-link>
     @endif
 
-    <x-nav-link :href="route('profile.edit')" :active="request()->routeIs('profile.edit')">
+    <x-nav-link :href="route('profile.edit')" :active="request()->routeIs(['user.profile', 'user.item.edit', 'user.equipment.edit'])">
         <i class="fas fa-user"></i>
-        <span>{{ __('Account') }}</span>
+        <span>Profile</span>
     </x-nav-link>
 </nav>

@@ -4,12 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class UserDigitalMonster extends Model
+class UserMonster extends Model
 {    
     protected $fillable = [
         'user_id',
-        'digital_monster_id',
-        'isMain',
+        'monster_id',
+        'main',
         'name',
         'type',
         'attack',
@@ -24,13 +24,13 @@ class UserDigitalMonster extends Model
         'exercise',
         'clean',
         'energy',
-        'maxEnergy',
+        'max_energy',
         'wins',
         'losses',
         'trainings',
-        'maxTrainings',
-        'currentEvoPoints',
-        'sleepStartedAt', 
+        'max_trainings',
+        'evo_points',
+        'sleep_time', 
     ];
 
     public function user()
@@ -38,32 +38,32 @@ class UserDigitalMonster extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function digitalMonster()
+    public function monster()
     {
-        return $this->belongsTo(DigitalMonster::class);
+        return $this->belongsTo(Monster::class);
     }
 
     public function evolve()
     {
-        $digitalMonster = $this->digitalMonster;
-        if ($this->currentEvoPoints >= $digitalMonster->required_evo_points) {
-            $evolutionRoutes = EvolutionRoute::where('evolves_from', $digitalMonster->id)->first();
-            if ($evolutionRoutes) {
+        $monster = $this->monster;
+        if ($this->evo_points >= $monster->evo_requirement) {
+            $evolutions = Evolution::where('base_monster', $monster->id)->first();
+            if ($evolutions) {
                 if ($this->strength >= $this->mind) {
-                    $newMonsterId = $evolutionRoutes->route_a;
+                    $newMonsterId = $evolutions->route_0;
                 } else {
-                    $newMonsterId = $evolutionRoutes->route_b ?? $evolutionRoutes->route_a; 
+                    $newMonsterId = $evolutions->route_1 ?? $evolutions->route_0; 
                 }
-                $this->digital_monster_id = $newMonsterId;
-                $this->currentEvoPoints = 0;
+                $this->monster_id = $newMonsterId;
+                $this->evo_points = 0;
                 $this->strength += $this->trainings / 4;
                 $this->strength += $this->trainings / 4;
                 $this->agility += $this->trainings / 4;
                 $this->mind += $this->trainings / 4;
                 $this->trainings = 0;
-                $this->maxTrainings = ( $this->maxTrainings + 15 ) * 2;
-                $this->maxEnergy = $this->maxEnergy + 5;
-                $this->energy = $this->maxEnergy;
+                $this->max_trainings = ( $this->max_trainings + 15 ) * 2;
+                $this->max_energy = $this->max_energy + 5;
+                $this->energy = $this->max_energy;
                 $this->save();
                 return $this;
             }

@@ -9,30 +9,30 @@
     </x-slot>
 
     @if ($errors->any())
-    <x-alerts.error>
-        Saving data, please fix fields.
-    </x-alerts.error>
+    <x-alerts.error/>
     @endif
 
     <x-container class="p-4">
         @if (isset($eggGroup))
-        <x-forms.delete-form :action="route('egg_groups.destroy', ['eggGroup' => $eggGroup->id])" label="Egg Group" />
+        <x-forms.delete-form :action="route('egg_group.destroy')" label="Egg Group" />
         @endif
-        <form action="{{ route('egg_groups.update') }}" method="POST" class="space-y-4">
+        <form action="{{ route('egg_group.update') }}" method="POST" class="space-y-4">
             @csrf
             <x-container.single>
-                <x-inputs.text
-                    name="name"
-                    divClasses="w-full"
-                    value="{{ old('name', isset($eggGroup) ? $eggGroup->name : '') }}"
-                    required />
-                <x-inputs.dropdown
-                    name="field_type"
-                    divClasses="w-full"
-                    required
-                    :options="$fieldTypes"
-                    :value="old('field_type', isset($eggGroup) ? $eggGroup->field_type : '')" />
-                <div class="flex justify-center">
+                <div class="flex flex-col md:flex-row gap-4 w-full">
+                    <x-inputs.text
+                        name="name"
+                        divClasses="w-full"
+                        value="{{ old('name', isset($eggGroup) ? $eggGroup->name : '') }}"
+                        required />
+                    <x-inputs.dropdown
+                        name="field"
+                        divClasses="w-full"
+                        required
+                        :options="$fields"
+                        :value="old('field', isset($eggGroup) ? $eggGroup->field : '')" />
+                </div>
+                <div class="flex justify-center py-4">
                     <x-primary-button type="submit" label="{{ isset($eggGroup) ? 'Update' : 'Create' }}" icon="fa-save" />
                 </div>
             </x-container.single>
