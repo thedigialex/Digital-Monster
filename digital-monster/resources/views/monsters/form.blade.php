@@ -9,9 +9,7 @@
     </x-slot>
 
     @if ($errors->any())
-    <x-alerts.error>
-        Saving data, please fix fields.
-    </x-alerts.error>
+    <x-alerts.error/>
     @endif
 
     <x-container class="p-4">
@@ -46,14 +44,14 @@
                             <x-inputs.dropdown
                                 name="route_{{ $route }}"
                                 divClasses="w-full"
-                                :options="($monster && $monster->egg_group_id) ? $allDigitalMonsters->where('egg_group_id', $monster->egg_group_id)->pluck('name', 'id')->toArray() : []"
+                                :options="($monster && $monster->egg_group_id) ? $allMonsters->where('egg_group_id', $monster->egg_group_id)->pluck('name', 'id')->toArray() : []"
                                 useOptionKey="true"
                                 :value="$monster && $monster->evolution ? $monster->evolution->where('route_'.$route, '!=', null)->pluck('route_'.$route)->first() ?? '' : ''" />
                             @endforeach
                         </div>
                     </x-container.single>
                 </div>
-                <div class="flex justify-center">
+                <div class="flex justify-center py-4">
                     <x-primary-button type="submit" label="{{ isset($monster) ? 'Update' : 'Create' }}" icon="fa-save" />
                 </div>
             </x-container.single>

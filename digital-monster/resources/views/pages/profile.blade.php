@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <x-fonts.sub-header>
-            {{ __('User') }}: {{ $user->name }}
+            Profile: {{ $user->name }}
             <span class="ml-2">
                 <i class="fa fa-envelope" id="copyEmailIcon" style="cursor: pointer;" onclick="copyToClipboard('{{ $user->email }}')"></i>
             </span>
@@ -18,7 +18,7 @@
 
     <x-container>
         <x-slot name="header">
-            <x-fonts.sub-header class="text-accent">User Details</x-fonts.sub-header>
+            <x-fonts.sub-header class="text-accent">Account Details</x-fonts.sub-header>
         </x-slot>
         <div class="p-4 flex flex-col md:flex-row">
             <div class="flex-1 bg-secondary p-4 rounded-md">
@@ -45,50 +45,56 @@
         <x-slot name="header">
             <div class="flex justify-between items-center">
                 <x-fonts.sub-header class="text-accent">
-                    User Digital Monster
+                    User Monsters
                 </x-fonts.sub-header>
-                <a href="{{ route('user.monster.edit') }}">
-                    <x-primary-button icon="fa-plus" label="Add New" />
-                </a>
+                <x-buttons.clear-button model="user_monster" route="user.monster.edit" icon="fa-plus" label="Add New" />
             </div>
         </x-slot>
-
-        @if ($user->digitalMonsters->isEmpty())
-        <x-fonts.paragraph>No digital monsters found for this user</x-fonts.paragraph>
-        @else
-        <x-table.table>
-            <thead class="bg-primary">
-                <tr>
-                    <x-table.header class="w-1/3 text-left">Image</x-table.header>
-                    <x-table.header class="w-1/3 text-left">Name</x-table.header>
-                    <x-table.header class="w-1/3"></x-table.header>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($user->digitalMonsters as $userDigitalMonster)
-                <tr class="{{ $loop->even ? 'bg-neutral' : 'bg-secondary' }}">
-                    <x-table.data class="w-1/3">
-                        @if (isset($userDigitalMonster->digitalMonster->sprite_image_0))
-                        <div class="w-16 h-16 overflow-hidden">
-                            <img src="{{ asset('storage/' . $userDigitalMonster->digitalMonster->sprite_image_0) }}" alt="Item Image" class="w-full h-full object-cover" style="object-position: 0 0;">
-                        </div>
-                        @endif
-                    </x-table.data>
-                    <x-table.data class="w-1/3">
-                        <x-fonts.paragraph class="font-bold {{ $userDigitalMonster->isMain == 1 ? 'text-accent' : 'text-error' }}">
-                            {{ $userDigitalMonster->name }}
-                        </x-fonts.paragraph>
-                    </x-table.data>
-                    <x-table.data class="w-1/3 text-end">
-                        <x-buttons.session-button model="user_digital_monster" :id="$userDigitalMonster->id" route="user.monster.edit" />
-                    </x-table.data>
-                </tr>
-                @endforeach
-            </tbody>
-        </x-table.table>
-        @endif
+        <div class="p-4">
+            @if (!$user->userMonsters->isEmpty())
+            <x-table.table>
+                <thead class="bg-primary">
+                    <tr>
+                        <x-table.header class="w-1/3 text-left">Image</x-table.header>
+                        <x-table.header class="w-1/3 text-left">Name</x-table.header>
+                        <x-table.header class="w-1/3"></x-table.header>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($user->userMonsters as $userMonster)
+                    <tr class="{{ $loop->even ? 'bg-neutral' : 'bg-secondary' }}">
+                        <x-table.data class="w-1/3">
+                            @if (in_array($userMonster->monster->stage, ['Egg', 'Fresh', 'Child']) || $userMonster->type == 'Data')
+                            <div class="w-16 h-16 overflow-hidden">
+                                <img src="{{ asset('storage/' . $userMonster->monster->image_0) }}" alt="Monster Image" class="w-full h-full object-cover" style="object-position: 0 0;">
+                            </div>
+                            @elseif ($userMonster->type == 'Virus')
+                            <div class="w-16 h-16 overflow-hidden">
+                                <img src="{{ asset('storage/' . $userMonster->monster->image_1) }}" alt="Monster Image" class="w-full h-full object-cover"style="object-position: 0 0;">
+                            </div>
+                            @elseif ($userMonster->type == 'Vaccine')
+                            <div class="w-16 h-16 overflow-hidden">
+                                <img src="{{ asset('storage/' . $userMonster->monster->image_2) }}" alt="Monster Image" class="w-full h-full object-cover" style="object-position: 0 0;">
+                            </div>
+                            @endif
+                        </x-table.data>
+                        <x-table.data class="w-1/3">
+                            <x-fonts.paragraph class="font-bold {{ $userMonster->main == 1 ? 'text-accent' : 'text-error' }}">
+                                {{ $userMonster->name }}
+                            </x-fonts.paragraph>
+                        </x-table.data>
+                        <x-table.data class="w-1/3 text-end">
+                            <x-buttons.session-button model="user_monster" :id="$userMonster->id" route="user.monster.edit" />
+                        </x-table.data>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </x-table.table>
+            @else
+            <x-fonts.paragraph class="text-text p-4">No Monsters</x-fonts.paragraph>
+            @endif
+        </div>
     </x-container>
-
 
     <x-container>
         <x-slot name="header">
@@ -119,7 +125,7 @@
                         </x-table.data>
                         <x-table.data class="w-1/3">
                             <x-fonts.paragraph class="font-bold {{ $userItem->equipped == 1 ? 'text-accent' : 'text-text' }}">
-                                {{ $userItem->item->name }} Amount: {{ $userItem->quantity }}
+                                {{ $userItem->item->name }}<br>Amount: {{ $userItem->quantity }}
                             </x-fonts.paragraph>
                         </x-table.data>
                         <x-table.data class="w-1/3 text-end">
@@ -178,6 +184,20 @@
             <x-fonts.paragraph class="text-text p-4">No Equipment</x-fonts.paragraph>
             @endif
         </div>
+    </x-container>
+
+    <x-container class="p-4">
+        <x-accordion title="Update Profile Information" :open="false" :icon="'fa-solid fa-user'">
+            @include('profile.partials.update-profile-information-form')
+        </x-accordion>
+
+        <x-accordion title="Update Password" :open="false" :icon="'fa-solid fa-lock'">
+            @include('profile.partials.update-password-form')
+        </x-accordion>
+
+        <x-accordion title="Delete Account" :open="false" :icon="'fa-solid fa-trash-alt'">
+            @include('profile.partials.delete-user-form')
+        </x-accordion>
     </x-container>
 </x-app-layout>
 

@@ -57,11 +57,9 @@ Route::middleware('auth')->group(function () {
         Route::get('/monster/edit', [MonsterController::class, 'edit'])->name('monster.edit');
         Route::post('/monster/update', [MonsterController::class, 'update'])->name('monster.update');
         Route::delete('/monster/delete', [MonsterController::class, 'destroy'])->name('monster.destroy');
-        
-        
-        Route::get('/userDigitalMonsters/edit', [UserController::class, 'editUserDigitalMonster'])->name('user.monster.edit');
-        Route::post('/userDigitalMonsters/update', [UserController::class, 'updateUserDigitalMonster'])->name('user.digital_monsters.update');
-        Route::delete('/userDigitalMonsters/{userDigitalMonster}', [UserController::class, 'destroyUserDigitalMonster'])->name('user.digital_monsters.destroy');
+        Route::get('/userMonster/edit', [UserController::class, 'editUserMonster'])->name('user.monster.edit');
+        Route::post('/userMonster/update', [UserController::class, 'updateUserMonster'])->name('user.monster.update');
+        Route::delete('/userMonster/delete', [UserController::class, 'destroyUserMonster'])->name('user.monster.destroy');
 
 
 

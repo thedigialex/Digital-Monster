@@ -7,11 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 class Evolution extends Model
 {
 
-    protected $fillable = ['base_monster', 'route_0', 'route_1'];
+    protected $fillable = ['base_monster_id', 'route_0', 'route_1'];
 
     public function baseMonster()
     {
-        return $this->belongsTo(Monster::class, 'base_monster');
+        return $this->belongsTo(Monster::class, 'base_monster_id');
     } 
 
     public function routeZero()

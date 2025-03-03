@@ -9,9 +9,7 @@
     </x-slot>
 
     @if ($errors->any())
-    <x-alerts.error>
-        Saving data, please fix fields.
-    </x-alerts.error>
+    <x-alerts.error/>
     @endif
 
     <x-container class="p-4">

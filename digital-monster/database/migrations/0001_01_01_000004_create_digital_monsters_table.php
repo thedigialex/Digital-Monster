@@ -32,7 +32,7 @@ return new class extends Migration
 
         Schema::create('evolutions', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('base_monster')->constrained('monsters')->onDelete('cascade');
+            $table->foreignId('base_monster_id')->constrained('monsters')->onDelete('cascade');
             $table->foreignId('route_0')->nullable()->constrained('monsters')->onDelete('cascade');
             $table->foreignId('route_1')->nullable()->constrained('monsters')->onDelete('cascade');
             $table->timestamps();

@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use App\Models\UserDigitalMonster;
-use App\Models\DigitalMonster;
+use App\Models\UserMonster;
+use App\Models\Monster;
 use App\Models\UserItem;
 use App\Models\Item;
 use App\Models\Equipment;
@@ -21,28 +21,24 @@ class UserController extends Controller
 
     public function profile()
     {
-        $user = User::with(['digitalMonsters', 'userItems.item', 'userEquipment.equipment'])
+        $user = User::with(['userMonsters.monster', 'userItems.item', 'userEquipment.equipment'])
             ->findOrFail(session('user_id'));
         return view('pages.profile', compact('user'));
     }
 
-    //User Digital Monster
-    public function editUserDigitalMonster()
+    //User Monster
+    public function editUserMonster()
     {
-        $allDigitalMonsters = DigitalMonster::with('eggGroup')->get();
-        if ($allDigitalMonsters->isEmpty()) {
-            return redirect()->route('monsters.index')->with('error', 'No digital monsters found.');
-        }
-        $userDigitalMonster = UserDigitalMonster::find(session('user_id'));
-        $user = User::findOrFail(session('user_id'));
-        return view('digital_monsters.user-form', compact('user', 'userDigitalMonster', 'allDigitalMonsters'));
+        $allMonsters = Monster::with('eggGroup')->get();
+        $userMonster = UserMonster::find(session('user_monster_id'));
+        return view('monsters.user_form', compact('userMonster', 'allMonsters'));
     }
 
-    public function updateUserDigitalMonster(Request $request)
+    public function updateUserMonster(Request $request)
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'digital_monster_id' => 'required|exists:digital_monsters,id',
+            'monster_id' => 'required|exists:monsters,id',
             'type' => 'required|in:Data,Virus,Vaccine',
             'level' => 'required|integer|min:1',
             'exp' => 'required|integer|min:0',
@@ -54,37 +50,37 @@ class UserController extends Controller
             'exercise' => 'required|integer|min:0',
             'clean' => 'required|integer|min:0',
             'energy' => 'required|integer|min:0',
-            'maxEnergy' => 'required|integer|min:0',
+            'max_energy' => 'required|integer|min:0',
             'wins' => 'required|integer|min:0',
             'losses' => 'required|integer|min:0',
             'trainings' => 'required|integer|min:0',
-            'maxTrainings' => 'required|integer|min:0',
-            'currentEvoPoints' => 'required|integer|min:0',
-            'user_id' => 'required|exists:users,id',
-            'isMain' => 'required|integer'
+            'max_trainings' => 'required|integer|min:0',
+            'evo_points' => 'required|integer|min:0',
+            'main' => 'required|integer'
         ]);
 
-        if ($request->input('isMain') == 1) {
-            UserDigitalMonster::where('user_id', $validated['user_id'])
-                ->where('id', '!=', $request->input('id'))
-                ->update(['isMain' => 0]);
-        }
-        if ($request->has('id')) {
-            $userDigitalMonster = UserDigitalMonster::findOrFail($request->input('id'));
-            $userDigitalMonster->update($validated);
+        $userMonster = UserMonster::find(session('user_monster_id'));
+        if ($userMonster) {
+            $userMonster->update($validated);
         } else {
-            $userDigitalMonster = UserDigitalMonster::create($validated);
+            $validated['user_id'] = session('user_id');
+            $userMonster = UserMonster::create($validated);
         }
-        return redirect()->route('user.profile', ['id' => $validated['user_id']])
-            ->with('success', 'Digital Monster saved successfully.');
+        if ($request->input('main') == 1) {
+            UserMonster::where('user_id', session('user_id'))
+                ->where('id', '!=', $userMonster->id)
+                ->update(['main' => 0]);
+        }
+
+        return redirect()->route('user.profile')
+            ->with('success', 'Monster saved successfully.');
     }
 
-    public function destroyUserDigitalMonster($id)
+    public function destroyUserMonster()
     {
-        $userDigitalMonster = UserDigitalMonster::findOrFail($id);
-        $userDigitalMonster->delete();
-        return redirect()->route('user.profile', ['id' => $userDigitalMonster->user_id])
-            ->with('success', 'Digital Monster deleted successfully.');
+        $userMonster = UserMonster::findOrFail(session('user_monster_id'));
+        $userMonster->delete();
+        return redirect()->route('user.profile')->with('success', 'Monster deleted successfully.');
     }
 
     //User Item
@@ -127,8 +123,7 @@ class UserController extends Controller
             $userItemData['equipped'] = 0;
         }
 
-        $user = User::findOrFail(session('user_id'));
-        $userItemData['user_id'] = $user->id;
+        $userItemData['user_id'] = session('user_id');
 
         if (session('user_item_id')) {
             $userItem = UserItem::findOrFail(session('user_item_id'));
@@ -167,8 +162,7 @@ class UserController extends Controller
         ]);
 
         $userEquipmentData = $request->only(['equipment_id', 'level']);
-        $user = User::findOrFail(session('user_id'));
-        $userEquipmentData['user_id'] = $user->id;
+        $userEquipmentData['user_id'] = session('user_id');
 
         if (session('user_equipment_id')) {
             $userEquipment = UserEquipment::findOrFail(session('user_equipment_id'));

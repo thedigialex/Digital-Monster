@@ -18,7 +18,7 @@ class MonsterController extends Controller
     {
         $eggGroups = EggGroup::all();
         if ($eggGroups->isEmpty()) {
-            return redirect()->route('egg_groups.edit')
+            return redirect()->route('egg_group.edit')
                 ->with('error', 'No egg groups available. Create an egg groups first.');
         }
         $icons = [
@@ -34,30 +34,38 @@ class MonsterController extends Controller
 
     public function edit()
     {
-        $monster = Monster::find(session('monster_id'));
         $eggGroups = EggGroup::all();
+        $monster = Monster::find(session('monster_id'));
         $allMonsters = Monster::all();
         return view('monsters.form', ['monster' => $monster, 'eggGroups' => $eggGroups, 'stages' => $this->stages, 'elements' => $this->elements, 'allMonsters' => $allMonsters]);
     }
 
     public function update(Request $request)
     {
-        $rules = [
+        $validationRules = [
             'name' => 'required|string|max:255',
             'stage' => 'required|string',
             'egg_group_id' => 'required|exists:egg_groups,id',
             'element_0' => 'required|string',
         ];
-
-        $id = session('monster_id');
-
-        if (!$id) {
-            $rules['image_0'] = 'required|image|mimes:jpg,jpeg,png|max:10240';
+        if (!session('monster_id')) {
+            $validationRules['image_0'] = 'required|image|mimes:png,jpg|max:2048';
         }
+        $request->validate($validationRules);
 
-        $request->validate($rules);
-        
-        $evoPointsMap = [
+        $monster = Monster::find(session('monster_id'));
+
+        $monsterData = $request->only(['name', 'stage', 'egg_group_id', 'element_0', 'element_1', 'element_2']);
+        foreach (['image_0', 'image_1', 'image_2'] as $image) {
+            if ($request->hasFile($image)) {
+                $monsterData[$image] = $request->file($image)->store('monsters', 'public');
+
+                if ($monster) {
+                    Storage::disk('public')->delete($monster->$image);
+                }
+            }
+        }
+        $evoMap = [
             'Egg' => 5,
             'Fresh' => 20,
             'Child' => 60,
@@ -66,51 +74,28 @@ class MonsterController extends Controller
             'Ultimate' => 960,
             'Mega' => 0,
         ];
+        $evoRequirement = $evoMap[$request->input('stage')];
+        $monsterData['evo_requirement'] = $evoRequirement;
 
-        $requiredEvoPoints = $evoPointsMap[$request->input('stage')];
-
-        $monsterData = $request->only(['name', 'stage', 'egg_group_id', 'element_0', 'element_1', 'element_2']);
-        $monsterData['evo_requirement'] = $requiredEvoPoints;
-
-        foreach (['image_0', 'image_1', 'image_2'] as $imageKey) {
-            if ($request->hasFile($imageKey)) {
-                $path = $request->file($imageKey)->store('monsters', 'public');
-                $monsterData[$imageKey] = $path;
-
-                if ($id) {
-                    $monster = Monster::findOrFail($id);
-                    if ($monster->$imageKey) {
-                        Storage::disk('public')->delete($monster->$imageKey);
-                    }
-                }
-            }
-        }
-
-        if ($id) {
-            $monster = Monster::findOrFail($id);
+        $routeZero = $request->input('route_0');
+        $routeOne = $request->input('route_1');
+        if ($monster) {
             $monster->update($monsterData);
+            $evolutionRoute = Evolution::where('base_monster_id', $monster->id)->first();
+            $evolutionRoute->update([
+                'route_0' => $routeZero,
+                'route_1' => $routeOne,
+            ]);
         } else {
             $monster = Monster::create($monsterData);
-        }
-
-        $routeAId = $request->input('route_a');
-        $routeBId = $request->input('route_b');
-
-        if ($id) {
-            $evolutionRoute = Evolution::where('base_monster', $monster->id)->first();
-            $evolutionRoute->update([
-                'route_0' => $routeAId,
-                'route_1' => $routeBId,
-            ]);
-        } else {
             Evolution::create([
-                'base_monster' => $monster->id,
-                'route_0' => $routeAId,
-                'route_1' => $routeBId,
+                'base_monster_id' => $monster->id,
+                'route_0' => $routeZero,
+                'route_1' => $routeOne,
             ]);
         }
 
-        $message = $id ? 'Monster updated successfully.' : 'Monster created successfully.';
+        $message = session('monster_id') ? 'Monster updated successfully.' : 'Monster created successfully.';
         return redirect()->route('monsters.index')->with('success', $message);
     }
 
@@ -123,6 +108,6 @@ class MonsterController extends Controller
             }
         }
         $monster->delete();
-        return redirect()->route('monsters.index')->with('success', 'Digital Monster deleted successfully.');
+        return redirect()->route('monsters.index')->with('success', 'Monster deleted successfully.');
     }
 }

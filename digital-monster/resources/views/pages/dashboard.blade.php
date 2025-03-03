@@ -9,7 +9,7 @@
 
     <x-container>
         <x-slot name="header">
-            <x-fonts.accent-header class="text-primary pb-2"><strong>{{ $totalMonsters }}</strong> digital monsters are roaming your farm.</x-fonts.accent-header>
+            <x-fonts.accent-header class="text-primary pb-2"><strong>{{ $totalMonsters }}</strong> monsters are roaming your farm.</x-fonts.accent-header>
         </x-slot>
         <div
             id="monster-container"

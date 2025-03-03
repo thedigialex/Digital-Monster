@@ -12,7 +12,7 @@
 
     <x-nav-link :href="route('monsters.index')" :active="request()->routeIs(['monsters.index', 'monster.edit'])">
         <i class="fas fa-dragon"></i>
-        <span>Digital Monsters</span>
+        <span>Monsters</span>
     </x-nav-link>
 
     <x-nav-link :href="route('items.index')" :active="request()->routeIs(['items.index', 'item.edit'])">
@@ -22,17 +22,17 @@
 
     <x-nav-link :href="route('equipment.index')" :active="request()->routeIs(['equipment.index', 'equipment.edit'])">
         <i class="fas fa-dumbbell"></i>
-        <span> Equipment </span>
+        <span>Equipment</span>
     </x-nav-link>
 
-    <x-nav-link :href="route('users.index')" :active="request()->routeIs(['users.index', 'user.profile', 'user.item.edit', 'user.equipment.edit'])">
+    <x-nav-link :href="route('users.index')" :active="request()->routeIs(['users.index'])">
         <i class="fas fa-users"></i>
         <span>Users</span>
     </x-nav-link>
     @endif
 
-    <x-nav-link :href="route('profile.edit')" :active="request()->routeIs('profile.edit')">
+    <x-nav-link :href="route('profile.edit')" :active="request()->routeIs(['user.profile', 'user.item.edit', 'user.equipment.edit'])">
         <i class="fas fa-user"></i>
-        <span>Account</span>
+        <span>Profile</span>
     </x-nav-link>
 </nav>

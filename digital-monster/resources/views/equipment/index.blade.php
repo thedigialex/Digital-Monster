@@ -10,7 +10,7 @@
 
     <x-container class="p-1 lg:p-4">
         <x-slot name="header">
-            <x-fonts.sub-header class="text-accent">Training Equipment</x-fonts.sub-header>
+            <x-fonts.sub-header class="text-accent">Equipment</x-fonts.sub-header>
         </x-slot>
         <x-slot name="info">
             <x-fonts.paragraph>
