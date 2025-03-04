@@ -4,7 +4,7 @@
             {{ isset($userEquipment) ? 'Update User Equipment' : 'Create User Equipment' }}
         </x-fonts.sub-header>
         <a href="{{ route('user.profile') }}">
-            <x-primary-button icon="fa-arrow-left" label="Go Back" />
+            <x-buttons.primary icon="fa-arrow-left" label="Go Back" />
         </a>
     </x-slot>
 
@@ -29,7 +29,7 @@
                         :value="old('level', isset($userEquipment) ? $userEquipment->level : 1)" />
                 </div>
                 <div class="flex justify-center py-4">
-                    <x-primary-button type="submit" label="{{ isset($userEquipment) ? 'Update' : 'Create' }}" icon="fa-save" />
+                    <x-buttons.primary type="submit" label="{{ isset($userEquipment) ? 'Update' : 'Create' }}" icon="fa-save" />
                 </div>
             </x-container.single>
         </form>

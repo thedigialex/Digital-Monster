@@ -39,8 +39,8 @@
     </div>
 
     <div class="flex items-center justify-end mt-4">
-        <x-primary-button>
+        <x-buttons.primary>
             {{ __('Register') }}
-        </x-primary-button>
+        </x-buttons.primary>
     </div>
 </form>

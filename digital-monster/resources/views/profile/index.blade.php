@@ -40,7 +40,7 @@
                             </x-fonts.paragraph>
                         </x-table.data>
                         <x-table.data class="w-1/3 text-end">
-                            <x-buttons.session-button model="user" :id="$user->id" route="user.profile" label="View" icon="fa-eye"/>
+                            <x-buttons.session model="user" :id="$user->id" route="user.profile" label="View" icon="fa-eye"/>
                         </x-table.data>
                     </tr>
                     @endforeach

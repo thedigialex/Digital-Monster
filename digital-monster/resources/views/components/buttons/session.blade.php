@@ -5,5 +5,5 @@
     <input type="hidden" name="model" value="{{ $model }}">
     <input type="hidden" name="id" value="{{ $id }}">
     <input type="hidden" name="route" value="{{ $route }}">
-    <x-primary-button icon="{{ $icon }}" label="{{ $label }}" type="submit"/>
+    <x-buttons.primary icon="{{ $icon }}" label="{{ $label }}" type="submit"/>
 </form>

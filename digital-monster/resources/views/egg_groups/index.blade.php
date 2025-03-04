@@ -3,7 +3,7 @@
         <x-fonts.sub-header>
             {{ __('Egg Groups') }}
         </x-fonts.sub-header>
-        <x-buttons.clear-button model="egg_group" route="egg_group.edit" icon="fa-plus" label="Add New" />
+        <x-buttons.clear model="egg_group" route="egg_group.edit" icon="fa-plus" label="Add New" />
     </x-slot>
 
     @if (session('success'))
@@ -36,7 +36,7 @@
                             <x-fonts.paragraph class="font-bold text-text">{{ $eggGroup->name }}</x-fonts.paragraph>
                         </x-table.data>
                         <x-table.data class="w-1/3 text-end">
-                            <x-buttons.session-button model="egg_group" :id="$eggGroup->id" route="egg_group.edit" />
+                            <x-buttons.session model="egg_group" :id="$eggGroup->id" route="egg_group.edit" />
                         </x-table.data>
                     </tr>
                     @endforeach

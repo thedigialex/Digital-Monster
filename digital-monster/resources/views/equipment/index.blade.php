@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <x-fonts.sub-header>Equipment</x-fonts.sub-header>
-        <x-buttons.clear-button model="equipment" route="equipment.edit" icon="fa-plus" label="Add New" />
+        <x-buttons.clear model="equipment" route="equipment.edit" icon="fa-plus" label="Add New" />
     </x-slot>
 
     @if (session('success'))
@@ -42,7 +42,7 @@
                             </x-fonts.paragraph>
                         </x-table.data>
                         <x-table.data class="w-1/3 text-end">
-                            <x-buttons.session-button model="equipment" :id="$equipment->id" route="equipment.edit" />
+                            <x-buttons.session model="equipment" :id="$equipment->id" route="equipment.edit" />
                         </x-table.data>
                     </tr>
                     @endforeach

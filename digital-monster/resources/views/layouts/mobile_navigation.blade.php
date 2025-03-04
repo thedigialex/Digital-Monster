@@ -27,7 +27,7 @@
         <div class="flex justify-center border-b-4 border-accent p-4">
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
-                <x-primary-button type="submit">{{ __('Log Out') }} <i class="fa fa-sign-out ml-2"></i></x-primary-button>
+                <x-buttons.primary type="submit">{{ __('Log Out') }} <i class="fa fa-sign-out ml-2"></i></x-buttons.primary>
             </form>
         </div>
     </div>

@@ -4,7 +4,7 @@
             {{ isset($eggGroup) ? 'Update Egg Group' : 'Create Egg Group' }}
         </x-fonts.sub-header>
         <a href="{{ route('egg_groups.index') }}">
-            <x-primary-button icon="fa-arrow-left" label="Go Back" />
+            <x-buttons.primary icon="fa-arrow-left" label="Go Back" />
         </a>
     </x-slot>
 
@@ -33,7 +33,7 @@
                         :value="old('field', isset($eggGroup) ? $eggGroup->field : '')" />
                 </div>
                 <div class="flex justify-center py-4">
-                    <x-primary-button type="submit" label="{{ isset($eggGroup) ? 'Update' : 'Create' }}" icon="fa-save" />
+                    <x-buttons.primary type="submit" label="{{ isset($eggGroup) ? 'Update' : 'Create' }}" icon="fa-save" />
                 </div>
             </x-container.single>
         </form>

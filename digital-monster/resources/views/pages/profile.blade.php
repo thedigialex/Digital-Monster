@@ -7,7 +7,7 @@
             </span>
         </x-fonts.sub-header>
         <a href="{{ route('users.index') }}">
-            <x-primary-button icon="fa-arrow-left" label="Go Back" />
+            <x-buttons.primary icon="fa-arrow-left" label="Go Back" />
         </a>
     </x-slot>
 
@@ -47,7 +47,7 @@
                 <x-fonts.sub-header class="text-accent">
                     User Monsters
                 </x-fonts.sub-header>
-                <x-buttons.clear-button model="user_monster" route="user.monster.edit" icon="fa-plus" label="Add New" />
+                <x-buttons.clear model="user_monster" route="user.monster.edit" icon="fa-plus" label="Add New" />
             </div>
         </x-slot>
         <div class="p-4">
@@ -84,7 +84,7 @@
                             </x-fonts.paragraph>
                         </x-table.data>
                         <x-table.data class="w-1/3 text-end">
-                            <x-buttons.session-button model="user_monster" :id="$userMonster->id" route="user.monster.edit" />
+                            <x-buttons.session model="user_monster" :id="$userMonster->id" route="user.monster.edit" />
                         </x-table.data>
                     </tr>
                     @endforeach
@@ -102,7 +102,7 @@
                 <x-fonts.sub-header class="text-accent">
                     Inventory
                 </x-fonts.sub-header>
-                <x-buttons.clear-button model="user_item" route="user.item.edit" icon="fa-plus" label="Add New" />
+                <x-buttons.clear model="user_item" route="user.item.edit" icon="fa-plus" label="Add New" />
             </div>
         </x-slot>
         <div class="p-4">
@@ -129,7 +129,7 @@
                             </x-fonts.paragraph>
                         </x-table.data>
                         <x-table.data class="w-1/3 text-end">
-                            <x-buttons.session-button model="user_item" :id="$userItem->id" route="user.item.edit" />
+                            <x-buttons.session model="user_item" :id="$userItem->id" route="user.item.edit" />
                         </x-table.data>
                     </tr>
                     @endforeach
@@ -147,7 +147,7 @@
                 <x-fonts.sub-header class="text-accent">
                     Equipment
                 </x-fonts.sub-header>
-                <x-buttons.clear-button model="user_equipment" route="user.equipment.edit" icon="fa-plus" label="Add New" />
+                <x-buttons.clear model="user_equipment" route="user.equipment.edit" icon="fa-plus" label="Add New" />
             </div>
         </x-slot>
         <div class="p-4">
@@ -174,7 +174,7 @@
                             </x-fonts.paragraph>
                         </x-table.data>
                         <x-table.data class="w-1/3 text-end">
-                            <x-buttons.session-button model="user_equipment" :id="$userEquipment->id" route="user.equipment.edit" />
+                            <x-buttons.session model="user_equipment" :id="$userEquipment->id" route="user.equipment.edit" />
                         </x-table.data>
                     </tr>
                     @endforeach

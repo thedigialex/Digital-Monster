@@ -4,7 +4,7 @@
             {{ isset($monster) ? 'Update Monster' : 'Create Monster' }}
         </x-fonts.sub-header>
         <a href="{{ route('monsters.index') }}">
-            <x-primary-button icon="fa-arrow-left" label="Go Back" />
+            <x-buttons.primary icon="fa-arrow-left" label="Go Back" />
         </a>
     </x-slot>
 
@@ -52,7 +52,7 @@
                     </x-container.single>
                 </div>
                 <div class="flex justify-center py-4">
-                    <x-primary-button type="submit" label="{{ isset($monster) ? 'Update' : 'Create' }}" icon="fa-save" />
+                    <x-buttons.primary type="submit" label="{{ isset($monster) ? 'Update' : 'Create' }}" icon="fa-save" />
                 </div>
             </x-container.single>
         </form>

@@ -16,24 +16,19 @@ Route::get('/', function () {
     return view('pages.welcome');
 });
 
-Route::fallback(function () {
-    return response()->view('pages.404', [], 404);
-});
-
+// Fallback Route - Handles all undefined routes
 Route::fallback(function () {
     if (Auth::check()) {
         return response()->view('pages.404', [], 404);
     } else {
-        return response()->view('pages.welcome', [], 404);
+        return redirect('/');
     }
 });
 
 //Log In Required
 Route::middleware('auth')->group(function () {
-    Route::get('/dashboard', [DashboardController::class, 'index'])
-        ->middleware(['auth'])
-        ->name('dashboard');
-
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
@@ -43,7 +38,6 @@ Route::middleware('auth')->group(function () {
         Route::post('/session/store', [SessionController::class, 'store'])->name('session.store');
         Route::get('/session/get/{model}', [SessionController::class, 'get'])->name('session.get');
         Route::post('/session/clear', [SessionController::class, 'clear'])->name('session.clear');
-
 
         Route::get('/users', [UserController::class, 'index'])->name('users.index');
         Route::get('/user', [UserController::class, 'profile'])->name('user.profile');
@@ -60,9 +54,6 @@ Route::middleware('auth')->group(function () {
         Route::get('/userMonster/edit', [UserController::class, 'editUserMonster'])->name('user.monster.edit');
         Route::post('/userMonster/update', [UserController::class, 'updateUserMonster'])->name('user.monster.update');
         Route::delete('/userMonster/delete', [UserController::class, 'destroyUserMonster'])->name('user.monster.destroy');
-
-
-
 
         Route::get('/items', [ItemController::class, 'index'])->name('items.index');
         Route::get('/item/edit', [ItemController::class, 'edit'])->name('item.edit');
