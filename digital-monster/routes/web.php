@@ -13,7 +13,11 @@ use Illuminate\Support\Facades\Auth;
 
 //Public
 Route::get('/', function () {
-    return view('pages.welcome');
+    if (Auth::check()) {
+        return redirect('/dashboard');
+    } else {
+        return view('pages.welcome');
+    }
 });
 
 // Fallback Route - Handles all undefined routes

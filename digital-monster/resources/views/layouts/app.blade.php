@@ -28,11 +28,12 @@
 
             @include('layouts.navigation')
 
-            <div class="flex justify-center border-t-4 border-secondary p-6">
+            <div class="flex flex-col items-center justify-center border-t-4 border-secondary p-6 gap-y-2">
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
                     <x-buttons.primary type="submit" icon="fa-sign-out" label="Log Out" />
                 </form>
+                <x-copyright />
             </div>
         </aside>
         @endif

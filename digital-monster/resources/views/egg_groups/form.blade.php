@@ -9,7 +9,7 @@
     </x-slot>
 
     @if ($errors->any())
-    <x-alerts.error/>
+    <x-alerts.error />
     @endif
 
     <x-container class="p-4">
@@ -24,13 +24,14 @@
                         name="name"
                         divClasses="w-full"
                         value="{{ old('name', isset($eggGroup) ? $eggGroup->name : '') }}"
-                        required />
+                        :messages="$errors->get('name')" />
+
                     <x-inputs.dropdown
                         name="field"
                         divClasses="w-full"
-                        required
                         :options="$fields"
-                        :value="old('field', isset($eggGroup) ? $eggGroup->field : '')" />
+                        :value="old('field', isset($eggGroup) ? $eggGroup->field : '')"
+                        :messages="$errors->get('field')" />
                 </div>
                 <div class="flex justify-center py-4">
                     <x-buttons.primary type="submit" label="{{ isset($eggGroup) ? 'Update' : 'Create' }}" icon="fa-save" />

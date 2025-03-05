@@ -33,9 +33,7 @@
                             @include('auth.forgot-password')
                         </div>
 
-                        <div class="py-2 text-center">
-                            <x-fonts.paragraph><span class="text-accent"> &copy; TheDigiAlex 2024</span></x-fonts.paragraph>
-                        </div>
+                        <x-copyright />
                     </div>
                 </x-container>
             </div>
@@ -64,9 +62,10 @@
     }
 
     function setActiveTab(activeTab) {
-        document.querySelectorAll('button').forEach(btn => {
+        const tabButtons = document.querySelectorAll('.bg-secondary button');
+        tabButtons.forEach(btn => {
+            btn.classList.remove('bg-accent');
             btn.classList.add('bg-primary');
-
         });
         if (activeTab == 'login') {
             document.getElementById('login-tab').classList.remove('bg-primary');
