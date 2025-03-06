@@ -44,7 +44,7 @@
                             required />
                     </div>
                 </div>
-                <div class="flex justify-center py-4">
+                <div class="flex justify-center py-4 mt-4">
                     <x-buttons.primary type="submit" label="{{ isset($userItem) ? 'Update' : 'Create' }}" icon="fa-save" />
                 </div>
             </x-container.single>

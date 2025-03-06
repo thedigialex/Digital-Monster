@@ -1,6 +1,6 @@
-@props(['label' => null, 'name' => 'file', 'accept' => 'image/*', 'currentImage' => null])
+@props(['label' => null, 'name' => 'file', 'accept' => 'image/*', 'currentImage' => null, 'messages' => ''])
 
-<div id="{{ $name }}_div" class="flex flex-col">
+<div id="{{ $name }}_div" class="flex flex-col mt-4">
     @if ($label)
     <x-inputs.label for="{{ $name }}" class="pb-1">{{ $label }}</x-inputs.label>
     @endif
@@ -22,9 +22,9 @@
             onclick=" document.getElementById('{{ $name }}').click()">
     </div>
 
-    @error($name)
-    <p class="text-error text-sm mt-1">Field is required</p>
-    @enderror
+    @if ($messages && is_array($messages) && count($messages) > 0)
+    <p class="text-error text-sm mt-1">{{ implode(', ', $messages) }}</p>
+    @endif
 
     <div class="flex justify-center items-center gap-4">
         <div id="{{ $name }}_preview_container" class="mt-2 w-32 h-32 overflow-hidden hidden border-2 border-accent bg-accent rounded flex flex-col items-center relative">

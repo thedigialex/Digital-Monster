@@ -13,19 +13,26 @@
     @endif
 
     <x-container class="p-4">
-        @if (isset($eggGroup))
-        <x-forms.delete-form :action="route('egg_group.destroy')" label="Egg Group" />
-        @endif
-        <form action="{{ route('egg_group.update') }}" method="POST" class="space-y-4">
+        <x-slot name="header">
+            <div class="flex justify-between items-center">
+                <x-fonts.sub-header class="text-accent">
+                    {{ isset($eggGroup) ? 'Update Egg Group' : 'Create Egg Group' }}
+                </x-fonts.sub-header>
+                @if (isset($eggGroup))
+                <x-forms.delete-form :action="route('egg_group.destroy')" label="Egg Group" />
+                @endif
+            </div>
+        </x-slot>
+
+        <form action="{{ route('egg_group.update') }}" method="POST">
             @csrf
             <x-container.single>
-                <div class="flex flex-col md:flex-row gap-4 w-full">
+                <div class="flex flex-col md:flex-row gap-x-4 w-full">
                     <x-inputs.text
                         name="name"
                         divClasses="w-full"
                         value="{{ old('name', isset($eggGroup) ? $eggGroup->name : '') }}"
                         :messages="$errors->get('name')" />
-
                     <x-inputs.dropdown
                         name="field"
                         divClasses="w-full"
@@ -33,7 +40,7 @@
                         :value="old('field', isset($eggGroup) ? $eggGroup->field : '')"
                         :messages="$errors->get('field')" />
                 </div>
-                <div class="flex justify-center py-4">
+                <div class="flex justify-center py-4 mt-4">
                     <x-buttons.primary type="submit" label="{{ isset($eggGroup) ? 'Update' : 'Create' }}" icon="fa-save" />
                 </div>
             </x-container.single>

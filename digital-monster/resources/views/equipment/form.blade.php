@@ -9,41 +9,49 @@
     </x-slot>
 
     @if ($errors->any())
-    <x-alerts.error/>
+    <x-alerts.error />
     @endif
 
     <x-container class="p-4">
-        @if (isset($equipment))
-        <x-forms.delete-form :action="route('equipment.destroy')" label="Training Equipment" />
-        @endif
-        <form action="{{ route('equipment.update') }}" method="POST" class="space-y-4" enctype="multipart/form-data">
+        <x-slot name="header">
+            <div class="flex justify-between items-center">
+                <x-fonts.sub-header class="text-accent">
+                    {{ isset($equipment) ? 'Update Equipment' : 'Create Equipment' }}
+                </x-fonts.sub-header>
+                @if (isset($equipment))
+                <x-forms.delete-form :action="route('equipment.destroy')" label="Training Equipment" />
+                @endif
+            </div>
+        </x-slot>
+
+        <form action="{{ route('equipment.update') }}" method="POST" enctype="multipart/form-data">
             @csrf
             <x-container.single>
-                <div class="flex flex-col md:flex-row gap-4">
+                <div class="flex flex-col md:flex-row gap-x-4">
                     <x-container.single class="md:w-1/3 w-full">
-                        <x-inputs.file label="Choose an Image" name="image" :currentImage="$equipment->image ?? null" />
+                        <x-inputs.file label="Choose an Image" name="image" :currentImage="$equipment->image ?? null" :messages="$errors->get('image')" />
                     </x-container.single>
                     <x-container.single class="md:w-2/3 w-full">
-                        <div class="flex flex-col lg:flex-row lg:space-x-4 space-y-4 lg:space-y-0">
+                        <div class="flex flex-col md:flex-row gap-x-4 w-full">
                             <x-inputs.text
                                 name="name"
                                 divClasses="w-full"
                                 value="{{ old('name', isset($equipment) ? $equipment->name : '') }}"
-                                required />
+                                :messages="$errors->get('name')" />
                             <x-inputs.text
                                 name="max_level"
                                 type="number"
                                 divClasses="w-full lg:w-1/4"
                                 value="{{ old('max_level', isset($equipment) ? $equipment->max_level : '') }}"
-                                required />
+                                :messages="$errors->get('max_level')" />
                         </div>
-                        <div class="flex flex-col lg:flex-row lg:space-x-4 space-y-4 lg:space-y-0">
+                        <div class="flex flex-col md:flex-row gap-x-4 w-full">
                             <x-inputs.dropdown
                                 name="stat"
                                 divClasses="w-full lg:w-1/2"
                                 :options="$stats"
                                 :value="old('stat', isset($equipment) ? $equipment->stat : '')"
-                                required />
+                                :messages="$errors->get('stat')" />
                             <x-inputs.dropdown
                                 name="upgrade_item_id"
                                 divClasses="w-full lg:w-1/2"
@@ -53,7 +61,7 @@
                         </div>
                     </x-container.single>
                 </div>
-                <div class="flex justify-center py-4">
+                <div class="flex justify-center py-4 mt-4">
                     <x-buttons.primary type="submit" label="{{ isset($equipment) ? 'Update' : 'Create' }}" icon="fa-save" />
                 </div>
             </x-container.single>

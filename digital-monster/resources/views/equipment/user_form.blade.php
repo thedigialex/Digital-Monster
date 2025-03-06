@@ -28,7 +28,7 @@
                         type="number"
                         :value="old('level', isset($userEquipment) ? $userEquipment->level : 1)" />
                 </div>
-                <div class="flex justify-center py-4">
+                <div class="flex justify-center py-4 mt-4">
                     <x-buttons.primary type="submit" label="{{ isset($userEquipment) ? 'Update' : 'Create' }}" icon="fa-save" />
                 </div>
             </x-container.single>
