@@ -32,7 +32,7 @@
                         <x-inputs.file label="Choose an Image" name="image" :currentImage="$equipment->image ?? null" :messages="$errors->get('image')" />
                     </x-container.single>
                     <x-container.single class="md:w-2/3 w-full">
-                        <div class="flex flex-col md:flex-row gap-x-4 w-full">
+                        <div class="flex flex-col md:flex-row gap-x-4">
                             <x-inputs.text
                                 name="name"
                                 divClasses="w-full"
@@ -45,7 +45,7 @@
                                 value="{{ old('max_level', isset($equipment) ? $equipment->max_level : '') }}"
                                 :messages="$errors->get('max_level')" />
                         </div>
-                        <div class="flex flex-col md:flex-row gap-x-4 w-full">
+                        <div class="flex flex-col md:flex-row gap-x-4">
                             <x-inputs.dropdown
                                 name="stat"
                                 divClasses="w-full lg:w-1/2"

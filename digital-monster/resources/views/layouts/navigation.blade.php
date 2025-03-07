@@ -25,13 +25,13 @@
         <span>Equipment</span>
     </x-nav-link>
 
-    <x-nav-link :href="route('users.index')" :active="request()->routeIs(['users.index'])">
+    <x-nav-link :href="route('users.index')" :active="request()->routeIs(['users.index', 'user.item.edit', 'user.equipment.edit', 'user.monster.edit'])">
         <i class="fas fa-users"></i>
         <span>Users</span>
     </x-nav-link>
     @endif
 
-    <x-nav-link :href="route('profile.edit')" :active="request()->routeIs(['user.profile', 'user.item.edit', 'user.equipment.edit'])">
+    <x-nav-link :href="route('profile.edit')" :active="request()->routeIs(['user.profile'])">
         <i class="fas fa-user"></i>
         <span>Profile</span>
     </x-nav-link>

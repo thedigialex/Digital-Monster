@@ -9,22 +9,30 @@
     </x-slot>
 
     @if ($errors->any())
-    <x-alerts.error/>
+    <x-alerts.error />
     @endif
 
     <x-container class="p-4">
-        @if (isset($userEquipment))
-        <x-forms.delete-form :action="route('user.equipment.destroy')" label="Equipment" />
-        @endif
-        <form action="{{ route('user.equipment.update') }}" method="POST" class="space-y-4" enctype="multipart/form-data">
+        <x-slot name="header">
+            <div class="flex justify-between items-center">
+                <x-fonts.sub-header class="text-accent">
+                    {{ isset($userEquipment) ? 'Update User Equipment' : 'Create User Equipment' }}
+                </x-fonts.sub-header>
+                @if (isset($userEquipment))
+                <x-forms.delete-form :action="route('user.equipment.destroy')" label="Equipment" />
+                @endif
+            </div>
+        </x-slot>
+
+        <form action="{{ route('user.equipment.update') }}" method="POST" enctype="multipart/form-data">
             @csrf
             <x-container.single>
-                <div class="flex flex-col md:flex-row gap-4 w-full">
-                    <x-inputs.dropdown name="equipment_id" divClasses="w-full" required :options="$allEquipment->pluck('name', 'id')->toArray()" useOptionKey="true" :value="old('equipment_id', isset($userEquipment) ? $userEquipment->equipment->id : '')" />
+                <div class="flex flex-col md:flex-row gap-x-4">
+                    <x-inputs.dropdown name="equipment_id" divClasses="w-full" :messages="$errors->get('equipment_id')" :options="$allEquipment->pluck('name', 'id')->toArray()" useOptionKey="true" :value="old('equipment_id', isset($userEquipment) ? $userEquipment->equipment->id : '')" />
                     <x-inputs.text
                         name="level"
                         divClasses="w-full"
-                        required
+                        :messages="$errors->get('level')"
                         type="number"
                         :value="old('level', isset($userEquipment) ? $userEquipment->level : 1)" />
                 </div>

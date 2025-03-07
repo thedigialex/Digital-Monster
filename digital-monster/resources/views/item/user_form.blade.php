@@ -9,21 +9,29 @@
     </x-slot>
 
     @if ($errors->any())
-    <x-alerts.error/>
+    <x-alerts.error />
     @endif
 
     <x-container class="p-4">
-        @if (isset($userItem))
-        <x-forms.delete-form :action="route('user.item.destroy')" label="Item" />
-        @endif
-        <form action="{{ route('user.item.update') }}" method="POST" class="space-y-4" enctype="multipart/form-data">
+        <x-slot name="header">
+            <div class="flex justify-between items-center">
+                <x-fonts.sub-header class="text-accent">
+                    {{ isset($userItem) ? 'Update User Item' : 'Assign User Item' }}
+                </x-fonts.sub-header>
+                @if (isset($userItem))
+                <x-forms.delete-form :action="route('user.item.destroy')" label="Item" />
+                @endif
+            </div>
+        </x-slot>
+
+        <form action="{{ route('user.item.update') }}" method="POST" enctype="multipart/form-data">
             @csrf
             <x-container.single>
-                <div class="flex flex-col md:flex-row gap-4 w-full">
+                <div class="flex flex-col md:flex-row gap-x-4">
                     <x-inputs.dropdown
                         name="item_id"
                         divClasses="w-full"
-                        required
+                        :messages="$errors->get('item_id')"
                         onchange="toggleEquip()"
                         :options="$allItems->pluck('name', 'id')->toArray()"
                         useOptionKey="true"
@@ -32,7 +40,7 @@
                     <x-inputs.text
                         name="quantity"
                         divClasses="w-full"
-                        required
+                        :messages="$errors->get('quantity')"
                         type="number"
                         :value="old('quantity', isset($userItem) ? $userItem->quantity : 1)" />
                     <div id="equipped_div" class="w-full">
@@ -41,7 +49,7 @@
                             :options="['1' => 'Yes', '0' => 'No']"
                             useOptionKey="true"
                             :value="old('equipped', isset($userItem) ? $userItem->equipped : '')"
-                            required />
+                            :messages="$errors->get('equipped')" />
                     </div>
                 </div>
                 <div class="flex justify-center py-4 mt-4">

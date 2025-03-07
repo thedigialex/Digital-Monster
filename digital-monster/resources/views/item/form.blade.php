@@ -32,7 +32,7 @@
                         <x-inputs.file label="Choose an Image" name="image" :currentImage="$item->image ?? null" :messages="$errors->get('image')"/>
                     </x-container.single>
                     <x-container.single class="md:w-2/3 w-full">
-                        <div class="flex flex-col md:flex-row gap-x-4 w-full">
+                        <div class="flex flex-col md:flex-row gap-x-4">
                             <x-inputs.text
                                 name="name"
                                 divClasses="w-full"
@@ -53,7 +53,7 @@
                                     :messages="$errors->get('max_quantity')" />
                             </div>
                         </div>
-                        <div class="flex flex-col md:flex-row gap-x-4 w-full">
+                        <div class="flex flex-col md:flex-row gap-x-4">
                             <x-inputs.dropdown
                                 name="rarity"
                                 divClasses="w-full lg:w-1/3"
@@ -75,7 +75,7 @@
                                 :value="old('available', isset($item) ? $item->available : '')"
                                 :messages="$errors->get('available')" />
                         </div>
-                        <div class="flex flex-col md:flex-row gap-x-4 w-full" id="effectField">
+                        <div class="flex flex-col md:flex-row gap-x-4" id="effectField">
                             <x-inputs.text
                                 name="effect"
                                 divClasses="w-full"
