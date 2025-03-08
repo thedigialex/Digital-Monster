@@ -2,6 +2,6 @@
     <form action="{{ $action }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this {{ $label }}?');">
         @csrf
         @method('DELETE')
-        <x-danger-button />
+        <x-buttons.danger />
     </form>
 </div>

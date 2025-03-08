@@ -14,11 +14,11 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
 
-    <body class="font-sans antialiased selection:bg-accent">
-        <!-- Mobile Layout -->
+    <body class="font-sans antialiased selection:bg-accent square-grid-bg">
+        @if (Auth::check())
         <div class="md:hidden">
             @include('layouts.mobile_navigation')
-            <div class="flex flex-col min-h-screen square-grid-bg">
+            <div class="flex flex-col min-h-screen ">
                 <header class="bg-primary border-b-4 border-accent p-6">
                     <div class="flex justify-between items-center">
                         {{ $header }}
@@ -49,9 +49,9 @@
                 </div>
             </aside>
 
-            <div class="flex-1 ml-64 overflow-hidden square-grid-bg">
+            <div class="flex-1 ml-64 overflow-hidden">
                 @isset($header)
-                <header class="fixed top-0 left-64 w-[calc(100%-16rem)] bg-primary border-b-4 border-accent p-6 z-10">
+                <header class="fixed top-0 left-64 w-[calc(100%-16rem)] bg-primary border-b-4 border-accent p-6 z-1">
                     <div class="flex justify-between items-center">
                         {{ $header }}
                     </div>
@@ -63,5 +63,8 @@
                 </main>
             </div>
         </div>
+        @else
+            {{ $slot }}
+        @endif
     </body>
 </html>

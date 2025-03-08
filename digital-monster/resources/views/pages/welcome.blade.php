@@ -10,7 +10,7 @@
                         <x-fonts.sub-header>Digital Portal</x-fonts.sub-header>
                     </div>
 
-                    <div class="bg-secondary flex pt-4 px-4 rounded-t-lg border-b-4 border-accent gap-x-4 mt-16">
+                    <div class="bg-secondary flex pt-4 px-4 rounded-t-md border-b-4 border-accent gap-x-4 mt-16">
                         <button id="login-tab" onclick="toggleForms('login')" class="w-1/3 py-2 text-text bg-accent font-semibold rounded-t-md hover:bg-accent">
                             Login
                         </button>
