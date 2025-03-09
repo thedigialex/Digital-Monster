@@ -50,7 +50,7 @@
         const screenWidth = container.offsetWidth;
         const screenHeight = container.offsetHeight;
 
-        userMonsters.forEach(monster => {
+        userMonsters.forEach(userMonster => {
             const monsterDiv = document.createElement('div');
             monsterDiv.className = 'monster';
             monsterDiv.style.width = '48px';
@@ -61,23 +61,23 @@
             spriteDiv.className = 'sprite';
             spriteDiv.style.width = '100%';
             spriteDiv.style.height = '100%';
-            spriteDiv.style.backgroundImage = `url(/storage/${monster.digital_monster.sprite_image_0})`;
+            spriteDiv.style.backgroundImage = `url(/storage/${userMonster.monster.image_0})`;
             spriteDiv.style.backgroundSize = '480px 48px';
 
-            if (monster.digital_monster.stage !== 'Fresh' && monster.digital_monster.stage !== 'Child') {
-                switch (monster.type) {
+            if (userMonster.monster.stage !== 'Fresh' && userMonster.monster.stage !== 'Child') {
+                switch (userMonster.monster.type) {
                     case "Vaccine":
-                        spriteDiv.style.backgroundImage = `url(/storage/${monster.digital_monster.sprite_image_1})`;
+                        spriteDiv.style.backgroundImage = `url(/storage/${userMonster.monster.image_1})`;
                         break;
                     case "Virus":
-                        spriteDiv.style.backgroundImage = `url(/storage/${monster.digital_monster.sprite_image_2})`;
+                        spriteDiv.style.backgroundImage = `url(/storage/${userMonster.monster.image_2})`;
                         break;
                 }
             }
 
             const tooltip = document.createElement('span');
             tooltip.className = 'tooltip';
-            tooltip.innerText = monster.name;
+            tooltip.innerText = userMonster.monster.name;
 
             monsterDiv.appendChild(spriteDiv);
             monsterDiv.appendChild(tooltip);
@@ -123,12 +123,12 @@
 
             // Click event to show monster stats
             monsterDiv.addEventListener('click', () => {
-                statName.textContent = monster.name;
-                statStage.textContent = monster.digital_monster.stage;
-                statStrength.textContent = `Strength: ${monster.strength}`;
-                statAgility.textContent = `Agility: ${monster.agility}`;
-                statDefense.textContent = `Defense: ${monster.defense}`;
-                statMind.textContent = `Mind: ${monster.mind}`;
+                statName.textContent = userMonster.monster.name;
+                statStage.textContent = userMonster.monster.stage;
+                statStrength.textContent = `Strength: ${userMonster.monster.strength}`;
+                statAgility.textContent = `Agility: ${userMonster.monster.agility}`;
+                statDefense.textContent = `Defense: ${userMonster.monster.defense}`;
+                statMind.textContent = `Mind: ${userMonster.monster.mind}`;
 
                 statsPanel.classList.remove('hidden');
                 container.classList.add('rounded-b-none');
@@ -201,5 +201,4 @@
         `;
         document.head.appendChild(style);
     </script>
-
 </x-app-layout>

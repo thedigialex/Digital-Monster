@@ -31,7 +31,7 @@
     </x-nav-link>
     @endif
 
-    <x-nav-link :href="route('profile.edit')" :active="request()->routeIs(['user.profile'])">
+    <x-nav-link :href="route('profile.edit')" :active="request()->routeIs(['profile.edit'])">
         <i class="fas fa-user"></i>
         <span>Profile</span>
     </x-nav-link>
