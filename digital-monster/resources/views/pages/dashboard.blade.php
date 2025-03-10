@@ -9,11 +9,19 @@
 
     <x-container>
         <x-slot name="header">
-            <x-fonts.accent-header class="text-primary pb-2"><strong>{{ $totalMonsters }}</strong> monsters are roaming your farm.</x-fonts.accent-header>
+            <div class="flex justify-between items-center">
+                <x-fonts.sub-header >
+                    Farm
+                </x-fonts.sub-header>
+                <x-fonts.paragraph>
+                    {{ $totalMonsters }} / {{ $user->max_monster_amount }}
+                </x-fonts.paragraph>
+            </div>
         </x-slot>
+
         <div
             id="monster-container"
-            class="relative w-full h-[500px] overflow-hidden rounded-b-md shadow-lg"
+            class="relative w-full h-[550px] overflow-hidden rounded-b-md shadow-lg"
             data-monsters='@json($userMonsters)'
             style="background-image: url('/images/background-dashboard.png'); background-size: cover; background-position: center;">
         </div>
@@ -123,12 +131,12 @@
 
             // Click event to show monster stats
             monsterDiv.addEventListener('click', () => {
-                statName.textContent = userMonster.monster.name;
+                statName.textContent = userMonster.name;
                 statStage.textContent = userMonster.monster.stage;
-                statStrength.textContent = `Strength: ${userMonster.monster.strength}`;
-                statAgility.textContent = `Agility: ${userMonster.monster.agility}`;
-                statDefense.textContent = `Defense: ${userMonster.monster.defense}`;
-                statMind.textContent = `Mind: ${userMonster.monster.mind}`;
+                statStrength.textContent = `Strength: ${userMonster.strength}`;
+                statAgility.textContent = `Agility: ${userMonster.agility}`;
+                statDefense.textContent = `Defense: ${userMonster.defense}`;
+                statMind.textContent = `Mind: ${userMonster.mind}`;
 
                 statsPanel.classList.remove('hidden');
                 container.classList.add('rounded-b-none');

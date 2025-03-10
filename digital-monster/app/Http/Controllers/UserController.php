@@ -10,6 +10,7 @@ use App\Models\Item;
 use App\Models\Equipment;
 use App\Models\UserEquipment;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
@@ -23,7 +24,7 @@ class UserController extends Controller
     {
         $user = User::with(['userMonsters.monster', 'userItems.item', 'userEquipment.equipment'])
             ->findOrFail(session('user_id'));
-        return view('pages.profile', compact('user'));
+        return view('pages.profile', ['user' => $user]);
     }
 
     //User Monster

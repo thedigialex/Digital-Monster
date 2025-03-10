@@ -44,6 +44,11 @@ class User extends Authenticatable
         return $this->hasMany(UserEquipment::class);
     }
 
+    public function isAdmin()
+    {
+        return $this->role === 'admin';
+    }
+
     protected static function boot()
     {
         parent::boot();

@@ -17,7 +17,6 @@
     <body class="font-sans antialiased selection:bg-accent square-grid-bg">
         @if (Auth::check())
         <div class="flex flex-col md:flex-row min-h-screen">
-            <!-- Sidebar (only visible on medium screens and up) -->
             <aside class="hidden md:flex fixed top-0 left-0 w-64 bg-primary min-h-screen flex-col overflow-y-auto">
                 <div class="border-b-4 border-secondary p-6 text-center">
                     <x-fonts.sub-header>Digital Portal</x-fonts.sub-header>
@@ -34,20 +33,16 @@
                 </div>
             </aside>
 
-            <!-- Mobile Navigation (only visible on smaller screens) -->
             <div class="md:hidden">
                 @include('layouts.mobile_navigation')
             </div>
 
-            <!-- Main Content -->
             <div class="flex-1 md:ml-64 overflow-hidden">
-                <header class="fixed md:top-0 left-0 md:left-64 w-full md:w-[calc(100%-16rem)] bg-primary border-b-4 border-accent p-6 z-10">
-                    <div class="flex justify-between items-center">
+                <div class="md:fixed md:top-0 left-0 md:left-64 w-full md:w-[calc(100%-16rem)] bg-primary border-b-4 border-accent p-6 z-10 flex justify-between items-center">
                         {{ $header }}
-                    </div>
-                </header>
+                </div>
 
-                <main class="mt-24 md:mt-24 h-[calc(100vh-6rem)] overflow-y-auto p-6">
+                <main class="md:mt-24 h-[calc(100vh-6rem)] overflow-y-auto p-2 md:p-6">
                     {{ $slot }}
                 </main>
             </div>

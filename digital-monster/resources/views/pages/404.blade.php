@@ -1,7 +1,19 @@
-<div class="flex flex-col items-center justify-center h-screen text-center">
-    <h1 class="text-6xl font-bold text-red-600">404</h1>
-    <p class="text-xl text-gray-700 mt-4">Oops! The page you are looking for doesn't exist.</p>
-    <a href="{{ url('/') }}" class="mt-6 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
-        Go Home
-    </a>
-</div>
+<x-app-layout>
+    <x-slot name="header">
+        <div class="flex justify-between items-center">
+            <x-fonts.sub-header>
+                404
+            </x-fonts.sub-header>
+        </div>
+    </x-slot>
+    <x-container >
+        <x-slot name="header">
+            <x-fonts.sub-header class="text-accent">Page Not Found</x-fonts.sub-header>
+        </x-slot>
+        <x-slot name="info">
+            <x-fonts.paragraph>
+                Oops! The page you are looking for doesn't exist.
+            </x-fonts.paragraph>
+        </x-slot>
+    </x-container>
+</x-app-layout>

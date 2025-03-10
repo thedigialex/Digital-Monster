@@ -47,7 +47,9 @@
                 <x-fonts.sub-header class="text-accent">
                     User Monsters
                 </x-fonts.sub-header>
+                @if(Auth::user()->isAdmin())
                 <x-buttons.clear model="user_monster" route="user.monster.edit" icon="fa-plus" label="Add New" />
+                @endif
             </div>
         </x-slot>
         <div class="p-4">
@@ -70,7 +72,7 @@
                             </div>
                             @elseif ($userMonster->type == 'Virus')
                             <div class="w-16 h-16 overflow-hidden">
-                                <img src="{{ asset('storage/' . $userMonster->monster->image_1) }}" alt="Monster Image" class="w-full h-full object-cover"style="object-position: 0 0;">
+                                <img src="{{ asset('storage/' . $userMonster->monster->image_1) }}" alt="Monster Image" class="w-full h-full object-cover" style="object-position: 0 0;">
                             </div>
                             @elseif ($userMonster->type == 'Vaccine')
                             <div class="w-16 h-16 overflow-hidden">
@@ -102,7 +104,9 @@
                 <x-fonts.sub-header class="text-accent">
                     Inventory
                 </x-fonts.sub-header>
+                @if(Auth::user()->isAdmin())
                 <x-buttons.clear model="user_item" route="user.item.edit" icon="fa-plus" label="Add New" />
+                @endif
             </div>
         </x-slot>
         <div class="p-4">
@@ -147,7 +151,9 @@
                 <x-fonts.sub-header class="text-accent">
                     Equipment
                 </x-fonts.sub-header>
+                @if(Auth::user()->isAdmin())
                 <x-buttons.clear model="user_equipment" route="user.equipment.edit" icon="fa-plus" label="Add New" />
+                @endif
             </div>
         </x-slot>
         <div class="p-4">
@@ -185,8 +191,6 @@
             @endif
         </div>
     </x-container>
-
-
 </x-app-layout>
 
 <script>
