@@ -37,6 +37,10 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
+
+    Route::post('/train/update', [UserController::class, 'updateTraining'])->name('train.update');
+    Route::get('/train/monseter', [UserController::class, 'trainMonster'])->name('train.monster');
+
     //Admin Only
     Route::middleware(['admin'])->group(function () {
         Route::post('/session/store', [SessionController::class, 'store'])->name('session.store');
