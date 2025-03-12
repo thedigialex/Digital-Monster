@@ -10,7 +10,6 @@ use App\Models\Item;
 use App\Models\Equipment;
 use App\Models\UserEquipment;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
@@ -183,41 +182,5 @@ class UserController extends Controller
         $userEquipment->delete();
         return redirect()->route('user.profile')
             ->with('success', 'User Equipment deleted successfully.');
-    }
-
-    public function trainMonster()
-    {
-        $user = Auth::user();
-        $userMonster = UserMonster::with('monster')
-        ->where('user_id', $user->id)
-        ->where('main', true)
-        ->whereHas('monster', function ($query) {
-            $query->where('stage', '!=', 'Egg');
-        })
-        ->first();
-
-        $userEquipment = UserEquipment::with('equipment')
-        ->where('user_id', $user->id)
-        ->first();
-
-        if (!$userMonster || !$userEquipment) {
-            return redirect()->back()->with('error', 'No monster or equipment found.');
-        }
-
-        return view('user.training', compact('user','userMonster', 'userEquipment'));
-    }
-    public function updateTraining(Request $request)
-    {
-        $request->validate([
-            'percentage' => 'required|numeric|min:0|max:100',
-            'equipment_id' => 'required|exists:user_equipment,id',
-        ]);
-
-        $userEquipment = UserEquipment::findOrFail($request->equipment_id);
-        $trainingGain = round($request->percentage / 10); // Example: Scale training gain from 0-10
-        $userEquipment->level += $trainingGain;
-        $userEquipment->save();
-
-        return redirect()->route('trainMonster')->with('success', 'Training successful! Equipment leveled up.');
     }
 }

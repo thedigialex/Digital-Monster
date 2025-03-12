@@ -60,7 +60,7 @@ class MonsterController extends Controller
             if ($request->hasFile($image)) {
                 $monsterData[$image] = $request->file($image)->store('monsters', 'public');
 
-                if ($monster) {
+                if ($monster && $monster->$image) {
                     Storage::disk('public')->delete($monster->$image);
                 }
             }

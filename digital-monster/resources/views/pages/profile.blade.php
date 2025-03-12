@@ -18,7 +18,7 @@
 
     <x-container>
         <x-slot name="header">
-            <x-fonts.sub-header class="text-accent">Account Details</x-fonts.sub-header>
+            <x-fonts.sub-header>Account Details</x-fonts.sub-header>
         </x-slot>
         <div class="p-4 flex flex-col md:flex-row">
             <div class="flex-1 bg-secondary p-4 rounded-md">
@@ -44,7 +44,7 @@
     <x-container>
         <x-slot name="header">
             <div class="flex justify-between items-center">
-                <x-fonts.sub-header class="text-accent">
+                <x-fonts.sub-header>
                     User Monsters
                 </x-fonts.sub-header>
                 @if(Auth::user()->isAdmin())
@@ -101,7 +101,7 @@
     <x-container>
         <x-slot name="header">
             <div class="flex justify-between items-center">
-                <x-fonts.sub-header class="text-accent">
+                <x-fonts.sub-header>
                     Inventory
                 </x-fonts.sub-header>
                 @if(Auth::user()->isAdmin())
@@ -148,7 +148,7 @@
     <x-container>
         <x-slot name="header">
             <div class="flex justify-between items-center">
-                <x-fonts.sub-header class="text-accent">
+                <x-fonts.sub-header>
                     Equipment
                 </x-fonts.sub-header>
                 @if(Auth::user()->isAdmin())
