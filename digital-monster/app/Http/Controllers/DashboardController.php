@@ -23,32 +23,64 @@ class DashboardController extends Controller
             ->get();
         $totalMonsters = $userMonsters->count();
 
-        return view('pages.dashboard', compact('user', 'userMonsters', 'totalMonsters','userEquipment'));
+        return view('pages.dashboard', compact('user', 'userMonsters', 'totalMonsters', 'userEquipment'));
     }
 
-
-    public function trainMonster()
-    {
-        $user = Auth::user();
-        $userMonster = UserMonster::find(session('user_monster_id'));
-        $userEquipment = UserMonster::find(session('user_equipment_id'));
-
-
-        return view('user.training', compact('user', 'userMonster', 'userEquipment'));
-    }
 
     public function updateTraining(Request $request)
     {
-        $request->validate([
-            'percentage' => 'required|numeric|min:0|max:100',
-            'equipment_id' => 'required|exists:user_equipment,id',
-        ]);
+        $user = Auth::user();
+        $userMonster = UserMonster::where('id', $request->user_monster_id)
+            ->where('user_id', $user->id)
+            ->first();
 
-        $userEquipment = UserEquipment::findOrFail($request->equipment_id);
-        $trainingGain = round($request->percentage / 10); // Example: Scale training gain from 0-10
-        $userEquipment->level += $trainingGain;
-        $userEquipment->save();
+        $userEquipment = UserEquipment::with('equipment')
+            ->where('id', $request->user_equipment_id)
+            ->where('user_id', $user->id)
+            ->first();
 
-        return redirect()->route('trainMonster')->with('success', 'Training successful! Equipment leveled up.');
+        if (!$userMonster || !$userEquipment) {
+            return response()->json([
+                'message' => 'Hmmm something is missing.',
+            ], 404);
+        }
+
+        if ($userMonster->energy - 1 > 0) {
+            $userMonster->energy -= 1;
+            $equipmentStat = $userEquipment->equipment->stat;
+            $equipmentLevel = $userEquipment->level;
+            $percentage = $request->percentage;
+
+            switch ($equipmentStat) {
+                case 'Strength':
+                    $userMonster->strength += (5 * $equipmentLevel * $percentage) / 100;
+                    break;
+                case 'Agility':
+                    $userMonster->agility += (5 * $equipmentLevel * $percentage) / 100;
+                    break;
+                case 'Defense':
+                    $userMonster->defense += (5 * $equipmentLevel * $percentage) / 100;
+                    break;
+                case 'Mind':
+                    $userMonster->mind += (5 * $equipmentLevel * $percentage) / 100;
+                    break;
+                case 'Cleaning':
+                    $userMonster->cleaning += (5 * $equipmentLevel * $percentage) / 100;
+                    break;
+                case 'Lighting':
+                    $userMonster->lighting += (5 * $equipmentLevel * $percentage) / 100;
+                    break;
+            }
+
+            $userMonster->save();
+
+            return response()->json([
+                'message' => 'Training data updated successfully!',
+            ]);
+        } else {
+            return response()->json([
+                'message' => 'Not enough energy',
+            ]);
+        }
     }
 }
