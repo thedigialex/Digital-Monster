@@ -35,5 +35,4 @@
         <i class="fas fa-user"></i>
         <span>Profile</span>
     </x-nav-link>
-    <x-buttons.session model="user" :id="Auth::user()->id" route="user.profile" label="View" icon="fa-eye"/>
 </nav>

@@ -29,11 +29,11 @@
 
         <div id="stats-panel" class="hidden bg-secondary w-full p-4 shadow-lg rounded-b-md">
             <div class="flex justify-between items-center">
-                <x-fonts.sub-header id="stats-title">Monster Stats</x-fonts.sub-header>
+                <x-fonts.sub-header id="stat-name">Name: <span></span></x-fonts.sub-header>
                 <button id="close-stats" class="text-accent font-bold text-4xl p-2">&times;</button>
             </div>
             <div id="stats-content">
-                <x-fonts.paragraph id="stat-name"><strong>Name:</strong> <span></span></x-fonts.paragraph>
+
                 <x-fonts.paragraph id="stat-stage"><strong>Stage:</strong> <span></span></x-fonts.paragraph>
                 <x-fonts.paragraph id="stat-stats" style="display: flex;">
                     <span id="stat-strength"></span> |
@@ -42,7 +42,7 @@
                     <span id="stat-mind"></span>
                 </x-fonts.paragraph>
 
-                <x-container.modal name="user-monster-training" title="Equipment Training" focusable>
+                <x-container.modal name="user-monster-training" title="Training" focusable>
                     <x-slot name="button">
                         @foreach ($userEquipment as $userEquipment)
                         <x-buttons.primary class="openTraining" @click="open = true" data-equipment='{{ json_encode($userEquipment) }}' label="{{ $userEquipment->equipment->stat }}" icon="fa-weight" />
@@ -64,8 +64,7 @@
                         </div>
 
                         <div class="flex justify-center mt-4">
-                            <button id="startTraining" class="px-4 py-2 bg-blue-500 text-white rounded-lg">Start Training</button>
-                            <button id="stopTraining" class="px-4 py-2 bg-red-500 text-white rounded-lg ml-2" disabled>Stop</button>
+                            <button id="trainingButton" class="px-4 py-2 bg-red-500 text-white rounded-lg ml-2">Start</button>
                         </div>
                     </div>
                 </x-container.modal>
@@ -252,19 +251,20 @@
         let equipmentAnimationInterval;
         let equipmentFrame = 0;
         const equipmentSprite = document.getElementById('equipment-sprite');
-        let disabled = false;
+
+        let training = false;
+
 
         document.querySelectorAll('.openTraining').forEach(button => {
             button.addEventListener('click', function() {
                 userEquipment = JSON.parse(this.getAttribute('data-equipment'));
-
-                const startButton = document.getElementById('startTraining');
-                const stopButton = document.getElementById('stopTraining');
-                stopButton.disabled = true;
-                if (activeUserMonster.energy === 0) {
-                    startButton.disabled = true;
-                } else {
-                    startButton.disabled = false;
+                console.log("user monster", activeUserMonster);
+                const trainingButton = document.getElementById('trainingButton');
+                trainingButton.disabled = false;
+                trainingButton.textContent = 'Start';
+                if (activeUserMonster.energy == 0) {
+                    trainingButton.disabled = true;
+                    trainingButton.textContent = 'No Energy';
                 }
 
                 monsterFrame = 0;
@@ -292,114 +292,85 @@
             });
         });
 
-        document.getElementById('startTraining').addEventListener('click', function() {
-            const stopButton = document.getElementById('stopTraining');
-            stopButton.disabled = false;
-            const startButton = document.getElementById('startTraining');
-            startButton.disabled = true;
+        document.getElementById('trainingButton').addEventListener('click', function() {
+            if (!training) {
+                progress = 0;
+                direction = 1;
 
-            progress = 0;
-            direction = 1;
+                startAnimation([3, 4]);
+                startAnimation(null, true);
 
-            clearInterval(animationInterval);
-            let trainingFrames = [3, 4];
+                interval = setInterval(() => {
+                    progress += 5 * direction;
+                    if (progress >= 100 || progress <= 0) {
+                        direction *= -1;
+                    }
+                    document.getElementById('progress-bar').style.width = progress + "%";
+                }, 100);
+            } else {
+                clearInterval(interval);
+                clearInterval(equipmentAnimationInterval);
+
+                let trainingFrames = [0, 8];
+                if (progress < 60) {
+                    trainingFrames = [0, 7];
+                }
+
+                startAnimation(trainingFrames);
+
+                activeUserMonster.energy -= 1;
+
+                const data = {
+                    percentage: progress,
+                    user_equipment_id: userEquipment.id,
+                    user_monster_id: activeUserMonster.id
+                };
+
+                fetch("{{ route('train.update') }}", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content")
+                        },
+                        body: JSON.stringify(data)
+                    })
+                    .then(response => response.json())
+                    .then(result => {
+                        //update values here as well 
+
+                        statStrength.textContent = `Strength: ${activeUserMonster.strength}`;
+                        statAgility.textContent = `Agility: ${activeUserMonster.agility}`;
+                        statDefense.textContent = `Defense: ${activeUserMonster.defense}`;
+                        statMind.textContent = `Mind: ${activeUserMonster.mind}`;
+                        console.log("Training data updated:", result);
+                    });
+            }
+            training = !training;
+            if (activeUserMonster.energy > 0) {
+                this.textContent = training ? 'Stop' : 'Start';
+            } else {
+                this.disabled = true;
+                this.textContent = 'No Energy';
+            }
+        });
+
+        function startAnimation(frames, isEquipment = false) {
             let frameIndex = 0;
 
-            animationInterval = setInterval(() => {
-                monsterFrame = trainingFrames[frameIndex];
-                frameIndex = (frameIndex + 1) % trainingFrames.length;
-                monsterSprite.style.backgroundPositionX = `-${monsterFrame * 48}px`;
-            }, 400);
-
-            equipmentAnimationInterval = setInterval(() => {
-                equipmentFrame = (equipmentFrame + 1) % 3;
-                equipmentSprite.style.backgroundPositionX = `-${equipmentFrame * 48}px`;
-            }, 400);
-
-            interval = setInterval(() => {
-                progress += 5 * direction;
-                if (progress >= 100 || progress <= 0) {
-                    direction *= -1;
-                }
-                document.getElementById('progress-bar').style.width = progress + "%";
-            }, 100);
-        });
-
-        // Stop Training
-        document.getElementById('stopTraining').addEventListener('click', function() {
-            clearInterval(interval);
-            clearInterval(animationInterval);
-            clearInterval(equipmentAnimationInterval);
-
-            animationInterval = setInterval(() => {
-                monsterFrame = (monsterFrame + 1) % 3;
-                monsterSprite.style.backgroundPositionX = `-${monsterFrame * 48}px`;
-            }, 400);
-
-            // Decrease energy and check if we should enable start button
-            if (activeUserMonster.energy > 0) {
-                activeUserMonster.energy -= 1;
-            }
-
-            const startButton = document.getElementById('startTraining');
-            const stopButton = document.getElementById('stopTraining');
-            stopButton.disabled = true;
-            if (activeUserMonster.energy > 0) {
-                startButton.disabled = false; // Enable start button if energy > 0
+            if (isEquipment) {
+                clearInterval(equipmentAnimationInterval);
+                equipmentAnimationInterval = setInterval(() => {
+                    equipmentFrame = (equipmentFrame + 1) % 3;
+                    equipmentSprite.style.backgroundPositionX = `-${equipmentFrame * 48}px`;
+                }, 400);
             } else {
-                startButton.disabled = true; // Keep it disabled if energy is depleted
+                clearInterval(animationInterval);
+                animationInterval = setInterval(() => {
+                    monsterFrame = frames[frameIndex];
+                    frameIndex = (frameIndex + 1) % frames.length;
+                    monsterSprite.style.backgroundPositionX = `-${monsterFrame * 48}px`;
+                }, 400);
             }
-        });
-
-
-        document.getElementById('stopTraining').addEventListener('click', function() {
-            clearInterval(interval);
-            clearInterval(animationInterval);
-            clearInterval(equipmentAnimationInterval);
-
-            animationInterval = setInterval(() => {
-                monsterFrame = (monsterFrame + 1) % 3;
-                monsterSprite.style.backgroundPositionX = `-${monsterFrame * 48}px`;
-            }, 400);
-
-            if (activeUserMonster.energy > 0) {
-                activeUserMonster.energy -= 1;
-            }
-
-            const startButton = document.getElementById('startTraining');
-            const stopButton = document.getElementById('stopTraining');
-            stopButton.disabled = true;
-
-            if (activeUserMonster.energy > 0) {
-                startButton.disabled = false;
-            } else {
-                startButton.disabled = true;
-            }
-
-            const data = {
-                percentage: progress,
-                user_equipment_id: userEquipment.id,
-                user_monster_id: activeUserMonster.id
-            };
-
-            fetch("{{ route('train.update') }}", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content")
-                    },
-                    body: JSON.stringify(data)
-                })
-                .then(response => response.json())
-                .then(result => {
-                    //update values here as well 
-
-                    statStrength.textContent = `Strength: ${activeUserMonster.strength}`;
-                    statAgility.textContent = `Agility: ${activeUserMonster.agility}`;
-                    statDefense.textContent = `Defense: ${activeUserMonster.defense}`;
-                    statMind.textContent = `Mind: ${activeUserMonster.mind}`;
-                    console.log("Training data updated:", result);
-                });
-        });
+        }
     </script>
 </x-app-layout>
