@@ -12,20 +12,32 @@ class DashboardController extends Controller
     public function index()
     {
         $user = Auth::user();
+
         $userMonsters = UserMonster::with('monster')
             ->where('user_id', $user->id)
             ->whereHas('monster', function ($query) {
                 $query->where('stage', '!=', 'Egg');
             })
             ->get();
+
         $userEquipment = UserEquipment::with('equipment')
             ->where('user_id', $user->id)
+            ->whereHas('equipment', function ($query) {
+                $query->whereNotIn('stat', ['Lighting', 'Cleaning']); 
+            })
             ->get();
+
+        $userEquipmentLight = UserEquipment::with('equipment')
+            ->where('user_id', $user->id)
+            ->whereHas('equipment', function ($query) {
+                $query->where('stat', 'Lighting');
+            })
+            ->first();
+
         $totalMonsters = $userMonsters->count();
 
-        return view('pages.dashboard', compact('user', 'userMonsters', 'totalMonsters', 'userEquipment'));
+        return view('pages.dashboard', compact('user', 'userMonsters', 'totalMonsters', 'userEquipment', 'userEquipmentLight'));
     }
-
 
     public function updateTraining(Request $request)
     {
@@ -45,7 +57,7 @@ class DashboardController extends Controller
             ], 404);
         }
 
-        if ($userMonster->energy - 1 > 0) {
+        if ($userMonster->energy - 1 >= 0) {
             $userMonster->energy -= 1;
             $equipmentStat = $userEquipment->equipment->stat;
             $equipmentLevel = $userEquipment->level;

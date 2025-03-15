@@ -16,7 +16,7 @@
                 <x-fonts.paragraph>
                     {{ $totalMonsters }} / {{ $user->max_monster_amount }}
                 </x-fonts.paragraph>
-                <x-buttons.clear model="user_monster_training" route="user.monster.edit" icon="fa-robot" label="Main" />
+
             </div>
         </x-slot>
 
@@ -32,21 +32,29 @@
                 <x-fonts.sub-header id="stat-name">Name: <span></span></x-fonts.sub-header>
                 <button id="close-stats" class="text-accent font-bold text-4xl p-2">&times;</button>
             </div>
-            <div id="stats-content">
-
+            <div>
                 <x-fonts.paragraph id="stat-stage"><strong>Stage:</strong> <span></span></x-fonts.paragraph>
-                <x-fonts.paragraph id="stat-stats" style="display: flex;">
-                    <span id="stat-strength"></span> |
-                    <span id="stat-agility"></span> |
-                    <span id="stat-defense"></span> |
-                    <span id="stat-mind"></span>
+                <x-fonts.paragraph id="stat-stats" class="flex flex-wrap w-full md:flex-row flex-col md:space-x-4 space-y-2 md:space-y-0 text-text">
+                    <span id="stat-strength" class="flex-1 text-center">Strength</span>
+                    <span id="stat-agility" class="flex-1 text-center">Agility</span>
+                    <span id="stat-defense" class="flex-1 text-center">Defense</span>
+                    <span id="stat-mind" class="flex-1 text-center">Mind</span>
                 </x-fonts.paragraph>
 
                 <x-container.modal name="user-monster-training" title="Training" focusable>
                     <x-slot name="button">
-                        @foreach ($userEquipment as $userEquipment)
-                        <x-buttons.primary class="openTraining" @click="open = true" data-equipment='{{ json_encode($userEquipment) }}' label="{{ $userEquipment->equipment->stat }}" icon="fa-weight" />
-                        @endforeach
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
+                            @foreach ($userEquipment as $userEquipment)
+                            <x-buttons.square class="openTraining w-[200px]" @click="open = true"
+                                data-equipment='{{ json_encode($userEquipment) }}'
+                                text="{{ $userEquipment->equipment->stat }}" />
+                            @endforeach
+                        </div>
+                        <div class="flex justify-center my-4">
+                            <x-buttons.square class="openTraining w-[200px]" @click="open = true"
+                                data-equipment='{{ json_encode($userEquipmentLight) }}'
+                                text="{{ $userEquipmentLight->equipment->stat }}" />
+                        </div>
                     </x-slot>
                     <div class="p-4"
                         style="background-image: url('/images/background-dashboard.png'); background-size: cover; background-position: center;">
@@ -101,7 +109,7 @@
             spriteDiv.style.backgroundImage = `url(/storage/${userMonster.monster.image_0})`;
             spriteDiv.style.backgroundSize = '480px 48px';
 
-            if (userMonster.monster.stage != 'Fresh' && userMonster.monster.stage != 'Child') {
+            if (userMonster.monster.stage !== 'Fresh' && userMonster.monster.stage !== 'Child') {
                 switch (userMonster.type) {
                     case "Virus":
                         spriteDiv.style.backgroundImage = `url(/storage/${userMonster.monster.image_1})`;
@@ -120,13 +128,27 @@
             monsterDiv.appendChild(tooltip);
             container.appendChild(monsterDiv);
 
-            let frame = Math.floor(Math.random() * 3);
-            const animationInterval = 400 + Math.random() * 400;
-            setInterval(() => {
-                frame = (frame + 1) % 3;
-                spriteDiv.style.backgroundPositionX = `-${frame * 48}px`;
-            }, animationInterval);
+            let frames = userMonster.energy == 0 ? [0, 7, 7] : [0, 1, 2];
+            let frameIndex = Math.floor(Math.random() * frames.length);
+            const animationIntervalTime = 200 + Math.random() * 400;
 
+            let animationInterval = setInterval(() => {
+                frameIndex = (frameIndex + 1) % frames.length;
+                spriteDiv.style.backgroundPositionX = `-${frames[frameIndex] * 48}px`;
+            }, animationIntervalTime);
+
+            function updateAnimation() {
+                clearInterval(animationInterval);
+                frames = userMonster.energy == 0 ? [0, 7, 7] : [0, 1, 2];
+                frameIndex = 0;
+
+                animationInterval = setInterval(() => {
+                    frameIndex = (frameIndex + 1) % frames.length;
+                    spriteDiv.style.backgroundPositionX = `-${frames[frameIndex] * 48}px`;
+                }, animationIntervalTime);
+            }
+
+            // Positioning and Movement Logic (unchanged)
             let previousX = parseFloat(monsterDiv.style.left) || 0;
             const x = Math.random() * (screenWidth - 48);
             const y = Math.random() * (screenHeight - 48);
@@ -135,30 +157,32 @@
 
             const movementInterval = 4000 + Math.random() * 2000;
             setInterval(() => {
-                const currentX = parseFloat(monsterDiv.style.left) || 0;
-                const currentY = parseFloat(monsterDiv.style.top) || 0;
-                const maxOffset = 30;
-                const offsetX = (Math.random() * maxOffset * 2) - maxOffset;
-                const offsetY = (Math.random() * maxOffset * 2) - maxOffset;
+                if (userMonster.sleep_time == null && userMonster.energy > 0) {
+                    const currentX = parseFloat(monsterDiv.style.left) || 0;
+                    const currentY = parseFloat(monsterDiv.style.top) || 0;
+                    const maxOffset = 30;
+                    const offsetX = (Math.random() * maxOffset * 2) - maxOffset;
+                    const offsetY = (Math.random() * maxOffset * 2) - maxOffset;
 
-                let newX = currentX + offsetX;
-                let newY = currentY + offsetY;
-                newX = Math.max(0, Math.min(screenWidth - 48, newX));
-                newY = Math.max(0, Math.min(screenHeight - 48, newY));
+                    let newX = currentX + offsetX;
+                    let newY = currentY + offsetY;
+                    newX = Math.max(0, Math.min(screenWidth - 48, newX));
+                    newY = Math.max(0, Math.min(screenHeight - 48, newY));
 
-                if (newX < previousX) {
-                    spriteDiv.style.transform = 'scaleX(1)';
-                } else if (newX > previousX) {
-                    spriteDiv.style.transform = 'scaleX(-1)';
+                    if (newX < previousX) {
+                        spriteDiv.style.transform = 'scaleX(1)';
+                    } else if (newX > previousX) {
+                        spriteDiv.style.transform = 'scaleX(-1)';
+                    }
+                    previousX = newX;
+
+                    monsterDiv.style.transition = 'left 2s, top 2s';
+                    monsterDiv.style.left = `${newX}px`;
+                    monsterDiv.style.top = `${newY}px`;
                 }
-                previousX = newX;
-
-                monsterDiv.style.transition = 'left 2s, top 2s';
-                monsterDiv.style.left = `${newX}px`;
-                monsterDiv.style.top = `${newY}px`;
             }, movementInterval);
 
-            // Click event to show monster stats
+            // Click to open stats
             monsterDiv.addEventListener('click', () => {
                 activeUserMonster = userMonster;
                 statName.textContent = userMonster.name;
@@ -171,6 +195,12 @@
                 statsPanel.classList.remove('hidden');
                 container.classList.add('rounded-b-none');
             });
+
+            // Update animation when energy changes
+            userMonster.updateEnergy = function(newEnergy) {
+                this.energy = newEnergy;
+                updateAnimation();
+            };
         });
 
         // Close button event
@@ -178,66 +208,6 @@
             statsPanel.classList.add('hidden');
             container.classList.remove('rounded-b-none');
         });
-
-        const style = document.createElement('style');
-        style.innerHTML = `
-            .monster {
-                position: relative;
-                cursor: pointer;
-            }
-            .monster .sprite {
-                transform-origin: center;
-            }
-            .monster .tooltip {
-                visibility: hidden;
-                background-color: black;
-                color: white;
-                text-align: center;
-                padding: 4px 8px;
-                border-radius: 4px;
-                position: absolute;
-                bottom: 110%;
-                left: 50%;
-                transform: translateX(-50%);
-                white-space: nowrap;
-                z-index: 1;
-                opacity: 0;
-                transition: opacity 0.3s;
-            }
-            .monster:hover .tooltip {
-                visibility: visible;
-                opacity: 1;
-            }
-            #stats-panel {
-                max-height: 300px;
-                overflow-y: auto;
-                animation: slideIn 0.3s ease-out;
-            }
-            @keyframes slideIn {
-                from {
-                    transform: translateY(20px);
-                    opacity: 0;
-                }
-                to {
-                    transform: translateY(0);
-                    opacity: 1;
-                }
-            }
-            #monster-container.rounded-b-none {
-                border-bottom-left-radius: 0 !important;
-                border-bottom-right-radius: 0 !important;
-            }
-            #close-stats {
-                font-size: 2rem;
-                cursor: pointer;
-            }
-            #stat-stats {
-                display: flex;
-                gap: 5px;
-                align-items: center;
-            }
-        `;
-        document.head.appendChild(style);
 
         //training
         let progress = 0;
@@ -254,11 +224,9 @@
 
         let training = false;
 
-
         document.querySelectorAll('.openTraining').forEach(button => {
             button.addEventListener('click', function() {
                 userEquipment = JSON.parse(this.getAttribute('data-equipment'));
-                console.log("user monster", activeUserMonster);
                 const trainingButton = document.getElementById('trainingButton');
                 trainingButton.disabled = false;
                 trainingButton.textContent = 'Start';
@@ -319,6 +287,7 @@
                 startAnimation(trainingFrames);
 
                 activeUserMonster.energy -= 1;
+                activeUserMonster.updateEnergy(activeUserMonster.energy);
 
                 const data = {
                     percentage: progress,
@@ -333,11 +302,8 @@
                             "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content")
                         },
                         body: JSON.stringify(data)
-                    })
-                    .then(response => response.json())
+                    }).then(response => response.json())
                     .then(result => {
-                        //update values here as well 
-
                         statStrength.textContent = `Strength: ${activeUserMonster.strength}`;
                         statAgility.textContent = `Agility: ${activeUserMonster.agility}`;
                         statDefense.textContent = `Defense: ${activeUserMonster.defense}`;
@@ -353,6 +319,7 @@
                 this.textContent = 'No Energy';
             }
         });
+
 
         function startAnimation(frames, isEquipment = false) {
             let frameIndex = 0;
