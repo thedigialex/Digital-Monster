@@ -3,7 +3,7 @@
         <x-fonts.sub-header>
             {{ __('Items') }}
         </x-fonts.sub-header>
-        <x-buttons.clear model="item" route="item.edit" icon="fa-plus" label="Add New" />
+        <x-buttons.clear model="item" route="item.edit" icon="fa-plus" label="New" />
     </x-slot>
 
     @if (session('success'))

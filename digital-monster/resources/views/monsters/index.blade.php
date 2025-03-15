@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <x-fonts.sub-header>Monsters</x-fonts.sub-header>
-        <x-buttons.clear model="monster" route="monster.edit" icon="fa-plus" label="Add New" />
+        <x-buttons.clear model="monster" route="monster.edit" icon="fa-plus" label="New" />
     </x-slot>
 
     @if (session('success'))

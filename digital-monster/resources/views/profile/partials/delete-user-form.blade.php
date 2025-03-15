@@ -5,7 +5,11 @@
     </header>
 
     <x-container.modal name="confirm-user-deletion" title="Delete User Account" focusable>
-        <x-slot name="button"><x-buttons.danger @click="open = true" label="Delete User Account" /></x-slot>
+        <x-slot name="button">
+            <div class="flex items-center justify-center my-4">
+                <x-buttons.danger @click="open = true" label="Delete" />
+            </div>
+        </x-slot>
         <form method="post" action="{{ route('profile.destroy') }}">
             @csrf
             @method('delete')
@@ -15,10 +19,9 @@
             <x-inputs.text name="password" type="password" divClasses="w-full" value="" :messages="$errors->userDeletion->get('password')" />
 
             <div class="flex items-center justify-center my-4">
-                <x-buttons.danger>
-                    Delete Account
-                </x-buttons.danger>
+                <x-buttons.danger label="Confirm" />
             </div>
+
         </form>
     </x-container.modal>
 </section>

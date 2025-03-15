@@ -48,7 +48,7 @@
                     User Monsters
                 </x-fonts.sub-header>
                 @if(Auth::user()->isAdmin())
-                <x-buttons.clear model="user_monster" route="user.monster.edit" icon="fa-plus" label="Add New" />
+                <x-buttons.clear model="user_monster" route="user.monster.edit" icon="fa-plus" label="New" />
                 @endif
             </div>
         </x-slot>
@@ -105,7 +105,7 @@
                     Inventory
                 </x-fonts.sub-header>
                 @if(Auth::user()->isAdmin())
-                <x-buttons.clear model="user_item" route="user.item.edit" icon="fa-plus" label="Add New" />
+                <x-buttons.clear model="user_item" route="user.item.edit" icon="fa-plus" label="New" />
                 @endif
             </div>
         </x-slot>
@@ -152,7 +152,7 @@
                     Equipment
                 </x-fonts.sub-header>
                 @if(Auth::user()->isAdmin())
-                <x-buttons.clear model="user_equipment" route="user.equipment.edit" icon="fa-plus" label="Add New" />
+                <x-buttons.clear model="user_equipment" route="user.equipment.edit" icon="fa-plus" label="New" />
                 @endif
             </div>
         </x-slot>

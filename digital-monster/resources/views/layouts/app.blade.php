@@ -42,7 +42,7 @@
                         {{ $header }}
                 </div>
 
-                <main class="md:mt-24 h-[calc(100vh-6rem)] overflow-y-auto p-2 md:p-6">
+                <main class="md:mt-24 h-[calc(100vh-6rem)] overflow-y-auto p-2 md:p-0">
                     {{ $slot }}
                 </main>
             </div>

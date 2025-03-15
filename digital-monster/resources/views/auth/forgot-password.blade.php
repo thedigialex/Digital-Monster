@@ -12,6 +12,6 @@
         :messages="$errors->get('email')" />
 
     <div class="flex items-center justify-center py-4">
-        <x-buttons.primary icon="fa-envelope" label="Email Password Reset" />
+        <x-buttons.primary icon="fa-envelope" label="Reset" />
     </div>
 </form>

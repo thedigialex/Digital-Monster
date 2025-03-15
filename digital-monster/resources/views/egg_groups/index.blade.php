@@ -3,7 +3,7 @@
         <x-fonts.sub-header>
             {{ __('Egg Groups') }}
         </x-fonts.sub-header>
-        <x-buttons.clear model="egg_group" route="egg_group.edit" icon="fa-plus" label="Add New" />
+        <x-buttons.clear model="egg_group" route="egg_group.edit" icon="fa-plus" label="New" />
     </x-slot>
 
     @if (session('success'))

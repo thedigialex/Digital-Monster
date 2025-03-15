@@ -16,66 +16,69 @@
                 <x-fonts.paragraph>
                     {{ $totalMonsters }} / {{ $user->max_monster_amount }}
                 </x-fonts.paragraph>
-
             </div>
         </x-slot>
 
         <div
             id="monster-container"
-            class="relative w-full h-[550px] overflow-hidden rounded-b-md shadow-lg"
+            class="relative w-full h-[500px] overflow-hidden rounded-b-md shadow-lg"
             data-monsters='@json($userMonsters)'
             style="background-image: url('/images/background-dashboard.png'); background-size: cover; background-position: center;">
         </div>
 
-        <div id="stats-panel" class="hidden bg-secondary w-full p-4 shadow-lg rounded-b-md">
-            <div class="flex justify-between items-center">
+        <div id="stats-panel" class="hidden bg-secondary border-primary border-t-4 p-4 shadow-lg rounded-b-md">
+            <div class="flex justify-between items-center pb-4">
                 <x-fonts.sub-header id="stat-name">Name: <span></span></x-fonts.sub-header>
-                <button id="close-stats" class="text-accent font-bold text-4xl p-2">&times;</button>
+                <x-buttons.primary id="close-stats" label="Close" icon="fa-x" />
             </div>
-            <div>
-                <x-fonts.paragraph id="stat-stage"><strong>Stage:</strong> <span></span></x-fonts.paragraph>
-                <x-fonts.paragraph id="stat-stats" class="flex flex-wrap w-full md:flex-row flex-col md:space-x-4 space-y-2 md:space-y-0 text-text">
-                    <span id="stat-strength" class="flex-1 text-center">Strength</span>
-                    <span id="stat-agility" class="flex-1 text-center">Agility</span>
-                    <span id="stat-defense" class="flex-1 text-center">Defense</span>
-                    <span id="stat-mind" class="flex-1 text-center">Mind</span>
-                </x-fonts.paragraph>
-
-                <x-container.modal name="user-monster-training" title="Training" focusable>
-                    <x-slot name="button">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
-                            @foreach ($userEquipment as $userEquipment)
-                            <x-buttons.square class="openTraining w-[200px]" @click="open = true"
-                                data-equipment='{{ json_encode($userEquipment) }}'
-                                text="{{ $userEquipment->equipment->stat }}" />
-                            @endforeach
-                        </div>
-                        <div class="flex justify-center my-4">
-                            <x-buttons.square class="openTraining w-[200px]" @click="open = true"
-                                data-equipment='{{ json_encode($userEquipmentLight) }}'
-                                text="{{ $userEquipmentLight->equipment->stat }}" />
-                        </div>
-                    </x-slot>
-                    <div class="p-4"
-                        style="background-image: url('/images/background-dashboard.png'); background-size: cover; background-position: center;">
-                        <div class="flex justify-center items-center space-x-4 py-6">
-                            <div class="relative w-16 h-16 p-2">
-                                <div id="equipment-sprite" class="w-full h-full"></div>
+            <div class="flex flex-col md:flex-row gap-4">
+                <div class="bg-primary p-4 rounded-md md:w-1/3">
+                    <x-fonts.paragraph id="stat-stage"><strong>Stage:</strong> <span></span></x-fonts.paragraph>
+                    <x-fonts.paragraph id="stat-stats" class="flex flex-wrap w-full md:flex-row flex-col md:space-x-4 space-y-2 md:space-y-0 text-text">
+                        <span id="stat-strength" class="flex-1 text-center">Strength</span>
+                        <span id="stat-agility" class="flex-1 text-center">Agility</span>
+                        <span id="stat-defense" class="flex-1 text-center">Defense</span>
+                        <span id="stat-mind" class="flex-1 text-center">Mind</span>
+                    </x-fonts.paragraph>
+                </div>
+                <div class="bg-primary p-4 rounded-md md:w-2/3">
+                    <x-container.modal name="user-monster-training" title="Training" focusable>
+                        <x-slot name="button">
+                            <div class="flex flex-wrap justify-center gap-4 items-center">
+                                @foreach ($userEquipment as $userEquipment)
+                                <x-buttons.square class="openTraining w-[150px]" @click="open = true"
+                                    data-equipment='{{ json_encode($userEquipment) }}'
+                                    text="{{ $userEquipment->equipment->stat }}" />
+                                @endforeach
                             </div>
-                            <div class="relative w-16 h-16 p-2">
-                                <div id="monster-sprite" class="w-full h-full"></div>
+                            <div class="flex justify-center my-4">
+                                <x-buttons.square class="openTraining w-[150px]" @click="open = true"
+                                    data-equipment='{{ json_encode($userEquipmentLight) }}'
+                                    text="{{ $userEquipmentLight->equipment->stat }}" />
+                            </div>
+                        </x-slot>
+
+                        <div class="p-4"
+                            style="background-image: url('/images/background-dashboard.png'); background-size: cover; background-position: center;">
+                            <div class="flex justify-center items-center space-x-4 py-6">
+                                <div class="relative w-16 h-16 p-2">
+                                    <div id="equipment-sprite" class="w-full h-full"></div>
+                                </div>
+                                <div class="relative w-16 h-16 p-2">
+                                    <div id="monster-sprite" class="w-full h-full"></div>
+                                </div>
+                            </div>
+
+                            <div class="progress-container w-full h-8 bg-secondary mt-6 relative overflow-hidden rounded-lg">
+                                <div id="progress-bar" class="h-full bg-accent w-0"></div>
+                            </div>
+
+                            <div class="flex justify-center mt-4">
+                                <button id="trainingButton" class="px-4 py-2 bg-red-500 text-white rounded-lg ml-2">Start</button>
                             </div>
                         </div>
-
-                        <div class="progress-container w-full h-8 bg-secondary mt-6 relative overflow-hidden rounded-lg">
-                            <div id="progress-bar" class="h-full bg-accent w-0"></div>
-                        </div>
-
-                        <div class="flex justify-center mt-4">
-                            <button id="trainingButton" class="px-4 py-2 bg-red-500 text-white rounded-lg ml-2">Start</button>
-                        </div>
-                    </div>
-                </x-container.modal>
+                    </x-container.modal>
+                </div>
             </div>
         </div>
     </x-container>
@@ -122,7 +125,7 @@
 
             const tooltip = document.createElement('span');
             tooltip.className = 'tooltip';
-            tooltip.innerText = userMonster.monster.name;
+            tooltip.innerText = userMonster.name;
 
             monsterDiv.appendChild(spriteDiv);
             monsterDiv.appendChild(tooltip);
@@ -137,18 +140,6 @@
                 spriteDiv.style.backgroundPositionX = `-${frames[frameIndex] * 48}px`;
             }, animationIntervalTime);
 
-            function updateAnimation() {
-                clearInterval(animationInterval);
-                frames = userMonster.energy == 0 ? [0, 7, 7] : [0, 1, 2];
-                frameIndex = 0;
-
-                animationInterval = setInterval(() => {
-                    frameIndex = (frameIndex + 1) % frames.length;
-                    spriteDiv.style.backgroundPositionX = `-${frames[frameIndex] * 48}px`;
-                }, animationIntervalTime);
-            }
-
-            // Positioning and Movement Logic (unchanged)
             let previousX = parseFloat(monsterDiv.style.left) || 0;
             const x = Math.random() * (screenWidth - 48);
             const y = Math.random() * (screenHeight - 48);
@@ -182,9 +173,15 @@
                 }
             }, movementInterval);
 
-            // Click to open stats
             monsterDiv.addEventListener('click', () => {
+                if (activeUserMonster) {
+                    activeUserMonster.monsterDiv.classList.remove('clicked');
+                }
+
                 activeUserMonster = userMonster;
+
+                monsterDiv.classList.add('clicked');
+
                 statName.textContent = userMonster.name;
                 statStage.textContent = userMonster.monster.stage;
                 statStrength.textContent = `Strength: ${userMonster.strength}`;
@@ -196,18 +193,22 @@
                 container.classList.add('rounded-b-none');
             });
 
-            // Update animation when energy changes
             userMonster.updateEnergy = function(newEnergy) {
                 this.energy = newEnergy;
                 updateAnimation();
             };
+
+            userMonster.monsterDiv = monsterDiv;
         });
 
-        // Close button event
         closeStatsButton.addEventListener('click', () => {
             statsPanel.classList.add('hidden');
             container.classList.remove('rounded-b-none');
+            if (activeUserMonster) {
+                activeUserMonster.monsterDiv.classList.remove('clicked');
+            }
         });
+
 
         //training
         let progress = 0;
@@ -319,7 +320,6 @@
                 this.textContent = 'No Energy';
             }
         });
-
 
         function startAnimation(frames, isEquipment = false) {
             let frameIndex = 0;

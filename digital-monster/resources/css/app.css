@@ -36,8 +36,8 @@
 }
 .monster .tooltip {
     visibility: hidden;
-    background-color: black;
-    color: white;
+    background-color: #333333;
+    color: #e47e00;
     text-align: center;
     padding: 4px 8px;
     border-radius: 4px;
@@ -50,10 +50,13 @@
     opacity: 0;
     transition: opacity 0.3s;
 }
-.monster:hover .tooltip {
+
+.monster:hover .tooltip,
+.monster.clicked .tooltip {
     visibility: visible;
     opacity: 1;
 }
+
 #stats-panel {
     animation: slideIn 0.3s ease-out;
 }
@@ -70,14 +73,5 @@
 #monster-container.rounded-b-none {
     border-bottom-left-radius: 0 !important;
     border-bottom-right-radius: 0 !important;
-}
-#close-stats {
-    font-size: 2rem;
-    cursor: pointer;
-}
-#stat-stats {
-    display: flex;
-    gap: 5px;
-    align-items: center;
 }
 /* Dashboard */
