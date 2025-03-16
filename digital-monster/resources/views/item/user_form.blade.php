@@ -53,7 +53,7 @@
                     </div>
                 </div>
                 <div class="flex justify-center py-4 mt-4">
-                    <x-buttons.primary type="submit" label="{{ isset($userItem) ? 'Update' : 'Create' }}" icon="fa-save" />
+                    <x-buttons.primary label="{{ isset($userItem) ? 'Update' : 'Create' }}" icon="fa-save" />
                 </div>
             </x-container.single>
         </form>

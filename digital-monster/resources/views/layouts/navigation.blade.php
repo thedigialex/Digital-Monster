@@ -25,7 +25,7 @@
         <span>Equipment</span>
     </x-nav-link>
 
-    <x-nav-link :href="route('users.index')" :active="request()->routeIs(['users.index', 'user.item.edit', 'user.equipment.edit', 'user.monster.edit'])">
+    <x-nav-link :href="route('users.index')" :active="request()->routeIs(['users.index', 'user.item.edit', 'user.equipment.edit', 'user.monster.edit', 'user.profile'])">
         <i class="fas fa-users"></i>
         <span>Users</span>
     </x-nav-link>

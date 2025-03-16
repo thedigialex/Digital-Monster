@@ -35,8 +35,10 @@
                         <x-table.data class="w-2/3">
                             <x-fonts.paragraph class="font-bold text-text">{{ $eggGroup->name }}</x-fonts.paragraph>
                         </x-table.data>
-                        <x-table.data class="w-1/3 text-end">
-                            <x-buttons.session model="egg_group" :id="$eggGroup->id" route="egg_group.edit" />
+                        <x-table.data class="w-1/3">
+                            <div class="flex justify-end">
+                                <x-buttons.session model="egg_group" :id="$eggGroup->id" route="egg_group.edit" />
+                            </div>
                         </x-table.data>
                     </tr>
                     @endforeach

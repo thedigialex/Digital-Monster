@@ -57,15 +57,15 @@
             <x-table.table>
                 <thead class="bg-primary">
                     <tr>
-                        <x-table.header class="w-1/3 text-left">Image</x-table.header>
-                        <x-table.header class="w-1/3 text-left">Name</x-table.header>
-                        <x-table.header class="w-1/3"></x-table.header>
+                        <x-table.header class="w-1/2 md:w-1/3 text-left">Image</x-table.header>
+                        <x-table.header class="w-1/3 text-left hidden md:table-cell">Name</x-table.header>
+                        <x-table.header class="w-1/2 md:w-1/3"></x-table.header>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach ($user->userMonsters as $userMonster)
                     <tr class="{{ $loop->even ? 'bg-neutral' : 'bg-secondary' }}">
-                        <x-table.data class="w-1/3">
+                        <x-table.data class="w-1/2 md:w-1/3">
                             @if (in_array($userMonster->monster->stage, ['Egg', 'Fresh', 'Child']) || $userMonster->type == 'Data')
                             <div class="w-16 h-16 overflow-hidden">
                                 <img src="{{ asset('storage/' . $userMonster->monster->image_0) }}" alt="Monster Image" class="w-full h-full object-cover" style="object-position: 0 0;">
@@ -80,13 +80,15 @@
                             </div>
                             @endif
                         </x-table.data>
-                        <x-table.data class="w-1/3">
+                        <x-table.data class="w-1/3 hidden md:table-cell">
                             <x-fonts.paragraph class="font-bold {{ $userMonster->main == 1 ? 'text-accent' : 'text-error' }}">
                                 {{ $userMonster->name }}
                             </x-fonts.paragraph>
                         </x-table.data>
-                        <x-table.data class="w-1/3 text-end">
-                            <x-buttons.session model="user_monster" :id="$userMonster->id" route="user.monster.edit" />
+                        <x-table.data class="w-1/2 md:w-1/3">
+                            <div class="flex justify-end">
+                                <x-buttons.session model="user_monster" :id="$userMonster->id" route="user.monster.edit" />
+                            </div>
                         </x-table.data>
                     </tr>
                     @endforeach
@@ -114,26 +116,28 @@
             <x-table.table>
                 <thead class="bg-primary">
                     <tr>
-                        <x-table.header class="w-1/3 text-left">Image</x-table.header>
-                        <x-table.header class="w-1/3 text-left">Details</x-table.header>
-                        <x-table.header class="w-1/3"></x-table.header>
+                        <x-table.header class="w-1/2 md:w-1/3 text-left">Image</x-table.header>
+                        <x-table.header class="w-1/3 text-left hidden md:table-cell">Details</x-table.header>
+                        <x-table.header class="w-1/2 md:w-1/3"></x-table.header>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach ($user->userItems as $userItem)
                     <tr class="{{ $loop->even ? 'bg-neutral' : 'bg-secondary' }}">
-                        <x-table.data class="w-1/3">
+                        <x-table.data class="w-1/2 md:w-1/3">
                             <div class="w-16 h-16 overflow-hidden">
                                 <img src="{{ asset('storage/' . $userItem->item->image) }}" alt="Item Image" class="w-full h-full object-cover" style="object-position: 0 0;">
                             </div>
                         </x-table.data>
-                        <x-table.data class="w-1/3">
+                        <x-table.data class="w-1/3 hidden md:table-cell">
                             <x-fonts.paragraph class="font-bold {{ $userItem->equipped == 1 ? 'text-accent' : 'text-text' }}">
                                 {{ $userItem->item->name }}<br>Amount: {{ $userItem->quantity }}
                             </x-fonts.paragraph>
                         </x-table.data>
-                        <x-table.data class="w-1/3 text-end">
-                            <x-buttons.session model="user_item" :id="$userItem->id" route="user.item.edit" />
+                        <x-table.data class="w-1/2 md:w-1/3">
+                            <div class="flex justify-end">
+                                <x-buttons.session model="user_item" :id="$userItem->id" route="user.item.edit" />
+                            </div>
                         </x-table.data>
                     </tr>
                     @endforeach
@@ -161,26 +165,28 @@
             <x-table.table>
                 <thead class="bg-primary">
                     <tr>
-                        <x-table.header class="w-1/3 text-left">Image</x-table.header>
-                        <x-table.header class="w-1/3 text-left">Name</x-table.header>
-                        <x-table.header class="w-1/3"></x-table.header>
+                        <x-table.header class="w-1/2 md:w-1/3 text-left">Image</x-table.header>
+                        <x-table.header class="w-1/3 text-left hidden md:table-cell">Name</x-table.header>
+                        <x-table.header class="w-1/2 md:w-1/3"></x-table.header>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach ($user->userEquipment as $userEquipment)
                     <tr class="{{ $loop->even ? 'bg-neutral' : 'bg-secondary' }}">
-                        <x-table.data class="w-1/3">
+                        <x-table.data class="w-1/2 md:w-1/3">
                             <div class="w-16 h-16 overflow-hidden">
                                 <img src="{{ asset('storage/' . $userEquipment->equipment->image) }}" alt="Equipment Image" class="w-full h-full object-cover" style="object-position: 0 0;">
                             </div>
                         </x-table.data>
-                        <x-table.data class="w-1/3">
+                        <x-table.data class="w-1/3 hidden md:table-cell">
                             <x-fonts.paragraph class="font-bold text-accent">
                                 {{ $userEquipment->equipment->name }}
                             </x-fonts.paragraph>
                         </x-table.data>
-                        <x-table.data class="w-1/3 text-end">
-                            <x-buttons.session model="user_equipment" :id="$userEquipment->id" route="user.equipment.edit" />
+                        <x-table.data class="w-1/2 md:w-1/3">
+                            <div class="flex justify-end">
+                                <x-buttons.session model="user_equipment" :id="$userEquipment->id" route="user.equipment.edit" />
+                            </div>
                         </x-table.data>
                     </tr>
                     @endforeach

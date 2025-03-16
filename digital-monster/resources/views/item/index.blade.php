@@ -25,28 +25,30 @@
             <x-table.table>
                 <thead class="bg-primary">
                     <tr>
-                        <x-table.header class="w-1/3 text-left">Image</x-table.header>
-                        <x-table.header class="w-1/3 text-left">Name</x-table.header>
-                        <x-table.header class="w-1/3"></x-table.header>
+                        <x-table.header class="w-1/2 md:w-1/3 text-left">Image</x-table.header>
+                        <x-table.header class="w-1/3 text-left hidden md:table-cell">Name</x-table.header>
+                        <x-table.header class="w-1/2 md:w-1/3"></x-table.header>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach ($items[$type] as $item)
                     <tr class="{{ $loop->even ? 'bg-neutral' : 'bg-secondary' }}">
-                        <x-table.data class="w-1/3">
+                        <x-table.data class="w-1/2 md:w-1/3">
                             @if (isset($item->image))
                             <div class="w-16 h-16 overflow-hidden">
                                 <img src="{{ asset('storage/' . $item->image) }}" alt="Item Image" class="w-full h-full object-cover" style="object-position: 0 0;">
                             </div>
                             @endif
                         </x-table.data>
-                        <x-table.data class="w-1/3">
+                        <x-table.data class="w-1/3 w-1/4 hidden md:table-cell">
                             <x-fonts.paragraph class="font-bold {{ $item->available == 1 ? 'text-accent' : 'text-error' }}">
                                 {{ $item->name }}
                             </x-fonts.paragraph>
                         </x-table.data>
-                        <x-table.data class="w-1/3 text-end">
+                        <x-table.data class="w-1/2 md:w-1/3">
+                            <div class="flex justify-end">
                             <x-buttons.session model="item" :id="$item->id" route="item.edit" />
+                            </div>
                         </x-table.data>
                     </tr>
                     @endforeach

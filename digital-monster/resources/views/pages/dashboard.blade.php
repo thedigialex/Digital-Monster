@@ -34,6 +34,12 @@
             <div class="flex flex-col md:flex-row gap-4">
                 <div class="bg-primary p-4 rounded-md md:w-1/3">
                     <x-fonts.paragraph id="stat-stage"><strong>Stage:</strong> <span></span></x-fonts.paragraph>
+                    <div class="py-4">
+                        <x-fonts.paragraph>Energy</x-fonts.paragraph>
+                        <div class="w-full bg-secondary rounded-md h-4 relative">
+                            <div id="energy-bar" class="bg-success h-4 rounded-md transition-all duration-300"></div>
+                        </div>
+                    </div>
                     <x-fonts.paragraph id="stat-stats" class="flex flex-wrap w-full md:flex-row flex-col md:space-x-4 space-y-2 md:space-y-0 text-text">
                         <span id="stat-strength" class="flex-1 text-center">Strength</span>
                         <span id="stat-agility" class="flex-1 text-center">Agility</span>
@@ -85,109 +91,127 @@
 
     <script>
         let activeUserMonster;
+        let training = false;
+        let progress = 0;
+        let direction = 1;
+        let monsterFrame = 0;
+        let equipmentFrame = 0;
+        let interval;
+        let animationInterval;
+        let equipmentInterval;
+        let equipmentAnimationInterval;
+        let userEquipment;
+        const monsterSprite = document.getElementById('monster-sprite');
+        const equipmentSprite = document.getElementById('equipment-sprite');
         const container = document.getElementById('monster-container');
         const statsPanel = document.getElementById('stats-panel');
-        const closeStatsButton = document.getElementById('close-stats');
-        const statName = document.getElementById('stat-name').querySelector('span');
-        const statStage = document.getElementById('stat-stage').querySelector('span');
-        const statStrength = document.getElementById('stat-strength');
-        const statAgility = document.getElementById('stat-agility');
-        const statDefense = document.getElementById('stat-defense');
-        const statMind = document.getElementById('stat-mind');
-        const userMonsters = JSON.parse(container.getAttribute('data-monsters'));
         const screenWidth = container.offsetWidth;
         const screenHeight = container.offsetHeight;
 
-        userMonsters.forEach(userMonster => {
+        const statElements = {
+            name: document.querySelector('#stat-name span'),
+            stage: document.querySelector('#stat-stage span'),
+            strength: document.getElementById('stat-strength'),
+            agility: document.getElementById('stat-agility'),
+            defense: document.getElementById('stat-defense'),
+            mind: document.getElementById('stat-mind')
+        };
+
+        const energyBar = document.getElementById('energy-bar');
+
+        function updateEnergyBar(energy, maxEnergy) {
+            energyBar.style.width = `${(energy / maxEnergy) * 100}%`;
+        }
+
+        JSON.parse(container.getAttribute('data-monsters')).forEach(userMonster => {
             const monsterDiv = document.createElement('div');
             monsterDiv.className = 'monster';
-            monsterDiv.style.width = '48px';
-            monsterDiv.style.height = '48px';
-            monsterDiv.style.position = 'absolute';
+            Object.assign(monsterDiv.style, {
+                width: '48px',
+                height: '48px',
+                position: 'absolute'
+            });
 
             const spriteDiv = document.createElement('div');
             spriteDiv.className = 'sprite';
-            spriteDiv.style.width = '100%';
-            spriteDiv.style.height = '100%';
-            spriteDiv.style.backgroundImage = `url(/storage/${userMonster.monster.image_0})`;
-            spriteDiv.style.backgroundSize = '480px 48px';
+            Object.assign(spriteDiv.style, {
+                width: '100%',
+                height: '100%',
+                backgroundSize: '480px 48px'
+            });
 
-            if (userMonster.monster.stage !== 'Fresh' && userMonster.monster.stage !== 'Child') {
-                switch (userMonster.type) {
-                    case "Virus":
-                        spriteDiv.style.backgroundImage = `url(/storage/${userMonster.monster.image_1})`;
-                        break;
-                    case "Vaccine":
-                        spriteDiv.style.backgroundImage = `url(/storage/${userMonster.monster.image_2})`;
-                        break;
-                }
+            spriteDiv.style.backgroundImage = `url(/storage/${userMonster.monster.image_0})`;
+            if (!['Fresh', 'Child'].includes(userMonster.monster.stage)) {
+                const imageMap = {
+                    "Virus": userMonster.monster.image_1,
+                    "Vaccine": userMonster.monster.image_2
+                };
+                spriteDiv.style.backgroundImage = `url(/storage/${imageMap[userMonster.type] || userMonster.monster.image_0})`;
             }
 
             const tooltip = document.createElement('span');
             tooltip.className = 'tooltip';
             tooltip.innerText = userMonster.name;
 
-            monsterDiv.appendChild(spriteDiv);
-            monsterDiv.appendChild(tooltip);
+            monsterDiv.append(spriteDiv, tooltip);
             container.appendChild(monsterDiv);
 
-            let frames = userMonster.energy == 0 ? [0, 7, 7] : [0, 1, 2];
+            let previousX = 0;
+            Object.assign(monsterDiv.style, {
+                left: `${Math.random() * (screenWidth - 48)}px`,
+                top: `${Math.random() * (screenHeight - 48)}px`
+            });
+
+            let frames = userMonster.energy === 0 ? [0, 7, 7] : [0, 1, 2];
             let frameIndex = Math.floor(Math.random() * frames.length);
             const animationIntervalTime = 200 + Math.random() * 400;
 
-            let animationInterval = setInterval(() => {
+            function animateSprite() {
                 frameIndex = (frameIndex + 1) % frames.length;
                 spriteDiv.style.backgroundPositionX = `-${frames[frameIndex] * 48}px`;
-            }, animationIntervalTime);
+            }
+            let animationInterval = setInterval(animateSprite, animationIntervalTime);
 
-            let previousX = parseFloat(monsterDiv.style.left) || 0;
-            const x = Math.random() * (screenWidth - 48);
-            const y = Math.random() * (screenHeight - 48);
-            monsterDiv.style.left = `${x}px`;
-            monsterDiv.style.top = `${y}px`;
+            function updateAnimation() {
+                clearInterval(animationInterval);
+                frames = userMonster.energy === 0 ? [0, 7, 7] : [0, 1, 2];
+                frameIndex = 0;
+                animationInterval = setInterval(animateSprite, animationIntervalTime);
+            }
 
-            const movementInterval = 4000 + Math.random() * 2000;
             setInterval(() => {
                 if (userMonster.sleep_time == null && userMonster.energy > 0) {
-                    const currentX = parseFloat(monsterDiv.style.left) || 0;
-                    const currentY = parseFloat(monsterDiv.style.top) || 0;
-                    const maxOffset = 30;
-                    const offsetX = (Math.random() * maxOffset * 2) - maxOffset;
-                    const offsetY = (Math.random() * maxOffset * 2) - maxOffset;
+                    let newX = parseFloat(monsterDiv.style.left) + (Math.random() * 60 - 30);
+                    let newY = parseFloat(monsterDiv.style.top) + (Math.random() * 60 - 30);
 
-                    let newX = currentX + offsetX;
-                    let newY = currentY + offsetY;
                     newX = Math.max(0, Math.min(screenWidth - 48, newX));
                     newY = Math.max(0, Math.min(screenHeight - 48, newY));
 
-                    if (newX < previousX) {
-                        spriteDiv.style.transform = 'scaleX(1)';
-                    } else if (newX > previousX) {
-                        spriteDiv.style.transform = 'scaleX(-1)';
-                    }
+                    spriteDiv.style.transform = newX < previousX ? 'scaleX(1)' : 'scaleX(-1)';
                     previousX = newX;
 
-                    monsterDiv.style.transition = 'left 2s, top 2s';
-                    monsterDiv.style.left = `${newX}px`;
-                    monsterDiv.style.top = `${newY}px`;
+                    Object.assign(monsterDiv.style, {
+                        transition: 'left 2s, top 2s',
+                        left: `${newX}px`,
+                        top: `${newY}px`
+                    });
                 }
-            }, movementInterval);
+            }, 4000 + Math.random() * 2000);
 
             monsterDiv.addEventListener('click', () => {
-                if (activeUserMonster) {
-                    activeUserMonster.monsterDiv.classList.remove('clicked');
-                }
+                if (activeUserMonster) activeUserMonster.monsterDiv.classList.remove('clicked');
 
                 activeUserMonster = userMonster;
-
                 monsterDiv.classList.add('clicked');
 
-                statName.textContent = userMonster.name;
-                statStage.textContent = userMonster.monster.stage;
-                statStrength.textContent = `Strength: ${userMonster.strength}`;
-                statAgility.textContent = `Agility: ${userMonster.agility}`;
-                statDefense.textContent = `Defense: ${userMonster.defense}`;
-                statMind.textContent = `Mind: ${userMonster.mind}`;
+                statElements.name.textContent = userMonster.name;
+                statElements.stage.textContent = userMonster.monster.stage;
+                statElements.strength.textContent = `Strength: ${userMonster.strength}`;
+                statElements.agility.textContent = `Agility: ${userMonster.agility}`;
+                statElements.defense.textContent = `Defense: ${userMonster.defense}`;
+                statElements.mind.textContent = `Mind: ${userMonster.mind}`;
+
+                updateEnergyBar(userMonster.energy, userMonster.max_energy);
 
                 statsPanel.classList.remove('hidden');
                 container.classList.add('rounded-b-none');
@@ -201,29 +225,13 @@
             userMonster.monsterDiv = monsterDiv;
         });
 
-        closeStatsButton.addEventListener('click', () => {
+        document.getElementById('close-stats').addEventListener('click', () => {
             statsPanel.classList.add('hidden');
             container.classList.remove('rounded-b-none');
             if (activeUserMonster) {
                 activeUserMonster.monsterDiv.classList.remove('clicked');
             }
         });
-
-
-        //training
-        let progress = 0;
-        let direction = 1;
-        let interval;
-        let animationInterval;
-        let monsterFrame = 0;
-        const monsterSprite = document.getElementById('monster-sprite');
-        let userEquipment;
-        let equipmentInterval;
-        let equipmentAnimationInterval;
-        let equipmentFrame = 0;
-        const equipmentSprite = document.getElementById('equipment-sprite');
-
-        let training = false;
 
         document.querySelectorAll('.openTraining').forEach(button => {
             button.addEventListener('click', function() {
@@ -305,10 +313,13 @@
                         body: JSON.stringify(data)
                     }).then(response => response.json())
                     .then(result => {
-                        statStrength.textContent = `Strength: ${activeUserMonster.strength}`;
-                        statAgility.textContent = `Agility: ${activeUserMonster.agility}`;
-                        statDefense.textContent = `Defense: ${activeUserMonster.defense}`;
-                        statMind.textContent = `Mind: ${activeUserMonster.mind}`;
+                        statElements.stage.textContent = activeUserMonster.monster.stage;
+                        statElements.strength.textContent = `Strength: ${activeUserMonster.strength}`;
+                        statElements.agility.textContent = `Agility: ${activeUserMonster.agility}`;
+                        statElements.defense.textContent = `Defense: ${activeUserMonster.defense}`;
+                        statElements.mind.textContent = `Mind: ${activeUserMonster.mind}`;
+
+    
                         console.log("Training data updated:", result);
                     });
             }

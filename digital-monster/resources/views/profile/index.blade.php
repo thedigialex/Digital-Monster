@@ -21,26 +21,28 @@
             <x-table.table>
                 <thead class="bg-primary">
                     <tr>
-                        <x-table.header class="w-1/3 text-left">Name</x-table.header>
-                        <x-table.header class="w-1/3 text-left">Email</x-table.header>
-                        <x-table.header class="w-1/3"></x-table.header>
+                        <x-table.header class="w-1/2 md:w-1/3 text-left">Name</x-table.header>
+                        <x-table.header class="w-1/3 text-left hidden md:table-cell">Email</x-table.header>
+                        <x-table.header class="w-1/2 md:w-1/3"></x-table.header>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach ($users as $user)
                     <tr class="{{ $loop->even ? 'bg-neutral' : 'bg-secondary' }}">
-                        <x-table.data class="w-1/3">
+                        <x-table.data class="w-1/2 md:w-1/3">
                             <x-fonts.paragraph class="font-bold text-accent">
                                 {{ $user->name }}
                             </x-fonts.paragraph>
                         </x-table.data>
-                        <x-table.data class="w-1/3">
+                        <x-table.data class="w-1/3 hidden md:table-cell">
                             <x-fonts.paragraph class="font-bold text-accent">
                                 {{ $user->email }}
                             </x-fonts.paragraph>
                         </x-table.data>
-                        <x-table.data class="w-1/3 text-end">
-                            <x-buttons.session model="user" :id="$user->id" route="user.profile" label="View" icon="fa-eye"/>
+                        <x-table.data class="w-1/2 md:w-1/3">
+                            <div class="flex justify-end">
+                                <x-buttons.session model="user" :id="$user->id" route="user.profile" label="View" icon="fa-eye" />
+                            </div>
                         </x-table.data>
                     </tr>
                     @endforeach

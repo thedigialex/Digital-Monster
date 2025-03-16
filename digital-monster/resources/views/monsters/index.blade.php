@@ -23,30 +23,32 @@
             <x-table.table>
                 <thead class="bg-primary">
                     <tr>
-                        <x-table.header class="w-1/4 text-left">Image</x-table.header>
-                        <x-table.header class="w-1/4 text-left">Name</x-table.header>
-                        <x-table.header class="w-1/4 text-left">Stage</x-table.header>
-                        <x-table.header class="w-1/4"></x-table.header>
+                        <x-table.header class="w-1/2 md:w-1/4 text-left">Image</x-table.header>
+                        <x-table.header class="w-1/4 text-left hidden md:table-cell">Name</x-table.header>
+                        <x-table.header class="w-1/4 text-left hidden md:table-cell">Stage</x-table.header>
+                        <x-table.header class="w-1/2 md:w-1/4"></x-table.header>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach ($eggGroup->monsters as $monster)
                     <tr class="{{ $loop->even ? 'bg-neutral' : 'bg-secondary' }}">
-                        <x-table.data class="w-1/4">
+                        <x-table.data class="w-1/2 md:w-1/4">
                             @if (isset($monster->image_0))
                             <div class="w-16 h-16 overflow-hidden">
                                 <img src="{{ asset('storage/' . $monster->image_0) }}" alt="Monster Image" class="w-full h-full object-cover" style="object-position: 0 0;">
                             </div>
                             @endif
                         </x-table.data>
-                        <x-table.data class="w-1/4">
+                        <x-table.data class="w-1/4 hidden md:table-cell">
                             <x-fonts.paragraph class="font-bold text-text">{{ $monster->name }}</x-fonts.paragraph>
                         </x-table.data>
-                        <x-table.data class="w-1/4">
+                        <x-table.data class="w-1/4 hidden md:table-cell">
                             <x-fonts.paragraph class="font-bold text-text">{{ $monster->stage }}</x-fonts.paragraph>
                         </x-table.data>
-                        <x-table.data class="w-1/4 text-end space-x-4">
-                            <x-buttons.session model="monster" :id="$monster->id" route="monster.edit" />
+                        <x-table.data class="w-1/2 md:w-1/4">
+                            <div class="flex justify-end">
+                                <x-buttons.session model="monster" :id="$monster->id" route="monster.edit" />
+                            </div>
                         </x-table.data>
                     </tr>
                     @endforeach
