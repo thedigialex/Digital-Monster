@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\UserItem;
 use App\Models\UserMonster;
 use App\Models\UserEquipment;
 use Illuminate\Support\Facades\Auth;
@@ -23,7 +24,7 @@ class DashboardController extends Controller
         $userEquipment = UserEquipment::with('equipment')
             ->where('user_id', $user->id)
             ->whereHas('equipment', function ($query) {
-                $query->whereNotIn('stat', ['Lighting', 'Cleaning']); 
+                $query->whereNotIn('stat', ['Lighting', 'Cleaning']);
             })
             ->get();
 
@@ -34,9 +35,16 @@ class DashboardController extends Controller
             })
             ->first();
 
+        $userItems = UserItem::with('item')
+            ->where('user_id', $user->id)
+            ->whereHas('item', function ($query) {
+                $query->where('type', 'Consumable');
+            })
+            ->get();
+
         $totalMonsters = $userMonsters->count();
 
-        return view('pages.dashboard', compact('user', 'userMonsters', 'totalMonsters', 'userEquipment', 'userEquipmentLight'));
+        return view('pages.dashboard', compact('user', 'userMonsters', 'totalMonsters', 'userEquipment', 'userEquipmentLight', 'userItems'));
     }
 
     public function updateTraining(Request $request)

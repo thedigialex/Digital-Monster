@@ -29,23 +29,62 @@
         <div id="stats-panel" class="hidden bg-secondary border-primary border-t-4 p-4 shadow-lg rounded-b-md">
             <div class="flex justify-between items-center pb-4">
                 <x-fonts.sub-header id="stat-name">Name: <span></span></x-fonts.sub-header>
+                <x-fonts.paragraph id="stat-stage"><span></span></x-fonts.paragraph>
                 <x-buttons.primary id="close-stats" label="Close" icon="fa-x" />
             </div>
             <div class="flex flex-col md:flex-row gap-4">
                 <div class="bg-primary p-4 rounded-md md:w-1/3">
-                    <x-fonts.paragraph id="stat-stage"><strong>Stage:</strong> <span></span></x-fonts.paragraph>
-                    <div class="py-4">
+                    <div class="flex justify-between w-full gap-4">
+                        <div>
+                        <x-fonts.paragraph>Hunger</x-fonts.paragraph>
+                        <div class="hunger-icons">
+                            <i class="fa-solid fa-drumstick-bite fa-2x"></i>
+                            <i class="fa-solid fa-drumstick-bite fa-2x"></i>
+                            <i class="fa-solid fa-drumstick-bite fa-2x"></i>
+                            <i class="fa-solid fa-drumstick-bite fa-2x"></i>
+                        </div>
+                    </div>
+                        <x-container.modal name="user-items" title="Inventory" focusable>
+                            <x-slot name="button">
+                                <x-buttons.primary id="close-items" label="Inventory" icon="fa-briefcase" @click="open = true" />
+                            </x-slot>
+                            <div class="p-2"
+                                style="background-image: url('/images/background-dashboard.png'); background-size: cover; background-position: center;">
+                                <div class="flex flex-wrap justify-center items-center gap-4 overflow-y-auto" style="max-height: 40vh;">
+                                    @foreach ($userItems as $userItem)
+                                    <div class="flex flex-col items-center w-28 p-2 bg-primary border-2 border-secondary rounded-md">
+                                        <div class="relative w-24 h-24 border-2 border-secondary rounded-md overflow-hidden bg-primary">
+                                            <button class="openTraining w-full h-full"
+                                                data-equipment='{{ json_encode($userItem) }}'
+                                                style="background: url('/storage/{{ $userItem->item->image }}') no-repeat; background-size: cover; background-position: 0 0;">
+                                            </button>
+                                            <span class="absolute bottom-1 right-1 bg-accent text-text text-xs px-2 py-1 rounded-md">
+                                                {{ $userItem->quantity }}
+                                            </span>
+                                        </div>
+                                        <x-fonts.paragraph> {{ $userItem->item->name }}</x-fonts.paragraph>
+                                    </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                        </x-container.modal>
+                    </div>
+
+
+                    <div class="pt-2">
                         <x-fonts.paragraph>Energy</x-fonts.paragraph>
                         <div class="w-full bg-secondary rounded-md h-4 relative">
                             <div id="energy-bar" class="bg-success h-4 rounded-md transition-all duration-300"></div>
                         </div>
                     </div>
-                    <x-fonts.paragraph id="stat-stats" class="flex flex-wrap w-full md:flex-row flex-col md:space-x-4 space-y-2 md:space-y-0 text-text">
-                        <span id="stat-strength" class="flex-1 text-center">Strength</span>
-                        <span id="stat-agility" class="flex-1 text-center">Agility</span>
-                        <span id="stat-defense" class="flex-1 text-center">Defense</span>
-                        <span id="stat-mind" class="flex-1 text-center">Mind</span>
-                    </x-fonts.paragraph>
+                    <div class="pt-2">
+                        <x-fonts.paragraph id="stat-stats" class="flex flex-wrap w-full md:flex-row flex-col md:space-x-4 space-y-2 md:space-y-0 text-text">
+                            <span id="stat-strength" class="flex-1 text-center">Strength</span>
+                            <span id="stat-agility" class="flex-1 text-center">Agility</span>
+                            <span id="stat-defense" class="flex-1 text-center">Defense</span>
+                            <span id="stat-mind" class="flex-1 text-center">Mind</span>
+                        </x-fonts.paragraph>
+                    </div>
                 </div>
                 <div class="bg-primary p-4 rounded-md md:w-2/3">
                     <x-container.modal name="user-monster-training" title="Training" focusable>
@@ -64,7 +103,7 @@
                             </div>
                         </x-slot>
 
-                        <div class="p-4"
+                        <div class="p-2"
                             style="background-image: url('/images/background-dashboard.png'); background-size: cover; background-position: center;">
                             <div class="flex justify-center items-center space-x-4 py-6">
                                 <div class="relative w-16 h-16 p-2">
@@ -123,6 +162,39 @@
             energyBar.style.width = `${(energy / maxEnergy) * 100}%`;
         }
 
+        function updateHungerIcons(hunger) {
+            const hungerIcons = document.querySelectorAll('.hunger-icons i');
+
+            hungerIcons.forEach((icon, index) => {
+                if (index < hunger) {
+                    icon.classList.add('text-accent');
+                    icon.classList.remove('text-secondary');
+                } else {
+                    icon.classList.add('text-secondary');
+                    icon.classList.remove('text-accent');
+                }
+            });
+        }
+
+        function startAnimation(frames, isEquipment = false) {
+            let frameIndex = 0;
+
+            if (isEquipment) {
+                clearInterval(equipmentAnimationInterval);
+                equipmentAnimationInterval = setInterval(() => {
+                    equipmentFrame = (equipmentFrame + 1) % 3;
+                    equipmentSprite.style.backgroundPositionX = `-${equipmentFrame * 48}px`;
+                }, 425);
+            } else {
+                clearInterval(animationInterval);
+                animationInterval = setInterval(() => {
+                    monsterFrame = frames[frameIndex];
+                    frameIndex = (frameIndex + 1) % frames.length;
+                    monsterSprite.style.backgroundPositionX = `-${monsterFrame * 48}px`;
+                }, 425);
+            }
+        }
+
         JSON.parse(container.getAttribute('data-monsters')).forEach(userMonster => {
             const monsterDiv = document.createElement('div');
             monsterDiv.className = 'monster';
@@ -164,7 +236,7 @@
 
             let frames = userMonster.energy === 0 ? [0, 7, 7] : [0, 1, 2];
             let frameIndex = Math.floor(Math.random() * frames.length);
-            const animationIntervalTime = 200 + Math.random() * 400;
+            const animationIntervalTime = 200 + Math.random() * 425;
 
             function animateSprite() {
                 frameIndex = (frameIndex + 1) % frames.length;
@@ -212,6 +284,7 @@
                 statElements.mind.textContent = `Mind: ${userMonster.mind}`;
 
                 updateEnergyBar(userMonster.energy, userMonster.max_energy);
+                updateHungerIcons(userMonster.hunger);
 
                 statsPanel.classList.remove('hidden');
                 container.classList.add('rounded-b-none');
@@ -319,7 +392,7 @@
                         statElements.defense.textContent = `Defense: ${activeUserMonster.defense}`;
                         statElements.mind.textContent = `Mind: ${activeUserMonster.mind}`;
 
-    
+
                         console.log("Training data updated:", result);
                     });
             }
@@ -331,24 +404,5 @@
                 this.textContent = 'No Energy';
             }
         });
-
-        function startAnimation(frames, isEquipment = false) {
-            let frameIndex = 0;
-
-            if (isEquipment) {
-                clearInterval(equipmentAnimationInterval);
-                equipmentAnimationInterval = setInterval(() => {
-                    equipmentFrame = (equipmentFrame + 1) % 3;
-                    equipmentSprite.style.backgroundPositionX = `-${equipmentFrame * 48}px`;
-                }, 400);
-            } else {
-                clearInterval(animationInterval);
-                animationInterval = setInterval(() => {
-                    monsterFrame = frames[frameIndex];
-                    frameIndex = (frameIndex + 1) % frames.length;
-                    monsterSprite.style.backgroundPositionX = `-${monsterFrame * 48}px`;
-                }, 400);
-            }
-        }
     </script>
 </x-app-layout>
