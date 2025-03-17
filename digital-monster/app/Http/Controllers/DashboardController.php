@@ -47,7 +47,7 @@ class DashboardController extends Controller
         return view('pages.dashboard', compact('user', 'userMonsters', 'totalMonsters', 'userEquipment', 'userEquipmentLight', 'userItems'));
     }
 
-    public function updateTraining(Request $request)
+    public function useTraining(Request $request)
     {
         $user = Auth::user();
         $userMonster = UserMonster::where('id', $request->user_monster_id)
@@ -96,11 +96,71 @@ class DashboardController extends Controller
 
             return response()->json([
                 'message' => 'Training data updated successfully!',
+                'userMonster' => $userMonster,
             ]);
         } else {
             return response()->json([
                 'message' => 'Not enough energy',
             ]);
         }
+    }
+
+    public function useItem(Request $request)
+    {
+        $user = Auth::user();
+        $userMonster = UserMonster::where('id', $request->user_monster_id)
+            ->where('user_id', $user->id)
+            ->first();
+
+        $userItem = UserItem::with('item')
+            ->where('id', $request->user_item_id)
+            ->where('user_id', $user->id)
+            ->first();
+
+        if (!$userMonster || !$userItem) {
+            return response()->json([
+                'message' => 'Hmmm something is missing.',
+            ], 404);
+        }
+
+        if ($userItem->quantity > 0) {
+            $effects = explode('-', $userItem->item->effect); 
+
+            foreach ($effects as $effect) {
+                list($type, $value) = explode(',', $effect);
+                $value = (int) $value;
+
+                switch ($type) {
+                    case 'H':
+                        $userMonster->hunger += $value;
+                        break;
+                    case 'e':
+                        $userMonster->energy += $value;
+                        break;
+                }
+            }
+
+            $userMonster->hunger = min($userMonster->hunger, 4);
+            $userMonster->energy = min($userMonster->energy, $userMonster->max_energy);
+
+            $userMonster->save();
+
+            $userItem->quantity -= 1;
+            if ($userItem->quantity <= 0) {
+                $userItem->delete();
+            } else {
+                $userItem->save();
+            }
+
+            return response()->json([
+                'message' => 'Item used successfully!',
+                'userMonster' => $userMonster,
+                'userItemQuantity' => $userItem->quantity
+            ], 200);
+        }
+
+        return response()->json([
+            'message' => 'No items left to use.',
+        ], 400);
     }
 }

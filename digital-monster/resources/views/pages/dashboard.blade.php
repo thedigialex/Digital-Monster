@@ -36,14 +36,14 @@
                 <div class="bg-primary p-4 rounded-md md:w-1/3">
                     <div class="flex justify-between w-full gap-4">
                         <div>
-                        <x-fonts.paragraph>Hunger</x-fonts.paragraph>
-                        <div class="hunger-icons">
-                            <i class="fa-solid fa-drumstick-bite fa-2x"></i>
-                            <i class="fa-solid fa-drumstick-bite fa-2x"></i>
-                            <i class="fa-solid fa-drumstick-bite fa-2x"></i>
-                            <i class="fa-solid fa-drumstick-bite fa-2x"></i>
+                            <x-fonts.paragraph>Hunger</x-fonts.paragraph>
+                            <div class="hunger-icons">
+                                <i class="fa-solid fa-drumstick-bite fa-2x"></i>
+                                <i class="fa-solid fa-drumstick-bite fa-2x"></i>
+                                <i class="fa-solid fa-drumstick-bite fa-2x"></i>
+                                <i class="fa-solid fa-drumstick-bite fa-2x"></i>
+                            </div>
                         </div>
-                    </div>
                         <x-container.modal name="user-items" title="Inventory" focusable>
                             <x-slot name="button">
                                 <x-buttons.primary id="close-items" label="Inventory" icon="fa-briefcase" @click="open = true" />
@@ -54,8 +54,8 @@
                                     @foreach ($userItems as $userItem)
                                     <div class="flex flex-col items-center w-28 p-2 bg-primary border-2 border-secondary rounded-md">
                                         <div class="relative w-24 h-24 border-2 border-secondary rounded-md overflow-hidden bg-primary">
-                                            <button class="openTraining w-full h-full"
-                                                data-equipment='{{ json_encode($userItem) }}'
+                                            <button class="useItem w-full h-full"
+                                                data-item='{{ json_encode($userItem) }}'
                                                 style="background: url('/storage/{{ $userItem->item->image }}') no-repeat; background-size: cover; background-position: 0 0;">
                                             </button>
                                             <span class="absolute bottom-1 right-1 bg-accent text-text text-xs px-2 py-1 rounded-md">
@@ -66,11 +66,17 @@
                                     </div>
                                     @endforeach
                                 </div>
+                                <div class="flex justify-center items-center space-x-4 py-6">
+                                    <div class="relative w-16 h-16 p-2">
+                                        <div id="item-sprite" class="w-full h-full"></div>
+                                    </div>
+                                    <div class="relative w-16 h-16 p-2">
+                                        <div id="monster-item-sprite" class="w-full h-full"></div>
+                                    </div>
+                                </div>
                             </div>
                         </x-container.modal>
                     </div>
-
-
                     <div class="pt-2">
                         <x-fonts.paragraph>Energy</x-fonts.paragraph>
                         <div class="w-full bg-secondary rounded-md h-4 relative">
@@ -86,7 +92,7 @@
                         </x-fonts.paragraph>
                     </div>
                 </div>
-                <div class="bg-primary p-4 rounded-md md:w-2/3">
+                <div class="bg-primary rounded-md md:w-2/3">
                     <x-container.modal name="user-monster-training" title="Training" focusable>
                         <x-slot name="button">
                             <div class="flex flex-wrap justify-center gap-4 items-center">
@@ -129,44 +135,26 @@
     </x-container>
 
     <script>
+        let interval;
+        let userEquipment;
         let activeUserMonster;
         let training = false;
         let progress = 0;
         let direction = 1;
-        let monsterFrame = 0;
-        let equipmentFrame = 0;
-        let interval;
-        let animationInterval;
-        let equipmentInterval;
-        let equipmentAnimationInterval;
-        let userEquipment;
-        const monsterSprite = document.getElementById('monster-sprite');
-        const equipmentSprite = document.getElementById('equipment-sprite');
-        const container = document.getElementById('monster-container');
+        let monsterImage;
+        let monsterAnimationInterval;
+        let secondaryImage;
+        let secondaryAnimationInterval;
+
         const statsPanel = document.getElementById('stats-panel');
-        const screenWidth = container.offsetWidth;
-        const screenHeight = container.offsetHeight;
+        const container = document.getElementById('monster-container');
 
-        const statElements = {
-            name: document.querySelector('#stat-name span'),
-            stage: document.querySelector('#stat-stage span'),
-            strength: document.getElementById('stat-strength'),
-            agility: document.getElementById('stat-agility'),
-            defense: document.getElementById('stat-defense'),
-            mind: document.getElementById('stat-mind')
-        };
-
-        const energyBar = document.getElementById('energy-bar');
-
-        function updateEnergyBar(energy, maxEnergy) {
-            energyBar.style.width = `${(energy / maxEnergy) * 100}%`;
-        }
-
-        function updateHungerIcons(hunger) {
+        function updateStats() {
+            document.getElementById('energy-bar').style.width = `${(activeUserMonster.energy / activeUserMonster.max_energy) * 100}%`;
             const hungerIcons = document.querySelectorAll('.hunger-icons i');
 
             hungerIcons.forEach((icon, index) => {
-                if (index < hunger) {
+                if (index < activeUserMonster.hunger) {
                     icon.classList.add('text-accent');
                     icon.classList.remove('text-secondary');
                 } else {
@@ -174,25 +162,66 @@
                     icon.classList.remove('text-accent');
                 }
             });
+
+            document.querySelector('#stat-name span').textContent = activeUserMonster.name;
+            document.querySelector('#stat-stage span').textContent = activeUserMonster.monster.stage;
+            document.getElementById('stat-strength').textContent = `Strength: ${activeUserMonster.strength}`;
+            document.getElementById('stat-agility').textContent = `Agility: ${activeUserMonster.agility}`;
+            document.getElementById('stat-defense').textContent = `Defense: ${activeUserMonster.defense}`;
+            document.getElementById('stat-mind').textContent = `Mind: ${activeUserMonster.mind}`;
         }
 
-        function startAnimation(frames, isEquipment = false) {
+        function updateMainAnimation() {
             let frameIndex = 0;
+            let frames = activeUserMonster.energy == 0 ? [0, 7, 7] : [0, 1, 2];
+            clearInterval(activeUserMonster.mainAnimationInterval);
+            activeUserMonster.mainAnimationInterval = setInterval(() => {
+                index = frames[frameIndex];
+                frameIndex = (frameIndex + 1) % frames.length;
+                activeUserMonster.spriteDiv.style.backgroundPositionX = `-${index * 48}px`;
+            }, 400 + Math.random() * 400);
+        }
 
-            if (isEquipment) {
-                clearInterval(equipmentAnimationInterval);
-                equipmentAnimationInterval = setInterval(() => {
-                    equipmentFrame = (equipmentFrame + 1) % 3;
-                    equipmentSprite.style.backgroundPositionX = `-${equipmentFrame * 48}px`;
-                }, 425);
-            } else {
-                clearInterval(animationInterval);
-                animationInterval = setInterval(() => {
-                    monsterFrame = frames[frameIndex];
-                    frameIndex = (frameIndex + 1) % frames.length;
-                    monsterSprite.style.backgroundPositionX = `-${monsterFrame * 48}px`;
-                }, 425);
+        function getMonsterImage(userMonster) {
+            if (['Fresh', 'Child'].includes(userMonster.monster.stage)) {
+                return `url(/storage/${userMonster.monster.image_0})`;
             }
+            const imageMap = {
+                "Virus": userMonster.monster.image_1,
+                "Vaccine": userMonster.monster.image_2
+            };
+            return `url(/storage/${imageMap[userMonster.type] || userMonster.monster.image_0})`;
+        }
+
+        function setTrainingButton() {
+            const trainingButton = document.getElementById('trainingButton');
+            trainingButton.disabled = false;
+            trainingButton.textContent = 'Start';
+            if (activeUserMonster.energy == 0) {
+                trainingButton.disabled = true;
+                trainingButton.textContent = 'No Energy';
+            }
+        }
+
+        function monsterAnimation(frames) {
+            let frameIndex = 0;
+            monsterImage.style.backgroundImage = getMonsterImage(activeUserMonster);
+            clearInterval(monsterAnimationInterval);
+            monsterAnimationInterval = setInterval(() => {
+                monsterIndex = frames[frameIndex];
+                frameIndex = (frameIndex + 1) % frames.length;
+                monsterImage.style.backgroundPositionX = `-${monsterIndex * 48}px`;
+            }, 400);
+        }
+
+        function secondaryAnimation(frames, speed) {
+            let frameIndex = 0;
+            clearInterval(secondaryAnimationInterval);
+            secondaryAnimationInterval = setInterval(() => {
+                secondaryIndex = frames[frameIndex];
+                frameIndex = (frameIndex + 1) % frames.length;
+                secondaryImage.style.backgroundPositionX = `-${secondaryIndex * 48}px`;
+            }, speed);
         }
 
         JSON.parse(container.getAttribute('data-monsters')).forEach(userMonster => {
@@ -212,14 +241,7 @@
                 backgroundSize: '480px 48px'
             });
 
-            spriteDiv.style.backgroundImage = `url(/storage/${userMonster.monster.image_0})`;
-            if (!['Fresh', 'Child'].includes(userMonster.monster.stage)) {
-                const imageMap = {
-                    "Virus": userMonster.monster.image_1,
-                    "Vaccine": userMonster.monster.image_2
-                };
-                spriteDiv.style.backgroundImage = `url(/storage/${imageMap[userMonster.type] || userMonster.monster.image_0})`;
-            }
+            spriteDiv.style.backgroundImage = getMonsterImage(userMonster);
 
             const tooltip = document.createElement('span');
             tooltip.className = 'tooltip';
@@ -228,36 +250,32 @@
             monsterDiv.append(spriteDiv, tooltip);
             container.appendChild(monsterDiv);
 
+            let frameIndex = 0;
+            let frames = userMonster.energy == 0 ? [0, 7, 7] : [0, 1, 2];
+            spriteDiv.style.backgroundImage = getMonsterImage(userMonster);
+            mainAnimationInterval = setInterval(() => {
+                index = frames[frameIndex];
+                frameIndex = (frameIndex + 1) % frames.length;
+                spriteDiv.style.backgroundPositionX = `-${index * 48}px`;
+            }, 400 + Math.random() * 400);
+
+            userMonster.mainAnimationInterval = mainAnimationInterval;
+            userMonster.monsterDiv = monsterDiv;
+            userMonster.spriteDiv = spriteDiv;
+
             let previousX = 0;
             Object.assign(monsterDiv.style, {
-                left: `${Math.random() * (screenWidth - 48)}px`,
-                top: `${Math.random() * (screenHeight - 48)}px`
+                left: `${Math.random() * (container.offsetWidth - 48)}px`,
+                top: `${Math.random() * (container.offsetHeight - 48)}px`
             });
-
-            let frames = userMonster.energy === 0 ? [0, 7, 7] : [0, 1, 2];
-            let frameIndex = Math.floor(Math.random() * frames.length);
-            const animationIntervalTime = 200 + Math.random() * 425;
-
-            function animateSprite() {
-                frameIndex = (frameIndex + 1) % frames.length;
-                spriteDiv.style.backgroundPositionX = `-${frames[frameIndex] * 48}px`;
-            }
-            let animationInterval = setInterval(animateSprite, animationIntervalTime);
-
-            function updateAnimation() {
-                clearInterval(animationInterval);
-                frames = userMonster.energy === 0 ? [0, 7, 7] : [0, 1, 2];
-                frameIndex = 0;
-                animationInterval = setInterval(animateSprite, animationIntervalTime);
-            }
 
             setInterval(() => {
                 if (userMonster.sleep_time == null && userMonster.energy > 0) {
                     let newX = parseFloat(monsterDiv.style.left) + (Math.random() * 60 - 30);
                     let newY = parseFloat(monsterDiv.style.top) + (Math.random() * 60 - 30);
 
-                    newX = Math.max(0, Math.min(screenWidth - 48, newX));
-                    newY = Math.max(0, Math.min(screenHeight - 48, newY));
+                    newX = Math.max(0, Math.min(container.offsetWidth - 48, newX));
+                    newY = Math.max(0, Math.min(container.offsetHeight - 48, newY));
 
                     spriteDiv.style.transform = newX < previousX ? 'scaleX(1)' : 'scaleX(-1)';
                     previousX = newX;
@@ -271,31 +289,15 @@
             }, 4000 + Math.random() * 2000);
 
             monsterDiv.addEventListener('click', () => {
-                if (activeUserMonster) activeUserMonster.monsterDiv.classList.remove('clicked');
-
+                if (activeUserMonster) {
+                    activeUserMonster.monsterDiv.classList.remove('clicked');
+                }
                 activeUserMonster = userMonster;
                 monsterDiv.classList.add('clicked');
-
-                statElements.name.textContent = userMonster.name;
-                statElements.stage.textContent = userMonster.monster.stage;
-                statElements.strength.textContent = `Strength: ${userMonster.strength}`;
-                statElements.agility.textContent = `Agility: ${userMonster.agility}`;
-                statElements.defense.textContent = `Defense: ${userMonster.defense}`;
-                statElements.mind.textContent = `Mind: ${userMonster.mind}`;
-
-                updateEnergyBar(userMonster.energy, userMonster.max_energy);
-                updateHungerIcons(userMonster.hunger);
-
                 statsPanel.classList.remove('hidden');
                 container.classList.add('rounded-b-none');
+                updateStats();
             });
-
-            userMonster.updateEnergy = function(newEnergy) {
-                this.energy = newEnergy;
-                updateAnimation();
-            };
-
-            userMonster.monsterDiv = monsterDiv;
         });
 
         document.getElementById('close-stats').addEventListener('click', () => {
@@ -309,36 +311,47 @@
         document.querySelectorAll('.openTraining').forEach(button => {
             button.addEventListener('click', function() {
                 userEquipment = JSON.parse(this.getAttribute('data-equipment'));
-                const trainingButton = document.getElementById('trainingButton');
-                trainingButton.disabled = false;
-                trainingButton.textContent = 'Start';
-                if (activeUserMonster.energy == 0) {
-                    trainingButton.disabled = true;
-                    trainingButton.textContent = 'No Energy';
-                }
+                setTrainingButton();
 
-                monsterFrame = 0;
-                monsterSprite.style.backgroundImage = `url(/storage/${activeUserMonster.monster.image_0})`;
-                equipmentFrame = 0;
-                equipmentSprite.style.backgroundImage = `url(/storage/${userEquipment.equipment.image})`;
+                monsterImage = document.getElementById('monster-sprite');
+                secondaryImage = document.getElementById('equipment-sprite');
+                secondaryImage.style.backgroundImage = `url(/storage/${userEquipment.equipment.image})`;
+                clearInterval(secondaryAnimationInterval);
 
-                if (activeUserMonster.monster.stage !== 'Fresh' && activeUserMonster.monster.stage !== 'Child') {
-                    switch (activeUserMonster.type) {
-                        case "Virus":
-                            monsterSprite.style.backgroundImage = `url(/storage/${activeUserMonster.monster.image_1})`;
-                            break;
-                        case "Vaccine":
-                            monsterSprite.style.backgroundImage = `url(/storage/${activeUserMonster.monster.image_2})`;
-                            break;
-                    }
-                }
+                monsterAnimation([0, 1]);
+            });
+        });
 
-                clearInterval(animationInterval);
-                animationInterval = setInterval(() => {
-                    monsterFrame = (monsterFrame + 1) % 3;
-                    monsterSprite.style.backgroundPositionX = `-${monsterFrame * 48}px`;
-                }, 400);
-                clearInterval(equipmentAnimationInterval);
+        document.querySelectorAll('.useItem').forEach(button => {
+            button.addEventListener('click', function() {
+                userItem = JSON.parse(this.getAttribute('data-item'));
+
+                monsterImage = document.getElementById('monster-item-sprite');
+                secondaryImage = document.getElementById('item-sprite');
+                secondaryImage.style.backgroundImage = `url(/storage/${userItem.item.image})`;
+
+                monsterAnimation([1, 2]);
+                secondaryAnimation([0, 1, 2, 3], 800);
+
+                
+                const data = {
+                    user_item_id: userItem.id,
+                    user_monster_id: activeUserMonster.id
+                };
+                
+                fetch("{{ route('monster.item') }}", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content")
+                        },
+                        body: JSON.stringify(data)
+                    }).then(response => response.json())
+                    .then(result => {
+                        updateStats();
+                        updateMainAnimation();
+                        console.log("data updated:", result);
+                    });
             });
         });
 
@@ -347,8 +360,8 @@
                 progress = 0;
                 direction = 1;
 
-                startAnimation([3, 4]);
-                startAnimation(null, true);
+                monsterAnimation([3, 4]);
+                secondaryAnimation([0, 1, 2, 3], 400);
 
                 interval = setInterval(() => {
                     progress += 5 * direction;
@@ -359,17 +372,11 @@
                 }, 100);
             } else {
                 clearInterval(interval);
-                clearInterval(equipmentAnimationInterval);
+                clearInterval(secondaryAnimationInterval);
 
-                let trainingFrames = [0, 8];
-                if (progress < 60) {
-                    trainingFrames = [0, 7];
-                }
+                let trainingFrames = progress < 60 ? [0, 7] : [0, 8];
 
-                startAnimation(trainingFrames);
-
-                activeUserMonster.energy -= 1;
-                activeUserMonster.updateEnergy(activeUserMonster.energy);
+                monsterAnimation(trainingFrames);
 
                 const data = {
                     percentage: progress,
@@ -377,7 +384,7 @@
                     user_monster_id: activeUserMonster.id
                 };
 
-                fetch("{{ route('train.update') }}", {
+                fetch("{{ route('monster.train') }}", {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json",
@@ -386,23 +393,15 @@
                         body: JSON.stringify(data)
                     }).then(response => response.json())
                     .then(result => {
-                        statElements.stage.textContent = activeUserMonster.monster.stage;
-                        statElements.strength.textContent = `Strength: ${activeUserMonster.strength}`;
-                        statElements.agility.textContent = `Agility: ${activeUserMonster.agility}`;
-                        statElements.defense.textContent = `Defense: ${activeUserMonster.defense}`;
-                        statElements.mind.textContent = `Mind: ${activeUserMonster.mind}`;
-
-
+                        //update the activeUserMonster from the result
+                        activeUserMonster.energy -= 1;
+                        setTrainingButton();
+                        updateStats();
+                        updateMainAnimation();
                         console.log("Training data updated:", result);
                     });
             }
             training = !training;
-            if (activeUserMonster.energy > 0) {
-                this.textContent = training ? 'Stop' : 'Start';
-            } else {
-                this.disabled = true;
-                this.textContent = 'No Energy';
-            }
         });
     </script>
 </x-app-layout>
