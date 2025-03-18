@@ -48,9 +48,10 @@
                             <x-slot name="button">
                                 <x-buttons.primary id="open-items" label="Inventory" icon="fa-briefcase" @click="open = true" />
                             </x-slot>
-                            <div class="p-2"
-                                style="background-image: url('/images/background-dashboard.png'); background-size: cover; background-position: center;">
-                                <div class="flex flex-wrap justify-center items-center gap-4 overflow-y-auto" id="item-selection" style="height: 30vh;">
+
+                            <div class="flex flex-col justify-center items-center bg-cover bg-center"
+                                style="background-image: url('/images/background-dashboard.png'); height: 30vh;">
+                                <div class="flex flex-wrap justify-center items-center gap-4 overflow-y-auto" id="item-selection">
                                     @foreach ($userItems as $userItem)
                                     <div class="flex flex-col items-center w-28 p-2 bg-primary border-2 border-secondary rounded-md">
                                         <div class="relative w-24 h-24 border-2 border-secondary rounded-md overflow-hidden bg-primary">
@@ -66,16 +67,16 @@
                                     </div>
                                     @endforeach
                                 </div>
-                                <div class="flex justify-center items-center space-x-4 py-6" id="hunger-section" style="height: 30vh; display: none;">
-                                    <div class="relative p-2 bg-primary rounded-md">
-                                        <x-fonts.paragraph class="text-text">NOT HUNGERY</x-fonts.paragraph>
+                                <div id="status-section" class="flex justify-center items-center" style="display: none;">
+                                    <div class="p-2 bg-primary rounded-md">
+                                        <x-fonts.paragraph id="status-text" class="text-text">Monster is full</x-fonts.paragraph>
                                     </div>
                                 </div>
-                                <div class="flex justify-center items-center space-x-4 py-6" id="item-usage-section" style="height: 30vh; display: none;">
-                                    <div class="relative w-16 h-16 p-2">
+                                <div id="item-usage-section" class="flex justify-center items-center gap-4 p-2 w-full" style="display: none;">
+                                    <div class="w-16 h-16 p-2">
                                         <div id="item-sprite" class="w-full h-full"></div>
                                     </div>
-                                    <div class="relative w-16 h-16 p-2">
+                                    <div class="w-16 h-16 p-2">
                                         <div id="monster-item-sprite" class="w-full h-full"></div>
                                     </div>
                                 </div>
@@ -97,7 +98,7 @@
                         </x-fonts.paragraph>
                     </div>
                 </div>
-                <div class="bg-primary rounded-md md:w-2/3">
+                <div class="bg-primary rounded-md md:w-2/3 flex items-center justify-center">
                     <x-container.modal name="user-monster-training" title="Training" focusable>
                         <x-slot name="button">
                             <div class="flex flex-wrap justify-center gap-4 items-center">
@@ -114,23 +115,29 @@
                             </div>
                         </x-slot>
 
-                        <div class="p-2"
-                            style="background-image: url('/images/background-dashboard.png'); background-size: cover; background-position: center; height: 30vh;">
-                            <div class="flex justify-center items-center space-x-4 py-6">
-                                <div class="relative w-16 h-16 p-2">
-                                    <div id="equipment-sprite" class="w-full h-full"></div>
+                        <div class="flex flex-col justify-center items-center bg-cover bg-center"
+                            style="background-image: url('/images/background-dashboard.png'); height: 30vh;">
+                            <div id="training-section" class="flex flex-col justify-center items-center gap-4 p-2 w-full">
+                                <div class="flex justify-center items-center">
+                                    <div class="w-16 h-16 p-2">
+                                        <div id="equipment-sprite" class="w-full h-full"></div>
+                                    </div>
+                                    <div class="w-16 h-16 p-2">
+                                        <div id="monster-sprite" class="w-full h-full"></div>
+                                    </div>
                                 </div>
-                                <div class="relative w-16 h-16 p-2">
-                                    <div id="monster-sprite" class="w-full h-full"></div>
+
+                                <div class="w-full h-8 bg-secondary rounded-md">
+                                    <div id="progress-bar" class="h-full bg-accent w-0 rounded-md"></div>
                                 </div>
+
+                                <button id="trainingButton" class="px-4 py-2 bg-red-500 text-text rounded-md">Start</button>
                             </div>
 
-                            <div class="progress-container w-full h-8 bg-secondary mt-6 relative overflow-hidden rounded-lg">
-                                <div id="progress-bar" class="h-full bg-accent w-0"></div>
-                            </div>
-
-                            <div class="flex justify-center mt-4">
-                                <button id="trainingButton" class="px-4 py-2 bg-red-500 text-white rounded-lg ml-2">Start</button>
+                            <div id="sleep-section" class="flex justify-center items-center" style="display: none;">
+                                <div class="p-2 bg-primary rounded-md">
+                                    <x-fonts.paragraph class="text-text">Monster is sleeping</x-fonts.paragraph>
+                                </div>
                             </div>
                         </div>
                     </x-container.modal>
@@ -156,13 +163,18 @@
 
         function updateItemSections() {
             const itemSelectionSection = document.getElementById('item-selection');
-            const hungerSelectionSection = document.getElementById('hunger-section');
+            const statusSection = document.getElementById('status-section');
+            const statusText = document.getElementById('status-text');
 
-            if (activeUserMonster.hunger != 4) {
-                hungerSelectionSection.style.display = 'none';
+            if (activeUserMonster.hunger != 4 && activeUserMonster.sleep_time == null) {
+                statusSection.style.display = 'none';
                 itemSelectionSection.style.display = 'flex';
             } else {
-                hungerSelectionSection.style.display = 'flex';
+                statusSection.style.display = 'flex';
+                statusText.textContent = 'Monster is full';
+                if (activeUserMonster.sleep_time != null) {
+                    statusText.textContent = 'Monster is sleeping';
+                }
                 itemSelectionSection.style.display = 'none';
             }
         }
@@ -203,8 +215,8 @@
         function updateMainAnimation() {
             let frameIndex = 0;
             let frames = activeUserMonster.energy == 0 ? [0, 7, 7] : [0, 1, 2];
-            if(activeUserMonster.sleep_time != null) {
-                frames = [5,6];
+            if (activeUserMonster.sleep_time != null) {
+                frames = [5, 6];
             }
             clearInterval(activeUserMonster.mainAnimationInterval);
             activeUserMonster.mainAnimationInterval = setInterval(() => {
@@ -284,8 +296,8 @@
 
             let frameIndex = 0;
             let frames = userMonster.energy == 0 ? [0, 7, 7] : [0, 1, 2];
-            if(userMonster.sleep_time != null) {
-                frames = [5,6];
+            if (userMonster.sleep_time != null) {
+                frames = [5, 6];
             }
             spriteDiv.style.backgroundImage = getMonsterImage(userMonster);
             mainAnimationInterval = setInterval(() => {
@@ -345,6 +357,18 @@
 
         document.querySelectorAll('.openTraining').forEach(button => {
             button.addEventListener('click', function() {
+
+                const trainingSection = document.getElementById('training-section');
+                const sleepSection = document.getElementById('sleep-section');
+
+                if (activeUserMonster.sleep_time == null) {
+                    sleepSection.style.display = 'none';
+                    trainingSection.style.display = 'flex';
+                } else {
+                    sleepSection.style.display = 'flex';
+                    trainingSection.style.display = 'none';
+                }
+
                 userEquipment = JSON.parse(this.getAttribute('data-equipment'));
                 setTrainingButton();
 
@@ -458,7 +482,7 @@
         });
 
         document.getElementById('sleepButton').addEventListener('click', function() {
-            
+
             userEquipment = JSON.parse(this.getAttribute('data-equipment'));
             const data = {
                 user_equipment_id: userEquipment.id,
