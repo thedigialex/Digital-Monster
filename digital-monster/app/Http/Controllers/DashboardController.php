@@ -7,6 +7,7 @@ use App\Models\UserMonster;
 use App\Models\UserEquipment;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class DashboardController extends Controller
 {
@@ -50,7 +51,8 @@ class DashboardController extends Controller
     public function useTraining(Request $request)
     {
         $user = Auth::user();
-        $userMonster = UserMonster::where('id', $request->user_monster_id)
+        $userMonster = UserMonster::with('monster')
+            ->where('id', $request->user_monster_id)
             ->where('user_id', $user->id)
             ->first();
 
@@ -69,27 +71,32 @@ class DashboardController extends Controller
             $userMonster->energy -= 1;
             $equipmentStat = $userEquipment->equipment->stat;
             $equipmentLevel = $userEquipment->level;
-            $percentage = $request->percentage;
+            $percentage = round($request->percentage);
+            $statIncrease = round((5 * $equipmentLevel * $percentage) / 100);
 
             switch ($equipmentStat) {
                 case 'Strength':
-                    $userMonster->strength += (5 * $equipmentLevel * $percentage) / 100;
+                    $userMonster->strength += $statIncrease;
                     break;
                 case 'Agility':
-                    $userMonster->agility += (5 * $equipmentLevel * $percentage) / 100;
+                    $userMonster->agility += $statIncrease;
                     break;
                 case 'Defense':
-                    $userMonster->defense += (5 * $equipmentLevel * $percentage) / 100;
+                    $userMonster->defense += $statIncrease;
                     break;
                 case 'Mind':
-                    $userMonster->mind += (5 * $equipmentLevel * $percentage) / 100;
+                    $userMonster->mind += $statIncrease;
                     break;
                 case 'Cleaning':
-                    $userMonster->cleaning += (5 * $equipmentLevel * $percentage) / 100;
+                    $userMonster->cleaning += $statIncrease;
                     break;
                 case 'Lighting':
-                    $userMonster->lighting += (5 * $equipmentLevel * $percentage) / 100;
+                    $userMonster->lighting += $statIncrease;
                     break;
+            }
+
+            if (rand(1, 100) <= 30) {
+                $userMonster->hunger = max(0, $userMonster->hunger - 1);
             }
 
             $userMonster->save();
@@ -108,7 +115,8 @@ class DashboardController extends Controller
     public function useItem(Request $request)
     {
         $user = Auth::user();
-        $userMonster = UserMonster::where('id', $request->user_monster_id)
+        $userMonster = UserMonster::with('monster')
+            ->where('id', $request->user_monster_id)
             ->where('user_id', $user->id)
             ->first();
 
@@ -117,20 +125,24 @@ class DashboardController extends Controller
             ->where('user_id', $user->id)
             ->first();
 
-        if (!$userMonster || !$userItem) {
+        if (!$userMonster || !$userItem || $userMonster->hunger == 4) {
             return response()->json([
                 'message' => 'Hmmm something is missing.',
             ], 404);
         }
 
         if ($userItem->quantity > 0) {
-            $effects = explode('-', $userItem->item->effect); 
+            $effects = explode('-', $userItem->item->effect);
 
             foreach ($effects as $effect) {
                 list($type, $value) = explode(',', $effect);
                 $value = (int) $value;
 
                 switch ($type) {
+                    case 'EVO':
+                        $userMonster->evo_points += $value;
+                        $userMonster->evo_points = min($userMonster->evo_points, $userMonster->monster->evo_requirement);                        
+                        break;
                     case 'H':
                         $userMonster->hunger += $value;
                         break;
@@ -162,5 +174,42 @@ class DashboardController extends Controller
         return response()->json([
             'message' => 'No items left to use.',
         ], 400);
+    }
+
+    public function sleepToggle(Request $request)    {
+        $user = Auth::user();
+        $userMonster = UserMonster::with('monster')
+            ->where('id', $request->user_monster_id)
+            ->where('user_id', $user->id)
+            ->first();
+
+        $userEquipment = UserEquipment::with('equipment')
+            ->where('id', $request->user_equipment_id)
+            ->where('user_id', $user->id)
+            ->first();
+
+        if (!$userMonster || !$userEquipment) {
+            return response()->json([
+                'message' => 'Hmmm something is missing.',
+            ], 404);
+        }
+        if ($userMonster->sleep_time == null) {
+            $userMonster->sleep_time = now();
+        }
+        else{
+            $userMonster->sleep_time = null;
+            $minutesSinceSleep = Carbon::parse($userMonster->sleep_time)->diffInMinutes(now());
+            $userMonster->energy = min(
+                $userMonster->energy + floor((($minutesSinceSleep / 10) * 4 + $userEquipment->level) / 100 * $userMonster->max_energy),
+                $userMonster->max_energy
+            );
+        }
+
+        $userMonster->save();
+        
+        return response()->json([
+            'message' => 'Sleep toggled successfully!',
+            'userMonster' => $userMonster,
+        ]);
     }
 }

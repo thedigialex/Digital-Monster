@@ -46,11 +46,11 @@
                         </div>
                         <x-container.modal name="user-items" title="Inventory" focusable>
                             <x-slot name="button">
-                                <x-buttons.primary id="close-items" label="Inventory" icon="fa-briefcase" @click="open = true" />
+                                <x-buttons.primary id="open-items" label="Inventory" icon="fa-briefcase" @click="open = true" />
                             </x-slot>
                             <div class="p-2"
                                 style="background-image: url('/images/background-dashboard.png'); background-size: cover; background-position: center;">
-                                <div class="flex flex-wrap justify-center items-center gap-4 overflow-y-auto" style="max-height: 40vh;">
+                                <div class="flex flex-wrap justify-center items-center gap-4 overflow-y-auto" id="item-selection" style="height: 30vh;">
                                     @foreach ($userItems as $userItem)
                                     <div class="flex flex-col items-center w-28 p-2 bg-primary border-2 border-secondary rounded-md">
                                         <div class="relative w-24 h-24 border-2 border-secondary rounded-md overflow-hidden bg-primary">
@@ -66,7 +66,12 @@
                                     </div>
                                     @endforeach
                                 </div>
-                                <div class="flex justify-center items-center space-x-4 py-6">
+                                <div class="flex justify-center items-center space-x-4 py-6" id="hunger-section" style="height: 30vh; display: none;">
+                                    <div class="relative p-2 bg-primary rounded-md">
+                                        <x-fonts.paragraph class="text-text">NOT HUNGERY</x-fonts.paragraph>
+                                    </div>
+                                </div>
+                                <div class="flex justify-center items-center space-x-4 py-6" id="item-usage-section" style="height: 30vh; display: none;">
                                     <div class="relative w-16 h-16 p-2">
                                         <div id="item-sprite" class="w-full h-full"></div>
                                     </div>
@@ -85,10 +90,10 @@
                     </div>
                     <div class="pt-2">
                         <x-fonts.paragraph id="stat-stats" class="flex flex-wrap w-full md:flex-row flex-col md:space-x-4 space-y-2 md:space-y-0 text-text">
-                            <span id="stat-strength" class="flex-1 text-center">Strength</span>
-                            <span id="stat-agility" class="flex-1 text-center">Agility</span>
-                            <span id="stat-defense" class="flex-1 text-center">Defense</span>
-                            <span id="stat-mind" class="flex-1 text-center">Mind</span>
+                            <span id="stat-strength" class="flex-1 text-center">Strength<br><span></span></span>
+                            <span id="stat-agility" class="flex-1 text-center">Agility<br><span></span></span>
+                            <span id="stat-defense" class="flex-1 text-center">Defense<br><span></span></span>
+                            <span id="stat-mind" class="flex-1 text-center">Mind<br><span></span></span>
                         </x-fonts.paragraph>
                     </div>
                 </div>
@@ -103,14 +108,14 @@
                                 @endforeach
                             </div>
                             <div class="flex justify-center my-4">
-                                <x-buttons.square class="openTraining w-[150px]" @click="open = true"
+                                <x-buttons.square id="sleepButton" class="w-[150px]"
                                     data-equipment='{{ json_encode($userEquipmentLight) }}'
                                     text="{{ $userEquipmentLight->equipment->stat }}" />
                             </div>
                         </x-slot>
 
                         <div class="p-2"
-                            style="background-image: url('/images/background-dashboard.png'); background-size: cover; background-position: center;">
+                            style="background-image: url('/images/background-dashboard.png'); background-size: cover; background-position: center; height: 30vh;">
                             <div class="flex justify-center items-center space-x-4 py-6">
                                 <div class="relative w-16 h-16 p-2">
                                     <div id="equipment-sprite" class="w-full h-full"></div>
@@ -149,6 +154,30 @@
         const statsPanel = document.getElementById('stats-panel');
         const container = document.getElementById('monster-container');
 
+        function updateItemSections() {
+            const itemSelectionSection = document.getElementById('item-selection');
+            const hungerSelectionSection = document.getElementById('hunger-section');
+
+            if (activeUserMonster.hunger != 4) {
+                hungerSelectionSection.style.display = 'none';
+                itemSelectionSection.style.display = 'flex';
+            } else {
+                hungerSelectionSection.style.display = 'flex';
+                itemSelectionSection.style.display = 'none';
+            }
+        }
+
+        function updateActiveMonster(userMonster) {
+            mainAnimationInterval = activeUserMonster.mainAnimationInterval;
+            monsterDiv = activeUserMonster.monsterDiv;
+            spriteDiv = activeUserMonster.spriteDiv;
+            activeUserMonster = userMonster;
+
+            activeUserMonster.mainAnimationInterval = mainAnimationInterval;
+            activeUserMonster.monsterDiv = monsterDiv;
+            activeUserMonster.spriteDiv = spriteDiv;
+        }
+
         function updateStats() {
             document.getElementById('energy-bar').style.width = `${(activeUserMonster.energy / activeUserMonster.max_energy) * 100}%`;
             const hungerIcons = document.querySelectorAll('.hunger-icons i');
@@ -165,15 +194,18 @@
 
             document.querySelector('#stat-name span').textContent = activeUserMonster.name;
             document.querySelector('#stat-stage span').textContent = activeUserMonster.monster.stage;
-            document.getElementById('stat-strength').textContent = `Strength: ${activeUserMonster.strength}`;
-            document.getElementById('stat-agility').textContent = `Agility: ${activeUserMonster.agility}`;
-            document.getElementById('stat-defense').textContent = `Defense: ${activeUserMonster.defense}`;
-            document.getElementById('stat-mind').textContent = `Mind: ${activeUserMonster.mind}`;
+            document.querySelector('#stat-strength span').textContent = activeUserMonster.strength;
+            document.querySelector('#stat-agility span').textContent = activeUserMonster.agility;
+            document.querySelector('#stat-defense span').textContent = activeUserMonster.defense;
+            document.querySelector('#stat-mind span').textContent = activeUserMonster.mind;
         }
 
         function updateMainAnimation() {
             let frameIndex = 0;
             let frames = activeUserMonster.energy == 0 ? [0, 7, 7] : [0, 1, 2];
+            if(activeUserMonster.sleep_time != null) {
+                frames = [5,6];
+            }
             clearInterval(activeUserMonster.mainAnimationInterval);
             activeUserMonster.mainAnimationInterval = setInterval(() => {
                 index = frames[frameIndex];
@@ -252,6 +284,9 @@
 
             let frameIndex = 0;
             let frames = userMonster.energy == 0 ? [0, 7, 7] : [0, 1, 2];
+            if(userMonster.sleep_time != null) {
+                frames = [5,6];
+            }
             spriteDiv.style.backgroundImage = getMonsterImage(userMonster);
             mainAnimationInterval = setInterval(() => {
                 index = frames[frameIndex];
@@ -322,8 +357,17 @@
             });
         });
 
+        document.getElementById('open-items').addEventListener('click', function() {
+            updateItemSections();
+        });
+
         document.querySelectorAll('.useItem').forEach(button => {
             button.addEventListener('click', function() {
+                const itemSelectionSection = document.getElementById('item-selection');
+                itemSelectionSection.style.display = 'none';
+                const animationSection = document.getElementById('item-usage-section');
+                animationSection.style.display = 'flex';
+
                 userItem = JSON.parse(this.getAttribute('data-item'));
 
                 monsterImage = document.getElementById('monster-item-sprite');
@@ -333,12 +377,11 @@
                 monsterAnimation([1, 2]);
                 secondaryAnimation([0, 1, 2, 3], 800);
 
-                
                 const data = {
                     user_item_id: userItem.id,
                     user_monster_id: activeUserMonster.id
                 };
-                
+
                 fetch("{{ route('monster.item') }}", {
                         method: "POST",
                         headers: {
@@ -348,9 +391,21 @@
                         body: JSON.stringify(data)
                     }).then(response => response.json())
                     .then(result => {
-                        updateStats();
-                        updateMainAnimation();
-                        console.log("data updated:", result);
+                        updateActiveMonster(result.userMonster);
+
+                        if (result.userItemQuantity == 0) {
+                            this.closest('.flex.flex-col.items-center').remove();
+                        } else {
+                            this.nextElementSibling.textContent = result.userItemQuantity;
+                        }
+
+                        setTimeout(() => {
+                            updateStats();
+                            updateMainAnimation();
+                            itemSelectionSection.style.display = 'flex';
+                            animationSection.style.display = 'none';
+                            updateItemSections();
+                        }, 3800);
                     });
             });
         });
@@ -393,15 +448,37 @@
                         body: JSON.stringify(data)
                     }).then(response => response.json())
                     .then(result => {
-                        //update the activeUserMonster from the result
-                        activeUserMonster.energy -= 1;
+                        updateActiveMonster(result.userMonster);
                         setTrainingButton();
                         updateStats();
                         updateMainAnimation();
-                        console.log("Training data updated:", result);
                     });
             }
             training = !training;
+        });
+
+        document.getElementById('sleepButton').addEventListener('click', function() {
+            
+            userEquipment = JSON.parse(this.getAttribute('data-equipment'));
+            const data = {
+                user_equipment_id: userEquipment.id,
+                user_monster_id: activeUserMonster.id
+            };
+
+            fetch("{{ route('monster.sleep') }}", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content")
+                    },
+                    body: JSON.stringify(data)
+                }).then(response => response.json())
+                .then(result => {
+                    updateActiveMonster(result.userMonster);
+                    setTrainingButton();
+                    updateStats();
+                    updateMainAnimation();
+                });
         });
     </script>
 </x-app-layout>
