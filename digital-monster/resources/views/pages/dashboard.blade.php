@@ -179,17 +179,6 @@
             }
         }
 
-        function updateActiveMonster(userMonster) {
-            mainAnimationInterval = activeUserMonster.mainAnimationInterval;
-            monsterDiv = activeUserMonster.monsterDiv;
-            spriteDiv = activeUserMonster.spriteDiv;
-            activeUserMonster = userMonster;
-
-            activeUserMonster.mainAnimationInterval = mainAnimationInterval;
-            activeUserMonster.monsterDiv = monsterDiv;
-            activeUserMonster.spriteDiv = spriteDiv;
-        }
-
         function updateStats() {
             document.getElementById('energy-bar').style.width = `${(activeUserMonster.energy / activeUserMonster.max_energy) * 100}%`;
             const hungerIcons = document.querySelectorAll('.hunger-icons i');
@@ -210,20 +199,6 @@
             document.querySelector('#stat-agility span').textContent = activeUserMonster.agility;
             document.querySelector('#stat-defense span').textContent = activeUserMonster.defense;
             document.querySelector('#stat-mind span').textContent = activeUserMonster.mind;
-        }
-
-        function updateMainAnimation() {
-            let frameIndex = 0;
-            let frames = activeUserMonster.energy == 0 ? [0, 7, 7] : [0, 1, 2];
-            if (activeUserMonster.sleep_time != null) {
-                frames = [5, 6];
-            }
-            clearInterval(activeUserMonster.mainAnimationInterval);
-            activeUserMonster.mainAnimationInterval = setInterval(() => {
-                index = frames[frameIndex];
-                frameIndex = (frameIndex + 1) % frames.length;
-                activeUserMonster.spriteDiv.style.backgroundPositionX = `-${index * 48}px`;
-            }, 400 + Math.random() * 400);
         }
 
         function getMonsterImage(userMonster) {
@@ -291,49 +266,70 @@
             tooltip.className = 'tooltip';
             tooltip.innerText = userMonster.name;
 
-            monsterDiv.append(spriteDiv, tooltip);
-            container.appendChild(monsterDiv);
-
-            let frameIndex = 0;
-            let frames = userMonster.energy == 0 ? [0, 7, 7] : [0, 1, 2];
-            if (userMonster.sleep_time != null) {
-                frames = [5, 6];
-            }
-            spriteDiv.style.backgroundImage = getMonsterImage(userMonster);
-            mainAnimationInterval = setInterval(() => {
-                index = frames[frameIndex];
-                frameIndex = (frameIndex + 1) % frames.length;
-                spriteDiv.style.backgroundPositionX = `-${index * 48}px`;
-            }, 400 + Math.random() * 400);
-
-            userMonster.mainAnimationInterval = mainAnimationInterval;
             userMonster.monsterDiv = monsterDiv;
             userMonster.spriteDiv = spriteDiv;
 
             let previousX = 0;
+
             Object.assign(monsterDiv.style, {
                 left: `${Math.random() * (container.offsetWidth - 48)}px`,
                 top: `${Math.random() * (container.offsetHeight - 48)}px`
             });
 
-            setInterval(() => {
-                if (userMonster.sleep_time == null && userMonster.energy > 0) {
-                    let newX = parseFloat(monsterDiv.style.left) + (Math.random() * 60 - 30);
-                    let newY = parseFloat(monsterDiv.style.top) + (Math.random() * 60 - 30);
+            monsterDiv.append(spriteDiv, tooltip);
+            container.appendChild(monsterDiv);
 
-                    newX = Math.max(0, Math.min(container.offsetWidth - 48, newX));
-                    newY = Math.max(0, Math.min(container.offsetHeight - 48, newY));
-
-                    spriteDiv.style.transform = newX < previousX ? 'scaleX(1)' : 'scaleX(-1)';
-                    previousX = newX;
-
-                    Object.assign(monsterDiv.style, {
-                        transition: 'left 2s, top 2s',
-                        left: `${newX}px`,
-                        top: `${newY}px`
-                    });
+            userMonster.updateAnimation = function() {
+                if (this.mainAnimationInterval) {
+                    clearInterval(this.mainAnimationInterval);
                 }
-            }, 4000 + Math.random() * 2000);
+                let frameIndex = 0;
+                let frames = this.energy == 0 ? [0, 7, 7] : [0, 1, 2];
+
+                if (this.sleep_time != null) {
+                    frames = [5, 6];
+                }
+
+                this.mainAnimationInterval = setInterval(() => {
+                    let index = frames[frameIndex];
+                    frameIndex = (frameIndex + 1) % frames.length;
+                    this.spriteDiv.style.backgroundPositionX = `-${index * 48}px`;
+                }, 400 + Math.random() * 400);
+
+                this.updateMovement();
+            };
+
+            userMonster.updateMovement = function() {
+                if (this.movementInterval) {
+                    clearInterval(this.movementInterval);
+                }
+
+                this.movementInterval = setInterval(() => {
+                    if (this.sleep_time == null && this.energy > 0) {
+                        let newX = parseFloat(this.monsterDiv.style.left) + (Math.random() * 60 - 30);
+                        let newY = parseFloat(this.monsterDiv.style.top) + (Math.random() * 60 - 30);
+
+                        newX = Math.max(0, Math.min(container.offsetWidth - 48, newX));
+                        newY = Math.max(0, Math.min(container.offsetHeight - 48, newY));
+
+                        this.spriteDiv.style.transform = newX < previousX ? 'scaleX(1)' : 'scaleX(-1)';
+                        previousX = newX;
+
+                        Object.assign(this.monsterDiv.style, {
+                            transition: 'left 2s, top 2s',
+                            left: `${newX}px`,
+                            top: `${newY}px`
+                        });
+                    }
+                }, 4000 + Math.random() * 2000);
+            };
+
+            userMonster.updateUserMonster = function(updatedMonster) {
+                Object.assign(this, updatedMonster);
+                this.updateAnimation();
+            };
+
+            userMonster.updateAnimation();
 
             monsterDiv.addEventListener('click', () => {
                 if (activeUserMonster) {
@@ -357,7 +353,6 @@
 
         document.querySelectorAll('.openTraining').forEach(button => {
             button.addEventListener('click', function() {
-
                 const trainingSection = document.getElementById('training-section');
                 const sleepSection = document.getElementById('sleep-section');
 
@@ -415,8 +410,8 @@
                         body: JSON.stringify(data)
                     }).then(response => response.json())
                     .then(result => {
-                        updateActiveMonster(result.userMonster);
-
+                        activeUserMonster.updateUserMonster(result.userMonster);
+                        updateStats();
                         if (result.userItemQuantity == 0) {
                             this.closest('.flex.flex-col.items-center').remove();
                         } else {
@@ -424,8 +419,6 @@
                         }
 
                         setTimeout(() => {
-                            updateStats();
-                            updateMainAnimation();
                             itemSelectionSection.style.display = 'flex';
                             animationSection.style.display = 'none';
                             updateItemSections();
@@ -436,6 +429,9 @@
 
         document.getElementById('trainingButton').addEventListener('click', function() {
             if (!training) {
+                const trainingButton = document.getElementById('trainingButton');
+                trainingButton.textContent = 'Stop';
+
                 progress = 0;
                 direction = 1;
 
@@ -472,17 +468,15 @@
                         body: JSON.stringify(data)
                     }).then(response => response.json())
                     .then(result => {
-                        updateActiveMonster(result.userMonster);
+                        activeUserMonster.updateUserMonster(result.userMonster);
                         setTrainingButton();
                         updateStats();
-                        updateMainAnimation();
                     });
             }
             training = !training;
         });
 
         document.getElementById('sleepButton').addEventListener('click', function() {
-
             userEquipment = JSON.parse(this.getAttribute('data-equipment'));
             const data = {
                 user_equipment_id: userEquipment.id,
@@ -498,10 +492,8 @@
                     body: JSON.stringify(data)
                 }).then(response => response.json())
                 .then(result => {
-                    updateActiveMonster(result.userMonster);
-                    setTrainingButton();
+                    activeUserMonster.updateUserMonster(result.userMonster);
                     updateStats();
-                    updateMainAnimation();
                 });
         });
     </script>

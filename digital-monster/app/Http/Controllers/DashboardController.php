@@ -61,9 +61,9 @@ class DashboardController extends Controller
             ->where('user_id', $user->id)
             ->first();
 
-        if (!$userMonster || !$userEquipment) {
+        if (!$userMonster || !$userEquipment || $userMonster->sleep_at != null) {
             return response()->json([
-                'message' => 'Hmmm something is missing.',
+                'message' => 'Hmmm something is off.',
             ], 404);
         }
 
@@ -125,58 +125,53 @@ class DashboardController extends Controller
             ->where('user_id', $user->id)
             ->first();
 
-        if (!$userMonster || !$userItem || $userMonster->hunger == 4) {
+        if (!$userMonster || !$userItem || $userMonster->hunger == 4 || $userMonster->sleep_at != null) {
             return response()->json([
-                'message' => 'Hmmm something is missing.',
+                'message' => 'Hmmm something is off.',
             ], 404);
         }
 
-        if ($userItem->quantity > 0) {
-            $effects = explode('-', $userItem->item->effect);
+        $effects = explode('-', $userItem->item->effect);
 
-            foreach ($effects as $effect) {
-                list($type, $value) = explode(',', $effect);
-                $value = (int) $value;
+        foreach ($effects as $effect) {
+            list($type, $value) = explode(',', $effect);
+            $value = (int) $value;
 
-                switch ($type) {
-                    case 'EVO':
-                        $userMonster->evo_points += $value;
-                        $userMonster->evo_points = min($userMonster->evo_points, $userMonster->monster->evo_requirement);                        
-                        break;
-                    case 'H':
-                        $userMonster->hunger += $value;
-                        break;
-                    case 'e':
-                        $userMonster->energy += $value;
-                        break;
-                }
+            switch ($type) {
+                case 'EVO':
+                    $userMonster->evo_points += $value;
+                    $userMonster->evo_points = min($userMonster->evo_points, $userMonster->monster->evo_requirement);
+                    break;
+                case 'H':
+                    $userMonster->hunger += $value;
+                    break;
+                case 'e':
+                    $userMonster->energy += $value;
+                    break;
             }
+        }
 
-            $userMonster->hunger = min($userMonster->hunger, 4);
-            $userMonster->energy = min($userMonster->energy, $userMonster->max_energy);
+        $userMonster->hunger = min($userMonster->hunger, 4);
+        $userMonster->energy = min($userMonster->energy, $userMonster->max_energy);
 
-            $userMonster->save();
+        $userMonster->save();
 
-            $userItem->quantity -= 1;
-            if ($userItem->quantity <= 0) {
-                $userItem->delete();
-            } else {
-                $userItem->save();
-            }
-
-            return response()->json([
-                'message' => 'Item used successfully!',
-                'userMonster' => $userMonster,
-                'userItemQuantity' => $userItem->quantity
-            ], 200);
+        $userItem->quantity -= 1;
+        if ($userItem->quantity <= 0) {
+            $userItem->delete();
+        } else {
+            $userItem->save();
         }
 
         return response()->json([
-            'message' => 'No items left to use.',
-        ], 400);
+            'message' => 'Item used successfully!',
+            'userMonster' => $userMonster,
+            'userItemQuantity' => $userItem->quantity
+        ], 200);
     }
 
-    public function sleepToggle(Request $request)    {
+    public function sleepToggle(Request $request)
+    {
         $user = Auth::user();
         $userMonster = UserMonster::with('monster')
             ->where('id', $request->user_monster_id)
@@ -195,18 +190,17 @@ class DashboardController extends Controller
         }
         if ($userMonster->sleep_time == null) {
             $userMonster->sleep_time = now();
-        }
-        else{
-            $userMonster->sleep_time = null;
+        } else {
             $minutesSinceSleep = Carbon::parse($userMonster->sleep_time)->diffInMinutes(now());
             $userMonster->energy = min(
                 $userMonster->energy + floor((($minutesSinceSleep / 10) * 4 + $userEquipment->level) / 100 * $userMonster->max_energy),
                 $userMonster->max_energy
             );
+            $userMonster->sleep_time = null;
         }
 
         $userMonster->save();
-        
+
         return response()->json([
             'message' => 'Sleep toggled successfully!',
             'userMonster' => $userMonster,
