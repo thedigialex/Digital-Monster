@@ -47,7 +47,7 @@ class UserMonster extends Model
     {
         $monster = $this->monster;
         if ($this->evo_points >= $monster->evo_requirement) {
-            $evolutions = Evolution::where('base_monster', $monster->id)->first();
+            $evolutions = Evolution::where('base_monster_id', $monster->id)->first();
             if ($evolutions) {
                 if ($this->strength >= $this->mind) {
                     $newMonsterId = $evolutions->route_0;

@@ -36,6 +36,7 @@ Route::middleware('headers')->group(function () {
         Route::post('monster/train', [DashboardController::class, 'useTraining'])->name('monster.train');
         Route::post('monster/item', [DashboardController::class, 'useItem'])->name('monster.item');
         Route::post('monster/sleep', [DashboardController::class, 'sleepToggle'])->name('monster.sleep');
+        Route::post('monster/evolve', [DashboardController::class, 'evolve'])->name('monster.evolve');
 
         Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
         Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

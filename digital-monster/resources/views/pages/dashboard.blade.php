@@ -101,6 +101,15 @@
                 <div class="bg-primary rounded-md md:w-2/3 flex items-center justify-center">
                     <x-container.modal name="user-monster-training" title="Training" focusable>
                         <x-slot name="button">
+                            <div class="flex justify-center my-4">
+                                <button id="evolutionButton" class="w-[150px] relative inline-flex active:scale-90 overflow-hidden rounded-md p-1 focus:outline-none">
+                                    <span class="absolute inset-[-1000%] animate-spin bg-[conic-gradient(from_90deg_at_50%_50%,#333_0%,#545454_50%,#e47e00_100%)]">
+                                    </span>
+                                    <span class="inline-flex h-full w-full items-center justify-center rounded-md bg-secondary p-4 text-text backdrop-blur-3xl">
+                                        Evolve
+                                    </span>
+                                </button>
+                            </div>
                             <div class="flex flex-wrap justify-center gap-4 items-center">
                                 @foreach ($userEquipment as $userEquipment)
                                 <x-buttons.square class="openTraining w-[150px]" @click="open = true"
@@ -199,6 +208,11 @@
             document.querySelector('#stat-agility span').textContent = activeUserMonster.agility;
             document.querySelector('#stat-defense span').textContent = activeUserMonster.defense;
             document.querySelector('#stat-mind span').textContent = activeUserMonster.mind;
+
+            document.getElementById("evolutionButton").classList.add("hidden");
+            if (activeUserMonster.monster.evo_requirement != 0 && activeUserMonster.evo_points == activeUserMonster.monster.evo_requirement) {
+                document.getElementById("evolutionButton").classList.remove("hidden");
+            }
         }
 
         function getMonsterImage(userMonster) {
@@ -249,7 +263,7 @@
             Object.assign(monsterDiv.style, {
                 width: '48px',
                 height: '48px',
-                position: 'absolute'
+                position: 'absolute',
             });
 
             const spriteDiv = document.createElement('div');
@@ -257,10 +271,21 @@
             Object.assign(spriteDiv.style, {
                 width: '100%',
                 height: '100%',
-                backgroundSize: '480px 48px'
+                backgroundSize: '480px 48px',
             });
 
-            spriteDiv.style.backgroundImage = getMonsterImage(userMonster);
+            const shadowDiv = document.createElement('div');
+            shadowDiv.className = 'monster-shadow';
+            Object.assign(shadowDiv.style, {
+                width: '48px',
+                height: '12px',
+                position: 'absolute',
+                bottom: '-6px',
+                left: '0',
+                backgroundColor: '#333333',
+                borderRadius: '32px',
+                opacity: '0.25',
+            });
 
             const tooltip = document.createElement('span');
             tooltip.className = 'tooltip';
@@ -276,10 +301,12 @@
                 top: `${Math.random() * (container.offsetHeight - 48)}px`
             });
 
-            monsterDiv.append(spriteDiv, tooltip);
+            monsterDiv.append(spriteDiv, tooltip, shadowDiv);
             container.appendChild(monsterDiv);
 
             userMonster.updateAnimation = function() {
+                spriteDiv.style.backgroundImage = getMonsterImage(userMonster);
+
                 if (this.mainAnimationInterval) {
                     clearInterval(this.mainAnimationInterval);
                 }
@@ -331,6 +358,41 @@
 
             userMonster.updateAnimation();
 
+            let isDragging = false;
+            let offsetX = 0;
+            let offsetY = 0;
+
+            monsterDiv.addEventListener('mousedown', (e) => {
+                isDragging = true;
+                offsetX = e.clientX - monsterDiv.offsetLeft;
+                offsetY = e.clientY - monsterDiv.offsetTop;
+
+                monsterDiv.style.transition = 'none';
+            });
+
+            document.addEventListener('mousemove', (e) => {
+                if (isDragging) {
+                    const mouseX = e.clientX;
+                    const mouseY = e.clientY;
+
+                    let newLeft = mouseX - offsetX;
+                    let newTop = mouseY - offsetY;
+
+                    newLeft = Math.max(0, Math.min(container.offsetWidth - 48, newLeft));
+                    newTop = Math.max(0, Math.min(container.offsetHeight - 48, newTop));
+
+                    monsterDiv.style.left = `${newLeft}px`;
+                    monsterDiv.style.top = `${newTop}px`;
+                }
+            });
+
+            document.addEventListener('mouseup', () => {
+                if (isDragging) {
+                    isDragging = false;
+                    monsterDiv.style.transition = 'left 0.3s, top 0.3s';
+                }
+            });
+
             monsterDiv.addEventListener('click', () => {
                 if (activeUserMonster) {
                     activeUserMonster.monsterDiv.classList.remove('clicked');
@@ -339,6 +401,7 @@
                 monsterDiv.classList.add('clicked');
                 statsPanel.classList.remove('hidden');
                 container.classList.add('rounded-b-none');
+
                 updateStats();
             });
         });
@@ -494,6 +557,40 @@
                 .then(result => {
                     activeUserMonster.updateUserMonster(result.userMonster);
                     updateStats();
+                });
+        });
+
+        document.getElementById('evolutionButton').addEventListener('click', function() {
+            const data = {
+                user_monster_id: activeUserMonster.id
+            };
+
+            fetch("{{ route('monster.evolve') }}", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content")
+                    },
+                    body: JSON.stringify(data)
+                }).then(response => response.json())
+                .then(result => {
+                    const currentMonsterDiv = activeUserMonster.monsterDiv;
+                    const spriteDiv = activeUserMonster.spriteDiv;
+
+                    spriteDiv.classList.add('flicker');
+                    currentMonsterDiv.classList.add("evolution-animation");
+
+                    setTimeout(() => {
+                        activeUserMonster.updateUserMonster(result.userMonster);
+                        updateStats();
+                        spriteDiv.classList.remove('flicker');
+                        spriteDiv.style.backgroundImage = getMonsterImage(activeUserMonster);
+                        setTimeout(() => {
+                            spriteDiv.style.transition = "opacity 0.5s";
+                            spriteDiv.style.opacity = 1;
+                            currentMonsterDiv.classList.remove("evolution-animation");
+                        }, 50);
+                    }, 1500);
                 });
         });
     </script>

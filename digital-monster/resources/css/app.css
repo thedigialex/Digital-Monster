@@ -28,12 +28,9 @@
 
 /* Dashboard */
 .monster {
-    position: relative;
     cursor: pointer;
 }
-.monster .sprite {
-    transform-origin: center;
-}
+
 .monster .tooltip {
     visibility: hidden;
     background-color: #333333;
@@ -45,9 +42,6 @@
     bottom: 110%;
     left: 50%;
     transform: translateX(-50%);
-    white-space: nowrap;
-    z-index: 1;
-    opacity: 0;
     transition: opacity 0.3s;
 }
 
@@ -75,3 +69,44 @@
     border-bottom-right-radius: 0 !important;
 }
 /* Dashboard */
+
+/* Evolution */
+@keyframes flicker {
+    0% {
+        opacity: 1;
+    }
+    20% {
+        opacity: 0;
+    }
+    40% {
+        opacity: 1;
+    }
+    60% {
+        opacity: 0;
+    }
+    80% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+
+.monster .flicker {
+    animation: flicker 1.5s forwards;
+}
+.monster.evolution-animation {
+    animation: scaleUp 1.5s forwards;
+}
+@keyframes scaleUp {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.2);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+/* Evolution */

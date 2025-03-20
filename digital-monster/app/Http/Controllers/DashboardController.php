@@ -206,4 +206,27 @@ class DashboardController extends Controller
             'userMonster' => $userMonster,
         ]);
     }
+
+    public function evolve(Request $request)
+    {
+        $user = Auth::user();
+        $userMonster = UserMonster::with('monster')
+            ->where('id', $request->user_monster_id)
+            ->where('user_id', $user->id)
+            ->first();
+
+        if (!$userMonster || ($userMonster->evo_points < $userMonster->monster->evo_requirement)) {
+            return response()->json([
+                'message' => 'Hmmm something is missing.',
+            ], 404);
+        }
+
+        $userMonster->evolve();
+        $userMonster->refresh();
+
+        return response()->json([
+            'message' => 'Evolved successfully!',
+            'userMonster' => $userMonster,
+        ]);
+    }
 }
