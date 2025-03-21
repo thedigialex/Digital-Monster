@@ -32,7 +32,8 @@ Route::middleware('headers')->group(function () {
 
     //Log In Required
     Route::middleware('auth')->group(function () {
-        Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+        Route::get('/dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
+        Route::get('/colosseum', [DashboardController::class, 'colosseum'])->name('colosseum');
         Route::post('monster/train', [DashboardController::class, 'useTraining'])->name('monster.train');
         Route::post('monster/item', [DashboardController::class, 'useItem'])->name('monster.item');
         Route::post('monster/sleep', [DashboardController::class, 'sleepToggle'])->name('monster.sleep');

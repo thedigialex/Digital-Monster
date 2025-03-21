@@ -4,6 +4,11 @@
         <span>Dashboard</span>
     </x-nav-link>
 
+    <x-nav-link :href="route('colosseum')" :active="request()->routeIs('colosseum')">
+        <i class="fas fa-landmark"></i>
+        <span>Colosseum</span>
+    </x-nav-link>
+
     @if (Auth::user()->role === 'admin')
     <x-nav-link :href="route('egg_groups.index')" :active="request()->routeIs(['egg_groups.index', 'egg_group.edit'])">
         <i class="fas fa-egg"></i>

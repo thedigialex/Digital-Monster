@@ -11,7 +11,7 @@ use Carbon\Carbon;
 
 class DashboardController extends Controller
 {
-    public function index()
+    public function dashboard()
     {
         $user = Auth::user();
 
@@ -46,6 +46,26 @@ class DashboardController extends Controller
         $totalMonsters = $userMonsters->count();
 
         return view('pages.dashboard', compact('user', 'userMonsters', 'totalMonsters', 'userEquipment', 'userEquipmentLight', 'userItems'));
+    }
+
+    public function colosseum()
+    {
+        $user = Auth::user();
+
+        $userMonsters = UserMonster::with('monster')
+            ->where('user_id', $user->id)
+            ->whereHas('monster', function ($query) {
+                $query->whereNotIn('stage', ['Egg', 'Fresh', 'Child']);
+            })
+            ->get();
+        while ($userMonsters->count() < 20) {
+            $userMonsters = $userMonsters->concat($userMonsters);
+        }
+
+        // Limit to exactly 20 monsters
+        $userMonsters = $userMonsters->take(17);
+
+        return view('pages.colosseum', compact('user', 'userMonsters',));
     }
 
     public function useTraining(Request $request)
