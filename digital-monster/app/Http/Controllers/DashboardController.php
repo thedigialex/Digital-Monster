@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\UserItem;
+use App\Models\Monster;
 use App\Models\UserMonster;
 use App\Models\UserEquipment;
 use Illuminate\Support\Facades\Auth;
@@ -58,14 +59,84 @@ class DashboardController extends Controller
                 $query->whereNotIn('stage', ['Egg', 'Fresh', 'Child']);
             })
             ->get();
-        while ($userMonsters->count() < 20) {
-            $userMonsters = $userMonsters->concat($userMonsters);
+        //while ($userMonsters->count() < 20) {
+        //    $userMonsters = $userMonsters->concat($userMonsters);
+        //}
+
+        //// Limit to exactly 20 monsters
+        //$userMonsters = $userMonsters->take(17);
+        //only monster with energy > 0 and not asleep
+        return view('pages.colosseum', compact('user', 'userMonsters',));
+    }
+
+    public function generateBattle(Request $request)
+    {
+        //return [0,0,0,0] which is the animation frames
+        //return enemy monsters to show along with a random type b/c type is tied to userMonster
+        //compre stats into a 4 array but ranomize the elments and use the first three to check if a win or lose
+        //update usermonster 
+        //remove 1 energy. Check if userMonster has >0 energy
+        //return a true or false to remove the activeuser monster
+        $user = Auth::user();
+
+        $userMonster = UserMonster::with('monster')
+            ->where('id', $request->user_monster_id)
+            ->where('user_id', $user->id)
+            ->first();
+
+        $stages = ['Rookie', 'Champion', 'Ultimate', 'Mega'];
+        $currentStage = $userMonster->monster->stage;
+        $validStages = [$currentStage];
+
+        if ($currentStage != 'Rookie') {
+            $stageIndex = array_search($currentStage, $stages);
+            $validStages[] = $stages[$stageIndex - 1] ?? 'Rookie';
         }
 
-        // Limit to exactly 20 monsters
-        $userMonsters = $userMonsters->take(17);
+        $enemyStage = $validStages[array_rand($validStages)];
+        $enemyMonster = Monster::where('stage', $enemyStage)->inRandomOrder()->first();
 
-        return view('pages.colosseum', compact('user', 'userMonsters',));
+        if (!$userMonster || !$enemyMonster || $userMonster->sleep_at != null || $userMonster->energy-1 < 0) {
+            return response()->json([
+                'message' => 'Hmmm something is off.',
+                'successful' => false
+            ]);
+        }
+
+        $types = ['Data', 'Virus', 'Vaccine'];
+        $randomType = $types[array_rand($types)];
+
+        $enemyUserMonster = new UserMonster([
+            'user_id' => null,
+            'monster_id' => $enemyMonster->id,
+            'name' => 'Wild Monster',
+            'type' => $randomType,
+            'attack' => rand(10, 50) * (array_search($enemyStage, $stages) + 1),
+            'level' => rand(1, 20),
+            'exp' => rand(0, 1000),
+            'strength' => rand(10, 50) * (array_search($enemyStage, $stages) + 1),
+            'agility' => rand(10, 50) * (array_search($enemyStage, $stages) + 1),
+            'defense' => rand(10, 50) * (array_search($enemyStage, $stages) + 1),
+            'mind' => rand(10, 50) * (array_search($enemyStage, $stages) + 1),
+            'hunger' => rand(0, 100),
+            'exercise' => rand(0, 100),
+            'clean' => rand(0, 100),
+            'energy' => rand(50, 100),
+            'max_energy' => 100,
+            'wins' => 0,
+            'losses' => 0,
+            'trainings' => 0,
+            'max_trainings' => 10,
+            'evo_points' => 0,
+            'sleep_time' => null,
+        ]);
+        $enemyUserMonster->setRelation('monster', $enemyMonster);
+
+        return response()->json([
+            'message' => 'Enemy Monster Generated',
+            'successful' => true,
+            'enemyUserMonster' => $enemyUserMonster,
+        ]);
     }
 
     public function useTraining(Request $request)

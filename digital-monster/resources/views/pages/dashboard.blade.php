@@ -46,7 +46,7 @@
                         </div>
                         <x-container.modal name="user-items" title="Inventory" focusable>
                             <x-slot name="button">
-                                <x-buttons.primary id="open-items" label="Inventory" icon="fa-briefcase" @click="open = true" />
+                                <x-buttons.primary id="openItems" label="Inventory" icon="fa-briefcase" @click="open = true" />
                             </x-slot>
 
                             <div class="flex flex-col justify-center items-center bg-cover bg-center"
@@ -440,7 +440,7 @@
                 });
             });
 
-            document.getElementById('open-items').addEventListener('click', function() {
+            document.getElementById('openItems').addEventListener('click', function() {
                 updateItemSections();
             });
 
