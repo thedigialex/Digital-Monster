@@ -51,22 +51,20 @@
                     <div class="absolute inset-0 border-8 border-transparent border-t-secondary rounded-full animate-spin"></div>
                 </div>
             </div>
-            <div id="battle-arena" class="flex flex-col justify-center items-center gap-4 p-2 w-full">
-                <div class="flex justify-center items-center">
-                    <div class="w-16 h-16 p-2">
-                        <div id="enemy-monster-sprite" class="w-full h-full"></div>
-                    </div>
-                    <div class="w-16 h-16 p-2">
-                        <div id="user-monster-sprite" class="w-full h-full"></div>
-                    </div>
+
+            <div id="battle-arena" class="flex justify-around items-center gap-4 p-2 w-3/4">
+                <div class="w-16 h-16 p-2">
+                    <div id="enemy-monster-sprite" class="w-full h-full" style="transform: scaleX(-1);"></div>
+                </div>
+                <img id="attack-image" class="absolute w-6 h-6 hidden" src="" alt="Attack Image">
+                <div class="w-16 h-16 p-2">
+                    <div id="user-monster-sprite" class="w-full h-full"></div>
                 </div>
             </div>
         </div>
     </x-container>
 
 </x-app-layout>
-
-
 
 <script>
     document.addEventListener("DOMContentLoaded", function() {
@@ -80,7 +78,6 @@
         const loadingSection = document.getElementById("loading-section");
         const battleArena = document.getElementById("battle-arena");
         const setupSection = document.getElementById("setup-section");
-
 
         const userMonsters = JSON.parse(carousel.getAttribute("data-monsters"));
         let itemsPerPage = window.innerWidth <= 768 ? 1 : 5;
@@ -127,6 +124,7 @@
                     img.src = `/storage/${userMonster.monster.image_2}`;
                 }
 
+                console.log(userMonster);
                 imgDiv.appendChild(img);
 
                 const nameParagraph = document.createElement("p");
@@ -189,22 +187,104 @@
                 }).then(response => response.json())
                 .then(result => {
                     if (result.successful) {
+                        console.log(result);
                         loadingSection.classList.add("hidden");
                         battleArena.classList.remove("hidden");
                         enemyUserMonster = result.enemyUserMonster;
                         startBattle();
-                    }
-                    else{
+                        if (result.removeUserMonster) {
+                            const activeMonsterDiv = document.querySelector(`#monster-${activeUserMonster.id}`);
+                            activeMonsterDiv.remove();
+                            //need to move this into the last function of battle
+                        }
+                    } else {
                         //reset battle thing and show a message.
                     }
                 });
         });
 
         function startBattle() {
+            const attackImage = document.getElementById('attack-image');
+
             monsterImage = document.getElementById('user-monster-sprite');
             enemyMonsterImage = document.getElementById('enemy-monster-sprite');
+
             userMonsterAnimation([0, 1]);
-            enemyMonsterAnimation([0,1]);
+            enemyMonsterAnimation([0, 1]);
+
+            let attackImages = {
+                leftToRight: activeUserMonster.attack.item.image,
+                rightToLeft: enemyUserMonster.attack.image
+            };
+
+            let attackCount = 0;
+
+            function getPositions() {
+                const userRect = monsterImage.getBoundingClientRect();
+                const enemyRect = enemyMonsterImage.getBoundingClientRect();
+                return {
+                    userX: userRect.right - userRect.width,
+                    enemyX: enemyRect.right - enemyRect.width
+                };
+            }
+
+            function performAttack() {
+                console.log(attackCount);
+                if (attackCount >= 6) {
+                    attackImage.classList.add('hidden');
+                    return;
+                }
+
+                let {
+                    userX,
+                    enemyX
+                } = getPositions();
+                let fromLeft = attackCount % 2 == 0;
+
+                attackImage.src = "/storage/" + (fromLeft ? attackImages.leftToRight : attackImages.rightToLeft);
+                attackImage.classList.remove('hidden');
+                attackImage.style.position = "absolute";
+                attackImage.style.left = `${fromLeft ? userX : enemyX}px`;
+
+                let targetX = fromLeft ? enemyX : userX;
+
+                attackImage.animate([{
+                        transform: "translateX(0px)",
+                    },
+                    {
+                        transform: `translateX(${targetX - (fromLeft ? userX : enemyX)}px)`,
+                    }
+                ], {
+                    duration: 1000,
+                    easing: "linear",
+                    fill: "forwards"
+                });
+
+                setTimeout(() => {
+                    attackImage.classList.add('hidden');
+                    if (fromLeft) {
+                        playDamageAnimation(enemyMonsterImage);
+                    } else {
+                        playDamageAnimation(monsterImage);
+                    }
+
+                    attackCount++;
+                    setTimeout(performAttack, 1000);
+                }, 1000);
+            }
+
+            performAttack();
+        }
+
+        function playDamageAnimation(monster) {
+            let originalTransform = monster.style.transform || "";
+
+            monster.style.transition = "transform 0.1s ease-in-out";
+            monster.style.transform = originalTransform + " scale(1.1)";
+
+            setTimeout(() => {
+                monster.style.transform = originalTransform;
+            }, 150);
         }
 
         function getMonsterImage(userMonster) {

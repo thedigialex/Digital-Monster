@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Item;
 use App\Models\UserItem;
 use App\Models\Monster;
 use App\Models\UserMonster;
@@ -44,9 +45,16 @@ class DashboardController extends Controller
             })
             ->get();
 
+        $userAttacks = UserItem::with('item')
+            ->where('user_id', $user->id)
+            ->whereHas('item', function ($query) {
+                $query->where('type', 'Attack');
+            })
+            ->get();
+
         $totalMonsters = $userMonsters->count();
 
-        return view('pages.dashboard', compact('user', 'userMonsters', 'totalMonsters', 'userEquipment', 'userEquipmentLight', 'userItems'));
+        return view('pages.dashboard', compact('user', 'userMonsters', 'totalMonsters', 'userEquipment', 'userEquipmentLight', 'userItems', 'userAttacks'));
     }
 
     public function colosseum()
@@ -58,25 +66,19 @@ class DashboardController extends Controller
             ->whereHas('monster', function ($query) {
                 $query->whereNotIn('stage', ['Egg', 'Fresh', 'Child']);
             })
+            ->where('energy', '>', 0)
+            ->whereNull('sleep_time')
             ->get();
-        //while ($userMonsters->count() < 20) {
-        //    $userMonsters = $userMonsters->concat($userMonsters);
-        //}
 
-        //// Limit to exactly 20 monsters
-        //$userMonsters = $userMonsters->take(17);
-        //only monster with energy > 0 and not asleep
+        foreach ($userMonsters as $userMonster) {
+            $userMonster->attack = UserItem::with('item')->where('id', $userMonster->attack)->first();
+        }
+
         return view('pages.colosseum', compact('user', 'userMonsters',));
     }
 
     public function generateBattle(Request $request)
     {
-        //return [0,0,0,0] which is the animation frames
-        //return enemy monsters to show along with a random type b/c type is tied to userMonster
-        //compre stats into a 4 array but ranomize the elments and use the first three to check if a win or lose
-        //update usermonster 
-        //remove 1 energy. Check if userMonster has >0 energy
-        //return a true or false to remove the activeuser monster
         $user = Auth::user();
 
         $userMonster = UserMonster::with('monster')
@@ -85,18 +87,18 @@ class DashboardController extends Controller
             ->first();
 
         $stages = ['Rookie', 'Champion', 'Ultimate', 'Mega'];
-        $currentStage = $userMonster->monster->stage;
-        $validStages = [$currentStage];
 
-        if ($currentStage != 'Rookie') {
-            $stageIndex = array_search($currentStage, $stages);
-            $validStages[] = $stages[$stageIndex - 1] ?? 'Rookie';
+        $stageIndex = array_search($userMonster->monster->stage, $stages);
+        $validStages = [$userMonster->monster->stage];
+
+        if ($stageIndex > 0) {
+            $validStages[] = $stages[$stageIndex - 1];
         }
 
         $enemyStage = $validStages[array_rand($validStages)];
         $enemyMonster = Monster::where('stage', $enemyStage)->inRandomOrder()->first();
 
-        if (!$userMonster || !$enemyMonster || $userMonster->sleep_at != null || $userMonster->energy-1 < 0) {
+        if (!$userMonster || !$enemyMonster || $userMonster->sleep_at || $userMonster->energy <= 0) {
             return response()->json([
                 'message' => 'Hmmm something is off.',
                 'successful' => false
@@ -104,38 +106,65 @@ class DashboardController extends Controller
         }
 
         $types = ['Data', 'Virus', 'Vaccine'];
-        $randomType = $types[array_rand($types)];
+        $level = rand(1, 10);
+
+        $randomAttackItem = Item::where('type', 'Attack')
+            ->inRandomOrder()
+            ->first();
 
         $enemyUserMonster = new UserMonster([
-            'user_id' => null,
             'monster_id' => $enemyMonster->id,
             'name' => 'Wild Monster',
-            'type' => $randomType,
-            'attack' => rand(10, 50) * (array_search($enemyStage, $stages) + 1),
-            'level' => rand(1, 20),
-            'exp' => rand(0, 1000),
-            'strength' => rand(10, 50) * (array_search($enemyStage, $stages) + 1),
-            'agility' => rand(10, 50) * (array_search($enemyStage, $stages) + 1),
-            'defense' => rand(10, 50) * (array_search($enemyStage, $stages) + 1),
-            'mind' => rand(10, 50) * (array_search($enemyStage, $stages) + 1),
-            'hunger' => rand(0, 100),
-            'exercise' => rand(0, 100),
-            'clean' => rand(0, 100),
-            'energy' => rand(50, 100),
-            'max_energy' => 100,
-            'wins' => 0,
-            'losses' => 0,
-            'trainings' => 0,
-            'max_trainings' => 10,
-            'evo_points' => 0,
-            'sleep_time' => null,
+            'type' => $types[array_rand($types)],
+            'level' => $level,
+            'attack' => $randomAttackItem,
+            'strength' => rand(25, 50 * $level) * (array_search($enemyStage, $stages) + 1),
+            'agility' => rand(25, 50 * $level) * (array_search($enemyStage, $stages) + 1),
+            'defense' => rand(25, 50 * $level) * (array_search($enemyStage, $stages) + 1),
+            'mind' => rand(25, 50 * $level) * (array_search($enemyStage, $stages) + 1),
         ]);
+
         $enemyUserMonster->setRelation('monster', $enemyMonster);
 
+        $typeAdvantage = [
+            'Data' => 'Virus',
+            'Virus' => 'Vaccine',
+            'Vaccine' => 'Data'
+        ];
+
+        $userHasAdvantage = ($typeAdvantage[$userMonster->type] ?? null) === $enemyUserMonster->type;
+        $enemyHasAdvantage = ($typeAdvantage[$enemyUserMonster->type] ?? null) === $userMonster->type;
+
+        $battleResult = [
+            (($userMonster->strength * ($userHasAdvantage ? 1.3 : ($enemyHasAdvantage ? 0.7 : 1))) >
+                ($enemyUserMonster->strength * ($enemyHasAdvantage ? 1.3 : ($userHasAdvantage ? 0.7 : 1)))) ? 1 : 0,
+
+            (($userMonster->agility * ($userHasAdvantage ? 1.3 : ($enemyHasAdvantage ? 0.7 : 1))) >
+                ($enemyUserMonster->agility * ($enemyHasAdvantage ? 1.3 : ($userHasAdvantage ? 0.7 : 1)))) ? 1 : 0,
+
+            (($userMonster->defense * ($userHasAdvantage ? 1.3 : ($enemyHasAdvantage ? 0.7 : 1))) >
+                ($enemyUserMonster->defense * ($enemyHasAdvantage ? 1.3 : ($userHasAdvantage ? 0.7 : 1)))) ? 1 : 0,
+
+            (($userMonster->mind * ($userHasAdvantage ? 1.3 : ($enemyHasAdvantage ? 0.7 : 1))) >
+                ($enemyUserMonster->mind * ($enemyHasAdvantage ? 1.3 : ($userHasAdvantage ? 0.7 : 1)))) ? 1 : 0
+        ];
+
+        $indexes = array_rand($battleResult, 3);
+        $animationFrame = array_intersect_key($battleResult, array_flip($indexes));
+        $sum = array_sum($animationFrame);
+
+        $sum >= 2 ? $userMonster->wins++ : $userMonster->losses++;
+        $userMonster->energy--;
+
+        $userMonster->save();
+
+        $removeUserMonster = ($userMonster->energy == 0) ? true : false;
+
         return response()->json([
-            'message' => 'Enemy Monster Generated',
             'successful' => true,
             'enemyUserMonster' => $enemyUserMonster,
+            'animationFrame' => $animationFrame,
+            'removeUserMonster' => $removeUserMonster
         ]);
     }
 
