@@ -52,7 +52,7 @@
                 </div>
             </div>
 
-            <div id="battle-arena" class="flex justify-around items-center gap-4 p-2 w-3/4">
+            <div id="battle-arena" class="flex justify-around items-center gap-4 p-2 w-full md:w-1/2">
                 <div class="w-16 h-16 p-2">
                     <div id="enemy-monster-sprite" class="w-full h-full" style="transform: scaleX(-1);"></div>
                 </div>
@@ -124,7 +124,6 @@
                     img.src = `/storage/${userMonster.monster.image_2}`;
                 }
 
-                console.log(userMonster);
                 imgDiv.appendChild(img);
 
                 const nameParagraph = document.createElement("p");
@@ -187,30 +186,25 @@
                 }).then(response => response.json())
                 .then(result => {
                     if (result.successful) {
-                        console.log(result);
                         loadingSection.classList.add("hidden");
                         battleArena.classList.remove("hidden");
                         enemyUserMonster = result.enemyUserMonster;
-                        startBattle();
-                        if (result.removeUserMonster) {
-                            const activeMonsterDiv = document.querySelector(`#monster-${activeUserMonster.id}`);
-                            activeMonsterDiv.remove();
-                            //need to move this into the last function of battle
-                        }
+                        startBattle(result.animationFrame, result.removeUserMonster);
                     } else {
                         //reset battle thing and show a message.
                     }
                 });
         });
 
-        function startBattle() {
+        function startBattle(animationFrame, removeUserMonster) {
+
             const attackImage = document.getElementById('attack-image');
 
             monsterImage = document.getElementById('user-monster-sprite');
             enemyMonsterImage = document.getElementById('enemy-monster-sprite');
 
-            userMonsterAnimation([0, 1]);
-            enemyMonsterAnimation([0, 1]);
+            userMonsterAnimation([3, 4]);
+            enemyMonsterAnimation([3, 4]);
 
             let attackImages = {
                 leftToRight: activeUserMonster.attack.item.image,
@@ -229,9 +223,30 @@
             }
 
             function performAttack() {
-                console.log(attackCount);
                 if (attackCount >= 6) {
                     attackImage.classList.add('hidden');
+                    const userFrame = animationFrame[0] + animationFrame[1] + animationFrame[2] >= 2 ? [0, 8] : [0, 7];
+                    const enemyFrame = animationFrame[0] + animationFrame[1] + animationFrame[2] >= 2 ? [0, 7] : [0, 8];
+
+                    userMonsterAnimation(userFrame);
+                    enemyMonsterAnimation(enemyFrame);
+                    setTimeout(() => {
+                        const activeMonsterDiv = document.querySelector(`#monster-${activeUserMonster.id}`);
+
+                        activeMonsterDiv.classList.remove("text-secondary", "bg-accent");
+                        activeMonsterDiv.classList.add("bg-secondary", "text-text");
+
+                        if (removeUserMonster) {
+                            activeMonsterDiv.remove();
+                        }
+
+                        battleSection.classList.add("hidden");
+                        loadingSection.classList.add("hidden");
+                        setupSection.classList.remove("hidden");
+                        typeSection.classList.add("hidden");
+                        activeUserMonster = null;
+
+                    }, 5000);
                     return;
                 }
 
@@ -245,14 +260,15 @@
                 attackImage.classList.remove('hidden');
                 attackImage.style.position = "absolute";
                 attackImage.style.left = `${fromLeft ? userX : enemyX}px`;
+                attackImage.style.transform = fromLeft ? "scaleX(1)" : "scaleX(-1)";
 
                 let targetX = fromLeft ? enemyX : userX;
 
                 attackImage.animate([{
-                        transform: "translateX(0px)",
+                        transform: `translateX(0px) ${fromLeft ? "scaleX(1)" : "scaleX(-1)"}`
                     },
                     {
-                        transform: `translateX(${targetX - (fromLeft ? userX : enemyX)}px)`,
+                        transform: `translateX(${targetX - (fromLeft ? userX : enemyX)}px) ${fromLeft ? "scaleX(1)" : "scaleX(-1)"}`
                     }
                 ], {
                     duration: 1000,

@@ -52,11 +52,12 @@
                             <x-inputs.dropdown
                                 name="route_{{ $route }}"
                                 divClasses="w-full"
-                                :options="($monster && $monster->egg_group_id) ? $allMonsters->where('egg_group_id', $monster->egg_group_id)->pluck('name', 'id')->toArray() : []"
                                 useOptionKey="true"
+                                :options="$allMonsters->where('egg_group_id')->pluck('name', 'id')->toArray()"
                                 :value="$monster && $monster->evolution ? $monster->evolution->where('route_'.$route, '!=', null)->pluck('route_'.$route)->first() ?? '' : ''" />
                             @endforeach
                         </div>
+                        
                     </x-container.single>
                 </div>
                 <div class="flex justify-center py-4 mt-4">

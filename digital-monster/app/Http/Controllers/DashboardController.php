@@ -87,7 +87,6 @@ class DashboardController extends Controller
             ->first();
 
         $stages = ['Rookie', 'Champion', 'Ultimate', 'Mega'];
-
         $stageIndex = array_search($userMonster->monster->stage, $stages);
         $validStages = [$userMonster->monster->stage];
 
@@ -132,33 +131,61 @@ class DashboardController extends Controller
             'Vaccine' => 'Data'
         ];
 
-        $userHasAdvantage = ($typeAdvantage[$userMonster->type] ?? null) === $enemyUserMonster->type;
-        $enemyHasAdvantage = ($typeAdvantage[$enemyUserMonster->type] ?? null) === $userMonster->type;
+        $elementAdvantage = [
+            'Fire' => ['Nature', 'Machine'],
+            'Water' => ['Fire', 'Dark'],
+            'Nature' => ['Water', 'Light'],
+            'Machine' => ['Light', 'Nature'],
+            'Light' => ['Dark', 'Water'],
+            'Dark' => ['Machine', 'Fire']
+        ];
+
+        function getElementFromType($userMonster)
+        {
+            return match ($userMonster->type) {
+                'Virus' => $userMonster->monster->element_2,
+                'Vaccine' => $userMonster->monster->element_1,
+                default => $userMonster->monster->element_0,
+            };
+        }
+
+        $userElement = getElementFromType($userMonster);
+        $enemyElement = getElementFromType($enemyUserMonster);
+
+        $userHasTypeAdvantage = ($typeAdvantage[$userMonster->type]) == $enemyUserMonster->type;
+        $enemyHasTypeAdvantage = ($typeAdvantage[$enemyUserMonster->type] ?? null) == $userMonster->type;
+
+        $userHasElementAdvantage = $userElement && $enemyElement && in_array($enemyElement, $elementAdvantage[$userElement] ?? []);
+        $enemyHasElementAdvantage = $userElement && $enemyElement && in_array($userElement, $elementAdvantage[$enemyElement] ?? []);
+
+        function getMultiplier($hasTypeAdv, $hasElementAdv)
+        {
+            if ($hasTypeAdv && $hasElementAdv) return 1.6;
+            if ($hasTypeAdv || $hasElementAdv) return 1.25;
+            return 1; 
+        }
+
+        $userMultiplier = getMultiplier($userHasTypeAdvantage, $userHasElementAdvantage);
+        $enemyMultiplier = getMultiplier($enemyHasTypeAdvantage, $enemyHasElementAdvantage);
 
         $battleResult = [
-            (($userMonster->strength * ($userHasAdvantage ? 1.3 : ($enemyHasAdvantage ? 0.7 : 1))) >
-                ($enemyUserMonster->strength * ($enemyHasAdvantage ? 1.3 : ($userHasAdvantage ? 0.7 : 1)))) ? 1 : 0,
-
-            (($userMonster->agility * ($userHasAdvantage ? 1.3 : ($enemyHasAdvantage ? 0.7 : 1))) >
-                ($enemyUserMonster->agility * ($enemyHasAdvantage ? 1.3 : ($userHasAdvantage ? 0.7 : 1)))) ? 1 : 0,
-
-            (($userMonster->defense * ($userHasAdvantage ? 1.3 : ($enemyHasAdvantage ? 0.7 : 1))) >
-                ($enemyUserMonster->defense * ($enemyHasAdvantage ? 1.3 : ($userHasAdvantage ? 0.7 : 1)))) ? 1 : 0,
-
-            (($userMonster->mind * ($userHasAdvantage ? 1.3 : ($enemyHasAdvantage ? 0.7 : 1))) >
-                ($enemyUserMonster->mind * ($enemyHasAdvantage ? 1.3 : ($userHasAdvantage ? 0.7 : 1)))) ? 1 : 0
+            (($userMonster->strength * $userMultiplier) > ($enemyUserMonster->strength * $enemyMultiplier)) ? 1 : 0,
+            (($userMonster->agility * $userMultiplier) > ($enemyUserMonster->agility * $enemyMultiplier)) ? 1 : 0,
+            (($userMonster->defense * $userMultiplier) > ($enemyUserMonster->defense * $enemyMultiplier)) ? 1 : 0,
+            (($userMonster->mind * $userMultiplier) > ($enemyUserMonster->mind * $enemyMultiplier)) ? 1 : 0
         ];
 
         $indexes = array_rand($battleResult, 3);
         $animationFrame = array_intersect_key($battleResult, array_flip($indexes));
         $sum = array_sum($animationFrame);
 
-        $sum >= 2 ? $userMonster->wins++ : $userMonster->losses++;
+        ($sum >= 2) ? $userMonster->wins++ : $userMonster->losses++;
+
         $userMonster->energy--;
 
         $userMonster->save();
 
-        $removeUserMonster = ($userMonster->energy == 0) ? true : false;
+        $removeUserMonster = ($userMonster->energy == 0);
 
         return response()->json([
             'successful' => true,

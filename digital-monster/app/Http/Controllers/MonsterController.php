@@ -5,22 +5,25 @@ namespace App\Http\Controllers;
 use App\Models\Monster;
 use App\Models\EggGroup;
 use App\Models\Evolution;
-use App\Models\EvolutionRoute;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class MonsterController extends Controller
 {
-    protected $elements = ['Fire', 'Water', 'Air', 'Nature', 'Machine', 'Light', 'Dark'];
+    protected $elements = ['Fire', 'Water', 'Nature', 'Machine', 'Light', 'Dark'];
     protected $stages = ['Egg', 'Fresh', 'Child', 'Rookie', 'Champion', 'Ultimate', 'Mega'];
 
     public function index()
     {
-        $eggGroups = EggGroup::all();
+        $eggGroups = EggGroup::with(['monsters' => function ($query) {
+            $query->orderByRaw("FIELD(stage, 'Egg', 'Fresh', 'Child', 'Rookie', 'Champion', 'Ultimate', 'Mega')");
+        }])->get();
+
         if ($eggGroups->isEmpty()) {
             return redirect()->route('egg_group.edit')
-                ->with('error', 'No egg groups available. Create an egg groups first.');
+                ->with('error', 'No egg groups available. Create an egg group first.');
         }
+
         $icons = [
             'Tyrannos' => 'fa-dragon',
             'Insecta' => 'fa-bug',
@@ -51,6 +54,7 @@ class MonsterController extends Controller
         if (!session('monster_id')) {
             $validationRules['image_0'] = 'required|image|mimes:png,jpg|max:2048';
         }
+
         $request->validate($validationRules);
 
         $monster = Monster::find(session('monster_id'));
