@@ -48,44 +48,63 @@
                             <x-slot name="button">
                                 <x-buttons.primary id="openItems" label="Inventory" icon="fa-briefcase" @click="open = true" />
                             </x-slot>
+                            <div class="flex gap-4 p-2 rounded-t-md bg-secondary w-full justify-center">
+                                <button id="showItems" class="bg-primary text-text px-4 py-2 rounded-md">Items</button>
+                                <button id="showAttacks" class="bg-primary text-text px-4 py-2 rounded-md">Attacks</button>
+                            </div>
 
-                            <div class="flex flex-col justify-center items-center bg-cover bg-center"
+                            <div class="flex flex-col justify-center items-center bg-cover bg-center rounded-b-md"
                                 style="background-image: url('/images/background-dashboard.png'); height: 30vh;">
-                                <div class="flex flex-wrap justify-center items-center gap-4 overflow-y-auto" id="item-selection">
-                                    @foreach ($userItems as $userItem)
-                                    <div class="flex flex-col items-center w-28 p-2 bg-secondary border-2 border-accent rounded-md">
-                                        <div class="w-24 h-24 p-2 rounded-md bg-primary">
-                                            <button class="useItem w-full h-full"
-                                                data-item='{{ json_encode($userItem) }}'
-                                                style="background: url('/storage/{{ $userItem->item->image }}') no-repeat; background-size: cover; background-position: 0 0;">
-                                            </button>
-                                            <span class="absolute bottom-1 right-1 bg-accent text-text text-xs px-2 py-1 rounded-md">
-                                                {{ $userItem->quantity }}
-                                            </span>
+                                <div id="items" class="flex justify-center items-center overflow-y-auto">
+                                    <div id="item-selection" class="flex flex-wrap justify-center items-center gap-4">
+                                        @foreach ($userItems as $userItem)
+                                        <div class="flex flex-col items-center w-28 p-2 bg-secondary border-2 border-accent rounded-md">
+                                            <div class="relative w-24 h-24 p-2 rounded-md bg-primary">
+                                                <button class="useItem w-full h-full"
+                                                    data-item='{{ json_encode($userItem) }}'
+                                                    style="background: url('/storage/{{ $userItem->item->image }}') no-repeat; background-size: cover; background-position: 0 0;">
+                                                </button>
+                                                <span class="absolute bottom-1 right-1 bg-accent text-text text-xs px-2 py-1 rounded-md">
+                                                    {{ $userItem->quantity }}
+                                                </span>
+                                            </div>
+                                            <x-fonts.paragraph> {{ $userItem->item->name }}</x-fonts.paragraph>
                                         </div>
-                                        <x-fonts.paragraph> {{ $userItem->item->name }}</x-fonts.paragraph>
+                                        @endforeach
+                                    </div>
+                                    <div id="status-section" class="flex justify-center items-center">
+                                        <x-fonts.paragraph id="status-text" class="text-text p-2 bg-primary rounded-md">Monster is full</x-fonts.paragraph>
+                                    </div>
+
+                                    <div id="item-usage-section" class="hidden flex justify-center items-center gap-4 p-2 w-full">
+                                        <div class="w-16 h-16 p-2">
+                                            <div id="item-sprite" class="w-full h-full"></div>
+                                        </div>
+                                        <div class="w-16 h-16 p-2">
+                                            <div id="monster-item-sprite" class="w-full h-full"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="attacks" class="hidden flex flex-wrap justify-center items-center gap-4 overflow-y-auto">
+                                    @foreach ($userAttacks as $userAttack)
+                                    <div class="attack-div flex flex-col items-center w-28 p-2 bg-secondary border-2 border-accent rounded-md">
+                                        <div class="relative w-24 h-24 p-2 rounded-md bg-primary">
+                                            <button class="useAttack w-full h-full "
+                                                data-attack='{{ json_encode($userAttack) }}'
+                                                style="background: url('/storage/{{ $userAttack->item->image }}') no-repeat; background-size: cover; background-position: 0 0;">
+                                            </button>
+                                        </div>
+                                        <x-fonts.paragraph> {{ $userAttack->item->name }}</x-fonts.paragraph>
                                     </div>
                                     @endforeach
-                                </div>
-                                <div id="status-section" class="flex justify-center items-center" style="display: none;">
-                                    <div class="p-2 bg-primary rounded-md">
-                                        <x-fonts.paragraph id="status-text" class="text-text">Monster is full</x-fonts.paragraph>
-                                    </div>
-                                </div>
-                                <div id="item-usage-section" class="flex justify-center items-center gap-4 p-2 w-full" style="display: none;">
-                                    <div class="w-16 h-16 p-2">
-                                        <div id="item-sprite" class="w-full h-full"></div>
-                                    </div>
-                                    <div class="w-16 h-16 p-2">
-                                        <div id="monster-item-sprite" class="w-full h-full"></div>
-                                    </div>
                                 </div>
                             </div>
                         </x-container.modal>
                     </div>
+
                     <div class="pt-2">
                         <x-fonts.paragraph>Energy</x-fonts.paragraph>
-                        <div class="w-full bg-secondary rounded-md h-4 relative">
+                        <div class="w-full bg-secondary rounded-md h-4">
                             <div id="energy-bar" class="bg-success h-4 rounded-md transition-all duration-300"></div>
                         </div>
                     </div>
@@ -142,11 +161,8 @@
 
                                 <button id="trainingButton" class="px-4 py-2 bg-red-500 text-text rounded-md">Start</button>
                             </div>
-
-                            <div id="sleep-section" class="flex justify-center items-center" style="display: none;">
-                                <div class="p-2 bg-primary rounded-md">
-                                    <x-fonts.paragraph class="text-text">Monster is sleeping</x-fonts.paragraph>
-                                </div>
+                            <div id="sleep-section" class="flex justify-center items-center">
+                                <x-fonts.paragraph id="status-text" class="text-text p-2 bg-primary rounded-md">Monster is sleeping</x-fonts.paragraph>
                             </div>
                         </div>
                     </x-container.modal>
@@ -170,24 +186,6 @@
 
             const statsPanel = document.getElementById('stats-panel');
             const container = document.getElementById('monster-container');
-
-            function updateItemSections() {
-                const itemSelectionSection = document.getElementById('item-selection');
-                const statusSection = document.getElementById('status-section');
-                const statusText = document.getElementById('status-text');
-
-                if (activeUserMonster.hunger != 4 && activeUserMonster.sleep_time == null) {
-                    statusSection.style.display = 'none';
-                    itemSelectionSection.style.display = 'flex';
-                } else {
-                    statusSection.style.display = 'flex';
-                    statusText.textContent = 'Monster is full';
-                    if (activeUserMonster.sleep_time != null) {
-                        statusText.textContent = 'Monster is sleeping';
-                    }
-                    itemSelectionSection.style.display = 'none';
-                }
-            }
 
             function updateStats() {
                 document.getElementById('energy-bar').style.width = `${(activeUserMonster.energy / activeUserMonster.max_energy) * 100}%`;
@@ -237,25 +235,50 @@
                 }
             }
 
-            function monsterAnimation(frames) {
+            function animateSprite(targetImage, frames, speed, intervalVar) {
                 let frameIndex = 0;
-                monsterImage.style.backgroundImage = getMonsterImage(activeUserMonster);
-                clearInterval(monsterAnimationInterval);
-                monsterAnimationInterval = setInterval(() => {
-                    monsterIndex = frames[frameIndex];
+                clearInterval(intervalVar);
+
+                targetImage.style.backgroundPositionX = `-${frames[frameIndex] * 48}px`;
+
+                intervalVar = setInterval(() => {
+                    let currentIndex = frames[frameIndex];
                     frameIndex = (frameIndex + 1) % frames.length;
-                    monsterImage.style.backgroundPositionX = `-${monsterIndex * 48}px`;
-                }, 400);
+                    targetImage.style.backgroundPositionX = `-${currentIndex * 48}px`;
+                }, speed);
+
+                return intervalVar;
             }
 
-            function secondaryAnimation(frames, speed) {
-                let frameIndex = 0;
-                clearInterval(secondaryAnimationInterval);
-                secondaryAnimationInterval = setInterval(() => {
-                    secondaryIndex = frames[frameIndex];
-                    frameIndex = (frameIndex + 1) % frames.length;
-                    secondaryImage.style.backgroundPositionX = `-${secondaryIndex * 48}px`;
-                }, speed);
+            function showTab(tabId) {
+                document.getElementById('attacks').classList.toggle('hidden', tabId != 'items');
+                document.getElementById('items').classList.toggle('hidden', tabId != 'attacks');
+            }
+
+            function updateItemSections() {
+                const itemSelectionSection = document.getElementById('item-selection');
+                const statusSection = document.getElementById('status-section');
+                itemSelectionSection.classList.add('hidden');
+                statusSection.classList.add('hidden');
+                if (activeUserMonster.hunger != 4 && activeUserMonster.sleep_time == null) {
+                    itemSelectionSection.classList.remove('hidden');
+                } else {
+                    const statusText = document.getElementById('status-text');
+                    statusText.textContent = activeUserMonster.sleep_time ? 'Monster is sleeping' : 'Monster is full';
+                    statusSection.classList.remove('hidden');
+                }
+            }
+
+            function highlightEquippedAttack() {
+                document.querySelectorAll("#attacks .useAttack").forEach(button => {
+                    const userAttack = JSON.parse(button.getAttribute('data-attack'));
+                    const attackContainer = button.closest(".attack-div");
+
+                    if (activeUserMonster.attack == userAttack.id) {
+                        attackContainer.classList.add("bg-accent");
+                        attackContainer.classList.remove("bg-secondary");
+                    }
+                });
             }
 
             JSON.parse(container.getAttribute('data-monsters')).forEach(userMonster => {
@@ -419,14 +442,10 @@
                 button.addEventListener('click', function() {
                     const trainingSection = document.getElementById('training-section');
                     const sleepSection = document.getElementById('sleep-section');
+                    trainingSection.classList.add('hidden');
+                    sleepSection.classList.add('hidden');
 
-                    if (activeUserMonster.sleep_time == null) {
-                        sleepSection.style.display = 'none';
-                        trainingSection.style.display = 'flex';
-                    } else {
-                        sleepSection.style.display = 'flex';
-                        trainingSection.style.display = 'none';
-                    }
+                    (activeUserMonster.sleep_time == null ? trainingSection : sleepSection).classList.remove('hidden');
 
                     userEquipment = JSON.parse(this.getAttribute('data-equipment'));
                     setTrainingButton();
@@ -435,21 +454,30 @@
                     secondaryImage = document.getElementById('equipment-sprite');
                     secondaryImage.style.backgroundImage = `url(/storage/${userEquipment.equipment.image})`;
                     clearInterval(secondaryAnimationInterval);
+                    secondaryImage.style.backgroundPositionX = `-${0 * 48}px`;
+                    monsterImage.style.backgroundImage = getMonsterImage(activeUserMonster);
 
-                    monsterAnimation([0, 1]);
+                    monsterAnimationInterval = animateSprite(monsterImage, [1, 2], 400, monsterAnimationInterval);
                 });
             });
 
             document.getElementById('openItems').addEventListener('click', function() {
+                highlightEquippedAttack();
                 updateItemSections();
             });
 
+            document.getElementById('showItems').addEventListener('click', () => showTab('attacks'));
+
+            document.getElementById('showAttacks').addEventListener('click', () => showTab('items'));
+
             document.querySelectorAll('.useItem').forEach(button => {
                 button.addEventListener('click', function() {
+
                     const itemSelectionSection = document.getElementById('item-selection');
-                    itemSelectionSection.style.display = 'none';
+                    itemSelectionSection.classList.add('hidden');
+
                     const animationSection = document.getElementById('item-usage-section');
-                    animationSection.style.display = 'flex';
+                    animationSection.classList.remove('hidden');
 
                     userItem = JSON.parse(this.getAttribute('data-item'));
 
@@ -457,8 +485,10 @@
                     secondaryImage = document.getElementById('item-sprite');
                     secondaryImage.style.backgroundImage = `url(/storage/${userItem.item.image})`;
 
-                    monsterAnimation([1, 2]);
-                    secondaryAnimation([0, 1, 2, 3], 800);
+                    monsterImage.style.backgroundImage = getMonsterImage(activeUserMonster);
+
+                    monsterAnimationInterval = animateSprite(monsterImage, [1, 2], 400, monsterAnimationInterval);
+                    secondaryAnimationInterval = animateSprite(secondaryImage, [0, 1, 2, 3], 800, secondaryAnimationInterval);
 
                     const data = {
                         user_item_id: userItem.id,
@@ -475,16 +505,11 @@
                         }).then(response => response.json())
                         .then(result => {
                             activeUserMonster.updateUserMonster(result.userMonster);
+                            result.userItemQuantity == 0 ? this.closest('.flex.flex-col.items-center').remove() : this.nextElementSibling.textContent = result.userItemQuantity;
                             updateStats();
-                            if (result.userItemQuantity == 0) {
-                                this.closest('.flex.flex-col.items-center').remove();
-                            } else {
-                                this.nextElementSibling.textContent = result.userItemQuantity;
-                            }
-
                             setTimeout(() => {
-                                itemSelectionSection.style.display = 'flex';
-                                animationSection.style.display = 'none';
+                                itemSelectionSection.classList.remove('hidden');
+                                animationSection.classList.add('hidden');
                                 updateItemSections();
                             }, 3800);
                         });
@@ -499,8 +524,8 @@
                     progress = 0;
                     direction = 1;
 
-                    monsterAnimation([3, 4]);
-                    secondaryAnimation([0, 1, 2, 3], 400);
+                    monsterAnimationInterval = animateSprite(monsterImage, [3, 4], 400, monsterAnimationInterval);
+                    secondaryAnimationInterval = animateSprite(secondaryImage, [0, 1, 2, 3], 400, secondaryAnimationInterval);
 
                     interval = setInterval(() => {
                         progress += 5 * direction;
@@ -515,7 +540,7 @@
 
                     let trainingFrames = progress < 60 ? [0, 7] : [0, 8];
 
-                    monsterAnimation(trainingFrames);
+                    monsterAnimationInterval = animateSprite(monsterImage, trainingFrames, 400, monsterAnimationInterval);
 
                     const data = {
                         percentage: progress,
