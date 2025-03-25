@@ -1,3 +1,3 @@
-<p {{ $attributes->class(['text-text' => !isset($attributes['class']),]) }}>
+<p {{ $attributes->class(['text-text' => !isset($attributes['class'])]) }}>
     {{ $slot }}
 </p>

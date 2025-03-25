@@ -49,7 +49,7 @@
                                 <x-buttons.primary id="openItems" label="Inventory" icon="fa-briefcase" @click="open = true" />
                             </x-slot>
                             <div class="flex gap-4 p-2 rounded-t-md bg-secondary w-full justify-center">
-                                <button id="showItems" class="bg-primary text-text px-4 py-2 rounded-md">Items</button>
+                                <button id="showItems" class="bg-accent text-secondary px-4 py-2 rounded-md">Items</button>
                                 <button id="showAttacks" class="bg-primary text-text px-4 py-2 rounded-md">Attacks</button>
                             </div>
 
@@ -87,16 +87,18 @@
                                 </div>
                                 <div id="attacks" class="hidden flex flex-wrap justify-center items-center gap-4 overflow-y-auto">
                                     @foreach ($userAttacks as $userAttack)
-                                    <div class="attack-div flex flex-col items-center w-28 p-2 bg-secondary border-2 border-accent rounded-md">
-                                        <div class="relative w-24 h-24 p-2 rounded-md bg-primary">
-                                            <button class="useAttack w-full h-full "
+                                    <div class="attack-div flex flex-col items-center w-28 p-2 bg-secondary border-2 border-accent rounded-md"
+                                        data-attack-id="{{ $userAttack->id }}">
+                                        <div class="w-24 h-24 p-2 rounded-md bg-primary">
+                                            <button class="useAttack w-full h-full"
                                                 data-attack='{{ json_encode($userAttack) }}'
                                                 style="background: url('/storage/{{ $userAttack->item->image }}') no-repeat; background-size: cover; background-position: 0 0;">
                                             </button>
                                         </div>
-                                        <x-fonts.paragraph> {{ $userAttack->item->name }}</x-fonts.paragraph>
+                                        <x-fonts.paragraph class="attack-p text-text"> {{ $userAttack->item->name }}</x-fonts.paragraph>
                                     </div>
                                     @endforeach
+
                                 </div>
                             </div>
                         </x-container.modal>
@@ -121,7 +123,7 @@
                     <x-container.modal name="user-monster-training" title="Training" focusable>
                         <x-slot name="button">
                             <div class="flex justify-center my-4">
-                                <button id="evolutionButton" class="w-[150px] relative inline-flex active:scale-90 overflow-hidden rounded-md p-1 focus:outline-none">
+                                <button id="evolutionButton" class="w-[150px] relative inline-flex active:scale-90 overflow-hidden rounded-md p-1 focus:outline-none flex justify-center my-4">
                                     <span class="absolute inset-[-1000%] animate-spin bg-[conic-gradient(from_90deg_at_50%_50%,#333_0%,#545454_50%,#e47e00_100%)]">
                                     </span>
                                     <span class="inline-flex h-full w-full items-center justify-center rounded-md bg-secondary p-4 text-text backdrop-blur-3xl">
@@ -129,17 +131,19 @@
                                     </span>
                                 </button>
                             </div>
-                            <div class="flex flex-wrap justify-center gap-4 items-center">
-                                @foreach ($userEquipment as $userEquipment)
-                                <x-buttons.square class="openTraining w-[150px]" @click="open = true"
-                                    data-equipment='{{ json_encode($userEquipment) }}'
-                                    text="{{ $userEquipment->equipment->stat }}" />
-                                @endforeach
-                            </div>
-                            <div class="flex justify-center my-4">
-                                <x-buttons.square id="sleepButton" class="w-[150px]"
-                                    data-equipment='{{ json_encode($userEquipmentLight) }}'
-                                    text="{{ $userEquipmentLight->equipment->stat }}" />
+                            <div id="buttonContainer">
+                                <div class="flex flex-wrap justify-center gap-4 items-center">
+                                    @foreach ($userEquipment as $userEquipment)
+                                    <x-buttons.square class="openTraining w-[150px]" @click="open = true"
+                                        data-equipment='{{ json_encode($userEquipment) }}'
+                                        text="{{ $userEquipment->equipment->stat }}" />
+                                    @endforeach
+                                </div>
+                                <div class="flex justify-center my-4">
+                                    <x-buttons.square id="sleepButton" class="w-[150px]"
+                                        data-equipment='{{ json_encode($userEquipmentLight) }}'
+                                        text="{{ $userEquipmentLight->equipment->stat }}" />
+                                </div>
                             </div>
                         </x-slot>
 
@@ -209,8 +213,13 @@
                 document.querySelector('#stat-mind span').textContent = activeUserMonster.mind;
 
                 document.getElementById("evolutionButton").classList.add("hidden");
-                if (activeUserMonster.monster.evo_requirement != 0 && activeUserMonster.evo_points == activeUserMonster.monster.evo_requirement) {
+                if (activeUserMonster.monster.stage != "Mega" && activeUserMonster.evo_points >= activeUserMonster.monster.evo_requirement) {
                     document.getElementById("evolutionButton").classList.remove("hidden");
+                }
+
+                document.getElementById("buttonContainer").classList.remove("hidden");
+                if(activeUserMonster.monster.stage == "Egg"){
+                    document.getElementById("buttonContainer").classList.add("hidden");
                 }
             }
 
@@ -253,6 +262,23 @@
             function showTab(tabId) {
                 document.getElementById('attacks').classList.toggle('hidden', tabId != 'items');
                 document.getElementById('items').classList.toggle('hidden', tabId != 'attacks');
+
+                const showItemsButton = document.getElementById('showItems');
+                const showAttacksButton = document.getElementById('showAttacks');
+
+                showItemsButton.classList.remove('bg-accent', 'text-secondary');
+                showAttacksButton.classList.remove('bg-accent', 'text-secondary');
+
+                showItemsButton.classList.add('bg-primary', 'text-text');
+                showAttacksButton.classList.add('bg-primary', 'text-text');
+
+                if (tabId != 'items') {
+                    showItemsButton.classList.add('bg-accent', 'text-secondary');
+                    showItemsButton.classList.remove('bg-primary', 'text-text');
+                } else if (tabId != 'attacks') {
+                    showAttacksButton.classList.add('bg-accent', 'text-secondary');
+                    showAttacksButton.classList.remove('bg-primary', 'text-text');
+                }
             }
 
             function updateItemSections() {
@@ -260,23 +286,43 @@
                 const statusSection = document.getElementById('status-section');
                 itemSelectionSection.classList.add('hidden');
                 statusSection.classList.add('hidden');
-                if (activeUserMonster.hunger != 4 && activeUserMonster.sleep_time == null) {
+                if (activeUserMonster.hunger != 4 && activeUserMonster.sleep_time == null && activeUserMonster.monster.stage != "Egg") {
                     itemSelectionSection.classList.remove('hidden');
                 } else {
                     const statusText = document.getElementById('status-text');
                     statusText.textContent = activeUserMonster.sleep_time ? 'Monster is sleeping' : 'Monster is full';
+                    if (activeUserMonster.monster.stage == "Egg") {
+                        statusText.textContent = "Egg can not do this.";
+                    }
                     statusSection.classList.remove('hidden');
                 }
             }
 
             function highlightEquippedAttack() {
+                document.querySelectorAll(".attack-div").forEach(container => {
+                    container.classList.remove("bg-accent");
+                    container.classList.add("bg-secondary");
+
+                    const attackText = container.querySelector(".attack-p");
+                    if (attackText) {
+                        attackText.classList.remove("text-secondary");
+                        attackText.classList.add("text-text");
+                    }
+                });
+
                 document.querySelectorAll("#attacks .useAttack").forEach(button => {
-                    const userAttack = JSON.parse(button.getAttribute('data-attack'));
+                    const userAttack = JSON.parse(button.getAttribute("data-attack"));
                     const attackContainer = button.closest(".attack-div");
+                    const attackText = attackContainer.querySelector(".attack-p");
 
                     if (activeUserMonster.attack == userAttack.id) {
                         attackContainer.classList.add("bg-accent");
                         attackContainer.classList.remove("bg-secondary");
+
+                        if (attackText) {
+                            attackText.classList.add("text-secondary");
+                            attackText.classList.remove("text-text");
+                        }
                     }
                 });
             }
@@ -356,7 +402,7 @@
                     }
 
                     this.movementInterval = setInterval(() => {
-                        if (this.sleep_time == null && this.energy > 0) {
+                        if (this.sleep_time == null && this.energy > 0 && this.monster.stage != "Egg") {
                             let newX = parseFloat(this.monsterDiv.style.left) + (Math.random() * 60 - 30);
                             let newY = parseFloat(this.monsterDiv.style.top) + (Math.random() * 60 - 30);
 
@@ -445,19 +491,22 @@
                     trainingSection.classList.add('hidden');
                     sleepSection.classList.add('hidden');
 
-                    (activeUserMonster.sleep_time == null ? trainingSection : sleepSection).classList.remove('hidden');
+                    if (activeUserMonster.sleep_time == null) {
+                        trainingSection.classList.remove('hidden');
+                        userEquipment = JSON.parse(this.getAttribute('data-equipment'));
+                        setTrainingButton();
 
-                    userEquipment = JSON.parse(this.getAttribute('data-equipment'));
-                    setTrainingButton();
+                        monsterImage = document.getElementById('monster-sprite');
+                        secondaryImage = document.getElementById('equipment-sprite');
+                        secondaryImage.style.backgroundImage = `url(/storage/${userEquipment.equipment.image})`;
+                        clearInterval(secondaryAnimationInterval);
+                        secondaryImage.style.backgroundPositionX = `-${0 * 48}px`;
+                        monsterImage.style.backgroundImage = getMonsterImage(activeUserMonster);
 
-                    monsterImage = document.getElementById('monster-sprite');
-                    secondaryImage = document.getElementById('equipment-sprite');
-                    secondaryImage.style.backgroundImage = `url(/storage/${userEquipment.equipment.image})`;
-                    clearInterval(secondaryAnimationInterval);
-                    secondaryImage.style.backgroundPositionX = `-${0 * 48}px`;
-                    monsterImage.style.backgroundImage = getMonsterImage(activeUserMonster);
-
-                    monsterAnimationInterval = animateSprite(monsterImage, [1, 2], 400, monsterAnimationInterval);
+                        monsterAnimationInterval = animateSprite(monsterImage, [1, 2], 400, monsterAnimationInterval);
+                    } else {
+                        sleepSection.classList.remove('hidden');
+                    }
                 });
             });
 
@@ -513,6 +562,28 @@
                                 updateItemSections();
                             }, 3800);
                         });
+                });
+            });
+
+            document.querySelectorAll(".useAttack").forEach(button => {
+                button.addEventListener("click", function() {
+                    const userAttack = JSON.parse(this.getAttribute("data-attack"));
+                    const data = {
+                        user_attack_id: userAttack.id,
+                        user_monster_id: activeUserMonster.id
+                    };
+
+                    activeUserMonster.attack = userAttack.id;
+                    highlightEquippedAttack();
+
+                    fetch("{{ route('monster.attack') }}", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "X-CSRF-TOKEN": document.querySelector("meta[name='csrf-token']").getAttribute("content")
+                        },
+                        body: JSON.stringify(data)
+                    });
                 });
             });
 

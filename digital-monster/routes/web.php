@@ -37,6 +37,7 @@ Route::middleware('headers')->group(function () {
         Route::post('monster/train', [DashboardController::class, 'useTraining'])->name('monster.train');
         Route::post('monster/generateBattle', [DashboardController::class, 'generateBattle'])->name('monster.generateBattle');
         Route::post('monster/item', [DashboardController::class, 'useItem'])->name('monster.item');
+        Route::post('monster/attack', [DashboardController::class, 'changeAttack'])->name('monster.attack');
         Route::post('monster/sleep', [DashboardController::class, 'sleepToggle'])->name('monster.sleep');
         Route::post('monster/evolve', [DashboardController::class, 'evolve'])->name('monster.evolve');
 

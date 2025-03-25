@@ -70,7 +70,7 @@ class MonsterController extends Controller
             }
         }
         $evoMap = [
-            'Egg' => 5,
+            'Egg' => 0,
             'Fresh' => 20,
             'Child' => 60,
             'Rookie' => 160,

@@ -19,9 +19,6 @@ class DashboardController extends Controller
 
         $userMonsters = UserMonster::with('monster')
             ->where('user_id', $user->id)
-            ->whereHas('monster', function ($query) {
-                $query->where('stage', '!=', 'Egg');
-            })
             ->get();
 
         $userEquipment = UserEquipment::with('equipment')
@@ -162,7 +159,7 @@ class DashboardController extends Controller
         {
             if ($hasTypeAdv && $hasElementAdv) return 1.6;
             if ($hasTypeAdv || $hasElementAdv) return 1.25;
-            return 1; 
+            return 1;
         }
 
         $userMultiplier = getMultiplier($userHasTypeAdvantage, $userHasElementAdvantage);
@@ -179,7 +176,12 @@ class DashboardController extends Controller
         $animationFrame = array_intersect_key($battleResult, array_flip($indexes));
         $sum = array_sum($animationFrame);
 
-        ($sum >= 2) ? $userMonster->wins++ : $userMonster->losses++;
+        if ($sum >= 2) {
+            $userMonster->wins++;
+            $userMonster->evo_points = min($userMonster->evo_points + 10, $userMonster->monster->evo_requirement);
+        } else {
+            $userMonster->losses++;
+        }
 
         $userMonster->energy--;
 
@@ -208,7 +210,7 @@ class DashboardController extends Controller
             ->where('user_id', $user->id)
             ->first();
 
-        if (!$userMonster || !$userEquipment || $userMonster->sleep_at != null) {
+        if (!$userMonster || !$userEquipment || $userMonster->sleep_at != null || $userMonster->monster->stage == "Egg") {
             return response()->json([
                 'message' => 'Hmmm something is off.',
             ], 404);
@@ -272,7 +274,7 @@ class DashboardController extends Controller
             ->where('user_id', $user->id)
             ->first();
 
-        if (!$userMonster || !$userItem || $userMonster->hunger == 4 || $userMonster->sleep_at != null) {
+        if (!$userMonster || !$userItem || $userMonster->hunger == 4 || $userMonster->sleep_at != null || $userMonster->monster->stage == "Egg") {
             return response()->json([
                 'message' => 'Hmmm something is off.',
             ], 404);
@@ -317,6 +319,34 @@ class DashboardController extends Controller
         ], 200);
     }
 
+    public function changeAttack(Request $request)
+    {
+        $user = Auth::user();
+        $userMonster = UserMonster::with('monster')
+            ->where('id', $request->user_monster_id)
+            ->where('user_id', $user->id)
+            ->first();
+
+        $userItem = UserItem::with('item')
+            ->where('id', $request->user_attack_id)
+            ->where('user_id', $user->id)
+            ->first();
+
+        if (!$userMonster || !$userItem) {
+            return response()->json([
+                'message' => 'Hmmm something is off.',
+            ], 404);
+        }
+
+        $userMonster->attack = $request->user_attack_id;
+
+        $userMonster->save();
+
+        return response()->json([
+            'message' => 'Attack Equipped successfully!',
+        ], 200);
+    }
+
     public function sleepToggle(Request $request)
     {
         $user = Auth::user();
@@ -330,9 +360,9 @@ class DashboardController extends Controller
             ->where('user_id', $user->id)
             ->first();
 
-        if (!$userMonster || !$userEquipment) {
+        if (!$userMonster || !$userEquipment || $userMonster->monster->stage == "Egg") {
             return response()->json([
-                'message' => 'Hmmm something is missing.',
+                'message' => 'Hmmm something is off.',
             ], 404);
         }
         if ($userMonster->sleep_time == null) {
@@ -364,7 +394,7 @@ class DashboardController extends Controller
 
         if (!$userMonster || ($userMonster->evo_points < $userMonster->monster->evo_requirement)) {
             return response()->json([
-                'message' => 'Hmmm something is missing.',
+                'message' => 'Hmmm something is off.',
             ], 404);
         }
 
