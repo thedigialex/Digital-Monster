@@ -2,7 +2,7 @@
     <x-slot name="header">
         <div class="flex flex-col lg:flex-row justify-between items-center">
             <x-fonts.sub-header>
-                {{ $user->name }}'s Farm
+                Farm
             </x-fonts.sub-header>
         </div>
     </x-slot>
@@ -21,9 +21,9 @@
 
         <div
             id="monster-container"
-            class="relative w-full h-[500px] overflow-hidden rounded-b-md shadow-lg"
+            class="relative w-full overflow-hidden rounded-b-md shadow-lg bg-cover bg-center h-[60vh]"
             data-monsters='@json($userMonsters)'
-            style="background-image: url('/images/background-dashboard.png'); background-size: cover; background-position: center;">
+            style="background-image: url('{{ asset($background) }}');">
         </div>
 
         <div id="stats-panel" class="hidden bg-secondary border-primary border-t-4 p-4 shadow-lg rounded-b-md">
@@ -54,7 +54,7 @@
                             </div>
 
                             <div class="flex flex-col justify-center items-center bg-cover bg-center rounded-b-md"
-                                style="background-image: url('/images/background-dashboard.png'); height: 30vh;">
+                                style="background-image: url('{{ asset($background) }}'); height: 40vh;">
                                 <div id="items" class="flex justify-center items-center overflow-y-auto">
                                     <div id="item-selection" class="flex flex-wrap justify-center items-center gap-4">
                                         @foreach ($userItems as $userItem)
@@ -148,7 +148,7 @@
                         </x-slot>
 
                         <div class="flex flex-col justify-center items-center bg-cover bg-center"
-                            style="background-image: url('/images/background-dashboard.png'); height: 30vh;">
+                            style="background-image: url('{{ asset($background) }}'); height: 40vh;">
                             <div id="training-section" class="flex flex-col justify-center items-center gap-4 p-2 w-full">
                                 <div class="flex justify-center items-center">
                                     <div class="w-16 h-16 p-2">
@@ -218,7 +218,7 @@
                 }
 
                 document.getElementById("buttonContainer").classList.remove("hidden");
-                if(activeUserMonster.monster.stage == "Egg"){
+                if (activeUserMonster.monster.stage == "Egg") {
                     document.getElementById("buttonContainer").classList.add("hidden");
                 }
             }

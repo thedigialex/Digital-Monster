@@ -49,9 +49,19 @@ class DashboardController extends Controller
             })
             ->get();
 
+        $userBackground = UserItem::with('item')
+            ->where('user_id', $user->id)
+            ->where('equipped', true)
+            ->whereHas('item', function ($query) {
+                $query->where('type', 'Background');
+            })
+            ->first();
+
+        $background = "/storage/" . $userBackground->item->image;
+
         $totalMonsters = $userMonsters->count();
 
-        return view('pages.dashboard', compact('user', 'userMonsters', 'totalMonsters', 'userEquipment', 'userEquipmentLight', 'userItems', 'userAttacks'));
+        return view('dashboard.farm', compact('user', 'userMonsters', 'totalMonsters', 'userEquipment', 'userEquipmentLight', 'userItems', 'userAttacks', 'background'));
     }
 
     public function colosseum()
@@ -71,7 +81,47 @@ class DashboardController extends Controller
             $userMonster->attack = UserItem::with('item')->where('id', $userMonster->attack)->first();
         }
 
-        return view('pages.colosseum', compact('user', 'userMonsters',));
+        $userBackground = UserItem::with('item')
+            ->where('user_id', $user->id)
+            ->where('equipped', true)
+            ->whereHas('item', function ($query) {
+                $query->where('type', 'Background');
+            })
+            ->first();
+
+        $background = "/storage/" . $userBackground->item->image;
+
+        return view('dashboard.colosseum', compact('userMonsters', 'background'));
+    }
+
+    public function shop()
+    {
+        $user = Auth::user();
+        $userBackground = UserItem::with('item')
+            ->where('user_id', $user->id)
+            ->where('equipped', true)
+            ->whereHas('item', function ($query) {
+                $query->where('type', 'Background');
+            })
+            ->first();
+
+        $background = "/storage/" . $userBackground->item->image;
+
+        $items = Item::all();
+
+        // Duplicate each item 2 more times for testing
+        $duplicatedItems = collect();
+        foreach ($items as $item) {
+            $duplicatedItems->push($item); // Original
+            $duplicatedItems->push(clone $item); // First duplicate
+            $duplicatedItems->push(clone $item); // Second duplicate
+        }
+        
+        // Group the duplicated items by type
+        $items = $duplicatedItems->groupBy('type');
+        
+
+        return view('dashboard.shop', compact('background', 'items'));
     }
 
     public function generateBattle(Request $request)

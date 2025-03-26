@@ -2,7 +2,7 @@
     <x-slot name="header">
         <div class="flex flex-col lg:flex-row justify-between items-center">
             <x-fonts.sub-header>
-                {{ $user->name }}'s Farm
+            Colosseum
             </x-fonts.sub-header>
         </div>
     </x-slot>
@@ -15,7 +15,7 @@
                 </x-fonts.sub-header>
             </div>
         </x-slot>
-        <div id="setup-section">
+        <div id="setup-section" class="flex flex-col justify-center items-center h-[60vh]">
             <div class="flex flex-col items-center p-4 gap-4">
                 <x-fonts.sub-header class="text-center">
                     Select a monster
@@ -44,8 +44,8 @@
                 </div>
             </div>
         </div>
-        <div id="battle-section" class="hidden flex flex-col justify-center items-center bg-cover bg-center"
-            style="background-image: url('/images/background-dashboard.png'); height: 40vh;">
+        <div id="battle-section" class="hidden flex flex-col justify-center items-center bg-cover bg-center h-[60vh]"
+            style="background-image: url('{{ asset($background) }}');">
             <div id=loading-section class="flex justify-center items-center h-screen">
                 <div class="relative w-24 h-24">
                     <div class="absolute inset-0 border-8 border-transparent border-t-secondary rounded-full animate-spin"></div>

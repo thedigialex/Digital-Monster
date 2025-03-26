@@ -9,6 +9,11 @@
         <span>Colosseum</span>
     </x-nav-link>
 
+    <x-nav-link :href="route('shop')" :active="request()->routeIs('shop')">
+        <i class="fa-solid fa-store"></i>
+        <span>Shop</span>
+    </x-nav-link>
+
     @if (Auth::user()->role === 'admin')
     <x-nav-link :href="route('egg_groups.index')" :active="request()->routeIs(['egg_groups.index', 'egg_group.edit'])">
         <i class="fas fa-egg"></i>
