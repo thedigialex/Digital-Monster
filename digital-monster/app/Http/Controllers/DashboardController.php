@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Models\Item;
 use App\Models\UserItem;
 use App\Models\Monster;
@@ -15,7 +16,7 @@ class DashboardController extends Controller
 {
     public function dashboard()
     {
-        $user = Auth::user();
+        $user = User::find(Auth::id());
 
         $userMonsters = UserMonster::with('monster')
             ->where('user_id', $user->id)
@@ -66,7 +67,7 @@ class DashboardController extends Controller
 
     public function colosseum()
     {
-        $user = Auth::user();
+        $user = User::find(Auth::id());
 
         $userMonsters = UserMonster::with('monster')
             ->where('user_id', $user->id)
@@ -96,7 +97,7 @@ class DashboardController extends Controller
 
     public function shop()
     {
-        $user = Auth::user();
+        $user = User::find(Auth::id());
         $userBackground = UserItem::with('item')
             ->where('user_id', $user->id)
             ->where('equipped', true)
@@ -107,26 +108,49 @@ class DashboardController extends Controller
 
         $background = "/storage/" . $userBackground->item->image;
 
-        $items = Item::all();
+        $userItems = UserItem::where('user_id', $user->id)->get()->keyBy('item_id');
 
-        // Duplicate each item 2 more times for testing
-        $duplicatedItems = collect();
-        foreach ($items as $item) {
-            $duplicatedItems->push($item); // Original
-            $duplicatedItems->push(clone $item); // First duplicate
-            $duplicatedItems->push(clone $item); // Second duplicate
+        $items = Item::where('type', '!=', 'Material')
+            ->get()
+            ->filter(function ($item) use ($userItems) {
+                if (isset($userItems[$item->id])) {
+                    return $userItems[$item->id]->quantity < $item->max_quantity;
+                }
+                return true;
+            })
+            ->groupBy('type');
+
+        return view('dashboard.shop', compact('user', 'background', 'items'));
+    }
+
+    public function buyItem(Request $request)
+    {
+        $user = User::find(Auth::id());
+        $item = Item::find($request->item_id);
+
+        if (!$item || $user->bits < $item->price) {
+            return response()->json(['message' => 'Hmmm something is off.', 'successful' => false]);
         }
-        
-        // Group the duplicated items by type
-        $items = $duplicatedItems->groupBy('type');
-        
 
-        return view('dashboard.shop', compact('background', 'items'));
+        $userItem = UserItem::firstOrNew(['user_id' => $user->id, 'item_id' => $item->id]);
+
+        if ($userItem->exists && $userItem->quantity >= $item->max_quantity) {
+            return response()->json(['message' => 'Hmmm something is off.', 'successful' => false]);
+        }
+
+        $userItem->quantity = ($userItem->exists ? $userItem->quantity + 1 : 1);
+        $userItem->save();
+
+        $user->bits -= $item->price;
+
+        $user->save();
+
+        return response()->json(['message' => 'Item purchased successfully!', 'successful' => true]);
     }
 
     public function generateBattle(Request $request)
     {
-        $user = Auth::user();
+        $user = User::find(Auth::id());
 
         $userMonster = UserMonster::with('monster')
             ->where('id', $request->user_monster_id)
@@ -249,7 +273,7 @@ class DashboardController extends Controller
 
     public function useTraining(Request $request)
     {
-        $user = Auth::user();
+        $user = User::find(Auth::id());
         $userMonster = UserMonster::with('monster')
             ->where('id', $request->user_monster_id)
             ->where('user_id', $user->id)
@@ -313,7 +337,7 @@ class DashboardController extends Controller
 
     public function useItem(Request $request)
     {
-        $user = Auth::user();
+        $user = User::find(Auth::id());
         $userMonster = UserMonster::with('monster')
             ->where('id', $request->user_monster_id)
             ->where('user_id', $user->id)
@@ -371,7 +395,7 @@ class DashboardController extends Controller
 
     public function changeAttack(Request $request)
     {
-        $user = Auth::user();
+        $user = User::find(Auth::id());
         $userMonster = UserMonster::with('monster')
             ->where('id', $request->user_monster_id)
             ->where('user_id', $user->id)
@@ -399,7 +423,7 @@ class DashboardController extends Controller
 
     public function sleepToggle(Request $request)
     {
-        $user = Auth::user();
+        $user = User::find(Auth::id());
         $userMonster = UserMonster::with('monster')
             ->where('id', $request->user_monster_id)
             ->where('user_id', $user->id)
@@ -436,7 +460,7 @@ class DashboardController extends Controller
 
     public function evolve(Request $request)
     {
-        $user = Auth::user();
+        $user = User::find(Auth::id());
         $userMonster = UserMonster::with('monster')
             ->where('id', $request->user_monster_id)
             ->where('user_id', $user->id)

@@ -16,7 +16,7 @@ class ApiAuthenticatedSessionController extends Controller
     public function login(LoginRequest $request)
     {
         if (Auth::attempt($request->only('email', 'password'))) {
-            $user = Auth::user();
+            $user = User::find(Auth::id());
             return $this->sendUserData($user);
         }
         return response()->json(['status' => false, 'message' => 'Invalid credentials']);

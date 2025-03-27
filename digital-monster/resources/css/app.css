@@ -68,6 +68,16 @@
     border-bottom-left-radius: 0 !important;
     border-bottom-right-radius: 0 !important;
 }
+
+.shadow {
+    width: 48px; 
+    position: relative;
+    top: -6px;
+    height: 12px; 
+    background-color: #333333; 
+    border-radius: 32px; 
+    opacity: 0.25;
+}
 /* Dashboard */
 
 /* Evolution */

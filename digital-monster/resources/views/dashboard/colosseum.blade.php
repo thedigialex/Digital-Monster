@@ -55,15 +55,16 @@
             <div id="battle-arena" class="flex justify-around items-center gap-4 p-2 w-full md:w-1/2">
                 <div class="w-16 h-16 p-2">
                     <div id="enemy-monster-sprite" class="w-full h-full" style="transform: scaleX(-1);"></div>
+                    <div class="shadow"></div>
                 </div>
                 <img id="attack-image" class="absolute w-6 h-6 hidden" src="" alt="Attack Image">
                 <div class="w-16 h-16 p-2">
                     <div id="user-monster-sprite" class="w-full h-full"></div>
+                    <div class="shadow"></div>
                 </div>
             </div>
         </div>
     </x-container>
-
 </x-app-layout>
 
 <script>

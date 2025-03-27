@@ -35,6 +35,7 @@ Route::middleware('headers')->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
         Route::get('/colosseum', [DashboardController::class, 'colosseum'])->name('colosseum');
         Route::get('/shop', [DashboardController::class, 'shop'])->name('shop');
+        Route::post('/shop/buy', [DashboardController::class, 'buyItem'])->name('shop.buy');
         Route::post('monster/train', [DashboardController::class, 'useTraining'])->name('monster.train');
         Route::post('monster/generateBattle', [DashboardController::class, 'generateBattle'])->name('monster.generateBattle');
         Route::post('monster/item', [DashboardController::class, 'useItem'])->name('monster.item');

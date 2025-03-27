@@ -54,7 +54,7 @@
                             </div>
 
                             <div class="flex flex-col justify-center items-center bg-cover bg-center rounded-b-md"
-                                style="background-image: url('{{ asset($background) }}'); height: 40vh;">
+                                style="background-image: url('{{ asset($background) }}'); height: 30vh;">
                                 <div id="items" class="flex justify-center items-center overflow-y-auto">
                                     <div id="item-selection" class="flex flex-wrap justify-center items-center gap-4">
                                         @foreach ($userItems as $userItem)
@@ -79,9 +79,11 @@
                                     <div id="item-usage-section" class="hidden flex justify-center items-center gap-4 p-2 w-full">
                                         <div class="w-16 h-16 p-2">
                                             <div id="item-sprite" class="w-full h-full"></div>
+                                            <div class="shadow"></div>
                                         </div>
                                         <div class="w-16 h-16 p-2">
                                             <div id="monster-item-sprite" class="w-full h-full"></div>
+                                            <div class="shadow"></div>
                                         </div>
                                     </div>
                                 </div>
@@ -148,14 +150,16 @@
                         </x-slot>
 
                         <div class="flex flex-col justify-center items-center bg-cover bg-center"
-                            style="background-image: url('{{ asset($background) }}'); height: 40vh;">
+                            style="background-image: url('{{ asset($background) }}'); height: 30vh;">
                             <div id="training-section" class="flex flex-col justify-center items-center gap-4 p-2 w-full">
                                 <div class="flex justify-center items-center">
                                     <div class="w-16 h-16 p-2">
                                         <div id="equipment-sprite" class="w-full h-full"></div>
+                                        <div class="shadow"></div>
                                     </div>
                                     <div class="w-16 h-16 p-2">
                                         <div id="monster-sprite" class="w-full h-full"></div>
+                                        <div class="shadow"></div>
                                     </div>
                                 </div>
 
