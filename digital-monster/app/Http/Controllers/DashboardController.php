@@ -145,7 +145,14 @@ class DashboardController extends Controller
 
         $user->save();
 
-        return response()->json(['message' => 'Item purchased successfully!', 'successful' => true]);
+        $removeItem = $userItem->quantity >= $item->max_quantity;
+
+        return response()->json([
+            'message' => 'Item purchased successfully!',
+            'successful' => true,
+            'removeItem' => $removeItem,
+            'newBalance' => $user->bits
+        ]);
     }
 
     public function generateBattle(Request $request)

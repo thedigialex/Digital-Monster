@@ -2,7 +2,7 @@
     <x-slot name="header">
         <div class="flex flex-col lg:flex-row justify-between items-center">
             <x-fonts.sub-header>
-            Colosseum
+                Colosseum
             </x-fonts.sub-header>
         </div>
     </x-slot>
@@ -15,27 +15,19 @@
                 </x-fonts.sub-header>
             </div>
         </x-slot>
-        <div id="setup-section" class="flex flex-col justify-center items-center h-[60vh]">
+        <x-container.background id="setup-section" :background="$background">
             <div class="flex flex-col items-center p-4 gap-4">
-                <x-fonts.sub-header class="text-center">
-                    Select a monster
-                </x-fonts.sub-header>
+                <x-container.text>Select a monster</x-container.text>
                 <div class="gap-4 flex justify-center items-center pb-4">
-                    <button id="scrollLeft" class="p-4 bg-secondary text-text hover:text-accent rounded-md">
-                        <i class="fa-solid fa-chevron-left"></i>
-                    </button>
+                    <x-buttons.arrow direction="left" id="scrollLeft"></x-buttons.arrow>
                     <div class="flex items-center overflow-hidden gap-4 transition-transform duration-300 ease-in-out" data-monsters='@json($userMonsters)' id="monsterCarousel">
                     </div>
-                    <button id="scrollRight" class="p-4 bg-secondary text-text hover:text-accent rounded-md">
-                        <i class="fa-solid fa-chevron-right"></i>
-                    </button>
+                    <x-buttons.arrow direction="right" id="scrollRight"></x-buttons.arrow>
                 </div>
             </div>
 
             <div id="type-section" class="hidden flex flex-col items-center p-4 gap-4">
-                <x-fonts.sub-header class="text-center">
-                    Player OR Wild
-                </x-fonts.sub-header>
+                <x-container.text>Player OR Wild</x-container.text>
                 <div class="gap-4 flex justify-center items-center pb-4">
                     <x-buttons.square id="userBattleButton" class="w-[150px]"
                         text="Player" />
@@ -43,9 +35,8 @@
                         text="Wild" />
                 </div>
             </div>
-        </div>
-        <div id="battle-section" class="hidden flex flex-col justify-center items-center bg-cover bg-center h-[60vh]"
-            style="background-image: url('{{ asset($background) }}');">
+        </x-container.background>
+        <x-container.background id="battle-section" :background="$background" class="hidden">
             <div id=loading-section class="flex justify-center items-center h-screen">
                 <div class="relative w-24 h-24">
                     <div class="absolute inset-0 border-8 border-transparent border-t-secondary rounded-full animate-spin"></div>
@@ -63,7 +54,7 @@
                     <div class="shadow"></div>
                 </div>
             </div>
-        </div>
+        </x-container.background>
     </x-container>
 </x-app-layout>
 
