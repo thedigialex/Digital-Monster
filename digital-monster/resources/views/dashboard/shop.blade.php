@@ -16,11 +16,11 @@
         </x-slot>
 
         <x-container.background id="setup-section" :background="$background">
-            <x-alerts.spinner id="loading-section"></x-alerts.spinner>
+            <x-alerts.spinner id="loading-section"/>
             @if ($items->isEmpty())
-            <x-container.text>Shop is sold out</x-container.text>
+            <x-fonts.paragraph class="text-text p-2 bg-primary rounded-md">Shop is sold out</x-fonts.paragraph>
             @else
-            <div id="item-section" class="w-full md:w-1/2 mx-auto bg-primary rounded-md overflow-auto my-4">
+            <div id="item-section" class="w-full md:w-1/2 bg-primary rounded-md overflow-auto my-4">
                 @foreach ($items as $type => $groupedItems)
                 <div class="category-container p-4" id="category-{{ $type }}">
                     <x-fonts.sub-header class="border-b-2 border-accent mb-4">{{ $type }}</x-fonts.sub-header>
@@ -42,8 +42,8 @@
                     </div>
                 </div>
                 @endforeach
-                @endif
             </div>
+            @endif
         </x-container.background>
     </x-container>
 </x-app-layout>

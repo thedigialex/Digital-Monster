@@ -43,14 +43,12 @@
 
     <x-container>
         <x-slot name="header">
-            <div class="flex justify-between items-center">
-                <x-fonts.sub-header>
-                    User Monsters
-                </x-fonts.sub-header>
-                @if(Auth::user()->isAdmin())
-                <x-buttons.clear model="user_monster" route="user.monster.edit" icon="fa-plus" label="New" />
-                @endif
-            </div>
+            <x-fonts.sub-header>
+                User Monsters
+            </x-fonts.sub-header>
+            @if(Auth::user()->isAdmin())
+            <x-buttons.clear model="user_monster" route="user.monster.edit" icon="fa-plus" label="New" />
+            @endif
         </x-slot>
         <div class="p-4">
             @if (!$user->userMonsters->isEmpty())
@@ -102,14 +100,12 @@
 
     <x-container>
         <x-slot name="header">
-            <div class="flex justify-between items-center">
-                <x-fonts.sub-header>
-                    Inventory
-                </x-fonts.sub-header>
-                @if(Auth::user()->isAdmin())
-                <x-buttons.clear model="user_item" route="user.item.edit" icon="fa-plus" label="New" />
-                @endif
-            </div>
+            <x-fonts.sub-header>
+                Inventory
+            </x-fonts.sub-header>
+            @if(Auth::user()->isAdmin())
+            <x-buttons.clear model="user_item" route="user.item.edit" icon="fa-plus" label="New" />
+            @endif
         </x-slot>
         <div class="p-4">
             @if (!$user->userItems->isEmpty())
@@ -151,14 +147,12 @@
 
     <x-container>
         <x-slot name="header">
-            <div class="flex justify-between items-center">
-                <x-fonts.sub-header>
-                    Equipment
-                </x-fonts.sub-header>
-                @if(Auth::user()->isAdmin())
-                <x-buttons.clear model="user_equipment" route="user.equipment.edit" icon="fa-plus" label="New" />
-                @endif
-            </div>
+            <x-fonts.sub-header>
+                Equipment
+            </x-fonts.sub-header>
+            @if(Auth::user()->isAdmin())
+            <x-buttons.clear model="user_equipment" route="user.equipment.edit" icon="fa-plus" label="New" />
+            @endif
         </x-slot>
         <div class="p-4">
             @if (!$user->userEquipment->isEmpty())

@@ -14,14 +14,12 @@
 
     <x-container class="p-4">
         <x-slot name="header">
-            <div class="flex justify-between items-center">
-                <x-fonts.sub-header class="text-accent">
-                    {{ isset($eggGroup) ? 'Update Egg Group' : 'Create Egg Group' }}
-                </x-fonts.sub-header>
-                @if (isset($eggGroup))
-                <x-forms.delete-form :action="route('egg_group.destroy')" label="Egg Group" />
-                @endif
-            </div>
+            <x-fonts.sub-header class="text-accent">
+                {{ isset($eggGroup) ? 'Update Egg Group' : 'Create Egg Group' }}
+            </x-fonts.sub-header>
+            @if (isset($eggGroup))
+            <x-forms.delete-form :action="route('egg_group.destroy')" label="Egg Group" />
+            @endif
         </x-slot>
 
         <form action="{{ route('egg_group.update') }}" method="POST">

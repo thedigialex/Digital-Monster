@@ -258,6 +258,8 @@ class DashboardController extends Controller
         $sum = array_sum($animationFrame);
 
         if ($sum >= 2) {
+            $user->bits += (5 * $level);
+            $user->save();
             $userMonster->wins++;
             $userMonster->evo_points = min($userMonster->evo_points + 10, $userMonster->monster->evo_requirement);
         } else {

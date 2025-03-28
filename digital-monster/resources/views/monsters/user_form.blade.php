@@ -14,14 +14,12 @@
 
     <x-container class="p-4">
         <x-slot name="header">
-            <div class="flex justify-between items-center">
-                <x-fonts.sub-header class="text-accent">
-                    {{ isset($userMonster) ? 'Update Monster' : 'Assign Monster' }}
-                </x-fonts.sub-header>
-                @if (isset($userMonster))
-                <x-forms.delete-form :action="route('user.monster.destroy')" label="User Mosnter" />
-                @endif
-            </div>
+            <x-fonts.sub-header class="text-accent">
+                {{ isset($userMonster) ? 'Update Monster' : 'Assign Monster' }}
+            </x-fonts.sub-header>
+            @if (isset($userMonster))
+            <x-forms.delete-form :action="route('user.monster.destroy')" label="User Mosnter" />
+            @endif
         </x-slot>
 
         <form action="{{ route('user.monster.update') }}" method="POST">
@@ -37,8 +35,8 @@
                             :messages="$errors->get('monster_id')"
                             :value="$userMonster->monster->id ?? ''" />
                         <div class="flex space-x-4">
-                            <x-inputs.text name="energy" type="number" divClasses="w-full lg:w-1/2" value="{{ isset($userMonster) ? $userMonster->energy : 0 }}" :messages="$errors->get('energy')"/>
-                            <x-inputs.text name="max_energy" type="number" divClasses="w-full lg:w-1/2" value="{{ isset($userMonster) ? $userMonster->max_energy : 0 }}" :messages="$errors->get('max_energy')"/>
+                            <x-inputs.text name="energy" type="number" divClasses="w-full lg:w-1/2" value="{{ isset($userMonster) ? $userMonster->energy : 0 }}" :messages="$errors->get('energy')" />
+                            <x-inputs.text name="max_energy" type="number" divClasses="w-full lg:w-1/2" value="{{ isset($userMonster) ? $userMonster->max_energy : 0 }}" :messages="$errors->get('max_energy')" />
                         </div>
                     </x-container.single>
                     <x-container.single class="md:w-2/3 w-full">

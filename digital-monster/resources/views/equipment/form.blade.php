@@ -14,14 +14,12 @@
 
     <x-container class="p-4">
         <x-slot name="header">
-            <div class="flex justify-between items-center">
-                <x-fonts.sub-header class="text-accent">
-                    {{ isset($equipment) ? 'Update Equipment' : 'Create Equipment' }}
-                </x-fonts.sub-header>
-                @if (isset($equipment))
-                <x-forms.delete-form :action="route('equipment.destroy')" label="Training Equipment" />
-                @endif
-            </div>
+            <x-fonts.sub-header class="text-accent">
+                {{ isset($equipment) ? 'Update Equipment' : 'Create Equipment' }}
+            </x-fonts.sub-header>
+            @if (isset($equipment))
+            <x-forms.delete-form :action="route('equipment.destroy')" label="Training Equipment" />
+            @endif
         </x-slot>
 
         <form action="{{ route('equipment.update') }}" method="POST" enctype="multipart/form-data">
