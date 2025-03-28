@@ -1,0 +1,1 @@
+<div {{ $attributes->merge(['class' => 'hidden relative w-24 h-24 inset-0 border-8 border-transparent border-t-secondary rounded-full animate-spin']) }}></div>

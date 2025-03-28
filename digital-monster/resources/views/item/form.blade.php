@@ -14,14 +14,12 @@
 
     <x-container class="p-4">
         <x-slot name="header">
-            <div class="flex justify-between items-center">
-                <x-fonts.sub-header class="text-accent">
-                    {{ isset($item) ? 'Update Item' : 'Create Item' }}
-                </x-fonts.sub-header>
-                @if (isset($item))
-                <x-forms.delete-form :action="route('item.destroy')" label="Item" />
-                @endif
-            </div>
+            <x-fonts.sub-header class="text-accent">
+                {{ isset($item) ? 'Update Item' : 'Create Item' }}
+            </x-fonts.sub-header>
+            @if (isset($item))
+            <x-forms.delete-form :action="route('item.destroy')" label="Item" />
+            @endif
         </x-slot>
 
         <form action="{{ route('item.update') }}" method="POST" enctype="multipart/form-data">
@@ -29,7 +27,7 @@
             <x-container.single>
                 <div class="flex flex-col md:flex-row gap-x-4">
                     <x-container.single class="md:w-1/3 w-full">
-                        <x-inputs.file label="Choose an Image" name="image" :currentImage="$item->image ?? null" :messages="$errors->get('image')"/>
+                        <x-inputs.file label="Choose an Image" name="image" :currentImage="$item->image ?? null" :messages="$errors->get('image')" />
                     </x-container.single>
                     <x-container.single class="md:w-2/3 w-full">
                         <div class="flex flex-col md:flex-row gap-x-4">

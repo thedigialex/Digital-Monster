@@ -1,22 +1,18 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex flex-col lg:flex-row justify-between items-center">
-            <x-fonts.sub-header>
-                Farm
-            </x-fonts.sub-header>
-        </div>
+        <x-fonts.sub-header>
+            Farm
+        </x-fonts.sub-header>
     </x-slot>
 
     <x-container>
         <x-slot name="header">
-            <div class="flex justify-between items-center">
-                <x-fonts.sub-header>
-                    Farm
-                </x-fonts.sub-header>
-                <x-fonts.paragraph>
-                    {{ $totalMonsters }} / {{ $user->max_monster_amount }}
-                </x-fonts.paragraph>
-            </div>
+            <x-fonts.sub-header>
+                Farm
+            </x-fonts.sub-header>
+            <x-fonts.paragraph>
+                {{ $totalMonsters }} / {{ $user->max_monster_amount }}
+            </x-fonts.paragraph>
         </x-slot>
 
         <div
@@ -72,19 +68,10 @@
                                         </div>
                                         @endforeach
                                     </div>
-                                    <div id="status-section" class="flex justify-center items-center">
-                                        <x-fonts.paragraph id="status-text" class="text-text p-2 bg-primary rounded-md">Monster is full</x-fonts.paragraph>
-                                    </div>
-
-                                    <div id="item-usage-section" class="hidden flex justify-center items-center gap-4 p-2 w-full">
-                                        <div class="w-16 h-16 p-2">
-                                            <div id="item-sprite" class="w-full h-full"></div>
-                                            <div class="shadow"></div>
-                                        </div>
-                                        <div class="w-16 h-16 p-2">
-                                            <div id="monster-item-sprite" class="w-full h-full"></div>
-                                            <div class="shadow"></div>
-                                        </div>
+                                    <x-fonts.paragraph id="status-text-item" class="text-text p-2 bg-primary rounded-md">Monster is full</x-fonts.paragraph>
+                                    <div id="item-usage-section" class="hidden flex justify-center items-center gap-4 w-full">
+                                        <x-container.sprite id="item-sprite"></x-container.sprite>
+                                        <x-container.sprite id="monster-item-sprite"></x-container.sprite>
                                     </div>
                                 </div>
                                 <div id="attacks" class="hidden flex flex-wrap justify-center items-center gap-4 overflow-y-auto">
@@ -153,14 +140,8 @@
                             style="background-image: url('{{ asset($background) }}'); height: 30vh;">
                             <div id="training-section" class="flex flex-col justify-center items-center gap-4 p-2 w-full">
                                 <div class="flex justify-center items-center">
-                                    <div class="w-16 h-16 p-2">
-                                        <div id="equipment-sprite" class="w-full h-full"></div>
-                                        <div class="shadow"></div>
-                                    </div>
-                                    <div class="w-16 h-16 p-2">
-                                        <div id="monster-sprite" class="w-full h-full"></div>
-                                        <div class="shadow"></div>
-                                    </div>
+                                    <x-container.sprite id="equipment-sprite"></x-container.sprite>
+                                    <x-container.sprite id="monster-sprite"></x-container.sprite>
                                 </div>
 
                                 <div class="w-full h-8 bg-secondary rounded-md">
@@ -169,9 +150,7 @@
 
                                 <button id="trainingButton" class="px-4 py-2 bg-red-500 text-text rounded-md">Start</button>
                             </div>
-                            <div id="sleep-section" class="flex justify-center items-center">
-                                <x-fonts.paragraph id="status-text" class="text-text p-2 bg-primary rounded-md">Monster is sleeping</x-fonts.paragraph>
-                            </div>
+                            <x-fonts.paragraph id="sleep-section" class="text-text p-2 bg-primary rounded-md">Monster is sleeping</x-fonts.paragraph>
                         </div>
                     </x-container.modal>
                 </div>
@@ -287,16 +266,15 @@
 
             function updateItemSections() {
                 const itemSelectionSection = document.getElementById('item-selection');
-                const statusSection = document.getElementById('status-section');
+                const statusSection = document.getElementById('status-text-item');
                 itemSelectionSection.classList.add('hidden');
                 statusSection.classList.add('hidden');
                 if (activeUserMonster.hunger != 4 && activeUserMonster.sleep_time == null && activeUserMonster.monster.stage != "Egg") {
                     itemSelectionSection.classList.remove('hidden');
                 } else {
-                    const statusText = document.getElementById('status-text');
-                    statusText.textContent = activeUserMonster.sleep_time ? 'Monster is sleeping' : 'Monster is full';
+                    statusSection.textContent = activeUserMonster.sleep_time ? 'Monster is sleeping' : 'Monster is full';
                     if (activeUserMonster.monster.stage == "Egg") {
-                        statusText.textContent = "Egg can not do this.";
+                        statusSection.textContent = "Egg can not do this.";
                     }
                     statusSection.classList.remove('hidden');
                 }

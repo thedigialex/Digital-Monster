@@ -1,58 +1,41 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex flex-col lg:flex-row justify-between items-center">
-            <x-fonts.sub-header>
-                Colosseum
-            </x-fonts.sub-header>
-        </div>
+        <x-fonts.sub-header>
+            Colosseum
+        </x-fonts.sub-header>
     </x-slot>
 
     <x-container>
         <x-slot name="header">
-            <div class="flex justify-between items-center">
-                <x-fonts.sub-header>
-                    Colosseum
-                </x-fonts.sub-header>
-            </div>
+            <x-fonts.sub-header>
+                Colosseum
+            </x-fonts.sub-header>
         </x-slot>
+
         <x-container.background id="setup-section" :background="$background">
-            <div class="flex flex-col items-center p-4 gap-4">
-                <x-container.text>Select a monster</x-container.text>
-                <div class="gap-4 flex justify-center items-center pb-4">
-                    <x-buttons.arrow direction="left" id="scrollLeft"></x-buttons.arrow>
-                    <div class="flex items-center overflow-hidden gap-4 transition-transform duration-300 ease-in-out" data-monsters='@json($userMonsters)' id="monsterCarousel">
-                    </div>
-                    <x-buttons.arrow direction="right" id="scrollRight"></x-buttons.arrow>
+            <x-container.text>Select a monster</x-container.text>
+            <div class="flex items-center gap-4 pt-4">
+                <x-buttons.arrow direction="left" id="scrollLeft"></x-buttons.arrow>
+                <div id="monsterCarousel" class="flex items-center gap-4" data-monsters='@json($userMonsters)'>
                 </div>
+                <x-buttons.arrow direction="right" id="scrollRight"></x-buttons.arrow>
             </div>
 
-            <div id="type-section" class="hidden flex flex-col items-center p-4 gap-4">
+            <div id="type-section" class="hidden flex items-center gap-4 flex-col pt-4">
                 <x-container.text>Player OR Wild</x-container.text>
-                <div class="gap-4 flex justify-center items-center pb-4">
-                    <x-buttons.square id="userBattleButton" class="w-[150px]"
-                        text="Player" />
-                    <x-buttons.square id="wildBattleButton" class="w-[150px]"
-                        text="Wild" />
+                <div class="flex justify-center items-center gap-4 ">
+                    <x-buttons.square id="userBattleButton" text="Player" />
+                    <x-buttons.square id="wildBattleButton" text="Wild" />
                 </div>
             </div>
         </x-container.background>
-        <x-container.background id="battle-section" :background="$background" class="hidden">
-            <div id=loading-section class="flex justify-center items-center h-screen">
-                <div class="relative w-24 h-24">
-                    <div class="absolute inset-0 border-8 border-transparent border-t-secondary rounded-full animate-spin"></div>
-                </div>
-            </div>
 
-            <div id="battle-arena" class="flex justify-around items-center gap-4 p-2 w-full md:w-1/2">
-                <div class="w-16 h-16 p-2">
-                    <div id="enemy-monster-sprite" class="w-full h-full" style="transform: scaleX(-1);"></div>
-                    <div class="shadow"></div>
-                </div>
+        <x-container.background id="battle-section" :background="$background" class="hidden">
+            <x-alerts.spinner id="loading-section"></x-alerts.spinner>
+            <div id="battle-arena" class="flex justify-around items-center gap-4 w-full md:w-1/2">
+                <x-container.sprite id="enemy-monster-sprite" :rotate="true"></x-container.sprite>
                 <img id="attack-image" class="absolute w-6 h-6 hidden" src="" alt="Attack Image">
-                <div class="w-16 h-16 p-2">
-                    <div id="user-monster-sprite" class="w-full h-full"></div>
-                    <div class="shadow"></div>
-                </div>
+                <x-container.sprite id="user-monster-sprite"></x-container.sprite>
             </div>
         </x-container.background>
     </x-container>
@@ -61,10 +44,6 @@
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         const carousel = document.getElementById("monsterCarousel");
-        const scrollLeftBtn = document.getElementById("scrollLeft");
-        const scrollRightBtn = document.getElementById("scrollRight");
-        const userBattleButton = document.getElementById("userBattleButton");
-        const wildBattleButton = document.getElementById("wildBattleButton");
         const typeSection = document.getElementById("type-section");
         const battleSection = document.getElementById("battle-section");
         const loadingSection = document.getElementById("loading-section");
@@ -77,11 +56,17 @@
         let activeUserMonster;
         let monsterElements = [];
 
+        let monsterImage;
+        let monsterAnimationInterval;
+        let enemyMonsterImage;
+        let enemyMonsterAnimationInterval;
+        let enemyMonster;
+
         function generateMonsters() {
             userMonsters.forEach(userMonster => {
                 const monsterDiv = document.createElement("div");
                 monsterDiv.classList.add(
-                    "flex", "flex-col", "items-center", "w-28", "p-2",
+                    "flex", "flex-col", "items-center", "w-32", "p-2",
                     "bg-secondary", "border-2", "border-accent", "rounded-md",
                     "cursor-pointer", "text-text"
                 );
@@ -110,9 +95,9 @@
 
                 if (["Egg", "Fresh", "Child"].includes(userMonster.monster.stage) || userMonster.type === "Data") {
                     img.src = `/storage/${userMonster.monster.image_0}`;
-                } else if (userMonster.type === "Virus") {
+                } else if (userMonster.type == "Virus") {
                     img.src = `/storage/${userMonster.monster.image_1}`;
-                } else if (userMonster.type === "Vaccine") {
+                } else if (userMonster.type == "Vaccine") {
                     img.src = `/storage/${userMonster.monster.image_2}`;
                 }
 
@@ -134,59 +119,6 @@
             const monstersToShow = monsterElements.slice(currentIndex, currentIndex + itemsPerPage);
             monstersToShow.forEach(monster => carousel.appendChild(monster));
         }
-
-        scrollLeftBtn.addEventListener("click", function() {
-            currentIndex = Math.max(0, currentIndex - itemsPerPage);
-            renderMonsters();
-        });
-
-        scrollRightBtn.addEventListener("click", function() {
-            if (currentIndex + itemsPerPage < userMonsters.length) {
-                currentIndex += itemsPerPage;
-            } else {
-                currentIndex = userMonsters.length - (userMonsters.length % itemsPerPage || itemsPerPage);
-            }
-
-            renderMonsters();
-        });
-
-        generateMonsters();
-        renderMonsters();
-
-        let monsterImage;
-        let monsterAnimationInterval;
-        let enemyMonsterImage;
-        let enemyMonsterAnimationInterval;
-        let enemyMonster;
-
-        wildBattleButton.addEventListener("click", function() {
-            battleSection.classList.remove("hidden");
-            loadingSection.classList.remove("hidden");
-            setupSection.classList.add("hidden");
-            battleArena.classList.add("hidden");
-
-            const data = {
-                user_monster_id: activeUserMonster.id
-            };
-            fetch("{{ route('monster.generateBattle') }}", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content")
-                    },
-                    body: JSON.stringify(data)
-                }).then(response => response.json())
-                .then(result => {
-                    if (result.successful) {
-                        loadingSection.classList.add("hidden");
-                        battleArena.classList.remove("hidden");
-                        enemyUserMonster = result.enemyUserMonster;
-                        startBattle(result.animationFrame, result.removeUserMonster);
-                    } else {
-                        //reset battle thing and show a message.
-                    }
-                });
-        });
 
         function startBattle(animationFrame, removeUserMonster) {
 
@@ -292,7 +224,7 @@
 
             setTimeout(() => {
                 monster.style.transform = originalTransform;
-            }, 150);
+            }, 250);
         }
 
         function getMonsterImage(userMonster) {
@@ -327,5 +259,52 @@
                 enemyMonsterImage.style.backgroundPositionX = `-${monsterIndex * 48}px`;
             }, 400);
         }
+
+        document.getElementById("scrollLeft").addEventListener("click", function() {
+            currentIndex = Math.max(0, currentIndex - itemsPerPage);
+            renderMonsters();
+        });
+
+        document.getElementById("scrollRight").addEventListener("click", function() {
+            if (currentIndex + itemsPerPage < userMonsters.length) {
+                currentIndex += itemsPerPage;
+            } else {
+                currentIndex = userMonsters.length - (userMonsters.length % itemsPerPage || itemsPerPage);
+            }
+
+            renderMonsters();
+        });
+
+        document.getElementById("wildBattleButton").addEventListener("click", function() {
+            battleSection.classList.remove("hidden");
+            loadingSection.classList.remove("hidden");
+            setupSection.classList.add("hidden");
+            battleArena.classList.add("hidden");
+
+            const data = {
+                user_monster_id: activeUserMonster.id
+            };
+            fetch("{{ route('monster.generateBattle') }}", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content")
+                    },
+                    body: JSON.stringify(data)
+                }).then(response => response.json())
+                .then(result => {
+                    if (result.successful) {
+                        loadingSection.classList.add("hidden");
+                        battleArena.classList.remove("hidden");
+                        enemyUserMonster = result.enemyUserMonster;
+                        startBattle(result.animationFrame, result.removeUserMonster);
+                    } else {
+                        //reset battle thing and show a message.
+                    }
+                });
+        });
+
+        generateMonsters();
+        renderMonsters();
     });
 </script>
