@@ -1,15 +1,16 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
 use App\Models\User;
-use App\Models\UserMonster;
+use App\Models\Item;
 use App\Models\Monster;
 use App\Models\UserItem;
-use App\Models\Item;
 use App\Models\Equipment;
-use App\Models\UserEquipment;
+use App\Models\UserMonster;
 use Illuminate\Http\Request;
+use App\Models\UserEquipment;
+use App\Http\Controllers\Controller;
 
 class UserController extends Controller
 {

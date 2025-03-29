@@ -2,9 +2,9 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\ApiAuthenticatedSessionController;
-use App\Http\Controllers\ApiUserController;
-use App\Http\Controllers\ApiGetDataController;
-use App\Http\Controllers\ApiPostDataController;
+use App\Http\Controllers\Api\ApiUserController;
+use App\Http\Controllers\Api\ApiGetDataController;
+use App\Http\Controllers\Api\ApiPostDataController;
 
 Route::middleware('check-api-key')->group(function () {
     Route::post('/register', [ApiAuthenticatedSessionController::class, 'register']);

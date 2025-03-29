@@ -1,13 +1,11 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
-use Illuminate\Support\Facades\Storage;
-use App\Models\UserDigitalMonster;
-use App\Models\DigitalMonster;
 use Illuminate\Http\Request;
-use App\Models\Inventory;
-use App\Models\Item;
+use App\Models\DigitalMonster;
+use App\Models\UserDigitalMonster;
+use App\Http\Controllers\Controller;
 
 
 class ApiUserController extends Controller

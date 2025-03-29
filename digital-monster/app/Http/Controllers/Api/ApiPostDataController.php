@@ -1,13 +1,11 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\DigitalMonster;
 use App\Models\UserDigitalMonster;
-use App\Models\Inventory;
-use App\Models\Item;
+use App\Http\Controllers\Controller;
 
 class ApiPostDataController extends Controller
 {

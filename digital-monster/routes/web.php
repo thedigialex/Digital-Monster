@@ -1,15 +1,18 @@
 <?php
 
-use App\Http\Controllers\MonsterController;
-use App\Http\Controllers\ItemController;
-use App\Http\Controllers\EquipmentController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\EggGroupController;
+
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\SessionController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+
+use App\Http\Controllers\Admin\ItemController;
+use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\MonsterController;
+use App\Http\Controllers\Admin\EggGroupController;
+use App\Http\Controllers\Admin\EquipmentController;
+
 
 Route::middleware('headers')->group(function () {
     //Public
