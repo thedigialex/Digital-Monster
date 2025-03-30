@@ -14,7 +14,7 @@
         </x-slot>
         <x-slot name="info">
             <x-fonts.paragraph>
-                Egg groups are a way to categorize monsters based on their ability. Each egg group can be modified or created by the user, allowing for customization of how different species evolve. Each egg group contains a field that determines the specific monster type the eggs within the group will evolve into. This system makes it easier for trainers to organize their breeding programs and predict the potential evolutions of their monsters.
+                Equipment allows users to control their max level, image, and upgrade items. Each user has their own equipment, which they can upgrade, while the main equipment is managed solely by the admin.
             </x-fonts.paragraph>
         </x-slot>
         @foreach ($types as $index => $label)
