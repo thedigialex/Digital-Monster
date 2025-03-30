@@ -10,6 +10,7 @@ class UserEquipment extends Model
         'level',
         'user_id',
         'equipment_id',
+        'user_item_id',
     ];
 
     public function user()

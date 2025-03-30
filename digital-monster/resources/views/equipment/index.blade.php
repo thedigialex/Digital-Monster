@@ -17,7 +17,7 @@
                 Egg groups are a way to categorize monsters based on their ability. Each egg group can be modified or created by the user, allowing for customization of how different species evolve. Each egg group contains a field that determines the specific monster type the eggs within the group will evolve into. This system makes it easier for trainers to organize their breeding programs and predict the potential evolutions of their monsters.
             </x-fonts.paragraph>
         </x-slot>
-        @foreach ($stats as $index => $label)
+        @foreach ($types as $index => $label)
         <x-accordion title="{{ $label }}" :open="$loop->first" :icon="$icons[$index]">
             @if (isset($allEquipment[$label]))
             <x-table.table>
@@ -38,7 +38,7 @@
                         </x-table.data>
                         <x-table.data class="w-1/3 hidden md:table-cell">
                             <x-fonts.paragraph class="font-bold text-accent">
-                                {{ $equipment->name }}
+                                {{ $equipment->stat }}
                             </x-fonts.paragraph>
                         </x-table.data>
                         <x-table.data class="w-1/2 md:w-1/3">

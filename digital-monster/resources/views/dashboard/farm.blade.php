@@ -157,8 +157,8 @@
             </div>
         </div>
     </x-container>
-
-    <script>
+</x-app-layout>
+<script>
         document.addEventListener("DOMContentLoaded", function() {
             let interval;
             let userEquipment;
@@ -674,4 +674,3 @@
             });
         });
     </script>
-</x-app-layout>
