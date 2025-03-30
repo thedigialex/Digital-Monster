@@ -10,14 +10,12 @@ use Illuminate\Support\Facades\Storage;
 
 class EquipmentController extends Controller
 {
-    protected $stats = ['Strength', 'Agility', 'Defense', 'Mind'];
     protected $type = ['Stat', 'DigiGarden', 'DigiGate'];
-    protected $icons = ['fa-dumbbell', 'fa-running', 'fa-shield-alt', 'fa-brain', 'fa-soap', 'fa-lightbulb'];
 
     public function index()
     {
         $allEquipment = Equipment::all()->groupBy('type');
-        $displayIcons = ['fa-brain', 'fa-soap', 'fa-lightbulb'];
+        $displayIcons = ['fa-weight', 'fa-hard-drive', 'fa-memory'];
         return view('equipment.index', ['allEquipment' => $allEquipment, 'types' => $this->type, 'icons' => $displayIcons]);
     }
 
@@ -25,7 +23,9 @@ class EquipmentController extends Controller
     {
         $materialItems = Item::where('type', 'Material')->get();
         $equipment = Equipment::find(session('equipment_id'));
-        return view('equipment.form', ['equipment' => $equipment, 'icon' => $this->icons, 'stats' => $this->stats, 'type' => $this->type, 'materialItems' => $materialItems]);
+        $icons = ['fa-dumbbell', 'fa-running', 'fa-shield-alt', 'fa-brain', 'fa-hard-drive', 'fa-memory'];
+        $stats = ['Strength', 'Agility', 'Defense', 'Mind'];
+        return view('equipment.form', ['equipment' => $equipment, 'icon' => $icons, 'stats' => $stats, 'type' => $this->type, 'materialItems' => $materialItems]);
     }
 
     public function update(Request $request)
@@ -67,7 +67,9 @@ class EquipmentController extends Controller
     public function destroy()
     {
         $equipment = Equipment::findOrFail(session('equipment_id'));
-        Storage::disk('public')->delete($equipment->image);
+        if ($equipment->image) {
+            Storage::disk('public')->delete($equipment->image);
+        }
         $equipment->delete();
         return redirect()->route('equipment.index')->with('success', 'Equipment deleted successfully.');
     }

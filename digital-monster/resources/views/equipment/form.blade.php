@@ -60,8 +60,8 @@
                         useOptionKey="true"
                         :value="old('upgrade_item_id', isset($equipment) ? $equipment->upgrade_item_id : '')" />
                 </div>
-                <x-inputs.file label="Choose an Image" name="image" class="hidden" :currentImage="$equipment->image ?? null" :messages="$errors->get('image')" />
-                <div class="flex justify-center py-4 mt-4">
+                <div class="flex flex-col justify-center items-center py-4 space-y-4">
+                    <x-inputs.file label="Choose an Image" name="image" class="hidden w-full md:w-1/3" :currentImage="$equipment->image ?? null" :messages="$errors->get('image')" />
                     <x-buttons.primary label="{{ isset($equipment) ? 'Update' : 'Create' }}" icon="fa-save" />
                 </div>
             </x-container.single>

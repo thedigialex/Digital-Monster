@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        <x-fonts.sub-header>Equipment</x-fonts.sub-header>
+        <x-fonts.sub-header>Equipmentt</x-fonts.sub-header>
         <x-buttons.clear model="equipment" route="equipment.edit" icon="fa-plus" label="New" />
     </x-slot>
 
@@ -8,7 +8,7 @@
     <x-alerts.success>{{ session('success') }}</x-alerts.success>
     @endif
 
-    <x-container class="p-1 lg:p-4">
+    <x-container class="p-4">
         <x-slot name="header">
             <x-fonts.sub-header class="text-accent">Equipment</x-fonts.sub-header>
         </x-slot>
@@ -24,7 +24,7 @@
                 <thead class="bg-primary">
                     <tr>
                         <x-table.header class="w-1/2 md:w-1/3 text-left">Image</x-table.header>
-                        <x-table.header class="w-1/3 hidden md:table-cell text-left">Name</x-table.header>
+                        <x-table.header class="w-1/3 hidden md:table-cell text-left">Type</x-table.header>
                         <x-table.header class="w-1/2 md:w-1/3"></x-table.header>
                     </tr>
                 </thead>
@@ -32,14 +32,24 @@
                     @foreach ($allEquipment[$label] as $equipment)
                     <tr class="{{ $loop->even ? 'bg-neutral' : 'bg-secondary' }}">
                         <x-table.data class="w-1/2 md:w-1/4">
-                            <div class="w-16 h-16 overflow-hidden">
+                            <div class="w-16 h-16 flex items-center justify-center">
+                                @if ($equipment->type == 'Stat')
                                 <img src="{{ asset('storage/' . $equipment->image) }}" alt="Equipment Image" class="w-full h-full object-cover" style="object-position: 0 0;">
+                                @else
+                                <i class="fa {{ $equipment->icon }} text-accent text-5xl"></i>
+                                @endif
                             </div>
                         </x-table.data>
                         <x-table.data class="w-1/3 hidden md:table-cell">
+                            @if ($equipment->type == 'Stat')
                             <x-fonts.paragraph class="font-bold text-accent">
                                 {{ $equipment->stat }}
                             </x-fonts.paragraph>
+                            @else
+                            <x-fonts.paragraph class="font-bold text-accent">
+                                {{ $equipment->type }}
+                            </x-fonts.paragraph>
+                            @endif
                         </x-table.data>
                         <x-table.data class="w-1/2 md:w-1/3">
                             <div class="flex justify-end">

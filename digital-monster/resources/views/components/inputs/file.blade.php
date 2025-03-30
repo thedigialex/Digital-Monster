@@ -1,6 +1,6 @@
 @props(['label' => null, 'name' => 'file', 'accept' => 'image/*', 'currentImage' => null, 'messages' => ''])
 
-<div id="{{ $name }}_div" {{ $attributes->merge(['class' => 'flex flex-col mt-8 p-2 bg-neutral rounded-md items-center']) }}>
+<div id="{{ $name }}_div" {{ $attributes->merge(['class' => 'flex flex-col my-4 p-2 bg-neutral rounded-md items-center']) }}>
     @if ($label)
     <x-inputs.label for="{{ $name }}">{{ $label }}</x-inputs.label>
     @endif

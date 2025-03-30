@@ -1,7 +1,7 @@
 <nav class="flex-1 mt-4 space-y-4">
     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-        <i class="fas fa-tachometer-alt"></i>
-        <span>Dashboard</span>
+        <i class="fa fa-hard-drive"></i>
+        <span>DigiGarden</span>
     </x-nav-link>
 
     <x-nav-link :href="route('colosseum')" :active="request()->routeIs('colosseum')">
@@ -26,12 +26,12 @@
     </x-nav-link>
 
     <x-nav-link :href="route('items.index')" :active="request()->routeIs(['items.index', 'item.edit'])">
-        <i class="fas fa-box-open"></i>
+        <i class="fas fa-tags"></i>
         <span>Items</span>
     </x-nav-link>
 
     <x-nav-link :href="route('equipment.index')" :active="request()->routeIs(['equipment.index', 'equipment.edit'])">
-        <i class="fas fa-dumbbell"></i>
+        <i class="fas fa-toolbox"></i>
         <span>Equipment</span>
     </x-nav-link>
 
