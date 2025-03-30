@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\User;
+use App\Models\Item;
 use App\Models\Equipment;
 use App\Events\UserRegistered;
 use Illuminate\Database\Seeder;
@@ -50,6 +51,13 @@ class DatabaseSeeder extends Seeder
             'type' => 'Stat',
             'stat' => 'Mind',
             'max_level' => 5,
+        ]);
+
+        Item::create([
+            'name' => 'default',
+            'price' => 0,
+            'type' => 'Background',
+            'rarity' => 'Common',
         ]);
 
         $user = User::create([

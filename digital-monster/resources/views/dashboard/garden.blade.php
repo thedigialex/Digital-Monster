@@ -1,14 +1,14 @@
 <x-app-layout>
     <x-slot name="header">
         <x-fonts.sub-header>
-            Farm
+            Garden
         </x-fonts.sub-header>
     </x-slot>
 
     <x-container>
         <x-slot name="header">
             <x-fonts.sub-header>
-                Farm
+                Garden
             </x-fonts.sub-header>
             <x-fonts.paragraph>
                 {{ $totalMonsters }} / {{ $user->max_monster_amount }}
@@ -130,8 +130,7 @@
                                 </div>
                                 <div class="flex justify-center my-4">
                                     <x-buttons.square id="sleepButton" class="w-[150px]"
-                                        data-equipment='{{ json_encode($userEquipmentLight) }}'
-                                        text="{{ $userEquipmentLight->equipment->stat }}" />
+                                        text="Light" />
                                 </div>
                             </div>
                         </x-slot>

@@ -49,7 +49,7 @@
                             @foreach(['0', '1'] as $route)
                             <x-inputs.dropdown
                                 name="route_{{ $route }}"
-                                divClasses="w-full"
+                                class="w-full"
                                 useOptionKey="true"
                                 :options="$allMonsters->where('egg_group_id')->pluck('name', 'id')->toArray()"
                                 :value="$monster && $monster->evolution ? $monster->evolution->where('route_'.$route, '!=', null)->pluck('route_'.$route)->first() ?? '' : ''" />

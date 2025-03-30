@@ -18,6 +18,7 @@ return new class extends Migration
             $table->integer('level')->default(1);
             $table->integer('exp')->default(0);
             $table->integer('bits')->default(0);
+            $table->integer('background_id')->default(0);
             $table->integer('max_monster_amount')->default(5);
             $table->integer('score')->default(0);
             $table->rememberToken();

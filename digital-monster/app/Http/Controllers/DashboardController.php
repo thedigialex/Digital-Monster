@@ -25,16 +25,9 @@ class DashboardController extends Controller
         $userEquipment = UserEquipment::with('equipment')
             ->where('user_id', $user->id)
             ->whereHas('equipment', function ($query) {
-                $query->whereNotIn('stat', ['Lighting', 'Cleaning']);
+                $query->where('type', 'Stat');
             })
             ->get();
-
-        $userEquipmentLight = UserEquipment::with('equipment')
-            ->where('user_id', $user->id)
-            ->whereHas('equipment', function ($query) {
-                $query->where('stat', 'Lighting');
-            })
-            ->first();
 
         $userItems = UserItem::with('item')
             ->where('user_id', $user->id)
@@ -50,19 +43,11 @@ class DashboardController extends Controller
             })
             ->get();
 
-        $userBackground = UserItem::with('item')
-            ->where('user_id', $user->id)
-            ->where('equipped', true)
-            ->whereHas('item', function ($query) {
-                $query->where('type', 'Background');
-            })
-            ->first();
-
-        $background = "/storage/" . $userBackground->item->image;
+        $background = $this->getUserBackgroundImage($user);
 
         $totalMonsters = $userMonsters->count();
 
-        return view('dashboard.farm', compact('user', 'userMonsters', 'totalMonsters', 'userEquipment', 'userEquipmentLight', 'userItems', 'userAttacks', 'background'));
+        return view('dashboard.garden', compact('user', 'userMonsters', 'totalMonsters', 'userEquipment', 'userItems', 'userAttacks', 'background'));
     }
 
     public function colosseum()
@@ -82,15 +67,7 @@ class DashboardController extends Controller
             $userMonster->attack = UserItem::with('item')->where('id', $userMonster->attack)->first();
         }
 
-        $userBackground = UserItem::with('item')
-            ->where('user_id', $user->id)
-            ->where('equipped', true)
-            ->whereHas('item', function ($query) {
-                $query->where('type', 'Background');
-            })
-            ->first();
-
-        $background = "/storage/" . $userBackground->item->image;
+        $background = $this->getUserBackgroundImage($user);
 
         return view('dashboard.colosseum', compact('userMonsters', 'background'));
     }
@@ -98,15 +75,8 @@ class DashboardController extends Controller
     public function shop()
     {
         $user = User::find(Auth::id());
-        $userBackground = UserItem::with('item')
-            ->where('user_id', $user->id)
-            ->where('equipped', true)
-            ->whereHas('item', function ($query) {
-                $query->where('type', 'Background');
-            })
-            ->first();
-
-        $background = "/storage/" . $userBackground->item->image;
+        
+        $background = $this->getUserBackgroundImage($user);
 
         $userItems = UserItem::where('user_id', $user->id)->get()->keyBy('item_id');
 
@@ -488,5 +458,22 @@ class DashboardController extends Controller
             'message' => 'Evolved successfully!',
             'userMonster' => $userMonster,
         ]);
+    }
+
+    public function getUserBackgroundImage($user)
+    {
+        $userBackground = UserItem::with('item')
+            ->where('id', $user->background_id)
+            ->first();
+
+        $hour = now()->hour;
+        if ($hour >= 12 && $hour < 18) {
+            $background = "/storage/" . $userBackground->item->image;
+        } elseif ($hour >= 0 && $hour < 6) {
+            $background = "/storage/" . $userBackground->item->image_2;
+        } else {
+            $background = "/storage/" . $userBackground->item->image_1;
+        }
+        return $background;
     }
 }
