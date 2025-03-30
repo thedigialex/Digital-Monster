@@ -14,7 +14,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'bits'
+        'bits',
+        'role'
     ];
 
     protected $hidden = [
@@ -48,38 +49,5 @@ class User extends Authenticatable
     public function isAdmin()
     {
         return $this->role === 'admin';
-    }
-
-    protected static function boot()
-    {
-        parent::boot();
-
-        //static::created(function ($user) {
-        //    $basicTrainingEquipments = TrainingEquipment::whereIn('name', ['Strength', 'Agility', 'Defense', 'Mind', 'Clean'])->get();
-//
-        //    foreach ($basicTrainingEquipments as $equipment) {
-        //        $user->trainingEquipments()->create([
-        //            'equipment_id' => $equipment->id,
-        //            'stat_increase' => 3,
-        //            'level' => 1,
-        //        ]);
-        //    }
-//
-        //    $itemsWithZeroRarity = Item::where('rarity', 0)->get();
-        //    foreach ($itemsWithZeroRarity as $item) {
-        //        if ($item->type === 'consumable') {
-        //            $user->inventories()->create([
-        //                'item_id' => $item->id,
-        //                'quantity' => 10,
-        //            ]);
-        //        } else {
-        //            $user->inventories()->create([
-        //                'item_id' => $item->id,
-        //                'quantity' => 1,
-        //                'isEquipped' => true,
-        //            ]);
-        //        }
-        //    }
-        //});
     }
 }

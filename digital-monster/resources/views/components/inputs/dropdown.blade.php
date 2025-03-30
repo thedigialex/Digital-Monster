@@ -1,5 +1,4 @@
 @props([
-'divClasses' => '',
 'name' => '',
 'onchange' => '',
 'options' => [],
@@ -9,9 +8,8 @@
 'messages' => ''
 ])
 
-<div id="{{ $name }}_div" class="{{ $divClasses }} mt-4">
+<div id="{{ $name }}_div" {{ $attributes->merge(['class' => 'mt-4']) }}>
     <x-inputs.label for="{{ $name }}" class="pb-1">{{ ucwords(str_replace('_', ' ', $name)) }}</x-inputs.label>
-
     <select
         name="{{ $name }}"
         id="{{ $name }}"

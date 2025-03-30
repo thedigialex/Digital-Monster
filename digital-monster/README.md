@@ -1,66 +1,92 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Digital Monster Raising and Battle Application
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Welcome to the Digital Monster Raising and Battle application! This project allows users to raise digital monsters, train them, and battle with them. It features user role management and dynamic equipment systems.
 
-## About Laravel
+## Features
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+-   **User Roles**: Admin and User
+-   **Monster Training**: Users can raise their monsters and train them.
+-   **Battle Mechanics**: Monsters can be pitted against each other for battles.
+-   **Equipment System**: Equipments are assigned to monsters, and users can upgrade them.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Getting Started
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Follow these steps to get the application running on your local development server:
 
-## Learning Laravel
+1.  **Install Dependencies**
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+    Ensure you have all the necessary dependencies by running the following commands:
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+    ```bash
+    composer install
+    npm install
+    ```
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+2.  **Set up the Environment**
 
-## Laravel Sponsors
+    Copy the `.env.example` to a `.env` file in the root directory:
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+    ```bash
+    cp .env.example .env
+    ```
 
-### Premium Partners
+3.  **Generate Application Key**
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+    Run the following command to generate your application key:
 
-## Contributing
+    ```bash
+    php artisan key:generate
+    ```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+4.  **Run Migrations**
 
-## Code of Conduct
+    Create the required database tables:
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+    ```bash
+    php artisan migrate
+    ```
 
-## Security Vulnerabilities
+5.  **Seed the Database**
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+    Seed the database with initial data, including a test user and equipment data:
 
-## License
+    ```bash
+    php artisan db:seed
+    ```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+    This will create a new admin user with the email `test@example.com`. You can modify the password in the `DatabaseSeeder` file.
+
+## Available User Roles
+
+-   **Admin**: The admin has full access to the system and can manage users, monsters, and equipment.
+-   **User**: Regular users can raise and battle monsters.
+
+## Authentication & Routes
+
+Role-based authentication is implemented for admin and user roles.
+
+The routes and views will be accessible according to the user role.
+
+-   Admins have access to manage equipment, users, and other admin functionalities.
+-   Users can manage their own monsters, battle, and upgrade them.
+
+## Usage Example
+
+### Creating Equipment
+
+You can create various types of equipment, such as:
+
+-   `DigiGarden`: A digital garden equipment.
+-   `DigiGate`: A gate equipment.
+-   `Stat Equipment`: Equipment that affects stats like Strength, Agility, Defense, etc.
+
+### User Registration Event
+
+When a user is created, an event `UserRegistered` is triggered, and associated user equipment is set up automatically.
+
+### Frontend Setup
+
+Once the backend is set up, you can compile frontend assets by running:
+
+```bash
+npm run dev
