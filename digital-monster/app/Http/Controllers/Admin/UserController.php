@@ -94,46 +94,16 @@ class UserController extends Controller
 
     public function updateUserItem(Request $request)
     {
-        $validated = $request->validate([
+        $userItem = UserItem::findOrNew(session('user_item_id'));
+        $validationData = $request->validate([
             'item_id' => 'required|exists:items,id',
             'quantity' => 'required|integer|min:1',
         ]);
 
-        $userItemData = $request->only(['item_id', 'quantity']);
-        $item = Item::findOrFail($validated['item_id']);
-        if (!in_array($item->type, ['Material', 'Consumable'])) {
-            $validated = array_merge($validated, $request->validate([
-                'equipped' => 'required|integer|in:0,1',
-            ]));
+        $userItem->fill($validationData);
+        $userItem->save();
 
-
-            if ($validated['equipped'] == 1) {
-                $userItems = UserItem::where('user_id', session('user_id'))
-                    ->whereHas('item', function ($query) use ($item) {
-                        $query->where('type', $item->type);
-                    })
-                    ->get();
-                foreach ($userItems as $userItem) {
-                    if ($userItem->equipped == 1) {
-                        $userItem->update(['equipped' => 0]);
-                    }
-                }
-                $userItemData['equipped'] = 1;
-            }
-        } else {
-            $userItemData['equipped'] = 0;
-        }
-
-        $userItemData['user_id'] = session('user_id');
-
-        if (session('user_item_id')) {
-            $userItem = UserItem::findOrFail(session('user_item_id'));
-            $userItem->update($userItemData);
-            $message = 'User Item updated successfully.';
-        } else {
-            UserItem::create($userItemData);
-            $message = 'User Item created successfully.';
-        }
+        $message = session('user_item_id') ? 'User Item updated successfully.' : 'User Item created successfully.';
 
         return redirect()->route('user.profile')
             ->with('success', $message);
@@ -157,24 +127,19 @@ class UserController extends Controller
 
     public function updateUserEquipment(Request $request)
     {
-        $request->validate([
+        $userEquipment = UserEquipment::findOrNew(session('user_equipment_id'));
+        $validationData = $request->validate([
             'equipment_id' => 'required|exists:equipment,id',
             'level' => 'required|integer|min:1',
         ]);
 
-        $userEquipmentData = $request->only(['equipment_id', 'level']);
-        $userEquipmentData['user_id'] = session('user_id');
+        $userEquipment->fill($validationData);
+        $userEquipment->save();
 
-        if (session('user_equipment_id')) {
-            $userEquipment = UserEquipment::findOrFail(session('user_equipment_id'));
-            $userEquipment->update($userEquipmentData);
-            $message = 'User Equipment updated successfully.';
-        } else {
-            UserEquipment::create($userEquipmentData);
-            $message = 'User Equipment created successfully.';
-        }
+        $message = session('user_equipment_id') ? 'User Equipment updated successfully.' : 'User Equipment created successfully.';
 
-        return redirect()->route('user.profile')->with('success', $message);
+        return redirect()->route('user.profile')
+            ->with('success', $message);
     }
 
     public function destroyUserEquipment()

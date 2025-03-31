@@ -75,7 +75,7 @@ class DashboardController extends Controller
     public function shop()
     {
         $user = User::find(Auth::id());
-        
+
         $background = $this->getUserBackgroundImage($user);
 
         $userItems = UserItem::where('user_id', $user->id)->get()->keyBy('item_id');
@@ -271,30 +271,38 @@ class DashboardController extends Controller
 
         if ($userMonster->energy - 1 >= 0) {
             $userMonster->energy -= 1;
-            $equipmentStat = $userEquipment->equipment->stat;
-            $equipmentLevel = $userEquipment->level;
-            $percentage = round($request->percentage);
-            $statIncrease = round((5 * $equipmentLevel * $percentage) / 100);
 
-            switch ($equipmentStat) {
-                case 'Strength':
-                    $userMonster->strength += $statIncrease;
-                    break;
-                case 'Agility':
-                    $userMonster->agility += $statIncrease;
-                    break;
-                case 'Defense':
-                    $userMonster->defense += $statIncrease;
-                    break;
-                case 'Mind':
-                    $userMonster->mind += $statIncrease;
-                    break;
-                case 'Cleaning':
-                    $userMonster->cleaning += $statIncrease;
-                    break;
-                case 'Lighting':
-                    $userMonster->lighting += $statIncrease;
-                    break;
+            if ($userMonster->max_trainings > $userMonster->trainings) {
+                $userMonster->trainings += 1;
+                $equipmentStat = $userEquipment->equipment->stat;
+                $equipmentLevel = $userEquipment->level;
+                $percentage = round($request->percentage);
+
+                $statIncrease = round((5 * $equipmentLevel * $percentage) / 100);
+
+                switch ($equipmentStat) {
+                    case 'Strength':
+                        $userMonster->strength += $statIncrease;
+                        if ($userMonster->monster->type == 'Virus') {
+                            $userMonster->strength += round($statIncrease / 5);
+                        }
+                        break;
+                    case 'Agility':
+                        $userMonster->agility += $statIncrease;
+                        if ($userMonster->monster->type == 'Data') {
+                            $userMonster->agility += round($statIncrease / 5);
+                        }
+                        break;
+                    case 'Defense':
+                        $userMonster->defense += $statIncrease;
+                        if ($userMonster->monster->type == 'Vaccine') {
+                            $userMonster->defense += round($statIncrease / 5);
+                        }
+                        break;
+                    case 'Mind':
+                        $userMonster->mind += $statIncrease;
+                        break;
+                }
             }
 
             if (rand(1, 100) <= 30) {

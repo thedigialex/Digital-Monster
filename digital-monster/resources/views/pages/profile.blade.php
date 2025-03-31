@@ -125,7 +125,7 @@
                             </div>
                         </x-table.data>
                         <x-table.data class="w-1/3 hidden md:table-cell">
-                            <x-fonts.paragraph class="font-bold {{ $userItem->equipped == 1 ? 'text-accent' : 'text-text' }}">
+                            <x-fonts.paragraph class="font-bold text-accent">
                                 {{ $userItem->item->name }}<br>Amount: {{ $userItem->quantity }}
                             </x-fonts.paragraph>
                         </x-table.data>
@@ -173,7 +173,7 @@
                         </x-table.data>
                         <x-table.data class="w-1/3 hidden md:table-cell">
                             <x-fonts.paragraph class="font-bold text-accent">
-                                {{ $userEquipment->equipment->type }}
+                                {{ $userEquipment->equipment->type }} {{ $userEquipment->equipment->stat }}
                             </x-fonts.paragraph>
                         </x-table.data>
                         <x-table.data class="w-1/2 md:w-1/3">

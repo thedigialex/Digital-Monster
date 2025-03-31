@@ -26,10 +26,11 @@
             @csrf
             <x-container.single>
                 <div class="flex flex-col md:flex-row gap-x-4">
-                    <x-inputs.dropdown name="equipment_id" divClasses="w-full" :messages="$errors->get('equipment_id')" :options="$allEquipment->pluck('name', 'id')->toArray()" useOptionKey="true" :value="old('equipment_id', isset($userEquipment) ? $userEquipment->equipment->id : '')" />
+                    <x-inputs.dropdown name="equipment_id" class="w-full" :messages="$errors->get('equipment_id')" :options="$allEquipment->mapWithKeys(fn($item) => [$item->id => $item->type . ' ' . $item->stat])->toArray()"
+                        useOptionKey="true" :value="old('equipment_id', isset($userEquipment) ? $userEquipment->equipment->id : '')" />
                     <x-inputs.text
                         name="level"
-                        divClasses="w-full"
+                        class="w-full"
                         :messages="$errors->get('level')"
                         type="number"
                         :value="old('level', isset($userEquipment) ? $userEquipment->level : 1)" />

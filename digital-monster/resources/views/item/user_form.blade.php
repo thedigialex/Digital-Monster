@@ -28,27 +28,18 @@
                 <div class="flex flex-col md:flex-row gap-x-4">
                     <x-inputs.dropdown
                         name="item_id"
-                        divClasses="w-full"
+                        class="w-full"
                         :messages="$errors->get('item_id')"
-                        onchange="toggleEquip()"
                         :options="$allItems->pluck('name', 'id')->toArray()"
                         useOptionKey="true"
                         :data-items="$allItems->keyBy('id')->toArray()"
                         :value="old('item', isset($userItem) ? $userItem->item->id : '')" />
                     <x-inputs.text
                         name="quantity"
-                        divClasses="w-full"
+                        class="w-full"
                         :messages="$errors->get('quantity')"
                         type="number"
                         :value="old('quantity', isset($userItem) ? $userItem->quantity : 1)" />
-                    <div id="equipped_div" class="w-full">
-                        <x-inputs.dropdown
-                            name="equipped"
-                            :options="['1' => 'Yes', '0' => 'No']"
-                            useOptionKey="true"
-                            :value="old('equipped', isset($userItem) ? $userItem->equipped : '')"
-                            :messages="$errors->get('equipped')" />
-                    </div>
                 </div>
                 <div class="flex justify-center py-4 mt-4">
                     <x-buttons.primary label="{{ isset($userItem) ? 'Update' : 'Create' }}" icon="fa-save" />
@@ -56,21 +47,4 @@
             </x-container.single>
         </form>
     </x-container>
-
-    <script>
-        function toggleEquip() {
-            var itemDropdown = document.getElementById("item_id");
-            var selectedOption = itemDropdown.options[itemDropdown.selectedIndex];
-            var itemData = JSON.parse(selectedOption.getAttribute("data-item"));
-
-            var equippedDiv = document.getElementById("equipped_div");
-            if (itemData.type == "Material" || itemData.type == "Consumable") {
-                equippedDiv.classList.add("hidden");
-                equippedDiv.classList.remove("block");
-            } else {
-                equippedDiv.classList.add("block");
-                equippedDiv.classList.remove("hidden");
-            }
-        }
-    </script>
 </x-app-layout>
