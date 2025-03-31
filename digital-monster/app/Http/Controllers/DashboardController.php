@@ -88,6 +88,9 @@ class DashboardController extends Controller
                 }
                 return true;
             })
+            ->filter(function ($item) {
+                return $item->available == 1;
+            })
             ->groupBy('type');
 
         return view('dashboard.shop', compact('user', 'background', 'items'));
@@ -228,7 +231,13 @@ class DashboardController extends Controller
         $sum = array_sum($animationFrame);
 
         if ($sum >= 2) {
-            $user->bits += (5 * $level);
+            $userMonster->exp += (5 * $level);
+            $expRequired = ($userMonster->level * 50) + (($userMonster->level * 50) / 2);
+            if ($userMonster->exp >= $expRequired &&  $userMonster->level < 10) {
+                $userMonster->level += 1;
+                $userMonster->exp -= $expRequired;
+            }
+            $user->bits += (5 * $userMonster->level);
             $user->save();
             $userMonster->wins++;
             $userMonster->evo_points = min($userMonster->evo_points + 10, $userMonster->monster->evo_requirement);
@@ -266,6 +275,7 @@ class DashboardController extends Controller
         if (!$userMonster || !$userEquipment || $userMonster->sleep_at != null || $userMonster->monster->stage == "Egg") {
             return response()->json([
                 'message' => 'Hmmm something is off.',
+                'successful' => false
             ], 404);
         }
 
@@ -314,10 +324,12 @@ class DashboardController extends Controller
             return response()->json([
                 'message' => 'Training data updated successfully!',
                 'userMonster' => $userMonster,
+                'successful' => true
             ]);
         } else {
             return response()->json([
                 'message' => 'Not enough energy',
+                'successful' => false
             ]);
         }
     }
@@ -338,6 +350,7 @@ class DashboardController extends Controller
         if (!$userMonster || !$userItem || $userMonster->hunger == 4 || $userMonster->sleep_at != null || $userMonster->monster->stage == "Egg") {
             return response()->json([
                 'message' => 'Hmmm something is off.',
+                'successful' => false
             ], 404);
         }
 
@@ -376,7 +389,8 @@ class DashboardController extends Controller
         return response()->json([
             'message' => 'Item used successfully!',
             'userMonster' => $userMonster,
-            'userItemQuantity' => $userItem->quantity
+            'userItemQuantity' => $userItem->quantity,
+            'successful' => true
         ], 200);
     }
 
@@ -396,6 +410,7 @@ class DashboardController extends Controller
         if (!$userMonster || !$userItem) {
             return response()->json([
                 'message' => 'Hmmm something is off.',
+                'successful' => false
             ], 404);
         }
 
@@ -405,6 +420,7 @@ class DashboardController extends Controller
 
         return response()->json([
             'message' => 'Attack Equipped successfully!',
+            'successful' => true
         ], 200);
     }
 
@@ -416,14 +432,10 @@ class DashboardController extends Controller
             ->where('user_id', $user->id)
             ->first();
 
-        $userEquipment = UserEquipment::with('equipment')
-            ->where('id', $request->user_equipment_id)
-            ->where('user_id', $user->id)
-            ->first();
-
-        if (!$userMonster || !$userEquipment || $userMonster->monster->stage == "Egg") {
+        if (!$userMonster || $userMonster->monster->stage == "Egg") {
             return response()->json([
                 'message' => 'Hmmm something is off.',
+                'successful' => false
             ], 404);
         }
         if ($userMonster->sleep_time == null) {
@@ -431,7 +443,7 @@ class DashboardController extends Controller
         } else {
             $minutesSinceSleep = Carbon::parse($userMonster->sleep_time)->diffInMinutes(now());
             $userMonster->energy = min(
-                $userMonster->energy + floor((($minutesSinceSleep / 10) * 4 + $userEquipment->level) / 100 * $userMonster->max_energy),
+                $userMonster->energy + floor((($minutesSinceSleep / 10) * 5) / 100 * $userMonster->max_energy),
                 $userMonster->max_energy
             );
             $userMonster->sleep_time = null;
@@ -442,6 +454,7 @@ class DashboardController extends Controller
         return response()->json([
             'message' => 'Sleep toggled successfully!',
             'userMonster' => $userMonster,
+            'successful' => true
         ]);
     }
 
@@ -456,8 +469,17 @@ class DashboardController extends Controller
         if (!$userMonster || ($userMonster->evo_points < $userMonster->monster->evo_requirement)) {
             return response()->json([
                 'message' => 'Hmmm something is off.',
+                'successful' => false
             ], 404);
         }
+
+        $user->exp += (5 * $userMonster->level);
+        $expRequired = ($user->level * 150) + (($user->level * 150) / 2);
+        if ($user->exp >= $expRequired &&  $user->level < 10) {
+            $user->level += 1;
+            $user->exp -= $expRequired;
+        }
+        $user->save();
 
         $userMonster->evolve();
         $userMonster->refresh();
@@ -465,6 +487,7 @@ class DashboardController extends Controller
         return response()->json([
             'message' => 'Evolved successfully!',
             'userMonster' => $userMonster,
+            'successful' => true
         ]);
     }
 

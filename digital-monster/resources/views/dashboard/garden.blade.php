@@ -45,7 +45,7 @@
                                 <x-buttons.primary id="openItems" label="Inventory" icon="fa-briefcase" @click="open = true" />
                             </x-slot>
                             <div class="flex gap-4 p-2 rounded-t-md bg-secondary w-full justify-center">
-                                <button id="showItems" class="bg-accent text-secondary px-4 py-2 rounded-md">Items</button>
+                                <button id="showItems" class="bg-accent text-secondary px-4 py-2 rounded-md">Consumable</button>
                                 <button id="showAttacks" class="bg-primary text-text px-4 py-2 rounded-md">Attacks</button>
                             </div>
 
@@ -620,7 +620,6 @@
             document.getElementById('sleepButton').addEventListener('click', function() {
                 userEquipment = JSON.parse(this.getAttribute('data-equipment'));
                 const data = {
-                    user_equipment_id: userEquipment.id,
                     user_monster_id: activeUserMonster.id
                 };
 

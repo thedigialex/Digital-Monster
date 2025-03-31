@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 class UserMonster extends Model
-{    
+{
     protected $fillable = [
         'user_id',
         'monster_id',
@@ -30,7 +30,7 @@ class UserMonster extends Model
         'trainings',
         'max_trainings',
         'evo_points',
-        'sleep_time', 
+        'sleep_time',
     ];
 
     public function user()
@@ -46,27 +46,25 @@ class UserMonster extends Model
     public function evolve()
     {
         $monster = $this->monster;
-        if ($this->evo_points >= $monster->evo_requirement) {
-            $evolutions = Evolution::where('base_monster_id', $monster->id)->first();
-            if ($evolutions) {
-                if ($this->strength >= $this->mind) {
-                    $newMonsterId = $evolutions->route_0;
-                } else {
-                    $newMonsterId = $evolutions->route_1 ?? $evolutions->route_0; 
-                }
-                $this->monster_id = $newMonsterId;
-                $this->evo_points = 0;
-                $this->strength += $this->trainings / 4;
-                $this->strength += $this->trainings / 4;
-                $this->agility += $this->trainings / 4;
-                $this->mind += $this->trainings / 4;
-                $this->trainings = 0;
-                $this->max_trainings = ( $this->max_trainings + 15 ) * 2;
-                $this->max_energy = $this->max_energy + 5;
-                $this->energy = $this->max_energy;
-                $this->save();
-                return $this;
+        $evolutions = Evolution::where('base_monster_id', $monster->id)->first();
+        if ($evolutions) {
+            if ($this->strength >= $this->mind) {
+                $newMonsterId = $evolutions->route_0;
+            } else {
+                $newMonsterId = $evolutions->route_1 ?? $evolutions->route_0;
             }
+            $this->monster_id = $newMonsterId;
+            $this->evo_points = 0;
+            $this->strength += $this->trainings / 5;
+            $this->strength += $this->trainings / 5;
+            $this->agility += $this->trainings / 5;
+            $this->mind += $this->trainings / 5;
+            $this->trainings = 0;
+            $this->max_trainings = ($this->max_trainings + 15) * 2;
+            $this->max_energy = $this->max_energy + 5;
+            $this->energy = $this->max_energy;
+            $this->save();
+            return $this;
         }
         return null;
     }

@@ -13,7 +13,7 @@ class SetUpUserAccount
     public function handle(UserRegistered $event): void
     {
         $user = $event->user;
-
+        $user->bits = 50;
         $backgroundItem = Item::where('name', 'Default')->where('type', 'Background')->first();
         $background = UserItem::create([
             'user_id' => $user->id,
