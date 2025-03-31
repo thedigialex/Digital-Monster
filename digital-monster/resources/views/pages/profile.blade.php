@@ -15,7 +15,6 @@
     <x-alerts.success>{{ session('success') }}</x-alerts.success>
     @endif
 
-
     <x-container>
         <x-slot name="header">
             <x-fonts.sub-header>Account Details</x-fonts.sub-header>
@@ -160,7 +159,7 @@
                 <thead class="bg-primary">
                     <tr>
                         <x-table.header class="w-1/2 md:w-1/3 text-left">Image</x-table.header>
-                        <x-table.header class="w-1/3 text-left hidden md:table-cell">Name</x-table.header>
+                        <x-table.header class="w-1/3 text-left hidden md:table-cell">Type</x-table.header>
                         <x-table.header class="w-1/2 md:w-1/3"></x-table.header>
                     </tr>
                 </thead>
@@ -174,7 +173,7 @@
                         </x-table.data>
                         <x-table.data class="w-1/3 hidden md:table-cell">
                             <x-fonts.paragraph class="font-bold text-accent">
-                                {{ $userEquipment->equipment->name }}
+                                {{ $userEquipment->equipment->type }}
                             </x-fonts.paragraph>
                         </x-table.data>
                         <x-table.data class="w-1/2 md:w-1/3">

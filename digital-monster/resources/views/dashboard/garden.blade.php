@@ -1,14 +1,14 @@
 <x-app-layout>
     <x-slot name="header">
         <x-fonts.sub-header>
-            Garden
+            DigiGarden
         </x-fonts.sub-header>
     </x-slot>
 
     <x-container>
         <x-slot name="header">
             <x-fonts.sub-header>
-                Garden
+                DigiGarden
             </x-fonts.sub-header>
             <x-fonts.paragraph>
                 {{ $totalMonsters }} / {{ $user->max_monster_amount }}

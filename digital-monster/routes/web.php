@@ -18,7 +18,7 @@ Route::middleware('headers')->group(function () {
     //Public
     Route::get('/', function () {
         if (Auth::check()) {
-            return redirect('/dashboard');
+            return redirect('/digigarden');
         } else {
             return view('pages.welcome');
         }
@@ -35,7 +35,7 @@ Route::middleware('headers')->group(function () {
 
     //Log In Required
     Route::middleware('auth')->group(function () {
-        Route::get('/dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
+        Route::get('/digigarden', [DashboardController::class, 'digigarden'])->name('digigarden');
         Route::get('/colosseum', [DashboardController::class, 'colosseum'])->name('colosseum');
         Route::get('/shop', [DashboardController::class, 'shop'])->name('shop');
         Route::post('/shop/buy', [DashboardController::class, 'buyItem'])->name('shop.buy');

@@ -28,12 +28,12 @@
                 <div class="flex flex-col md:flex-row gap-x-4 w-full">
                     <x-inputs.text
                         name="name"
-                        divClasses="w-full"
+                        class="w-full"
                         value="{{ old('name', isset($eggGroup) ? $eggGroup->name : '') }}"
                         :messages="$errors->get('name')" />
                     <x-inputs.dropdown
                         name="field"
-                        divClasses="w-full"
+                        class="w-full"
                         :options="$fields"
                         :value="old('field', isset($eggGroup) ? $eggGroup->field : '')"
                         :messages="$errors->get('field')" />

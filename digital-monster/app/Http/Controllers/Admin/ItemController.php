@@ -70,7 +70,7 @@ class ItemController extends Controller
         $itemData = $validatedData;
 
         if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('item', 'public');
+            $path = $request->file('image')->store('items', 'public');
             $itemData['image'] = $path;
 
             if ($item->image) {
@@ -79,7 +79,7 @@ class ItemController extends Controller
         }
 
         if ($request->hasFile('image_1')) {
-            $path = $request->file('image_1')->store('item', 'public');
+            $path = $request->file('image_1')->store('items', 'public');
             $itemData['image_1'] = $path;
 
             if ($item->image_1) {
@@ -88,7 +88,7 @@ class ItemController extends Controller
         }
 
         if ($request->hasFile('image_2')) {
-            $path = $request->file('image_2')->store('item', 'public');
+            $path = $request->file('image_2')->store('items', 'public');
             $itemData['image_2'] = $path;
 
             if ($item->image_2) {

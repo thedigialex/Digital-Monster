@@ -54,9 +54,16 @@ class DatabaseSeeder extends Seeder
         ]);
 
         Item::create([
-            'name' => 'default',
+            'name' => 'Default',
             'price' => 0,
             'type' => 'Background',
+            'rarity' => 'Common',
+        ]);
+
+        Item::create([
+            'name' => 'Bubble',
+            'price' => 0,
+            'type' => 'Attack',
             'rarity' => 'Common',
         ]);
 

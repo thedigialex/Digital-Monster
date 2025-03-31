@@ -14,7 +14,7 @@ use Carbon\Carbon;
 
 class DashboardController extends Controller
 {
-    public function dashboard()
+    public function digigarden()
     {
         $user = User::find(Auth::id());
 
