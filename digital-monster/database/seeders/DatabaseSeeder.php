@@ -67,6 +67,23 @@ class DatabaseSeeder extends Seeder
             'rarity' => 'Common',
         ]);
 
+        Item::create([
+            'name' => 'Meat',
+            'price' => 5,
+            'type' => 'Consumable',
+            'rarity' => 'Common',
+            'effect' => 'H,1-EVO,5',
+            'max_quantity' => 99
+        ]);
+
+        Item::create([
+            'name' => 'DataCrystal',
+            'price' => 5000,
+            'type' => 'Material',
+            'rarity' => 'Legendary',
+            'max_quantity' => 10
+        ]);
+
         $user = User::create([
             'name' => 'Test User',
             'email' => 'test@example.com',

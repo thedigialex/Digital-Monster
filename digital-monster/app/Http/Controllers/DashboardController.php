@@ -14,7 +14,7 @@ use Carbon\Carbon;
 
 class DashboardController extends Controller
 {
-    public function digigarden()
+    public function garden()
     {
         $user = User::find(Auth::id());
 
@@ -94,6 +94,25 @@ class DashboardController extends Controller
             ->groupBy('type');
 
         return view('dashboard.shop', compact('user', 'background', 'items'));
+    }
+
+    public function converge()
+    {
+        $user = User::find(Auth::id());
+        $background = $this->getUserBackgroundImage($user);
+
+        $count = $user->userItems()
+            ->whereHas('item', function ($query) {
+                $query->where('type', 'Material')
+                    ->where('name', 'DataCrystal');
+            })
+            ->sum('quantity');
+
+        if ($count >= 10) {
+            $eggs = monster::where('stage', 'Egg')->get();
+        }
+
+        return view('dashboard.converge', compact('count', 'background', 'eggs'));
     }
 
     public function buyItem(Request $request)

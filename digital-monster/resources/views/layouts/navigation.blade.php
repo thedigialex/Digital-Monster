@@ -14,6 +14,11 @@
         <span>Shop</span>
     </x-nav-link>
 
+    <x-nav-link :href="route('digiconverge')" :active="request()->routeIs('digiconverge')">
+        <i class="fa-solid fa-compress-arrows-alt"></i>
+        <span>DigiConverge</span>
+    </x-nav-link>
+
     @if (Auth::user()->role === 'admin')
     <x-nav-link :href="route('egg_groups.index')" :active="request()->routeIs(['egg_groups.index', 'egg_group.edit'])">
         <i class="fas fa-egg"></i>

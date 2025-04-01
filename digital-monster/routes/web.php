@@ -35,8 +35,9 @@ Route::middleware('headers')->group(function () {
 
     //Log In Required
     Route::middleware('auth')->group(function () {
-        Route::get('/digigarden', [DashboardController::class, 'digigarden'])->name('digigarden');
+        Route::get('/digigarden', [DashboardController::class, 'garden'])->name('digigarden');
         Route::get('/colosseum', [DashboardController::class, 'colosseum'])->name('colosseum');
+        Route::get('/digiconverge', [DashboardController::class, 'converge'])->name('digiconverge');
         Route::get('/shop', [DashboardController::class, 'shop'])->name('shop');
         Route::post('/shop/buy', [DashboardController::class, 'buyItem'])->name('shop.buy');
         Route::post('monster/train', [DashboardController::class, 'useTraining'])->name('monster.train');

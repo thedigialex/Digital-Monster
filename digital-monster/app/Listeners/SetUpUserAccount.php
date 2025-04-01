@@ -14,6 +14,7 @@ class SetUpUserAccount
     {
         $user = $event->user;
         $user->bits = 50;
+
         $backgroundItem = Item::where('name', 'Default')->where('type', 'Background')->first();
         $background = UserItem::create([
             'user_id' => $user->id,
@@ -26,6 +27,20 @@ class SetUpUserAccount
             'user_id' => $user->id,
             'item_id' => $attackItem->id,
             'quantity' => 1,
+        ]);
+
+        $meatItem = Item::where('name', 'Meat')->where('type', 'Consumable')->first();
+        UserItem::create([
+            'user_id' => $user->id,
+            'item_id' => $meatItem->id,
+            'quantity' => 25,
+        ]);
+
+        $dataCrystalItem = Item::where('name', 'DataCrystal')->where('type', 'Material')->first();
+        UserItem::create([
+            'user_id' => $user->id,
+            'item_id' => $dataCrystalItem->id,
+            'quantity' => 10,
         ]);
 
         $equipments = Equipment::all();
