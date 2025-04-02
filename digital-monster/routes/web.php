@@ -55,7 +55,6 @@ Route::middleware('headers')->group(function () {
         //Admin Only
         Route::middleware(['admin'])->group(function () {
             Route::post('/session/store', [SessionController::class, 'store'])->name('session.store');
-            Route::get('/session/get/{model}', [SessionController::class, 'get'])->name('session.get');
             Route::post('/session/clear', [SessionController::class, 'clear'])->name('session.clear');
 
             Route::get('/users', [UserController::class, 'index'])->name('users.index');

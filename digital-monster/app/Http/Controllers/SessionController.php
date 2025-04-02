@@ -13,10 +13,11 @@ class SessionController extends Controller
             'id' => 'required|integer',
             'route' => 'required|string'
         ]);
+
         session([$request->model . '_id' => $request->id]);
         return redirect()->route($request->route);
     }
-
+    
     public function clear(Request $request)
     {
         $request->validate([
@@ -26,10 +27,5 @@ class SessionController extends Controller
 
         session()->forget($request->model . '_id');
         return redirect()->route($request->route);
-    }
-
-    public function get($model)
-    {
-        return session($model . '_id');
     }
 }

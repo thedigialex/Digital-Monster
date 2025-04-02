@@ -37,7 +37,9 @@ class UserController extends Controller
 
     public function updateUserMonster(Request $request)
     {
-        $validated = $request->validate([
+        $userMonster = UserMonster::find(session('user_monster_id'));
+
+        $rules = [
             'name' => 'required|string|max:255',
             'monster_id' => 'required|exists:monsters,id',
             'type' => 'required|in:Data,Virus,Vaccine',
@@ -58,23 +60,21 @@ class UserController extends Controller
             'max_trainings' => 'required|integer|min:0',
             'evo_points' => 'required|integer|min:0',
             'main' => 'required|integer'
-        ]);
+        ];
 
-        $userMonster = UserMonster::find(session('user_monster_id'));
-        if ($userMonster) {
-            $userMonster->update($validated);
-        } else {
-            $validated['user_id'] = session('user_id');
-            $userMonster = UserMonster::create($validated);
-        }
-        if ($request->input('main') == 1) {
-            UserMonster::where('user_id', session('user_id'))
-                ->where('id', '!=', $userMonster->id)
-                ->update(['main' => 0]);
+        if (!$userMonster) {
+            $userMonster = new UserMonster();
+            $userMonster->user_id =  session('user_edit_id');
         }
 
-        return redirect()->route('user.profile')
-            ->with('success', 'Monster saved successfully.');
+        $validationData = $request->validate($rules);
+
+        $userMonster->fill($validationData);
+        $userMonster->save();
+
+        $message = session('user_monster_id') ? 'User Monster updated successfully.' : 'User Monster created successfully.';
+
+        return redirect()->route('user.profile')->with('success', $message);
     }
 
     public function destroyUserMonster()
@@ -88,28 +88,33 @@ class UserController extends Controller
     public function editUserItem()
     {
         $allItems = Item::all();
-        $userItem = UserItem::find(session('user_item'));
-        $userId = $userItem->user_id ?? session('user_edit_id');        
-        return view('item.user_form', ['userItem' => $userItem, 'allItems' => $allItems, 'userId' => $userId]);
+        $userItem = UserItem::find(session('user_item_id'));
+        return view('item.user_form', compact('userItem', 'allItems'));
     }
 
     public function updateUserItem(Request $request)
     {
-        $userItem = UserItem::findOrNew(session('user_item'));
-        $validationData = $request->validate([
+        $userItem = UserItem::find(session('user_item_id'));
+        $rules = [
             'item_id' => 'required|exists:items,id',
             'quantity' => 'required|integer|min:1',
-            'user_id' => 'required|integer|min:1',
-        ]);
+        ];
+
+        if (!$userItem) {
+            $userItem = new UserItem();
+            $userItem->user_id =  session('user_edit_id');
+        }
+
+        $validationData = $request->validate($rules);
 
         $userItem->fill($validationData);
         $userItem->save();
 
         $message = session('user_item_id') ? 'User Item updated successfully.' : 'User Item created successfully.';
 
-        return redirect()->route('user.profile')
-            ->with('success', $message);
+        return redirect()->route('user.profile')->with('success', $message);
     }
+
 
     public function destroyUserItem()
     {
@@ -124,24 +129,31 @@ class UserController extends Controller
     {
         $allEquipment = Equipment::all();
         $userEquipment = UserEquipment::find(session('user_equipment_id'));
-        return view('equipment.user_form', ['userEquipment' => $userEquipment, 'allEquipment' => $allEquipment]);
+        return view('equipment.user_form', compact('userEquipment', 'allEquipment'));
     }
 
     public function updateUserEquipment(Request $request)
     {
-        $userEquipment = UserEquipment::findOrNew(session('user_equipment_id'));
-        $validationData = $request->validate([
+        $userEquipment = UserEquipment::find(session('user_equipment_id'));
+
+        $rules = [
             'equipment_id' => 'required|exists:equipment,id',
             'level' => 'required|integer|min:1',
-        ]);
+        ];
+
+        if (!$userEquipment) {
+            $userEquipment = new UserEquipment();
+            $userEquipment->user_id = session('user_edit_id');
+        }
+
+        $validationData = $request->validate($rules);
 
         $userEquipment->fill($validationData);
         $userEquipment->save();
 
-        $message = session('user_equipment_id') ? 'User Equipment updated successfully.' : 'User Equipment created successfully.';
+        $message = session('user_item_id') ? 'User Equipment updated successfully.' : 'User Equipment created successfully.';
 
-        return redirect()->route('user.profile')
-            ->with('success', $message);
+        return redirect()->route('user.profile')->with('success', $message);
     }
 
     public function destroyUserEquipment()
