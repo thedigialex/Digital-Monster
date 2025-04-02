@@ -88,16 +88,18 @@ class UserController extends Controller
     public function editUserItem()
     {
         $allItems = Item::all();
-        $userItem = UserItem::find(session('user_item_id'));
-        return view('item.user_form', ['userItem' => $userItem, 'allItems' => $allItems]);
+        $userItem = UserItem::find(session('user_item'));
+        $userId = $userItem->user_id ?? session('user_edit_id');        
+        return view('item.user_form', ['userItem' => $userItem, 'allItems' => $allItems, 'userId' => $userId]);
     }
 
     public function updateUserItem(Request $request)
     {
-        $userItem = UserItem::findOrNew(session('user_item_id'));
+        $userItem = UserItem::findOrNew(session('user_item'));
         $validationData = $request->validate([
             'item_id' => 'required|exists:items,id',
             'quantity' => 'required|integer|min:1',
+            'user_id' => 'required|integer|min:1',
         ]);
 
         $userItem->fill($validationData);

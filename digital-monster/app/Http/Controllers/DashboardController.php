@@ -108,11 +108,68 @@ class DashboardController extends Controller
             })
             ->sum('quantity');
 
-        if ($count >= 10) {
-            $eggs = monster::where('stage', 'Egg')->get();
+        $userMonsters = UserMonster::with('monster')->where('user_id', $user->id)->get();
+        $totalMonsters = $userMonsters->count();
+
+        $message = $count >= 10
+            ? ($totalMonsters >= $user->max_monster_amount
+                ? "Not enough room"
+                : "Select an Egg")
+            : "Not enough DataCrystals";
+
+        $eggs = ($count >= 10 && $totalMonsters < $user->max_monster_amount)
+            ? Monster::where('stage', 'Egg')->get()
+            : [];
+
+        return view('dashboard.converge', compact('count', 'background', 'eggs', 'message'));
+    }
+
+    public function convergeCreate(Request $request)
+    {
+        $user = User::find(Auth::id());
+        $monster = Monster::find($request->monster_id);
+
+        $count = $user->userItems()
+            ->whereHas('item', function ($query) {
+                $query->where('type', 'Material')
+                    ->where('name', 'DataCrystal');
+            })
+            ->sum('quantity');
+
+        if ($count < 10 || !$monster) {
+            return response()->json([
+                'message' => 'Hmmm something is off.',
+                'successful' => false,
+            ]);
         }
 
-        return view('dashboard.converge', compact('count', 'background', 'eggs'));
+        $userAttacks = UserItem::with('item')
+            ->where('user_id', $user->id)
+            ->whereHas('item', function ($query) {
+                $query->where('type', 'Attack');
+            })
+            ->get();
+
+        $types = ['Data', 'Virus', 'Vaccine'];
+        $userMonster = new UserMonster();
+        $userMonster->user_id = $user->id;
+        $userMonster->attack = $userAttacks->first()->id;
+        $userMonster->monster_id = $monster->id;
+        $userMonster->name = 'New Egg';
+        $userMonster->type = $types[array_rand($types)];
+        $userMonster->save();
+
+        $user->userItems()
+            ->whereHas('item', function ($query) {
+                $query->where('type', 'Material')
+                    ->where('name', 'DataCrystal');
+            })
+            ->delete();
+
+        return response()->json([
+            'message' => 'Egg created successfully!',
+            'successful' => true,
+        ]);
     }
 
     public function buyItem(Request $request)

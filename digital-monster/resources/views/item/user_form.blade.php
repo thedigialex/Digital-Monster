@@ -24,6 +24,7 @@
 
         <form action="{{ route('user.item.update') }}" method="POST" enctype="multipart/form-data">
             @csrf
+            <input type="hidden" name="user_id" value="{{ $userId }}">
             <x-container.single>
                 <div class="flex flex-col md:flex-row gap-x-4">
                     <x-inputs.dropdown

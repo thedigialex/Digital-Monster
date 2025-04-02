@@ -49,9 +49,11 @@
         const loadingSection = document.getElementById("loading-section");
         const battleArena = document.getElementById("battle-arena");
         const setupSection = document.getElementById("setup-section");
+        const scrollLeft = document.getElementById("scrollLeft");
+        const scrollRight = document.getElementById("scrollRight");
 
         const userMonsters = JSON.parse(carousel.getAttribute("data-monsters"));
-        let itemsPerPage = window.innerWidth <= 768 ? 1 : 5;
+        let itemsPerPage = window.innerWidth <= 640 ? 2 : 4;
         let currentIndex = 0;
         let activeUserMonster;
         let monsterElements = [];
@@ -118,6 +120,9 @@
             carousel.innerHTML = "";
             const monstersToShow = monsterElements.slice(currentIndex, currentIndex + itemsPerPage);
             monstersToShow.forEach(monster => carousel.appendChild(monster));
+
+            scrollLeft.style.visibility = currentIndex === 0 ? "hidden" : "visible";
+            scrollRight.style.visibility = currentIndex + itemsPerPage >= monsterElements.length ? "hidden" : "visible";
         }
 
         function startBattle(animationFrame, removeUserMonster) {
@@ -260,19 +265,18 @@
             }, 400);
         }
 
-        document.getElementById("scrollLeft").addEventListener("click", function() {
-            currentIndex = Math.max(0, currentIndex - itemsPerPage);
-            renderMonsters();
+        scrollLeft.addEventListener("click", function() {
+            if (currentIndex > 0) {
+                currentIndex -= itemsPerPage;
+                renderMonsters();
+            }
         });
 
-        document.getElementById("scrollRight").addEventListener("click", function() {
-            if (currentIndex + itemsPerPage < userMonsters.length) {
+        scrollRight.addEventListener("click", function() {
+            if (currentIndex + itemsPerPage < monsterElements.length) {
                 currentIndex += itemsPerPage;
-            } else {
-                currentIndex = userMonsters.length - (userMonsters.length % itemsPerPage || itemsPerPage);
+                renderMonsters();
             }
-
-            renderMonsters();
         });
 
         document.getElementById("wildBattleButton").addEventListener("click", function() {

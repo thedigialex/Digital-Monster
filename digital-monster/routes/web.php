@@ -38,6 +38,7 @@ Route::middleware('headers')->group(function () {
         Route::get('/digigarden', [DashboardController::class, 'garden'])->name('digigarden');
         Route::get('/colosseum', [DashboardController::class, 'colosseum'])->name('colosseum');
         Route::get('/digiconverge', [DashboardController::class, 'converge'])->name('digiconverge');
+        Route::post('/digiconverge/create', [DashboardController::class, 'convergeCreate'])->name('converge.create');
         Route::get('/shop', [DashboardController::class, 'shop'])->name('shop');
         Route::post('/shop/buy', [DashboardController::class, 'buyItem'])->name('shop.buy');
         Route::post('monster/train', [DashboardController::class, 'useTraining'])->name('monster.train');
