@@ -18,9 +18,9 @@
             <div id="egg-selection" class="flex flex-col justify-center items-center">
                 <x-fonts.paragraph class="text-text p-2 bg-primary rounded-md">{{ $message }}</x-fonts.paragraph>
                 <div class="flex items-center gap-4 pt-4">
-                    <x-buttons.arrow direction="left" id="scrollLeft"></x-buttons.arrow>
+                    <x-buttons.arrow direction="left" id="scrollLeft" class="hidden"></x-buttons.arrow>
                     <div id="monsterCarousel" class="flex items-center gap-4" data-eggs='@json($eggs)'></div>
-                    <x-buttons.arrow direction="right" id="scrollRight"></x-buttons.arrow>
+                    <x-buttons.arrow direction="right" id="scrollRight" class="hidden"></x-buttons.arrow>
                 </div>
             </div>
             <div id="confirm-selection" class="hidden flex flex-col justify-center items-center">

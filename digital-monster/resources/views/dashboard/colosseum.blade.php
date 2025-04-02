@@ -15,17 +15,17 @@
         <x-container.background id="setup-section" :background="$background">
             <x-fonts.paragraph class="text-text p-2 bg-primary rounded-md">Select a monster</x-fonts.paragraph>
             <div class="flex items-center gap-4 pt-4">
-                <x-buttons.arrow direction="left" id="scrollLeft"></x-buttons.arrow>
+                <x-buttons.arrow direction="left" id="scrollLeft" class="hidden"></x-buttons.arrow>
                 <div id="monsterCarousel" class="flex items-center gap-4" data-monsters='@json($userMonsters)'>
                 </div>
-                <x-buttons.arrow direction="right" id="scrollRight"></x-buttons.arrow>
+                <x-buttons.arrow direction="right" id="scrollRight" class="hidden"></x-buttons.arrow>
             </div>
 
             <div id="type-section" class="hidden flex items-center gap-4 flex-col pt-4">
                 <x-fonts.paragraph class="text-text p-2 bg-primary rounded-md">Player OR Wild</x-fonts.paragraph>
                 <div class="flex justify-center items-center gap-4 ">
-                    <x-buttons.square id="userBattleButton" text="Player" />
-                    <x-buttons.square id="wildBattleButton" text="Wild" />
+                    <x-buttons.square id="userBattleButton" text="Player" icon="fa-user"/>
+                    <x-buttons.square id="wildBattleButton" text="Wild" icon="fa-robot"/>
                 </div>
             </div>
         </x-container.background>

@@ -23,7 +23,7 @@ class UserController extends Controller
     public function profile()
     {
         $user = User::with(['userMonsters.monster', 'userItems.item', 'userEquipment.equipment'])
-            ->findOrFail(session('user_id'));
+            ->findOrFail(session('user_edit_id'));
         return view('pages.profile', ['user' => $user]);
     }
 

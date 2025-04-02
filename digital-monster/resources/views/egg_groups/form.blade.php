@@ -4,7 +4,7 @@
             {{ isset($eggGroup) ? 'Update Egg Group' : 'Create Egg Group' }}
         </x-fonts.sub-header>
         <a href="{{ route('egg_groups.index') }}">
-            <x-buttons.primary icon="fa-arrow-left" label="Go Back" />
+            <x-buttons.primary icon="fa-arrow-left" label="Back" />
         </a>
     </x-slot>
 

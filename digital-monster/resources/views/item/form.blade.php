@@ -4,7 +4,7 @@
             {{ isset($item) ? 'Update Item' : 'Create Item' }}
         </x-fonts.sub-header>
         <a href="{{ route('items.index') }}">
-            <x-buttons.primary icon="fa-arrow-left" label="Go Back" />
+            <x-buttons.primary icon="fa-arrow-left" label="Back" />
         </a>
     </x-slot>
 

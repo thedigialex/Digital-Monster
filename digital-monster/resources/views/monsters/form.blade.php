@@ -4,7 +4,7 @@
             {{ isset($monster) ? 'Update Monster' : 'Create Monster' }}
         </x-fonts.sub-header>
         <a href="{{ route('monsters.index') }}">
-            <x-buttons.primary icon="fa-arrow-left" label="Go Back" />
+            <x-buttons.primary icon="fa-arrow-left" label="Back" />
         </a>
     </x-slot>
 

@@ -232,7 +232,7 @@ class DashboardController extends Controller
         }
 
         $types = ['Data', 'Virus', 'Vaccine'];
-        $level = rand(1, 10);
+        $level = rand(1, 5);
 
         $randomAttackItem = Item::where('type', 'Attack')
             ->inRandomOrder()

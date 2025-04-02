@@ -1,13 +1,13 @@
 <x-app-layout>
     <x-slot name="header">
         <x-fonts.sub-header>
-            Profile: {{ $user->name }}
+            {{ $user->name }}
             <span class="ml-2">
                 <i class="fa fa-envelope" id="copyEmailIcon" style="cursor: pointer;" onclick="copyToClipboard('{{ $user->email }}')"></i>
             </span>
         </x-fonts.sub-header>
         <a href="{{ route('users.index') }}">
-            <x-buttons.primary icon="fa-arrow-left" label="Go Back" />
+            <x-buttons.primary icon="fa-arrow-left" label="Back" />
         </a>
     </x-slot>
 
@@ -45,9 +45,7 @@
             <x-fonts.sub-header>
                 User Monsters
             </x-fonts.sub-header>
-            @if(Auth::user()->isAdmin())
             <x-buttons.clear model="user_monster" route="user.monster.edit" icon="fa-plus" label="New" />
-            @endif
         </x-slot>
         <div class="p-4">
             @if (!$user->userMonsters->isEmpty())
@@ -102,9 +100,8 @@
             <x-fonts.sub-header>
                 Inventory
             </x-fonts.sub-header>
-            @if(Auth::user()->isAdmin())
+
             <x-buttons.clear model="user_item" route="user.item.edit" icon="fa-plus" label="New" />
-            @endif
         </x-slot>
         <div class="p-4">
             @if (!$user->userItems->isEmpty())
@@ -149,9 +146,7 @@
             <x-fonts.sub-header>
                 Equipment
             </x-fonts.sub-header>
-            @if(Auth::user()->isAdmin())
             <x-buttons.clear model="user_equipment" route="user.equipment.edit" icon="fa-plus" label="New" />
-            @endif
         </x-slot>
         <div class="p-4">
             @if (!$user->userEquipment->isEmpty())
