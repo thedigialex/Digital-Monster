@@ -37,13 +37,15 @@ Route::middleware('headers')->group(function () {
     Route::middleware('auth')->group(function () {
         Route::get('/digigarden', [DashboardController::class, 'garden'])->name('digigarden');
         Route::get('/colosseum', [DashboardController::class, 'colosseum'])->name('colosseum');
+        Route::post('colosseum/generateBattle', [DashboardController::class, 'generateBattle'])->name('colosseum.generateBattle');
         Route::get('/adventure', [DashboardController::class, 'adventure'])->name('adventure');
+        Route::post('adventure/step', [DashboardController::class, 'generateStep'])->name('adventure.step');
         Route::get('/digiconverge', [DashboardController::class, 'converge'])->name('digiconverge');
         Route::post('/digiconverge/create', [DashboardController::class, 'convergeCreate'])->name('converge.create');
         Route::get('/shop', [DashboardController::class, 'shop'])->name('shop');
         Route::post('/shop/buy', [DashboardController::class, 'buyItem'])->name('shop.buy');
         Route::post('monster/train', [DashboardController::class, 'useTraining'])->name('monster.train');
-        Route::post('monster/generateBattle', [DashboardController::class, 'generateBattle'])->name('monster.generateBattle');
+
         Route::post('monster/item', [DashboardController::class, 'useItem'])->name('monster.item');
         Route::post('monster/attack', [DashboardController::class, 'changeAttack'])->name('monster.attack');
         Route::post('monster/sleep', [DashboardController::class, 'sleepToggle'])->name('monster.sleep');

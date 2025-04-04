@@ -288,7 +288,7 @@
             const data = {
                 user_monster_id: activeUserMonster.id
             };
-            fetch("{{ route('monster.generateBattle') }}", {
+            fetch("{{ route('colosseum.generateBattle') }}", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",

@@ -72,160 +72,6 @@ class DashboardController extends Controller
         return view('dashboard.colosseum', compact('userMonsters', 'background'));
     }
 
-    public function adventure()
-    {
-        $user = User::find(Auth::id());
-
-        $userMonsters = UserMonster::with('monster')
-            ->where('user_id', $user->id)
-            ->whereHas('monster', function ($query) {
-                $query->whereNotIn('stage', ['Egg', 'Fresh', 'Child']);
-            })
-            ->where('energy', '>', 0)
-            ->whereNull('sleep_time')
-            ->get();
-
-        foreach ($userMonsters as $userMonster) {
-            $userMonster->attack = UserItem::with('item')->where('id', $userMonster->attack)->first();
-        }
-        
-        $background = $this->getUserBackgroundImage($user);
-
-        return view('dashboard.adventure', compact('userMonsters', 'background'));
-    }
-
-    public function shop()
-    {
-        $user = User::find(Auth::id());
-
-        $background = $this->getUserBackgroundImage($user);
-
-        $userItems = UserItem::where('user_id', $user->id)->get()->keyBy('item_id');
-
-        $items = Item::where('type', '!=', 'Material')
-            ->get()
-            ->filter(function ($item) use ($userItems) {
-                if (isset($userItems[$item->id])) {
-                    return $userItems[$item->id]->quantity < $item->max_quantity;
-                }
-                return true;
-            })
-            ->filter(function ($item) {
-                return $item->available == 1;
-            })
-            ->groupBy('type');
-
-        return view('dashboard.shop', compact('user', 'background', 'items'));
-    }
-
-    public function converge()
-    {
-        $user = User::find(Auth::id());
-        $background = $this->getUserBackgroundImage($user);
-
-        $count = $user->userItems()
-            ->whereHas('item', function ($query) {
-                $query->where('type', 'Material')
-                    ->where('name', 'DataCrystal');
-            })
-            ->sum('quantity');
-
-        $userMonsters = UserMonster::with('monster')->where('user_id', $user->id)->get();
-        $totalMonsters = $userMonsters->count();
-
-        $message = $count >= 10
-            ? ($totalMonsters >= $user->max_monster_amount
-                ? "Not enough room"
-                : "Select an Egg")
-            : "Not enough DataCrystals";
-
-        $eggs = ($count >= 10 && $totalMonsters < $user->max_monster_amount)
-            ? Monster::where('stage', 'Egg')->get()
-            : [];
-
-        return view('dashboard.converge', compact('count', 'background', 'eggs', 'message'));
-    }
-
-    public function convergeCreate(Request $request)
-    {
-        $user = User::find(Auth::id());
-        $monster = Monster::find($request->monster_id);
-
-        $count = $user->userItems()
-            ->whereHas('item', function ($query) {
-                $query->where('type', 'Material')
-                    ->where('name', 'DataCrystal');
-            })
-            ->sum('quantity');
-
-        if ($count < 10 || !$monster) {
-            return response()->json([
-                'message' => 'Hmmm something is off.',
-                'successful' => false,
-            ]);
-        }
-
-        $userAttacks = UserItem::with('item')
-            ->where('user_id', $user->id)
-            ->whereHas('item', function ($query) {
-                $query->where('type', 'Attack');
-            })
-            ->get();
-
-        $types = ['Data', 'Virus', 'Vaccine'];
-        $userMonster = new UserMonster();
-        $userMonster->user_id = $user->id;
-        $userMonster->attack = $userAttacks->first()->id;
-        $userMonster->monster_id = $monster->id;
-        $userMonster->name = 'New Egg';
-        $userMonster->type = $types[array_rand($types)];
-        $userMonster->save();
-
-        $user->userItems()
-            ->whereHas('item', function ($query) {
-                $query->where('type', 'Material')
-                    ->where('name', 'DataCrystal');
-            })
-            ->delete();
-
-        return response()->json([
-            'message' => 'Egg created successfully!',
-            'successful' => true,
-        ]);
-    }
-
-    public function buyItem(Request $request)
-    {
-        $user = User::find(Auth::id());
-        $item = Item::find($request->item_id);
-
-        if (!$item || $user->bits < $item->price) {
-            return response()->json(['message' => 'Hmmm something is off.', 'successful' => false]);
-        }
-
-        $userItem = UserItem::firstOrNew(['user_id' => $user->id, 'item_id' => $item->id]);
-
-        if ($userItem->exists && $userItem->quantity >= $item->max_quantity) {
-            return response()->json(['message' => 'Hmmm something is off.', 'successful' => false]);
-        }
-
-        $userItem->quantity = ($userItem->exists ? $userItem->quantity + 1 : 1);
-        $userItem->save();
-
-        $user->bits -= $item->price;
-
-        $user->save();
-
-        $removeItem = $userItem->quantity >= $item->max_quantity;
-
-        return response()->json([
-            'message' => 'Item purchased successfully!',
-            'successful' => true,
-            'removeItem' => $removeItem,
-            'newBalance' => $user->bits
-        ]);
-    }
-
     public function generateBattle(Request $request)
     {
         $user = User::find(Auth::id());
@@ -354,6 +200,199 @@ class DashboardController extends Controller
             'enemyUserMonster' => $enemyUserMonster,
             'animationFrame' => $animationFrame,
             'removeUserMonster' => $removeUserMonster
+        ]);
+    }
+
+    public function adventure()
+    {
+        $user = User::find(Auth::id());
+
+        $userMonsters = UserMonster::with('monster')
+            ->where('user_id', $user->id)
+            ->whereHas('monster', function ($query) {
+                $query->whereNotIn('stage', ['Egg', 'Fresh', 'Child']);
+            })
+            ->where('energy', '>', 0)
+            ->whereNull('sleep_time')
+            ->get();
+
+        foreach ($userMonsters as $userMonster) {
+            $userMonster->attack = UserItem::with('item')->where('id', $userMonster->attack)->first();
+        }
+
+        $background = $this->getUserBackgroundImage($user);
+
+        return view('dashboard.adventure', compact('userMonsters', 'background'));
+    }
+
+    public function generateStep(Request $request)
+    {
+        $user = User::find(Auth::id());
+
+        $userMonster = UserMonster::with('monster')
+            ->where('id', $request->user_monster_id)
+            ->where('user_id', $user->id)
+            ->first();
+ 
+
+        if (!$userMonster || $userMonster->sleep_at || $userMonster->energy <= 0) {
+            return response()->json([
+                'message' => 'Hmmm something is off.',
+                'successful' => false
+            ]);
+        }
+
+        //$userMonster->steps += 1;
+        //$userMonster->save();
+
+
+        $messages = [
+            "{$userMonster->name} sniffs the air curiously...",
+            "{$userMonster->name} found something interesting!",
+            "{$userMonster->name} stumbles upon a strange footprint...",
+            "{$userMonster->name} eagerly explores ahead!",
+            "{$userMonster->name} stops to listen carefully...",
+            "{$userMonster->name} lets out a cheerful cry as it moves forward!",
+            "{$userMonster->name} is scanning the area for any signs of adventure!",
+            "{$userMonster->name} seems excited about what lies ahead!",
+            "{$userMonster->name} picks up the pace, eager to discover more!",
+        ];
+        return response()->json([
+            'successful' => true,
+            'message' => $messages[array_rand($messages)],
+            'duration' => rand(3, 5) * 1000,
+        ]);
+    }
+
+    public function shop()
+    {
+        $user = User::find(Auth::id());
+
+        $background = $this->getUserBackgroundImage($user);
+
+        $userItems = UserItem::where('user_id', $user->id)->get()->keyBy('item_id');
+
+        $items = Item::where('type', '!=', 'Material')
+            ->get()
+            ->filter(function ($item) use ($userItems) {
+                if (isset($userItems[$item->id])) {
+                    return $userItems[$item->id]->quantity < $item->max_quantity;
+                }
+                return true;
+            })
+            ->filter(function ($item) {
+                return $item->available == 1;
+            })
+            ->groupBy('type');
+
+        return view('dashboard.shop', compact('user', 'background', 'items'));
+    }
+
+    public function buyItem(Request $request)
+    {
+        $user = User::find(Auth::id());
+        $item = Item::find($request->item_id);
+
+        if (!$item || $user->bits < $item->price) {
+            return response()->json(['message' => 'Hmmm something is off.', 'successful' => false]);
+        }
+
+        $userItem = UserItem::firstOrNew(['user_id' => $user->id, 'item_id' => $item->id]);
+
+        if ($userItem->exists && $userItem->quantity >= $item->max_quantity) {
+            return response()->json(['message' => 'Hmmm something is off.', 'successful' => false]);
+        }
+
+        $userItem->quantity = ($userItem->exists ? $userItem->quantity + 1 : 1);
+        $userItem->save();
+
+        $user->bits -= $item->price;
+
+        $user->save();
+
+        $removeItem = $userItem->quantity >= $item->max_quantity;
+
+        return response()->json([
+            'message' => 'Item purchased successfully!',
+            'successful' => true,
+            'removeItem' => $removeItem,
+            'newBalance' => $user->bits
+        ]);
+    }
+
+    public function converge()
+    {
+        $user = User::find(Auth::id());
+        $background = $this->getUserBackgroundImage($user);
+
+        $count = $user->userItems()
+            ->whereHas('item', function ($query) {
+                $query->where('type', 'Material')
+                    ->where('name', 'DataCrystal');
+            })
+            ->sum('quantity');
+
+        $userMonsters = UserMonster::with('monster')->where('user_id', $user->id)->get();
+        $totalMonsters = $userMonsters->count();
+
+        $message = $count >= 10
+            ? ($totalMonsters >= $user->max_monster_amount
+                ? "Not enough room"
+                : "Select an Egg")
+            : "Not enough DataCrystals";
+
+        $eggs = ($count >= 10 && $totalMonsters < $user->max_monster_amount)
+            ? Monster::where('stage', 'Egg')->get()
+            : [];
+
+        return view('dashboard.converge', compact('count', 'background', 'eggs', 'message'));
+    }
+
+    public function convergeCreate(Request $request)
+    {
+        $user = User::find(Auth::id());
+        $monster = Monster::find($request->monster_id);
+
+        $count = $user->userItems()
+            ->whereHas('item', function ($query) {
+                $query->where('type', 'Material')
+                    ->where('name', 'DataCrystal');
+            })
+            ->sum('quantity');
+
+        if ($count < 10 || !$monster) {
+            return response()->json([
+                'message' => 'Hmmm something is off.',
+                'successful' => false,
+            ]);
+        }
+
+        $userAttacks = UserItem::with('item')
+            ->where('user_id', $user->id)
+            ->whereHas('item', function ($query) {
+                $query->where('type', 'Attack');
+            })
+            ->get();
+
+        $types = ['Data', 'Virus', 'Vaccine'];
+        $userMonster = new UserMonster();
+        $userMonster->user_id = $user->id;
+        $userMonster->attack = $userAttacks->first()->id;
+        $userMonster->monster_id = $monster->id;
+        $userMonster->name = 'New Egg';
+        $userMonster->type = $types[array_rand($types)];
+        $userMonster->save();
+
+        $user->userItems()
+            ->whereHas('item', function ($query) {
+                $query->where('type', 'Material')
+                    ->where('name', 'DataCrystal');
+            })
+            ->delete();
+
+        return response()->json([
+            'message' => 'Egg created successfully!',
+            'successful' => true,
         ]);
     }
 

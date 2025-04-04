@@ -64,6 +64,7 @@ return new class extends Migration
             $table->integer('max_trainings')->default(5);
             $table->integer('evo_points')->default(0);
             $table->timestamp('sleep_time')->nullable();
+            $table->integer('steps')->default(0);
             $table->timestamps();
         });
     }

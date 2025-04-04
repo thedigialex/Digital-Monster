@@ -32,7 +32,7 @@
                     <x-container.sprite id="user-monster-sprite" :rotate="true" />
                 </div>
             </div>
-            <x-fonts.paragraph class="text-text p-2 bg-primary rounded-md">Adventure Time!</x-fonts.paragraph>
+            <x-fonts.paragraph id="messageBox" class="text-text p-2 bg-primary rounded-md">Adventure Forth!</x-fonts.paragraph>
             <x-buttons.square id="stepButton" text="Step" icon="fa-forward" />
         </x-container.background>
     </x-container>
@@ -56,7 +56,7 @@
         let activeUserMonster;
         let monsterElements = [];
         let monsterAnimationInterval;
-        let stepDuration = 2000;
+  
 
         function generateMonsters() {
             userMonsters.forEach(userMonster => {
@@ -157,20 +157,40 @@
 
         stepButton.addEventListener("click", function() {
             stepButton.disabled = true;
-            const maxMove = movementArea.clientWidth - movingSpriteWrapper.clientWidth;
-            movingSpriteWrapper.style.transition = `transform ${stepDuration / 1000}s linear`;
-            movingSpriteWrapper.style.transform = `translateX(${maxMove}px)`;
-            setTimeout(() => {
-                movingSpriteWrapper.style.transition = 'none';
-                movingSpriteWrapper.style.transform = 'translateX(0)';
-                stepButton.disabled = false;
-            }, stepDuration);
+
+            const data = {
+                user_monster_id: activeUserMonster.id
+            };
+            fetch("{{ route('adventure.step') }}", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content")
+                    },
+                    body: JSON.stringify(data)
+                }).then(response => response.json())
+                .then(result => {
+                    if (result.successful) {
+                        const maxMove = movementArea.clientWidth - movingSpriteWrapper.clientWidth;
+                        movingSpriteWrapper.style.transition = `transform ${result.duration / 1000}s linear`;
+                        movingSpriteWrapper.style.transform = `translateX(${maxMove}px)`;
+                        setTimeout(() => {
+                            movingSpriteWrapper.style.transition = 'none';
+                            movingSpriteWrapper.style.transform = 'translateX(0)';
+                            stepButton.disabled = false;
+                            document.getElementById('messageBox').textContent = result.message;
+                        }, result.duration);
+                    } else {
+                        //reset battle thing and show a message.
+                    }
+                });
         });
 
         document.getElementById("backButton").addEventListener("click", function() {
             battleSection.classList.add("hidden");
             setupSection.classList.remove("hidden");
             confirmSection.classList.remove("hidden");
+            document.getElementById('messageBox').textContent = "Adventure Forth!";
         });
 
         document.getElementById("selectMonsterButton").addEventListener("click", function() {
