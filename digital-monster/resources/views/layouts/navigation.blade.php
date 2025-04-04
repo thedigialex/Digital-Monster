@@ -9,6 +9,11 @@
         <span>Colosseum</span>
     </x-nav-link>
 
+    <x-nav-link :href="route('adventure')" :active="request()->routeIs('adventure')">
+        <i class="fas fa-compass"></i>
+        <span>Adventure</span>
+    </x-nav-link>
+
     <x-nav-link :href="route('shop')" :active="request()->routeIs('shop')">
         <i class="fa-solid fa-store"></i>
         <span>Shop</span>

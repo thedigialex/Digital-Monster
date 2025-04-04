@@ -72,6 +72,28 @@ class DashboardController extends Controller
         return view('dashboard.colosseum', compact('userMonsters', 'background'));
     }
 
+    public function adventure()
+    {
+        $user = User::find(Auth::id());
+
+        $userMonsters = UserMonster::with('monster')
+            ->where('user_id', $user->id)
+            ->whereHas('monster', function ($query) {
+                $query->whereNotIn('stage', ['Egg', 'Fresh', 'Child']);
+            })
+            ->where('energy', '>', 0)
+            ->whereNull('sleep_time')
+            ->get();
+
+        foreach ($userMonsters as $userMonster) {
+            $userMonster->attack = UserItem::with('item')->where('id', $userMonster->attack)->first();
+        }
+        
+        $background = $this->getUserBackgroundImage($user);
+
+        return view('dashboard.adventure', compact('userMonsters', 'background'));
+    }
+
     public function shop()
     {
         $user = User::find(Auth::id());
