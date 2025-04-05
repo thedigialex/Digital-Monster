@@ -34,6 +34,7 @@
                     <x-inputs.dropdown
                         name="type"
                         class="w-full md:w-1/3"
+                        onchange="toggleTypeDropdown(event)"
                         :options="$types"
                         useOptionKey="true"
                         :value="old('available', isset($event) ? $event->type : '')"
@@ -53,3 +54,15 @@
         </form>
     </x-container>
 </x-app-layout>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        let dropdown = document.getElementById("type");
+        if (dropdown.value !== '1') {
+            document.getElementById('item_id_div').classList.add('hidden');
+        }
+    });
+
+    function toggleTypeDropdown(event) {
+        document.getElementById('item_id_div').classList.toggle('hidden', event.target.value !== '1');
+    }
+</script>

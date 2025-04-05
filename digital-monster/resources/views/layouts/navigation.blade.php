@@ -24,7 +24,15 @@
         <span>DigiConverge</span>
     </x-nav-link>
 
+    <x-nav-link :href="route('profile.edit')" :active="request()->routeIs(['profile.edit'])">
+        <i class="fas fa-user"></i>
+        <span>Profile</span>
+    </x-nav-link>
+
     @if (Auth::user()->role === 'admin')
+
+    <x-fonts.accent-header>ADMIN</x-fonts.accent-header>
+
     <x-nav-link :href="route('egg_groups.index')" :active="request()->routeIs(['egg_groups.index', 'egg_group.edit'])">
         <i class="fas fa-egg"></i>
         <span>Egg Groups</span>
@@ -55,9 +63,4 @@
         <span>Users</span>
     </x-nav-link>
     @endif
-
-    <x-nav-link :href="route('profile.edit')" :active="request()->routeIs(['profile.edit'])">
-        <i class="fas fa-user"></i>
-        <span>Profile</span>
-    </x-nav-link>
 </nav>

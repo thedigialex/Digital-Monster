@@ -24,13 +24,12 @@
 
         <div id="stats-panel" class="hidden bg-secondary border-primary border-t-4 p-4 shadow-lg rounded-b-md">
             <div class="flex justify-between items-center pb-4">
-                <x-fonts.sub-header id="stat-name">Name: <span></span></x-fonts.sub-header>
-                <x-fonts.paragraph id="stat-stage"><span></span></x-fonts.paragraph>
+                <x-fonts.sub-header id="stat-name"><span></span></x-fonts.sub-header>
                 <x-buttons.primary id="close-stats" label="Close" icon="fa-x" />
             </div>
             <div class="flex flex-col md:flex-row gap-4">
                 <div class="bg-primary p-4 rounded-md md:w-2/5">
-                    <div class="flex justify-between w-full gap-4">
+                    <div class="flex justify-between w-full">
                         <div>
                             <x-fonts.paragraph>Hunger</x-fonts.paragraph>
                             <div class="hunger-icons">
@@ -92,21 +91,19 @@
                             </div>
                         </x-container.modal>
                     </div>
-
                     <div class="pt-2">
                         <x-fonts.paragraph>Energy</x-fonts.paragraph>
                         <div class="w-full bg-secondary rounded-md h-4">
                             <div id="energy-bar" class="bg-success h-4 rounded-md transition-all duration-300"></div>
                         </div>
                     </div>
-                    <div class="pt-2">
-                        <x-fonts.paragraph id="stat-stats" class="flex flex-wrap w-full md:flex-row flex-col md:space-x-4 space-y-2 md:space-y-0 text-text">
-                            <span id="stat-strength" class="flex-1 text-center">Strength<br><span></span></span>
-                            <span id="stat-agility" class="flex-1 text-center">Agility<br><span></span></span>
-                            <span id="stat-defense" class="flex-1 text-center">Defense<br><span></span></span>
-                            <span id="stat-mind" class="flex-1 text-center">Mind<br><span></span></span>
-                        </x-fonts.paragraph>
-                    </div>
+                    <x-fonts.paragraph class="py-2 text-text" id="stat-stage">Stage: <span></span></x-fonts.paragraph>
+                    <x-fonts.paragraph id="stat-stats" class="flex flex-wrap w-full md:flex-row flex-col md:space-x-4 space-y-2 md:space-y-0 text-text">
+                        <span id="stat-strength" class="flex-1 text-center">Strength<br><span></span></span>
+                        <span id="stat-agility" class="flex-1 text-center">Agility<br><span></span></span>
+                        <span id="stat-defense" class="flex-1 text-center">Defense<br><span></span></span>
+                        <span id="stat-mind" class="flex-1 text-center">Mind<br><span></span></span>
+                    </x-fonts.paragraph>
                 </div>
                 <div class="bg-primary rounded-md md:w-3/5 flex items-center justify-center">
                     <x-container.modal name="user-monster-training" title="Training" focusable>
