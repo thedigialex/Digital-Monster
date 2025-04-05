@@ -27,7 +27,7 @@
         </x-container.background>
         <x-container.background id="adventure-section" class="hidden gap-4" :background="$background">
             <x-buttons.primary id="backButton" icon="fa-repeat" label="Switch" />
-            <div id="movementArea" class="relative w-full md:w-1/2 h-32 overflow-hidden py-4">
+            <div id="movementArea" class="relative w-full md:w-1/4 h-32 overflow-hidden py-4">
                 <div id="movingSpriteWrapper" class="absolute left-0">
                     <x-container.sprite id="user-monster-sprite" :rotate="true" />
                 </div>

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\Item;
+use App\Models\Event;
 use App\Models\UserItem;
 use App\Models\Monster;
 use App\Models\UserMonster;
@@ -245,21 +246,11 @@ class DashboardController extends Controller
         //$userMonster->steps += 1;
         //$userMonster->save();
 
+        $event = Event::inRandomOrder()->first();
 
-        $messages = [
-            "{$userMonster->name} sniffs the air curiously...",
-            "{$userMonster->name} found something interesting!",
-            "{$userMonster->name} stumbles upon a strange footprint...",
-            "{$userMonster->name} eagerly explores ahead!",
-            "{$userMonster->name} stops to listen carefully...",
-            "{$userMonster->name} lets out a cheerful cry as it moves forward!",
-            "{$userMonster->name} is scanning the area for any signs of adventure!",
-            "{$userMonster->name} seems excited about what lies ahead!",
-            "{$userMonster->name} picks up the pace, eager to discover more!",
-        ];
         return response()->json([
             'successful' => true,
-            'message' => $messages[array_rand($messages)],
+            'message' => "{$userMonster->name} " . $event->message,
             'duration' => rand(3, 5) * 1000,
         ]);
     }

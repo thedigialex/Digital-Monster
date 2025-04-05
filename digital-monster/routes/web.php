@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 
 use App\Http\Controllers\Admin\ItemController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\EventController;
 use App\Http\Controllers\Admin\MonsterController;
 use App\Http\Controllers\Admin\EggGroupController;
 use App\Http\Controllers\Admin\EquipmentController;
@@ -91,6 +92,11 @@ Route::middleware('headers')->group(function () {
             Route::get('/userEquipment/edit', [UserController::class, 'editUserEquipment'])->name('user.equipment.edit');
             Route::post('/userEquipment/update', [UserController::class, 'updateUserEquipment'])->name('user.equipment.update');
             Route::delete('/userEquipment/delete', [UserController::class, 'destroyUserEquipment'])->name('user.equipment.destroy');
+
+            Route::get('/events', [EventController::class, 'index'])->name('events.index');
+            Route::get('/event/edit', [EventController::class, 'edit'])->name('event.edit');
+            Route::post('/event/update', [EventController::class, 'update'])->name('event.update');
+            Route::delete('/event/delete', [EventController::class, 'destroy'])->name('event.destroy');
         });
     });
 });

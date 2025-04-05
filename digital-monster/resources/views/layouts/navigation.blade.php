@@ -35,6 +35,11 @@
         <span>Monsters</span>
     </x-nav-link>
 
+    <x-nav-link :href="route('events.index')" :active="request()->routeIs(['events.index'])">
+        <i class="fas fa-calendar"></i>
+        <span>Events</span>
+    </x-nav-link>
+
     <x-nav-link :href="route('items.index')" :active="request()->routeIs(['items.index', 'item.edit'])">
         <i class="fas fa-tags"></i>
         <span>Items</span>

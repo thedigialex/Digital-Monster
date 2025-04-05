@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\User;
 use App\Models\Item;
+use App\Models\Event;
 use App\Models\Equipment;
 use App\Events\UserRegistered;
 use Illuminate\Database\Seeder;
@@ -83,6 +84,26 @@ class DatabaseSeeder extends Seeder
             'rarity' => 'Legendary',
             'max_quantity' => 10
         ]);
+
+        $messages = [
+            "sniffs the air curiously...",
+            "found something interesting!",
+            "stumbles upon a strange footprint...",
+            "eagerly explores ahead!",
+            "stops to listen carefully...",
+            "lets out a cheerful cry as it moves forward!",
+            "is scanning the area for any signs of adventure!",
+            "seems excited about what lies ahead!",
+            "picks up the pace, eager to discover more!",
+        ];
+
+        foreach ($messages as $message) {
+            Event::create([
+                'message' => $message,
+                'type' => 0,
+                'item_id' => null,
+            ]);
+        }
 
         $user = User::create([
             'name' => 'Test User',
