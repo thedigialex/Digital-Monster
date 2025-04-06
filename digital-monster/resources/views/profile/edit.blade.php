@@ -11,7 +11,7 @@
         </x-slot>
         <x-slot name="info">
             <x-fonts.paragraph>
-                stuff
+                Manage your account settings below. You can update your name, email address, and password at any time. If you no longer wish to use your account, you also have the option to permanently delete it.
             </x-fonts.paragraph>
         </x-slot>
 

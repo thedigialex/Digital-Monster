@@ -4,7 +4,7 @@
         <x-fonts.paragraph>Once your account is deleted, all of its resources and data will be permanently deleted. Before deleting your account, please download any data or information that you wish to retain.</x-fonts.paragraph>
     </header>
 
-    <x-container.modal name="confirm-user-deletion" title="Delete User Account" focusable>
+    <x-container.modal name="confirm-user-deletion" title="Delete User Account">
         <x-slot name="button">
             <div class="flex items-center justify-center my-4">
                 <x-buttons.danger @click="open = true" label="Delete" />
