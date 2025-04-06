@@ -15,7 +15,7 @@
     <x-alerts.success>{{ session('success') }}</x-alerts.success>
     @endif
 
-    <x-container>
+    <x-container class="p-4">
         <x-slot name="header">
             <x-fonts.sub-header>Account Details</x-fonts.sub-header>
         </x-slot>

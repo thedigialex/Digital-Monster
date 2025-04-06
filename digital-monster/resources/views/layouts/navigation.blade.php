@@ -24,10 +24,16 @@
         <span>DigiConverge</span>
     </x-nav-link>
 
-    <x-nav-link :href="route('profile.edit')" :active="request()->routeIs(['profile.edit'])">
+    <x-nav-link :href="route('info')" :active="request()->routeIs(['info'])">
+        <i class="fas fa-circle-info"></i>
+        <span>Info</span>
+    </x-nav-link>
+
+    <x-nav-link :href="route('profile.edit')" :active="request()->routeIs(['profile.edit', 'profile.privacy'])">
         <i class="fas fa-user"></i>
         <span>Profile</span>
     </x-nav-link>
+    
 
     @if (Auth::user()->role === 'admin')
 

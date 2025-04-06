@@ -21,6 +21,8 @@ return new class extends Migration
             $table->integer('background_id')->default(0);
             $table->integer('max_monster_amount')->default(5);
             $table->integer('score')->default(0);
+            $table->integer('privacy_accept')->default(0);
+            $table->integer('notification_accept')->default(0);
             $table->rememberToken();
             $table->timestamps();
         });

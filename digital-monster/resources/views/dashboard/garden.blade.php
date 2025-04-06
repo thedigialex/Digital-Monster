@@ -144,7 +144,7 @@
                                     <div id="progress-bar" class="h-full bg-accent w-0 rounded-md"></div>
                                 </div>
 
-                                <button id="trainingButton" class="px-4 py-2 bg-red-500 text-text rounded-md">Start</button>
+                                <x-buttons.primary id="trainingButton" label="Start" icon="fa-play" />
                             </div>
                             <x-fonts.paragraph id="sleep-section" class="text-text p-2 bg-primary rounded-md">Monster is sleeping</x-fonts.paragraph>
                         </div>
@@ -215,11 +215,16 @@
 
         function setTrainingButton() {
             const trainingButton = document.getElementById('trainingButton');
-            trainingButton.disabled = false;
-            trainingButton.textContent = 'Start';
+            const labelSpan = trainingButton.querySelector('.label');
+            const icon = trainingButton.querySelector('i.icon');
             if (activeUserMonster.energy == 0) {
                 trainingButton.disabled = true;
-                trainingButton.textContent = 'No Energy';
+                labelSpan.textContent = 'No Energy';
+                icon.className = 'icon fa fa-ban';
+            } else {
+                trainingButton.disabled = false;
+                labelSpan.textContent = 'Start';
+                icon.className = 'icon fa fa-play';
             }
         }
 
@@ -568,7 +573,10 @@
         document.getElementById('trainingButton').addEventListener('click', function() {
             if (!training) {
                 const trainingButton = document.getElementById('trainingButton');
-                trainingButton.textContent = 'Stop';
+                const labelSpan = trainingButton.querySelector('.label');
+                const icon = trainingButton.querySelector('i.icon');
+                labelSpan.textContent = 'Stop';
+                icon.className = 'icon fa fa-stop';
 
                 progress = 0;
                 direction = 1;
