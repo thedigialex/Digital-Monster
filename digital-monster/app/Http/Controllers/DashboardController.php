@@ -234,7 +234,7 @@ class DashboardController extends Controller
             ->where('id', $request->user_monster_id)
             ->where('user_id', $user->id)
             ->first();
- 
+
 
         if (!$userMonster || $userMonster->sleep_at || $userMonster->energy <= 0) {
             return response()->json([
@@ -243,10 +243,30 @@ class DashboardController extends Controller
             ]);
         }
 
-        //$userMonster->steps += 1;
-        //$userMonster->save();
+        $userMonster->steps += 1;
+        $userMonster->save();
 
         $event = Event::inRandomOrder()->first();
+
+        if ($event->item_id) {
+            $item = Item::find($event->item_id);
+            $userItem = UserItem::where('user_id', $user->id)
+                ->where('item_id', $item->id)
+                ->first();
+
+            if ($userItem) {
+                if ($userItem->quantity < $item->max_quantity) {
+                    $userItem->quantity += 1;
+                    $userItem->save();
+                }
+            } else {
+                UserItem::create([
+                    'user_id' => $user->id,
+                    'item_id' => $item->id,
+                    'quantity' => 1,
+                ]);
+            }
+        }
 
         return response()->json([
             'successful' => true,

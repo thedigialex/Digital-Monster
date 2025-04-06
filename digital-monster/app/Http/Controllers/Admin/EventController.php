@@ -37,10 +37,10 @@ class EventController extends Controller
             'message' => 'required|string',
         ]);
 
-        if ($validationRules['type'] == 1) {
+        if ($request->input('type') == 1) {
             $validationRules['item_id'] = 'required|integer';
         }
-
+        
         $validatedData = $request->validate($validationRules);
         $eventData = $validatedData;
 
