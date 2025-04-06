@@ -28,7 +28,9 @@
         </x-accordion>
 
         <div class="flex justify-center py-4">
-            <x-buttons.session model="profile" :id="$user->id" route="profile.privacy" icon="fa-file-contract" label="Privacy" />
+            <a href="{{ route('profile.privacy') }}">
+                <x-buttons.primary icon="fa-file-contract" label="Privacy" />
+            </a>
         </div>
     </x-container>
 </x-app-layout>

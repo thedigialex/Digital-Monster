@@ -14,8 +14,9 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([
             'admin' => \App\Http\Middleware\AdminMiddleware::class,
-            'check-api-key' => \App\Http\Middleware\CheckApiKey::class,
             'headers' => \App\Http\Middleware\SecureHeaders::class,
+            'check-api-key' => \App\Http\Middleware\CheckApiKey::class,
+            'privacy' => \App\Http\Middleware\PrivacyMiddleware::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

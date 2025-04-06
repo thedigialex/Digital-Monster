@@ -32,6 +32,16 @@
             @endif
         </div>
 
+        <label for="notification_accept" class="flex items-center justify-center pt-4">
+            <input
+                id="notification_accept"
+                name="notification_accept"
+                type="checkbox"
+                class="rounded-md text-accent shadow-sm focus:ring-accent"
+                {{ $user->notification_accept ? 'checked' : '' }} />
+            <span class="ml-2 text-sm text-text">I would like to recieve email notifications</span>
+        </label>
+
         <div class="flex items-center justify-center my-4">
             <x-buttons.primary label="Update" icon="fa-save" />
             @if (session('status') === 'profile-updated')
