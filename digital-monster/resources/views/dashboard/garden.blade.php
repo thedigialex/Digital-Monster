@@ -3,6 +3,9 @@
         <x-fonts.sub-header>
             DigiGarden
         </x-fonts.sub-header>
+        <a href="{{ route('info') }}">
+            <x-buttons.primary icon="fa-circle-info" label="Info" />
+        </a>
     </x-slot>
 
     <x-container>
@@ -46,6 +49,7 @@
                             <div class="flex gap-4 p-2 rounded-t-md bg-secondary w-full justify-center">
                                 <button id="showItems" class="bg-accent text-secondary px-4 py-2 rounded-md">Consumable</button>
                                 <button id="showAttacks" class="bg-primary text-text px-4 py-2 rounded-md">Attacks</button>
+                                <button id="showMaterials" class="bg-primary text-text px-4 py-2 rounded-md">Materials</button>
                             </div>
 
                             <div class="flex flex-col justify-center items-center bg-cover bg-center rounded-b-md"
@@ -86,7 +90,21 @@
                                         <x-fonts.paragraph class="attack-p text-text"> {{ $userAttack->item->name }}</x-fonts.paragraph>
                                     </div>
                                     @endforeach
-
+                                </div>
+                                <div id="materials" class="hidden flex flex-wrap justify-center items-center gap-4 overflow-y-auto">
+                                    @foreach ($userMaterials as $userMaterial)
+                                    <div class="flex flex-col items-center w-28 p-2 bg-secondary border-2 border-accent rounded-md">
+                                        <div class="relative w-24 h-24 p-2 rounded-md bg-primary">
+                                            <button class="useItem w-full h-full"
+                                                style="background: url('/storage/{{ $userMaterial->item->image }}') no-repeat; background-size: cover; background-position: 0 0;">
+                                            </button>
+                                            <span class="absolute bottom-1 right-1 bg-accent text-text text-xs px-2 py-1 rounded-md">
+                                                {{ $userMaterial->quantity }}
+                                            </span>
+                                        </div>
+                                        <x-fonts.paragraph> {{ $userMaterial->item->name }}</x-fonts.paragraph>
+                                    </div>
+                                    @endforeach
                                 </div>
                             </div>
                         </x-container.modal>
@@ -135,15 +153,17 @@
                         <div class="flex flex-col justify-center items-center bg-cover bg-center"
                             style="background-image: url('{{ asset($background) }}'); height: 30vh;">
                             <div id="training-section" class="flex flex-col justify-center items-center gap-4 p-2 w-full">
+                                <div id="equipment-info" class="text-center py-2 px-4 bg-primary rounded-md">
+                                    <x-fonts.paragraph id="equipment-name"></x-fonts.paragraph>
+                                    <x-fonts.paragraph id="equipment-level"></x-fonts.paragraph>
+                                </div>
                                 <div class="flex justify-center items-center">
                                     <x-container.sprite id="equipment-sprite"></x-container.sprite>
                                     <x-container.sprite id="monster-sprite"></x-container.sprite>
                                 </div>
-
                                 <div class="w-full h-8 bg-secondary rounded-md">
                                     <div id="progress-bar" class="h-full bg-accent w-0 rounded-md"></div>
                                 </div>
-
                                 <x-buttons.primary id="trainingButton" label="Start" icon="fa-play" />
                             </div>
                             <x-fonts.paragraph id="sleep-section" class="text-text p-2 bg-primary rounded-md">Monster is sleeping</x-fonts.paragraph>
@@ -244,25 +264,21 @@
         }
 
         function showTab(tabId) {
-            document.getElementById('attacks').classList.toggle('hidden', tabId != 'items');
-            document.getElementById('items').classList.toggle('hidden', tabId != 'attacks');
+            const tabs = ['items', 'attacks', 'materials'];
+            const buttons = {
+                items: document.getElementById('showItems'),
+                attacks: document.getElementById('showAttacks'),
+                materials: document.getElementById('showMaterials')
+            };
 
-            const showItemsButton = document.getElementById('showItems');
-            const showAttacksButton = document.getElementById('showAttacks');
+            tabs.forEach(id => {
+                document.getElementById(id).classList.toggle('hidden', id !== tabId);
+                buttons[id].classList.remove('bg-accent', 'text-secondary');
+                buttons[id].classList.add('bg-primary', 'text-text');
+            });
 
-            showItemsButton.classList.remove('bg-accent', 'text-secondary');
-            showAttacksButton.classList.remove('bg-accent', 'text-secondary');
-
-            showItemsButton.classList.add('bg-primary', 'text-text');
-            showAttacksButton.classList.add('bg-primary', 'text-text');
-
-            if (tabId != 'items') {
-                showItemsButton.classList.add('bg-accent', 'text-secondary');
-                showItemsButton.classList.remove('bg-primary', 'text-text');
-            } else if (tabId != 'attacks') {
-                showAttacksButton.classList.add('bg-accent', 'text-secondary');
-                showAttacksButton.classList.remove('bg-primary', 'text-text');
-            }
+            buttons[tabId].classList.add('bg-accent', 'text-secondary');
+            buttons[tabId].classList.remove('bg-primary', 'text-text');
         }
 
         function updateItemSections() {
@@ -459,6 +475,10 @@
             });
         });
 
+        document.getElementById('showItems').addEventListener('click', () => showTab('items'));
+        document.getElementById('showAttacks').addEventListener('click', () => showTab('attacks'));
+        document.getElementById('showMaterials').addEventListener('click', () => showTab('materials'));
+
         document.getElementById('close-stats').addEventListener('click', () => {
             statsPanel.classList.add('hidden');
             container.classList.remove('rounded-b-none');
@@ -478,6 +498,8 @@
                     trainingSection.classList.remove('hidden');
                     userEquipment = JSON.parse(this.getAttribute('data-equipment'));
                     setTrainingButton();
+                    document.getElementById('equipment-name').textContent = userEquipment.equipment.stat;
+                    document.getElementById('equipment-level').textContent = `Level: ${userEquipment.level}`;
 
                     monsterImage = document.getElementById('monster-sprite');
                     secondaryImage = document.getElementById('equipment-sprite');
@@ -497,10 +519,6 @@
             highlightEquippedAttack();
             updateItemSections();
         });
-
-        document.getElementById('showItems').addEventListener('click', () => showTab('attacks'));
-
-        document.getElementById('showAttacks').addEventListener('click', () => showTab('items'));
 
         document.querySelectorAll('.useItem').forEach(button => {
             button.addEventListener('click', function() {

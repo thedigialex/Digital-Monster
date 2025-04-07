@@ -30,25 +30,20 @@ class DashboardController extends Controller
             })
             ->get();
 
-        $userItems = UserItem::with('item')
+        $allUserItems = UserItem::with('item')
             ->where('user_id', $user->id)
-            ->whereHas('item', function ($query) {
-                $query->where('type', 'Consumable');
-            })
-            ->get();
+            ->get()
+            ->groupBy(fn($userItem) => $userItem->item->type);
 
-        $userAttacks = UserItem::with('item')
-            ->where('user_id', $user->id)
-            ->whereHas('item', function ($query) {
-                $query->where('type', 'Attack');
-            })
-            ->get();
+        $userItems = $allUserItems->get('Consumable', collect());
+        $userAttacks = $allUserItems->get('Attack', collect());
+        $userMaterials = $allUserItems->get('Material', collect());
 
         $background = $this->getUserBackgroundImage($user);
 
         $totalMonsters = $userMonsters->count();
 
-        return view('dashboard.garden', compact('user', 'userMonsters', 'totalMonsters', 'userEquipment', 'userItems', 'userAttacks', 'background'));
+        return view('dashboard.garden', compact('user', 'userMonsters', 'totalMonsters', 'userEquipment', 'userItems', 'userAttacks', 'userMaterials', 'background'));
     }
 
     public function colosseum()
@@ -297,6 +292,19 @@ class DashboardController extends Controller
             ->groupBy('type');
 
         return view('dashboard.shop', compact('user', 'background', 'items'));
+    }
+
+    public function upgradeStation()
+    {
+        $user = User::find(Auth::id());
+
+        $background = $this->getUserBackgroundImage($user);
+
+        $userEquipment = UserEquipment::with('equipment')
+            ->where('user_id', $user->id)
+            ->get();
+
+        return view('dashboard.upgrade', compact('user', 'userEquipment', 'background'));
     }
 
     public function buyItem(Request $request)

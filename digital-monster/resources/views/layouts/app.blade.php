@@ -18,8 +18,7 @@
 <body class="font-sans antialiased selection:bg-accent square-grid-bg">
     @if (Auth::check())
     <div class="flex flex-col md:flex-row min-h-screen">
-        <aside class="hidden md:flex fixed top-0 left-0 w-64 bg-primary min-h-screen flex-col overflow-y-auto">
- 
+        <aside class="hidden md:flex fixed top-0 left-0 w-64 bg-primary h-screen flex-col">
             <div class="border-b-4 border-secondary p-6 text-center flex items-center justify-center space-x-4">
                 <x-application-logo class="fill-current rounded-md w-10 h-10" />
                 <x-fonts.sub-header>Digital Portal</x-fonts.sub-header>

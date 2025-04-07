@@ -1,4 +1,4 @@
-<nav class="flex-1 mt-4 space-y-4">
+<nav class="flex-1 mt-4 space-y-4 overflow-y-auto px-4 pb-4">
     <x-nav-link :href="route('digigarden')" :active="request()->routeIs('digigarden')">
         <i class="fa fa-hard-drive"></i>
         <span>DigiGarden</span>
@@ -19,21 +19,20 @@
         <span>Shop</span>
     </x-nav-link>
 
+    <x-nav-link :href="route('upgradeStation')" :active="request()->routeIs('upgradeStation')">
+        <i class="fa-solid fa-turn-up"></i>
+        <span>Upgrade Station</span>
+    </x-nav-link>
+
     <x-nav-link :href="route('digiconverge')" :active="request()->routeIs('digiconverge')">
         <i class="fa-solid fa-compress-arrows-alt"></i>
         <span>DigiConverge</span>
-    </x-nav-link>
-
-    <x-nav-link :href="route('info')" :active="request()->routeIs(['info'])">
-        <i class="fas fa-circle-info"></i>
-        <span>Info</span>
     </x-nav-link>
 
     <x-nav-link :href="route('profile.edit')" :active="request()->routeIs(['profile.edit', 'profile.privacy'])">
         <i class="fas fa-user"></i>
         <span>Profile</span>
     </x-nav-link>
-    
 
     @if (Auth::user()->role === 'admin')
 
