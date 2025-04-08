@@ -14,19 +14,18 @@
                 Balance: ¥ <span>{{ $user->bits }}</span>
             </x-fonts.paragraph>
         </x-slot>
-
-        <x-container.background id="setup-section" :background="$background">
-            <x-alerts.spinner id="loading-section"/>
+        <x-container.background :background="$background">
+            <x-alerts.spinner id="loading-section" />
             @if ($items->isEmpty())
             <x-fonts.paragraph class="text-text p-2 bg-primary rounded-md">Shop is sold out</x-fonts.paragraph>
             @else
-            <div id="item-section" class="w-full md:w-1/2 bg-primary rounded-md overflow-auto my-4">
+            <div id="item-section" class="w-full md:w-3/4 bg-primary rounded-md overflow-auto my-4">
                 @foreach ($items as $type => $groupedItems)
                 <div class="category-container p-4" id="category-{{ $type }}">
                     <x-fonts.sub-header class="border-b-2 border-accent mb-4">{{ $type }}</x-fonts.sub-header>
-                    <div class="flex flex-wrap justify-center gap-2">
+                    <div class="flex flex-wrap justify-center gap-4 my-4">
                         @foreach ($groupedItems as $item)
-                        <div class="buyItem flex flex-col items-center w-32 p-2 bg-secondary border-2 border-accent rounded-md cursor-pointer"
+                        <div class="buyItem flex flex-col items-center w-40 p-2 bg-secondary border-2 border-accent rounded-md cursor-pointer"
                             id="item-{{ $item->id }}" data-item='{{ json_encode($item) }}' data-category="category-{{ $type}}">
                             <div class="relative w-24 h-24 p-2 rounded-md bg-primary">
                                 <div class="w-full h-full"
@@ -36,7 +35,7 @@
                                     ¥ {{ $item->price }}
                                 </span>
                             </div>
-                            <x-fonts.paragraph> {{ $item->name }} </x-fonts.paragraph>
+                            <x-fonts.paragraph class="pb-6 text-text"> {{ $item->name }} </x-fonts.paragraph>
                         </div>
                         @endforeach
                     </div>
@@ -44,7 +43,7 @@
                 @endforeach
             </div>
             @endif
-        </x-container.background>
+            </x-container.background>
     </x-container>
 </x-app-layout>
 

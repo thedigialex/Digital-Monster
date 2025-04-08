@@ -20,7 +20,7 @@
     </x-nav-link>
 
     <x-nav-link :href="route('upgradeStation')" :active="request()->routeIs('upgradeStation')">
-        <i class="fa-solid fa-turn-up"></i>
+        <i class="fa-solid fa-microchip"></i>
         <span>Upgrade Station</span>
     </x-nav-link>
 
