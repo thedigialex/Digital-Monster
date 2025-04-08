@@ -2,7 +2,10 @@
 
 namespace App\Providers;
 
+use Illuminate\Http\Request;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Support\Facades\RateLimiter;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -14,11 +17,11 @@ class AppServiceProvider extends ServiceProvider
         //
     }
 
-    /**
-     * Bootstrap any application services.
-     */
     public function boot(): void
     {
-        //
+        RateLimiter::for('login', function (Request $request) {
+            $email = (string) $request->input('email');
+            return Limit::perDay(4)->by($email . '|' . $request->ip());
+        });
     }
 }

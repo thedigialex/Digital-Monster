@@ -13,6 +13,9 @@
         </x-slot>
 
         <x-container.background id="setup-section" :background="$background">
+            @if ($userMonsters->isEmpty())
+            <x-fonts.paragraph class="text-text p-2 bg-primary rounded-md">No Monsters Available To Battle</x-fonts.paragraph>
+            @else
             <x-fonts.paragraph class="text-text p-2 bg-primary rounded-md">Select a monster</x-fonts.paragraph>
             <div class="flex items-center gap-4 pt-4">
                 <x-buttons.arrow direction="left" id="scrollLeft" class="hidden"></x-buttons.arrow>
@@ -24,10 +27,11 @@
             <div id="type-section" class="hidden flex items-center gap-4 flex-col pt-4">
                 <x-fonts.paragraph class="text-text p-2 bg-primary rounded-md">Player OR Wild</x-fonts.paragraph>
                 <div class="flex justify-center items-center gap-4 ">
-                    <x-buttons.square id="userBattleButton" text="Player" icon="fa-user"/>
-                    <x-buttons.square id="wildBattleButton" text="Wild" icon="fa-robot"/>
+                    <x-buttons.square id="userBattleButton" text="Player" icon="fa-user" />
+                    <x-buttons.square id="wildBattleButton" text="Wild" icon="fa-robot" />
                 </div>
             </div>
+            @endif
         </x-container.background>
 
         <x-container.background id="battle-section" :background="$background" class="hidden">
@@ -68,7 +72,7 @@
             userMonsters.forEach(userMonster => {
                 const monsterDiv = document.createElement("div");
                 monsterDiv.classList.add(
-                    "flex", "flex-col", "items-center", "w-32", "p-2",
+                    "flex", "flex-col", "items-center", "w-40", "p-2",
                     "bg-secondary", "border-2", "border-accent", "rounded-md",
                     "cursor-pointer", "text-text"
                 );

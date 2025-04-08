@@ -35,7 +35,7 @@
                                     ¥ {{ $item->price }}
                                 </span>
                             </div>
-                            <x-fonts.paragraph class="pb-6 text-text"> {{ $item->name }} </x-fonts.paragraph>
+                            <x-fonts.paragraph class="text-text"> {{ $item->name }} </x-fonts.paragraph>
                         </div>
                         @endforeach
                     </div>
