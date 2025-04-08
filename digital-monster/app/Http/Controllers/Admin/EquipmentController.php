@@ -36,6 +36,7 @@ class EquipmentController extends Controller
             'icon' => 'required|string|max:255',
             'type' => 'required|string',
             'max_level' => 'required|integer|min:1|max:5',
+            'upgrade_item_id' => 'nullable|exists:items,id',
         ];
 
         if ($request->input('type') == 'Stat') {

@@ -30,6 +30,13 @@ class DashboardController extends Controller
             })
             ->get();
 
+        $digiGarden = UserEquipment::with('equipment')
+            ->where('user_id', $user->id)
+            ->whereHas('equipment', function ($query) {
+                $query->where('type', 'DigiGarden');
+            })
+            ->first();
+
         $allUserItems = UserItem::with('item')
             ->where('user_id', $user->id)
             ->get()
@@ -40,10 +47,9 @@ class DashboardController extends Controller
         $userMaterials = $allUserItems->get('Material', collect());
 
         $background = $this->getUserBackgroundImage($user);
+        $count = $userMonsters->count() . ' / ' . ($digiGarden->level * 5);
 
-        $totalMonsters = $userMonsters->count();
-
-        return view('dashboard.garden', compact('user', 'userMonsters', 'totalMonsters', 'userEquipment', 'userItems', 'userAttacks', 'userMaterials', 'background'));
+        return view('dashboard.garden', compact('user', 'userMonsters', 'count', 'userEquipment', 'userItems', 'userAttacks', 'userMaterials', 'background'));
     }
 
     public function colosseum()
@@ -300,10 +306,26 @@ class DashboardController extends Controller
 
         $background = $this->getUserBackgroundImage($user);
 
+        $allUserItems = UserItem::with('item')
+            ->where('user_id', $user->id)
+            ->get()
+            ->keyBy('item_id');
+
         $userEquipment = UserEquipment::with('equipment')
             ->where('user_id', $user->id)
-            ->get();
-
+            ->get()
+            ->filter(function ($userEquipment) use ($allUserItems) {
+                $equipment = $userEquipment->equipment;
+                if (!$equipment || !$equipment->upgrade_item_id) {
+                    return false;
+                }
+                if ($userEquipment->level >= $equipment->max_level) {
+                    return false;
+                }
+                $requiredQty = $userEquipment->level * 10;
+                $userItem = $allUserItems->get($equipment->upgrade_item_id);
+                return $userItem && $userItem->quantity >= $requiredQty;
+            });
         return view('dashboard.upgrade', compact('user', 'userEquipment', 'background'));
     }
 
@@ -354,13 +376,20 @@ class DashboardController extends Controller
         $userMonsters = UserMonster::with('monster')->where('user_id', $user->id)->get();
         $totalMonsters = $userMonsters->count();
 
+        $digiGarden = UserEquipment::with('equipment')
+            ->where('user_id', $user->id)
+            ->whereHas('equipment', function ($query) {
+                $query->where('type', 'DigiGarden');
+            })
+            ->first();
+
         $message = $count >= 10
-            ? ($totalMonsters >= $user->max_monster_amount
+            ? ($totalMonsters >= $digiGarden->level * 5
                 ? "Not enough room"
                 : "Select an Egg")
             : "Not enough DataCrystals";
 
-        $eggs = ($count >= 10 && $totalMonsters < $user->max_monster_amount)
+        $eggs = ($count >= 10 && $totalMonsters < $digiGarden->level * 5)
             ? Monster::where('stage', 'Egg')->get()
             : [];
 

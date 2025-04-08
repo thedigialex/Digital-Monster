@@ -23,10 +23,9 @@
             <div class="flex-1 bg-secondary p-4 rounded-md">
                 <x-fonts.accent-header><strong>Name:</strong> {{ $user->name }}</x-fonts.accent-header>
                 <hr class="my-2 border-accent">
-                <x-fonts.paragraph><strong>Tamer Level:</strong> {{ $user->tamer_level }}</x-fonts.paragraph>
-                <x-fonts.paragraph><strong>Tamer Exp:</strong> {{ $user->tamer_exp }}</x-fonts.paragraph>
+                <x-fonts.paragraph><strong>Tamer Level:</strong> {{ $user->level }}</x-fonts.paragraph>
+                <x-fonts.paragraph><strong>Tamer Exp:</strong> {{ $user->exp }}</x-fonts.paragraph>
                 <x-fonts.paragraph><strong>Bits:</strong> {{ $user->bits }}</x-fonts.paragraph>
-                <x-fonts.paragraph><strong>Max Monster Amount:</strong> {{ $user->max_monster_amount }}</x-fonts.paragraph>
                 <x-fonts.paragraph><strong>Score:</strong> {{ $user->score }}</x-fonts.paragraph>
             </div>
             <div class="w-full md:w-1/4 bg-neutral p-4 rounded-md md:ml-4">

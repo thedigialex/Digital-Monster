@@ -14,7 +14,7 @@
                 DigiGarden
             </x-fonts.sub-header>
             <x-fonts.paragraph>
-                {{ $totalMonsters }} / {{ $user->max_monster_amount }}
+                {{ $count }}
             </x-fonts.paragraph>
         </x-slot>
 
