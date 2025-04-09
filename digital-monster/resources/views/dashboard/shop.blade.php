@@ -14,7 +14,7 @@
                 Balance: ¥ <span>{{ $user->bits }}</span>
             </x-fonts.paragraph>
         </x-slot>
-        <x-container.background :background="$background">
+        <x-container.background :background="$background" class="rounded-b-md">
             <x-alerts.spinner id="loading-section" />
             @if ($items->isEmpty())
             <x-fonts.paragraph class="text-text p-2 bg-primary rounded-md">Shop is sold out</x-fonts.paragraph>
@@ -25,7 +25,7 @@
                     <x-fonts.sub-header class="border-b-2 border-accent mb-4">{{ $type }}</x-fonts.sub-header>
                     <div class="flex flex-wrap justify-center gap-4 my-4">
                         @foreach ($groupedItems as $item)
-                        <div class="buyItem flex flex-col items-center w-40 p-2 bg-secondary border-2 border-accent rounded-md cursor-pointer"
+                        <div class="buyItem flex flex-col items-center w-36 p-2 bg-secondary border-2 border-accent rounded-md cursor-pointer"
                             id="item-{{ $item->id }}" data-item='{{ json_encode($item) }}' data-category="category-{{ $type}}">
                             <div class="relative w-24 h-24 p-2 rounded-md bg-primary">
                                 <div class="w-full h-full"

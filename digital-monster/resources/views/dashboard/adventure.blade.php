@@ -11,7 +11,7 @@
                 Adventure
             </x-fonts.sub-header>
         </x-slot>
-        <x-container.background id="setup-section" :background="$background">
+        <x-container.background id="setup-section" :background="$background" class="rounded-b-md">
             <x-fonts.paragraph class="text-text p-2 bg-primary rounded-md">Select a monster</x-fonts.paragraph>
             <div class="flex items-center gap-4 pt-4">
                 <x-buttons.arrow direction="left" id="scrollLeft" class="hidden"></x-buttons.arrow>
@@ -25,7 +25,7 @@
             </div>
 
         </x-container.background>
-        <x-container.background id="adventure-section" class="hidden gap-4" :background="$background">
+        <x-container.background id="adventure-section" class="hidden rounded-b-md" :background="$background">
             <x-buttons.primary id="backButton" icon="fa-repeat" label="Switch" />
             <div id="movementArea" class="relative w-full md:w-1/4 h-32 overflow-hidden py-4">
                 <div id="movingSpriteWrapper" class="absolute left-0">
@@ -62,7 +62,7 @@
             userMonsters.forEach(userMonster => {
                 const monsterDiv = document.createElement("div");
                 monsterDiv.classList.add(
-                    "flex", "flex-col", "items-center", "w-32", "p-2",
+                    "flex", "flex-col", "items-center", "w-36", "p-2",
                     "bg-secondary", "border-2", "border-accent", "rounded-md",
                     "cursor-pointer", "text-text"
                 );

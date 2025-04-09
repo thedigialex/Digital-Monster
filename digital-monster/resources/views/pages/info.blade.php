@@ -83,5 +83,43 @@
                 </x-fonts.paragraph>
             </div>
         </x-accordion>
+
+        <x-accordion title="Evolution" :open="false" :icon="'fa-dna'">
+            <x-fonts.paragraph>Monsters can change into different forms</x-fonts.paragraph>
+
+            <div class="py-4">
+                <x-fonts.sub-header>1. Stages</x-fonts.sub-header>
+                <x-fonts.paragraph>Egg > Fresh > Child > Rookie > Champion > Ulimate > Mega
+                </x-fonts.paragraph>
+                <x-fonts.paragraph>
+                    Stage level does not eqaul stronger!
+                </x-fonts.paragraph>
+            </div>
+
+            <div class="py-4">
+                <x-fonts.sub-header>2. How to evolve?</x-fonts.sub-header>
+                <x-fonts.paragraph>Monster do not grow naturally. Monster require evolution points to reach the next stage. 
+                </x-fonts.paragraph>
+                <x-fonts.paragraph>Each stage requires more evolution points. 
+                </x-fonts.paragraph>
+            </div>
+
+            <div class="py-4">
+                <x-fonts.sub-header>3. Different Evolution Routes</x-fonts.sub-header>
+                <x-fonts.paragraph>
+                    Depending on the current level of the monsters stats they can change into route A or route B.
+                </x-fonts.paragraph>
+                <x-fonts.paragraph>
+                    After Child Stage each following stage will have two different evolution routes.
+                </x-fonts.paragraph>
+            </div>
+
+            <div class="py-4">
+                <x-fonts.sub-header>4. VIRUS, DATA, VACCINE</x-fonts.sub-header>
+                <x-fonts.paragraph>
+                    After Child Stage the monster will take on the characteristics of its type. 
+                </x-fonts.paragraph>
+            </div>
+        </x-accordion>
     </x-container>
 </x-app-layout>

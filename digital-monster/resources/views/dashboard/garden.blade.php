@@ -109,13 +109,13 @@
                             </div>
                         </x-container.modal>
                     </div>
-                    <div class="pt-2">
+                    <x-fonts.paragraph class="pt-2 text-text" id="stat-stage">Stage: <span></span></x-fonts.paragraph>
+                    <div class="py-2">
                         <x-fonts.paragraph>Energy</x-fonts.paragraph>
                         <div class="w-full bg-secondary rounded-md h-4">
                             <div id="energy-bar" class="bg-success h-4 rounded-md transition-all duration-300"></div>
                         </div>
                     </div>
-                    <x-fonts.paragraph class="py-2 text-text" id="stat-stage">Stage: <span></span></x-fonts.paragraph>
                     <x-fonts.paragraph id="stat-stats" class="flex flex-wrap w-full md:flex-row flex-col md:space-x-4 space-y-2 md:space-y-0 text-text">
                         <span id="stat-strength" class="flex-1 text-center">Strength<br><span></span></span>
                         <span id="stat-agility" class="flex-1 text-center">Agility<br><span></span></span>
@@ -204,7 +204,7 @@
                 }
             });
 
-            document.querySelector('#stat-name span').textContent = activeUserMonster.name;
+            document.querySelector('#stat-name span').textContent = 'Lvl: ' + activeUserMonster.level + ' ' + activeUserMonster.name;
             document.querySelector('#stat-stage span').textContent = activeUserMonster.monster.stage;
             document.querySelector('#stat-strength span').textContent = activeUserMonster.strength;
             document.querySelector('#stat-agility span').textContent = activeUserMonster.agility;

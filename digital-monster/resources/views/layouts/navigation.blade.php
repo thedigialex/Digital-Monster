@@ -4,6 +4,11 @@
         <span>DigiGarden</span>
     </x-nav-link>
 
+    <x-nav-link :href="route('digiconverge')" :active="request()->routeIs('digiconverge')">
+        <i class="fa-solid fa-compress-arrows-alt"></i>
+        <span>DigiConverge</span>
+    </x-nav-link>
+
     <x-nav-link :href="route('colosseum')" :active="request()->routeIs('colosseum')">
         <i class="fas fa-landmark"></i>
         <span>Colosseum</span>
@@ -22,11 +27,6 @@
     <x-nav-link :href="route('upgradeStation')" :active="request()->routeIs('upgradeStation')">
         <i class="fa-solid fa-microchip"></i>
         <span>Upgrade Station</span>
-    </x-nav-link>
-
-    <x-nav-link :href="route('digiconverge')" :active="request()->routeIs('digiconverge')">
-        <i class="fa-solid fa-compress-arrows-alt"></i>
-        <span>DigiConverge</span>
     </x-nav-link>
 
     <x-nav-link :href="route('profile.edit')" :active="request()->routeIs(['profile.edit', 'profile.privacy'])">

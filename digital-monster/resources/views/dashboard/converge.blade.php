@@ -14,10 +14,10 @@
                 DataCrystals <span>{{ $count}} / 10</span>
             </x-fonts.paragraph>
         </x-slot>
-        <x-container.background :background="$background">
+        <x-container.background :background="$background" class="rounded-b-md">
             <div id="egg-selection" class="flex flex-col justify-center items-center">
                 <x-fonts.paragraph class="text-text p-2 bg-primary rounded-md">{{ $message }}</x-fonts.paragraph>
-                <div class="flex items-center gap-4 pt-4">
+                <div class="flex items-center gap-4">
                     <x-buttons.arrow direction="left" id="scrollLeft" class="hidden"></x-buttons.arrow>
                     <div id="monsterCarousel" class="flex items-center gap-4" data-eggs='@json($eggs)'></div>
                     <x-buttons.arrow direction="right" id="scrollRight" class="hidden"></x-buttons.arrow>

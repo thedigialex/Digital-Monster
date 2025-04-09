@@ -12,7 +12,7 @@
             </x-fonts.sub-header>
         </x-slot>
 
-        <x-container.background id="setup-section" :background="$background">
+        <x-container.background id="setup-section" :background="$background" class="rounded-b-md">
             @if ($userMonsters->isEmpty())
             <x-fonts.paragraph class="text-text p-2 bg-primary rounded-md">No Monsters Available To Battle</x-fonts.paragraph>
             @else
@@ -34,7 +34,7 @@
             @endif
         </x-container.background>
 
-        <x-container.background id="battle-section" :background="$background" class="hidden">
+        <x-container.background id="battle-section" :background="$background" class="hidden rounded-b-md">
             <x-alerts.spinner id="loading-section"></x-alerts.spinner>
             <div id="battle-arena" class="flex justify-around items-center gap-4 w-full md:w-1/2">
                 <x-container.sprite id="enemy-monster-sprite" :rotate="true"></x-container.sprite>
@@ -72,7 +72,7 @@
             userMonsters.forEach(userMonster => {
                 const monsterDiv = document.createElement("div");
                 monsterDiv.classList.add(
-                    "flex", "flex-col", "items-center", "w-40", "p-2",
+                    "flex", "flex-col", "items-center", "w-36", "p-2",
                     "bg-secondary", "border-2", "border-accent", "rounded-md",
                     "cursor-pointer", "text-text"
                 );
