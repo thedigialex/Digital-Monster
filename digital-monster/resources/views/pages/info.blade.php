@@ -82,6 +82,16 @@
                     Each monster type will gain a slight bonus in certain stats.
                 </x-fonts.paragraph>
             </div>
+
+            <div class="py-4">
+                <x-fonts.sub-header>5. Stat Cap</x-fonts.sub-header>
+                <x-fonts.paragraph>
+                    Each evolution stage will have a max stat gain cap. This cap is based one the amount of trainings done.
+                </x-fonts.paragraph>
+                <x-fonts.paragraph>
+                    Trainings done will provide a slight stat increase upon evolution.
+                </x-fonts.paragraph>
+            </div>
         </x-accordion>
 
         <x-accordion title="Evolution" :open="false" :icon="'fa-dna'">
@@ -102,6 +112,8 @@
                 </x-fonts.paragraph>
                 <x-fonts.paragraph>Each stage requires more evolution points. 
                 </x-fonts.paragraph>
+                <x-fonts.paragraph>To gain evolution points, monster can consume items or win battles.
+                </x-fonts.paragraph>
             </div>
 
             <div class="py-4">
@@ -118,6 +130,50 @@
                 <x-fonts.sub-header>4. VIRUS, DATA, VACCINE</x-fonts.sub-header>
                 <x-fonts.paragraph>
                     After Child Stage the monster will take on the characteristics of its type. 
+                </x-fonts.paragraph>
+            </div>
+        </x-accordion>
+
+        <x-accordion title="Adventure" :open="false" :icon="'fa-compass'">
+            <x-fonts.paragraph>Send your mosnter out to explore the unknown</x-fonts.paragraph>
+
+            <div class="py-4">
+                <x-fonts.sub-header>1. Steps</x-fonts.sub-header>
+                <x-fonts.paragraph>Each step has a random chance for event to happen.
+                </x-fonts.paragraph>
+            </div>
+
+            <div class="py-4">
+                <x-fonts.sub-header>2. Events</x-fonts.sub-header>
+                <x-fonts.paragraph>Can be anything for finding a random item to a random battle!
+                </x-fonts.paragraph>
+                <x-fonts.paragraph>Keep exploring to find new events!
+                </x-fonts.paragraph>
+            </div>
+        </x-accordion>
+
+        <x-accordion title="Upgrades" :open="false" :icon="'fa-microchip'">
+            <x-fonts.paragraph>Your stat equipment and DigiGarden can level up!</x-fonts.paragraph>
+
+            <div class="py-4">
+                <x-fonts.sub-header>1. Equipment</x-fonts.sub-header>
+                <x-fonts.paragraph>Each Equipment will start at level 1.
+                </x-fonts.paragraph>
+                <x-fonts.paragraph>To increase equipment level you will need to find special equipment material.
+                </x-fonts.paragraph>
+                <x-fonts.paragraph>You will need 10 x the current level of your equipment of each material.
+                </x-fonts.paragraph>
+            </div>
+
+            <div class="py-4">
+                <x-fonts.sub-header>2. Material</x-fonts.sub-header>
+                <x-fonts.paragraph>Material can only be found through adventuring
+                </x-fonts.paragraph>
+            </div>
+
+            <div class="py-4">
+                <x-fonts.sub-header>3. Levels</x-fonts.sub-header>
+                <x-fonts.paragraph>Increase equipment levels will allow you to gain more stats during training and increase your max digi garden size.
                 </x-fonts.paragraph>
             </div>
         </x-accordion>

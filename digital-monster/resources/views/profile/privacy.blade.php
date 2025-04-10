@@ -31,6 +31,7 @@
                     <li><x-fonts.paragraph>Password</x-fonts.paragraph></li>
                 </ul>
                 <x-fonts.paragraph>We use this information to create and manage your account, and to provide you with access to our website.</x-fonts.paragraph>
+                <x-fonts.paragraph>We will never sell or provide any outside access to your account data.</x-fonts.paragraph>
             </div>
 
             <div class="py-4">

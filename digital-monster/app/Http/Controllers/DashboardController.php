@@ -311,7 +311,7 @@ class DashboardController extends Controller
             ->get()
             ->keyBy('item_id');
 
-        $userEquipment = UserEquipment::with('equipment')
+        $userEquipments = UserEquipment::with('equipment')
             ->where('user_id', $user->id)
             ->get()
             ->filter(function ($userEquipment) use ($allUserItems) {
@@ -326,7 +326,22 @@ class DashboardController extends Controller
                 $userItem = $allUserItems->get($equipment->upgrade_item_id);
                 return $userItem && $userItem->quantity >= $requiredQty;
             });
-        return view('dashboard.upgrade', compact('user', 'userEquipment', 'background'));
+        return view('dashboard.upgrade', compact('user', 'userEquipments', 'background'));
+    }
+
+    public function upgradeEquipment(Request $request)
+    {
+        $user = User::find(Auth::id());
+        $userEquipment = UserEquipment::find($request->equipment_id);
+
+        if (!$userEquipment) {
+            return response()->json(['message' => 'Hmmm something is off.', 'successful' => false]);
+        }
+
+        return response()->json([
+            'message' => 'Equipment upgraded successfully!',
+            'successful' => true,
+        ]);
     }
 
     public function buyItem(Request $request)

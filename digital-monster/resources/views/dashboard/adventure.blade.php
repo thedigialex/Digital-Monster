@@ -12,6 +12,10 @@
             </x-fonts.sub-header>
         </x-slot>
         <x-container.background id="setup-section" :background="$background" class="rounded-b-md">
+            @if ($userMonsters->isEmpty())
+            <x-fonts.paragraph class="text-text p-2 bg-primary rounded-md">No Monsters Available To Explore</x-fonts.paragraph>
+            @else
+
             <x-fonts.paragraph class="text-text p-2 bg-primary rounded-md">Select a monster</x-fonts.paragraph>
             <div class="flex items-center gap-4 pt-4">
                 <x-buttons.arrow direction="left" id="scrollLeft" class="hidden"></x-buttons.arrow>
@@ -23,7 +27,7 @@
             <div id="confirm-section" class="hidden flex justify-center  items-center gap-4 flex-col pt-4">
                 <x-buttons.square id="selectMonsterButton" text="Adventure" icon="fa-map" />
             </div>
-
+            @endif
         </x-container.background>
         <x-container.background id="adventure-section" class="hidden rounded-b-md" :background="$background">
             <x-buttons.primary id="backButton" icon="fa-repeat" label="Switch" />
@@ -56,7 +60,6 @@
         let activeUserMonster;
         let monsterElements = [];
         let monsterAnimationInterval;
-  
 
         function generateMonsters() {
             userMonsters.forEach(userMonster => {
