@@ -27,7 +27,7 @@
 
         <div id="stats-panel" class="hidden bg-secondary border-primary border-t-4 p-4 shadow-lg rounded-b-md">
             <div class="flex justify-between items-center pb-4">
-                <x-fonts.sub-header id="stat-name"><span></span></x-fonts.sub-header>
+                <x-fonts.sub-header id="stat-name"><span></span> <i class="fa-solid fa-pen-to-square"></i></x-fonts.sub-header>
                 <x-buttons.primary id="close-stats" label="Close" icon="fa-x" />
             </div>
             <div class="flex flex-col md:flex-row gap-4">
@@ -499,7 +499,7 @@
                     userEquipment = JSON.parse(this.getAttribute('data-equipment'));
                     setTrainingButton();
                     document.getElementById('equipment-name').textContent = userEquipment.equipment.stat;
-                    document.getElementById('equipment-level').textContent = `Level: ${userEquipment.level}`;
+                    document.getElementById('equipment-level').textContent = `Lvl: ${userEquipment.level}`;
 
                     monsterImage = document.getElementById('monster-sprite');
                     secondaryImage = document.getElementById('equipment-sprite');

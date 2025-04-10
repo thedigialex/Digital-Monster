@@ -332,15 +332,28 @@ class DashboardController extends Controller
     public function upgradeEquipment(Request $request)
     {
         $user = User::find(Auth::id());
-        $userEquipment = UserEquipment::find($request->equipment_id);
+        $userEquipment = UserEquipment::with('equipment')->find($request->equipment_id);
+        $equipment = $userEquipment->equipment;
+        $requiredQty = $userEquipment->level * 10;
 
-        if (!$userEquipment) {
+        $userItem = UserItem::where('user_id', $user->id)
+            ->where('item_id', $equipment->upgrade_item_id)
+            ->first();
+
+        if (!$userEquipment || $userEquipment->user_id !== $user->id || $userEquipment->level >= $equipment->max_level || !$userItem || $userItem->quantity < $requiredQty) {
             return response()->json(['message' => 'Hmmm something is off.', 'successful' => false]);
         }
+
+        $userEquipment->level += 1;
+        $userEquipment->save();
+
+        $userItem->quantity -= $requiredQty;
+        $userItem->quantity <= 0 ? $userItem->delete() : $userItem->save();
 
         return response()->json([
             'message' => 'Equipment upgraded successfully!',
             'successful' => true,
+            'new_level' => $userEquipment->level,
         ]);
     }
 
