@@ -66,12 +66,12 @@ Route::middleware('headers')->group(function () {
 
             Route::view('/info', 'pages.info')->name('info');
             Route::get('/users', [UserController::class, 'index'])->name('users.index');
+
             Route::post('/session/store', [SessionController::class, 'store'])->name('session.store');
             Route::post('/session/clear', [SessionController::class, 'clear'])->name('session.clear');
+
             //Admin Only
             Route::middleware(['admin'])->group(function () {
-
-
                 Route::get('/user', [UserController::class, 'profile'])->name('user.profile');
 
                 Route::get('/eggGroups', [EggGroupController::class, 'index'])->name('egg_groups.index');

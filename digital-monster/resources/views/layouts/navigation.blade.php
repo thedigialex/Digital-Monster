@@ -34,6 +34,11 @@
         <span>Profile</span>
     </x-nav-link>
 
+    <x-nav-link :href="route('users.index')" :active="request()->routeIs(['users.index', 'user.item.edit', 'user.equipment.edit', 'user.monster.edit', 'user.profile'])">
+        <i class="fas fa-globe"></i>
+        <span>Users</span>
+    </x-nav-link>
+
     @if (Auth::user()->role === 'admin')
 
     <x-fonts.accent-header>ADMIN</x-fonts.accent-header>
@@ -61,11 +66,6 @@
     <x-nav-link :href="route('equipment.index')" :active="request()->routeIs(['equipment.index', 'equipment.edit'])">
         <i class="fas fa-toolbox"></i>
         <span>Equipment</span>
-    </x-nav-link>
-
-    <x-nav-link :href="route('users.index')" :active="request()->routeIs(['users.index', 'user.item.edit', 'user.equipment.edit', 'user.monster.edit', 'user.profile'])">
-        <i class="fas fa-users"></i>
-        <span>Users</span>
     </x-nav-link>
     @endif
 </nav>

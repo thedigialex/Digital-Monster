@@ -11,13 +11,21 @@ use App\Models\UserMonster;
 use Illuminate\Http\Request;
 use App\Models\UserEquipment;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
     public function index()
     {
         $users = User::all();
-        return view('profile.index', compact('users'));
+        $user = User::find(Auth::id());
+        $isAdmin = $user->role == 'admin';
+        if (!$isAdmin) {
+            $users = $users->reject(function ($u) use ($user) {
+                return $u->id === $user->id;
+            });
+        }
+        return view('profile.index', compact('users', 'isAdmin'));
     }
 
     public function profile()

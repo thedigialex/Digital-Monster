@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <x-fonts.sub-header>
-            DigiGarden
+        {{ $user->name }}'s DigiGarden
         </x-fonts.sub-header>
         <a href="{{ route('users.index') }}">
             <x-buttons.primary icon="fa-arrow-left" label="Back" />
@@ -11,7 +11,7 @@
     <x-container>
         <x-slot name="header">
             <x-fonts.sub-header>
-                DigiGarden
+            {{ $user->name }}'s DigiGarden
             </x-fonts.sub-header>
             <x-fonts.paragraph>
                 {{ $count }}

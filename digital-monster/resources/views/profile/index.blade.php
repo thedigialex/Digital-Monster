@@ -22,7 +22,9 @@
                 <thead class="bg-primary">
                     <tr>
                         <x-table.header class="w-1/2 md:w-1/3 text-left">Name</x-table.header>
+                        @if ($isAdmin)
                         <x-table.header class="w-1/3 text-left hidden md:table-cell">Email</x-table.header>
+                        @endif
                         <x-table.header class="w-1/2 md:w-1/3"></x-table.header>
                     </tr>
                 </thead>
@@ -34,15 +36,19 @@
                                 {{ $user->name }}
                             </x-fonts.paragraph>
                         </x-table.data>
+                        @if ($isAdmin)
                         <x-table.data class="w-1/3 hidden md:table-cell">
                             <x-fonts.paragraph class="font-bold text-accent">
                                 {{ $user->email }}
                             </x-fonts.paragraph>
                         </x-table.data>
+                        @endif
                         <x-table.data class="w-1/2 md:w-1/3">
-                            <div class="flex justify-end">
-                                <x-buttons.session model="user_edit" :id="$user->id" route="user.profile" label="View" icon="fa-eye" />
-                                <x-buttons.session model="other_user" :id="$user->id" route="digigarden.user" label="Garden" icon="fa-eye" />
+                            <div class="flex justify-end gap-4">
+                                @if ($isAdmin)
+                                <x-buttons.session model="user_edit" :id="$user->id" route="user.profile" label="View" icon="fa-eye"/>
+                                @endif
+                                <x-buttons.session model="other_user" :id="$user->id" route="digigarden.user" label="Garden" icon="fa-hard-drive" />
                             </div>
                         </x-table.data>
                     </tr>
