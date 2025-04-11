@@ -195,6 +195,10 @@
 
         const statsPanel = document.getElementById('stats-panel');
         const container = document.getElementById('monster-container');
+        const nameDisplay = document.getElementById('stat-name');
+        const nameInput = document.getElementById('name-input');
+        const editIcon = document.getElementById('edit-icon');
+        const saveBtn = document.getElementById('save-name-btn');
 
         function updateStats() {
             document.getElementById('energy-bar').style.width = `${(activeUserMonster.energy / activeUserMonster.max_energy) * 100}%`;
@@ -700,11 +704,6 @@
                     }, 1500);
                 });
         });
-
-        const nameDisplay = document.getElementById('stat-name');
-        const nameInput = document.getElementById('name-input');
-        const editIcon = document.getElementById('edit-icon');
-        const saveBtn = document.getElementById('save-name-btn');
 
         editIcon.addEventListener('click', function() {
             nameInput.value = nameDisplay.textContent;

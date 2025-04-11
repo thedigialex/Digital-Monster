@@ -41,6 +41,7 @@ Route::middleware('headers')->group(function () {
         
         Route::middleware(['privacy'])->group(function () {
             Route::get('/digigarden', [DashboardController::class, 'garden'])->name('digigarden');
+            Route::get('/digigarden/user', [DashboardController::class, 'gardenUser'])->name('digigarden.user');
             Route::get('/colosseum', [DashboardController::class, 'colosseum'])->name('colosseum');
             Route::post('colosseum/generateBattle', [DashboardController::class, 'generateBattle'])->name('colosseum.generateBattle');
             Route::get('/adventure', [DashboardController::class, 'adventure'])->name('adventure');
@@ -64,13 +65,13 @@ Route::middleware('headers')->group(function () {
             Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
             Route::view('/info', 'pages.info')->name('info');
-
+            Route::get('/users', [UserController::class, 'index'])->name('users.index');
+            Route::post('/session/store', [SessionController::class, 'store'])->name('session.store');
+            Route::post('/session/clear', [SessionController::class, 'clear'])->name('session.clear');
             //Admin Only
             Route::middleware(['admin'])->group(function () {
-                Route::post('/session/store', [SessionController::class, 'store'])->name('session.store');
-                Route::post('/session/clear', [SessionController::class, 'clear'])->name('session.clear');
 
-                Route::get('/users', [UserController::class, 'index'])->name('users.index');
+
                 Route::get('/user', [UserController::class, 'profile'])->name('user.profile');
 
                 Route::get('/eggGroups', [EggGroupController::class, 'index'])->name('egg_groups.index');

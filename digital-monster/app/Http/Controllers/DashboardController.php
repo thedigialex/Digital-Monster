@@ -52,6 +52,26 @@ class DashboardController extends Controller
         return view('dashboard.garden', compact('user', 'userMonsters', 'count', 'userEquipment', 'userItems', 'userAttacks', 'userMaterials', 'background'));
     }
 
+    public function gardenUser(Request $request)
+    {
+        $user = User::find(session('other_user_id'));
+        $userMonsters = UserMonster::with('monster')
+            ->where('user_id', $user->id)
+            ->get();
+
+        $digiGarden = UserEquipment::with('equipment')
+            ->where('user_id', $user->id)
+            ->whereHas('equipment', function ($query) {
+                $query->where('type', 'DigiGarden');
+            })
+            ->first();
+
+        $background = $this->getUserBackgroundImage($user);
+        $count = $userMonsters->count() . ' / ' . ($digiGarden->level * 5);
+
+        return view('dashboard.viewGarden', compact('user', 'userMonsters', 'count', 'background'));
+    }
+
     public function colosseum()
     {
         $user = User::find(Auth::id());

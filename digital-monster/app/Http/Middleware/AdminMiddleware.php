@@ -13,6 +13,6 @@ class AdminMiddleware
         if (Auth::user() && Auth::user()->role === 'admin') {
             return $next($request);
         }
-        return redirect('/dashboard')->with('error', 'You do not have admin access.');
+        return redirect('/digigarden')->with('error', 'You do not have admin access.');
     }
 }
