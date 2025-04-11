@@ -720,4 +720,22 @@ class DashboardController extends Controller
         }
         return $background;
     }
+
+    public function changeName(Request $request)
+    {
+        $user = User::find(Auth::id());
+        $userMonster = UserMonster::find($request->user_monster_id);
+
+        if (!$userMonster) {
+            return response()->json(['message' => 'Hmmm something is off.', 'successful' => false]);
+        }
+
+        $userMonster->name = $request->name;
+        $userMonster->save();
+
+        return response()->json([
+            'message' => 'Name changed successfully!',
+            'successful' => true,
+        ]);
+    }
 }

@@ -27,6 +27,13 @@
 
         <div id="stats-panel" class="hidden bg-secondary border-primary border-t-4 p-4 shadow-lg rounded-b-md">
             <div class="flex justify-between items-center pb-4">
+                <x-fonts.sub-header id="stat-name-wrapper">
+                    <span id="stat-name"><span></span> </span>
+                    <input type="text" id="name-input" class="hidden border rounded px-2 py-1" />
+                    <i class="fa-solid fa-pen-to-square ml-2 cursor-pointer" id="edit-icon"></i>
+                    <button class="ml-2 text-blue-500 hidden" id="save-name-btn">Save</button>
+                </x-fonts.sub-header>
+
                 <x-fonts.sub-header id="stat-name"><span></span> <i class="fa-solid fa-pen-to-square"></i></x-fonts.sub-header>
                 <x-buttons.primary id="close-stats" label="Close" icon="fa-x" />
             </div>
@@ -692,6 +699,37 @@
                         }, 50);
                     }, 1500);
                 });
+        });
+
+        const nameDisplay = document.getElementById('stat-name');
+        const nameInput = document.getElementById('name-input');
+        const editIcon = document.getElementById('edit-icon');
+        const saveBtn = document.getElementById('save-name-btn');
+
+        editIcon.addEventListener('click', function() {
+            nameInput.value = nameDisplay.textContent;
+            nameDisplay.classList.add('hidden');
+            nameInput.classList.remove('hidden');
+            editIcon.classList.add('hidden');
+            saveBtn.classList.remove('hidden');
+        });
+
+        saveBtn.addEventListener('click', function() {
+            const newName = nameInput.value;
+            const data = {
+                user_monster_id: activeUserMonster.id,
+                name: nameInput.value
+            };
+
+            fetch("{{ route('monster.name') }}", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content")
+                    },
+                    body: JSON.stringify(data)
+                }).then(response => response.json())
+                .then(result => {});
         });
     });
 </script>

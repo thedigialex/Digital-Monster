@@ -52,6 +52,7 @@ Route::middleware('headers')->group(function () {
             Route::get('/upgradeStation', [DashboardController::class, 'upgradeStation'])->name('upgradeStation');
             Route::post('/upgradeStation/upgrade', [DashboardController::class, 'upgradeEquipment'])->name('upgradeStation.upgrade');
             Route::post('monster/train', [DashboardController::class, 'useTraining'])->name('monster.train');
+            Route::post('monster/changeName', [DashboardController::class, 'changeName'])->name('monster.name');
 
             Route::post('monster/item', [DashboardController::class, 'useItem'])->name('monster.item');
             Route::post('monster/attack', [DashboardController::class, 'changeAttack'])->name('monster.attack');
