@@ -28,13 +28,12 @@
         <div id="stats-panel" class="hidden bg-secondary border-primary border-t-4 p-4 shadow-lg rounded-b-md">
             <div class="flex justify-between items-center pb-4">
                 <x-fonts.sub-header id="stat-name-wrapper">
+                    <span id="stat-level"><span></span> </span>
                     <span id="stat-name"><span></span> </span>
-                    <input type="text" id="name-input" class="hidden border rounded px-2 py-1" />
+                    <input type="text" id="name-input" class="hidden text-text bg-neutral focus:border-accent focus:ring-accent rounded-md" />
                     <i class="fa-solid fa-pen-to-square ml-2 cursor-pointer" id="edit-icon"></i>
-                    <button class="ml-2 text-blue-500 hidden" id="save-name-btn">Save</button>
+                    <i class="fa-solid fa-save ml-2 cursor-pointer hidden" id="save-name-btn"></i>
                 </x-fonts.sub-header>
-
-                <x-fonts.sub-header id="stat-name"><span></span> <i class="fa-solid fa-pen-to-square"></i></x-fonts.sub-header>
                 <x-buttons.primary id="close-stats" label="Close" icon="fa-x" />
             </div>
             <div class="flex flex-col md:flex-row gap-4">
@@ -211,7 +210,8 @@
                 }
             });
 
-            document.querySelector('#stat-name span').textContent = 'Lvl: ' + activeUserMonster.level + ' ' + activeUserMonster.name;
+            document.querySelector('#stat-level span').textContent = 'Lvl: ' + activeUserMonster.level + ' ';
+            document.querySelector('#stat-name span').textContent = activeUserMonster.name;
             document.querySelector('#stat-stage span').textContent = activeUserMonster.monster.stage;
             document.querySelector('#stat-strength span').textContent = activeUserMonster.strength;
             document.querySelector('#stat-agility span').textContent = activeUserMonster.agility;
@@ -729,7 +729,13 @@
                     },
                     body: JSON.stringify(data)
                 }).then(response => response.json())
-                .then(result => {});
+                .then(result => {
+                    document.querySelector('#stat-name span').textContent = result.newName;
+                    nameDisplay.classList.remove('hidden');
+                    nameInput.classList.add('hidden');
+                    editIcon.classList.remove('hidden');
+                    saveBtn.classList.add('hidden');
+                });
         });
     });
 </script>

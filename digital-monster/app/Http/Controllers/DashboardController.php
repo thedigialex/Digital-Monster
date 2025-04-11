@@ -730,11 +730,24 @@ class DashboardController extends Controller
             return response()->json(['message' => 'Hmmm something is off.', 'successful' => false]);
         }
 
-        $userMonster->name = $request->name;
+        $name = strip_tags($request->name);
+        $name = preg_replace('/[^a-zA-Z0-9\s\-\_]/', '', $name);
+        
+        $badWords = config('bannedWords.list');
+
+        foreach ($badWords as $badWord) {
+            if (stripos($name, $badWord) !== false) {
+                $name = 'monster';
+            }
+        }
+
+
+        $userMonster->name = $name;
         $userMonster->save();
 
         return response()->json([
             'message' => 'Name changed successfully!',
+            'newName' => $userMonster->name,
             'successful' => true,
         ]);
     }
