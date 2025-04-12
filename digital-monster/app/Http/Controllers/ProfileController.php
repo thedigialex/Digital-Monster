@@ -50,19 +50,19 @@ class ProfileController extends Controller
         return Redirect::to('/');
     }
 
-    public function privacy(): View
+    public function policy(): View
     {
         $user = User::find(Auth::id());
 
-        return view('profile.privacy', compact('user'));
+        return view('profile.policy', compact('user'));
     }
 
-    public function updatePrivacy(Request $request)
+    public function updatePolicy(Request $request)
     {
         $user = User::find(Auth::id());
-        $user->privacy_accept = $request->input('privacy_accept') == 'on' ? 1 : 0;
+        $user->policy_accept = $request->input('policy_accept') == 'on' ? 1 : 0;
         $user->save();
 
-        return view('profile.privacy', compact('user'));
+        return view('profile.policy', compact('user'));
     }
 }

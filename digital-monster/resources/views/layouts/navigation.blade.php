@@ -29,7 +29,7 @@
         <span>Upgrade Station</span>
     </x-nav-link>
 
-    <x-nav-link :href="route('profile.edit')" :active="request()->routeIs(['profile.edit', 'profile.privacy'])">
+    <x-nav-link :href="route('profile.edit')" :active="request()->routeIs(['profile.edit', 'profile.policy'])">
         <i class="fas fa-user"></i>
         <span>Profile</span>
     </x-nav-link>

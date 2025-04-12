@@ -63,18 +63,18 @@
                 <x-fonts.sub-header>Contact Us</x-fonts.sub-header>
                 <x-fonts.paragraph>If you have any questions about this Website Policy, feel free to contact us at <a href="mailto:thedigialex@gmail.com">thedigialex@gmail.com</a>.</x-fonts.paragraph>
             </div>
-            @if ($user->privacy_accept != 1)
-            <form method="POST" action="{{ route('profile.privacy.update') }}">
+            @if ($user->policy_accept != 1)
+            <form method="POST" action="{{ route('profile.policy.update') }}">
                 @csrf
                 <div class="flex flex-col items-center gap-4 py-4 text-center">
-                    <label for="privacy_accept" class="flex items-center justify-center">
+                    <label for="policy_accept" class="flex items-center justify-center">
                         <input
-                            id="privacy_accept"
-                            name="privacy_accept"
+                            id="policy_accept"
+                            name="policy_accept"
                             type="checkbox"
                             class="rounded-md text-accent shadow-sm focus:ring-accent"
-                            {{ $user->privacy_accept ? 'checked' : '' }} />
-                        <span class="ml-2 text-sm text-text">I agree to the privacy policy</span>
+                            {{ $user->policy_accept ? 'checked' : '' }} />
+                        <span class="ml-2 text-sm text-text">I agree to the policy</span>
                     </label>
                     <x-buttons.primary type="submit" label="Update" icon="fa-file-signature" />
                 </div>

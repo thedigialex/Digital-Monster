@@ -36,10 +36,10 @@ Route::middleware('headers')->group(function () {
 
     //Log In Required
     Route::middleware(['auth'])->group(function () {
-        Route::get('/profile/privacy', [ProfileController::class, 'privacy'])->name('profile.privacy');
-        Route::post('/profile/privacy', [ProfileController::class, 'updatePrivacy'])->name('profile.privacy.update');
+        Route::get('/profile/policy', [ProfileController::class, 'policy'])->name('profile.policy');
+        Route::post('/profile/policy', [ProfileController::class, 'updatePolicy'])->name('profile.policy.update');
         
-        Route::middleware(['privacy'])->group(function () {
+        Route::middleware(['policy'])->group(function () {
             Route::get('/digigarden', [DashboardController::class, 'garden'])->name('digigarden');
             Route::get('/digigarden/user', [DashboardController::class, 'gardenUser'])->name('digigarden.user');
             Route::get('/colosseum', [DashboardController::class, 'colosseum'])->name('colosseum');

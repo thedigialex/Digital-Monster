@@ -16,7 +16,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'admin' => \App\Http\Middleware\AdminMiddleware::class,
             'headers' => \App\Http\Middleware\SecureHeaders::class,
             'check-api-key' => \App\Http\Middleware\CheckApiKey::class,
-            'privacy' => \App\Http\Middleware\PrivacyMiddleware::class,
+            'policy' => \App\Http\Middleware\PolicyMiddleware::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

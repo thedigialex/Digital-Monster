@@ -6,13 +6,13 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class PrivacyMiddleware
+class PolicyMiddleware
 {
     public function handle(Request $request, Closure $next)
     {
-        if (Auth::user() && Auth::user()->privacy_accept == 1) {
+        if (Auth::user() && Auth::user()->policy_accept == 1) {
             return $next($request);
         }
-        return redirect('/profile/privacy')->with('error', 'You must accept the privacy policy');
+        return redirect('/profile/policy')->with('error', 'You must accept the policy');
     }
 }

@@ -20,7 +20,7 @@ return new class extends Migration
             $table->integer('bits')->default(0);
             $table->integer('background_id')->default(0);
             $table->integer('score')->default(0);
-            $table->integer('privacy_accept')->default(0);
+            $table->integer('policy_accept')->default(0);
             $table->integer('notification_accept')->default(0);
             $table->integer('guild_id')->default(0);
             $table->rememberToken();

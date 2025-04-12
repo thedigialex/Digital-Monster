@@ -28,8 +28,8 @@
         </x-accordion>
 
         <div class="flex justify-center py-4">
-            <a href="{{ route('profile.privacy') }}">
-                <x-buttons.primary icon="fa-file-contract" label="Privacy" />
+            <a href="{{ route('profile.policy') }}">
+                <x-buttons.primary icon="fa-file-contract" label="Policy" />
             </a>
         </div>
     </x-container>
