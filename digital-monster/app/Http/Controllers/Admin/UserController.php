@@ -15,28 +15,6 @@ use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
-    public function index()
-    {
-        $user = User::find(Auth::id());
-        $isAdmin = $user->role === 'admin';
-
-        $friends = $user->friends();
-        $friendIds = $friends->pluck('id');
-        
-        $requestedFriends = $user->requestedUsers();
-        $requestedIds = $requestedFriends->pluck('id');
-
-        $blockedIds = $user->blockedUserIds();
-
-        $users = User::where('id', '!=', $user->id)
-            ->whereNotIn('id', $friendIds)
-            ->whereNotIn('id', $blockedIds)
-            ->whereNotIn('id', $requestedIds)
-            ->get();
-
-        return view('profile.index', compact('users', 'isAdmin', 'friends', 'requestedFriends'));
-    }
-
     public function profile()
     {
         $user = User::with(['userMonsters.monster', 'userItems.item', 'userEquipment.equipment'])

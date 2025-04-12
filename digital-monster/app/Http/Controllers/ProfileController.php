@@ -12,6 +12,32 @@ use App\Http\Requests\ProfileUpdateRequest;
 
 class ProfileController extends Controller
 {
+    public function index()
+    {
+        $user = User::find(Auth::id());
+        $isAdmin = $user->role === 'admin';
+
+        $friends = $user->friends();
+        $friendIds = $friends->pluck('id');
+
+        $requestedFriends = $user->requestedUsers();
+        $requestedIds = $requestedFriends->pluck('id');
+
+        $blockedIds = $user->blockedUserIds();
+
+        $users = User::where('id', '!=', $user->id)
+            ->whereNotIn('id', $friendIds)
+            ->whereNotIn('id', $blockedIds)
+            ->whereNotIn('id', $requestedIds)
+            ->get();
+
+        if ($isAdmin) {
+            $users->push($user);
+        }
+
+        return view('profile.index', compact('users', 'isAdmin', 'friends', 'requestedFriends'));
+    }
+
     public function edit(Request $request): View
     {
         return view('profile.edit', [
