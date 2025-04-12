@@ -13,9 +13,7 @@
             <x-fonts.sub-header>
             {{ $user->name }}'s DigiGarden
             </x-fonts.sub-header>
-            <x-fonts.paragraph>
-                {{ $count }}
-            </x-fonts.paragraph>
+            <x-buttons.session model="other_user" :id="$user->id" route="digigarden.user" label="Block" icon="fa-ban" />
         </x-slot>
         <div
             id="monster-container"

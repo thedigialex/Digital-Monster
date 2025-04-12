@@ -34,7 +34,7 @@
         <span>Profile</span>
     </x-nav-link>
 
-    <x-nav-link :href="route('users.index')" :active="request()->routeIs(['users.index', 'user.item.edit', 'user.equipment.edit', 'user.monster.edit', 'user.profile'])">
+    <x-nav-link :href="route('users.index')" :active="request()->routeIs(['users.index', 'user.item.edit', 'user.equipment.edit', 'user.monster.edit', 'user.profile', 'digigarden.user'])">
         <i class="fas fa-globe"></i>
         <span>Users</span>
     </x-nav-link>

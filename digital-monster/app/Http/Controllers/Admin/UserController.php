@@ -17,15 +17,24 @@ class UserController extends Controller
 {
     public function index()
     {
-        $users = User::all();
         $user = User::find(Auth::id());
-        $isAdmin = $user->role == 'admin';
-        if (!$isAdmin) {
-            $users = $users->reject(function ($u) use ($user) {
-                return $u->id === $user->id;
-            });
-        }
-        return view('profile.index', compact('users', 'isAdmin'));
+        $isAdmin = $user->role === 'admin';
+
+        $friends = $user->friends();
+        $friendIds = $friends->pluck('id');
+        
+        $requestedFriends = $user->requestedUsers();
+        $requestedIds = $requestedFriends->pluck('id');
+
+        $blockedIds = $user->blockedUserIds();
+
+        $users = User::where('id', '!=', $user->id)
+            ->whereNotIn('id', $friendIds)
+            ->whereNotIn('id', $blockedIds)
+            ->whereNotIn('id', $requestedIds)
+            ->get();
+
+        return view('profile.index', compact('users', 'isAdmin', 'friends', 'requestedFriends'));
     }
 
     public function profile()

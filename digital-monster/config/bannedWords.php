@@ -99,6 +99,7 @@ return [
         'creampie',
         'cum',
         'cumming',
+        'cuck',
         'cumshot',
         'cumshots',
         'cunnilingus',

@@ -22,6 +22,7 @@ return new class extends Migration
             $table->integer('score')->default(0);
             $table->integer('privacy_accept')->default(0);
             $table->integer('notification_accept')->default(0);
+            $table->integer('guild_id')->default(0);
             $table->rememberToken();
             $table->timestamps();
         });
@@ -39,6 +40,14 @@ return new class extends Migration
             $table->text('user_agent')->nullable();
             $table->longText('payload');
             $table->integer('last_activity')->index();
+        });
+
+        Schema::create('friendships', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('requester_user_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('addressee_user_id')->constrained('users')->onDelete('cascade');
+            $table->enum('status', ['pending', 'accepted', 'rejected', 'blocked'])->default('pending');
+            $table->timestamps();
         });
     }
 

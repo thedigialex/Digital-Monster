@@ -50,4 +50,38 @@ class User extends Authenticatable
     {
         return $this->role === 'admin';
     }
+
+    public function friendships()
+    {
+        return $this->hasMany(Friendship::class, 'requester_user_id');
+    }
+
+    public function reverseFriendships()
+    {
+        return $this->hasMany(Friendship::class, 'addressee_user_id');
+    }
+
+    protected function getUserIdsByStatus(string $status)
+    {
+        return $this->friendships()->where('status', $status)->pluck('addressee_user_id')
+            ->merge($this->reverseFriendships()->where('status', $status)->pluck('requester_user_id'))
+            ->unique();
+    }
+
+    public function friends()
+    {
+        $friendIds = $this->getUserIdsByStatus('accepted');
+        return User::whereIn('id', $friendIds)->get();
+    }
+
+    public function blockedUserIds()
+    {
+        return $this->getUserIdsByStatus('blocked');
+    }
+
+    public function requestedUsers()
+    {
+        $friendIds = $this->getUserIdsByStatus('pending');
+        return User::whereIn('id', $friendIds)->get();
+    }
 }
