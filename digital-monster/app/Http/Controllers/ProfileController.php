@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Friendship;
 use Illuminate\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -20,22 +21,24 @@ class ProfileController extends Controller
         $friends = $user->friends();
         $friendIds = $friends->pluck('id');
 
-        $requestedFriends = $user->requestedUsers();
+        $requestedFriends = $user->requestedFriends();
+        $pendingFriends = $user->pendingFriendRequests();
         $requestedIds = $requestedFriends->pluck('id');
-
+        $pendingIds = $pendingFriends->pluck('id');
         $blockedIds = $user->blockedUserIds();
 
         $users = User::where('id', '!=', $user->id)
             ->whereNotIn('id', $friendIds)
             ->whereNotIn('id', $blockedIds)
             ->whereNotIn('id', $requestedIds)
+            ->WhereNotIn('id', $pendingIds)
             ->get();
 
         if ($isAdmin) {
             $users->push($user);
         }
 
-        return view('profile.index', compact('users', 'isAdmin', 'friends', 'requestedFriends'));
+        return view('profile.index', compact('users', 'isAdmin', 'friends', 'requestedFriends', 'pendingFriends'));
     }
 
     public function edit(Request $request): View
@@ -79,7 +82,6 @@ class ProfileController extends Controller
     public function policy(): View
     {
         $user = User::find(Auth::id());
-
         return view('profile.policy', compact('user'));
     }
 
@@ -90,5 +92,59 @@ class ProfileController extends Controller
         $user->save();
 
         return view('profile.policy', compact('user'));
+    }
+
+    public function addFriend(Request $request)
+    {
+        $userId = Auth::id();
+        $targetId = $request->input('user_id');
+
+        $friendship = Friendship::where(function ($query) use ($userId, $targetId) {
+            $query->where('requester_user_id', $userId)
+                ->where('addressee_user_id', $targetId);
+        })
+            ->orWhere(function ($query) use ($userId, $targetId) {
+                $query->where('requester_user_id', $targetId)
+                    ->where('addressee_user_id', $userId);
+            })
+            ->first();
+
+        if ($friendship) {
+            if ($friendship->status === 'pending') {
+                $friendship->update(['status' => 'accepted']);
+                return response()->json(['success' => true, 'message' => 'Friend request accepted']);
+            }
+        }
+
+        Friendship::create([
+            'requester_user_id' => $userId,
+            'addressee_user_id' => $targetId,
+            'status' => 'pending',
+        ]);
+
+        return response()->json(['success' => true, 'message' => 'Friend request sent']);
+    }
+
+    public function cancelFriend(Request $request)
+    {
+        $userId = Auth::id();
+        $targetId = $request->input('user_id');
+
+        $friendship = Friendship::where(function ($query) use ($userId, $targetId) {
+            $query->where('requester_user_id', $userId)
+                ->where('addressee_user_id', $targetId);
+        })
+            ->orWhere(function ($query) use ($userId, $targetId) {
+                $query->where('requester_user_id', $targetId)
+                    ->where('addressee_user_id', $userId);
+            })
+            ->first();
+
+        $friendship->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Friend request canceled',
+        ]);
     }
 }

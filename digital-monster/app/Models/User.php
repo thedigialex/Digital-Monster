@@ -74,14 +74,28 @@ class User extends Authenticatable
         return User::whereIn('id', $friendIds)->get();
     }
 
+    public function requestedFriends()
+    {
+        return User::whereIn('id', function ($query) {
+            $query->select('addressee_user_id')
+                ->from('friendships')
+                ->where('requester_user_id', $this->id)
+                ->where('status', 'pending');
+        })->get();
+    }
+
+    public function pendingFriendRequests()
+    {
+        return User::whereIn('id', function ($query) {
+            $query->select('requester_user_id')
+                ->from('friendships')
+                ->where('addressee_user_id', $this->id)
+                ->where('status', 'pending');
+        })->get();
+    }
+
     public function blockedUserIds()
     {
         return $this->getUserIdsByStatus('blocked');
-    }
-
-    public function requestedUsers()
-    {
-        $friendIds = $this->getUserIdsByStatus('pending');
-        return User::whereIn('id', $friendIds)->get();
     }
 }

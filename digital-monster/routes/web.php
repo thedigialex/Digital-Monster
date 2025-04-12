@@ -1,12 +1,9 @@
 <?php
-
-use App\Http\Controllers\ProfileController;
-
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\SessionController;
-use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
-
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\SessionController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Admin\ItemController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\EventController;
@@ -38,7 +35,7 @@ Route::middleware('headers')->group(function () {
     Route::middleware(['auth'])->group(function () {
         Route::get('/profile/policy', [ProfileController::class, 'policy'])->name('profile.policy');
         Route::post('/profile/policy', [ProfileController::class, 'updatePolicy'])->name('profile.policy.update');
-        
+
         Route::middleware(['policy'])->group(function () {
             Route::get('/digigarden', [DashboardController::class, 'garden'])->name('digigarden');
             Route::get('/digigarden/user', [DashboardController::class, 'gardenUser'])->name('digigarden.user');
@@ -60,13 +57,14 @@ Route::middleware('headers')->group(function () {
             Route::post('monster/sleep', [DashboardController::class, 'sleepToggle'])->name('monster.sleep');
             Route::post('monster/evolve', [DashboardController::class, 'evolve'])->name('monster.evolve');
 
+            Route::get('/users', [ProfileController::class, 'index'])->name('users.index');
+            Route::post('/users/friend/add', [ProfileController::class, 'addFriend'])->name('users.friend.add');
+            Route::post('/users/friend/cancel', [ProfileController::class, 'cancelFriend'])->name('users.friend.cancel');
             Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
             Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
             Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
             Route::view('/info', 'pages.info')->name('info');
-            Route::get('/users', [ProfileController::class, 'index'])->name('users.index');
-
             Route::post('/session/store', [SessionController::class, 'store'])->name('session.store');
             Route::post('/session/clear', [SessionController::class, 'clear'])->name('session.clear');
 
