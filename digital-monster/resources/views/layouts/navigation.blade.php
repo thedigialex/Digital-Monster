@@ -1,5 +1,5 @@
 <nav class="flex-1 mt-4 space-y-4 overflow-y-auto px-4 pb-4">
-    <x-nav-link :href="route('digigarden')" :active="request()->routeIs('digigarden')">
+    <x-nav-link :href="route('digigarden')" :active="request()->routeIs('digigarden', 'info')">
         <i class="fa fa-hard-drive"></i>
         <span>DigiGarden</span>
     </x-nav-link>
