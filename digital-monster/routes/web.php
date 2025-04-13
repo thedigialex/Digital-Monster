@@ -33,6 +33,10 @@ Route::middleware('headers')->group(function () {
 
     //Log In Required
     Route::middleware(['auth'])->group(function () {
+        Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+        Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+        Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
         Route::get('/profile/policy', [ProfileController::class, 'policy'])->name('profile.policy');
         Route::post('/profile/policy', [ProfileController::class, 'updatePolicy'])->name('profile.policy.update');
 
@@ -60,9 +64,6 @@ Route::middleware('headers')->group(function () {
             Route::get('/users', [ProfileController::class, 'index'])->name('users.index');
             Route::post('/users/friend/add', [ProfileController::class, 'addFriend'])->name('users.friend.add');
             Route::post('/users/friend/cancel', [ProfileController::class, 'cancelFriend'])->name('users.friend.cancel');
-            Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-            Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-            Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
             Route::view('/info', 'pages.info')->name('info');
             Route::post('/session/store', [SessionController::class, 'store'])->name('session.store');

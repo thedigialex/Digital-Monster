@@ -1,4 +1,4 @@
-<section class="p-4">
+<section>
     <header>
         <x-fonts.accent-header>Update Password</x-fonts.accent-header>
         <x-fonts.paragraph>Ensure your account is using a long, random password to stay secure.</x-fonts.paragraph>

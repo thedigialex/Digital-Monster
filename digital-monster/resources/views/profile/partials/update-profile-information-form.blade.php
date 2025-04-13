@@ -1,4 +1,4 @@
-<section class="p-4">
+<section>
     <header>
         <x-fonts.accent-header>Profile Information</x-fonts.accent-header>
         <x-fonts.paragraph>Update your account's profile information and email address.</x-fonts.paragraph>

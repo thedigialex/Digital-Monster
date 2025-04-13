@@ -1,4 +1,4 @@
-<section class="p-4">
+<section>
     <header>
         <x-fonts.accent-header>Delete Account</x-fonts.accent-header>
         <x-fonts.paragraph>Once your account is deleted, all of its resources and data will be permanently deleted. Before deleting your account, please download any data or information that you wish to retain.</x-fonts.paragraph>

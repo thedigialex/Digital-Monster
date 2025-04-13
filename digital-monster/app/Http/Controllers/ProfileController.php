@@ -88,9 +88,10 @@ class ProfileController extends Controller
     public function updatePolicy(Request $request)
     {
         $user = User::find(Auth::id());
-        $user->policy_accept = $request->input('policy_accept') == 'on' ? 1 : 0;
-        $user->save();
-
+        if ($request->input('policy_accept') == 'on') {
+            $user->policy_accept = 1;
+            $user->save();
+        }
         return view('profile.policy', compact('user'));
     }
 
