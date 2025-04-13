@@ -19,7 +19,7 @@
         x-transition:leave="transition-all duration-200"
         x-transition:leave-start="max-h-screen opacity-100"
         x-transition:leave-end="max-h-0 opacity-0"
-        class="w-full bg-secondary lg:p-4 rounded-b-md overflow-hidden origin-top">
+        class="w-full bg-secondary p-4 rounded-b-md overflow-hidden origin-top">
         {{ $slot }}
     </div>
 </div>

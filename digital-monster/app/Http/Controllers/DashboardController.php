@@ -743,8 +743,9 @@ class DashboardController extends Controller
 
     public function changeName(Request $request)
     {
-        $user = User::find(Auth::id());
-        $userMonster = UserMonster::find($request->user_monster_id);
+        $userMonster = UserMonster::where('id', $request->user_monster_id)
+            ->where('user_id', Auth::id())
+            ->first();
 
         if (!$userMonster) {
             return response()->json(['message' => 'Hmmm something is off.', 'successful' => false]);
@@ -752,7 +753,7 @@ class DashboardController extends Controller
 
         $name = strip_tags($request->name);
         $name = preg_replace('/[^a-zA-Z0-9\s\-\_]/', '', $name);
-        
+
         $badWords = config('bannedWords.list');
 
         foreach ($badWords as $badWord) {
@@ -761,8 +762,7 @@ class DashboardController extends Controller
             }
         }
 
-
-        $userMonster->name = $name;
+        $userMonster->name = substr($name, 0, 12);
         $userMonster->save();
 
         return response()->json([

@@ -25,7 +25,7 @@
             style="background-image: url('{{ asset($background) }}');">
         </div>
 
-        <div id="stats-panel" class="hidden bg-secondary border-primary border-t-4 p-4 shadow-lg rounded-b-md">
+        <div id="stats-panel" class="hidden bg-secondary border-primary border-t-4 p-2 md:p-4 shadow-lg rounded-b-md">
             <div class="flex justify-between items-center pb-4">
                 <x-fonts.sub-header id="stat-name-wrapper">
                     <span id="stat-level"><span></span> </span>
@@ -111,6 +111,9 @@
                                         <x-fonts.paragraph> {{ $userMaterial->item->name }}</x-fonts.paragraph>
                                     </div>
                                     @endforeach
+                                    @if($userMaterials->isEmpty())
+                                    <x-fonts.paragraph class="text-text p-2 bg-primary rounded-md">No Materials</x-fonts.paragraph>
+                                    @endif
                                 </div>
                             </div>
                         </x-container.modal>
@@ -370,6 +373,7 @@
             const tooltip = document.createElement('span');
             tooltip.className = 'tooltip';
             tooltip.innerText = userMonster.name;
+            userMonster.tooltip = tooltip;
 
             userMonster.monsterDiv = monsterDiv;
             userMonster.spriteDiv = spriteDiv;
@@ -481,7 +485,6 @@
                 monsterDiv.classList.add('clicked');
                 statsPanel.classList.remove('hidden');
                 container.classList.add('rounded-b-none');
-
                 updateStats();
             });
         });
@@ -714,12 +717,15 @@
         });
 
         saveBtn.addEventListener('click', function() {
+            nameDisplay.classList.remove('hidden');
+            nameInput.classList.add('hidden');
+            editIcon.classList.remove('hidden');
+            saveBtn.classList.add('hidden');
             const newName = nameInput.value;
             const data = {
                 user_monster_id: activeUserMonster.id,
                 name: nameInput.value
             };
-
             fetch("{{ route('monster.name') }}", {
                     method: "POST",
                     headers: {
@@ -729,11 +735,11 @@
                     body: JSON.stringify(data)
                 }).then(response => response.json())
                 .then(result => {
-                    document.querySelector('#stat-name span').textContent = result.newName;
-                    nameDisplay.classList.remove('hidden');
-                    nameInput.classList.add('hidden');
-                    editIcon.classList.remove('hidden');
-                    saveBtn.classList.add('hidden');
+                    if (result.successful) {
+                        activeUserMonster.name = result.newName;
+                        activeUserMonster.tooltip.innerText = result.newName;
+                        document.querySelector('#stat-name span').textContent = result.newName;
+                    }
                 });
         });
     });
