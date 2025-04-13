@@ -11,7 +11,6 @@
                 Colosseum
             </x-fonts.sub-header>
         </x-slot>
-
         <x-container.background id="setup-section" :background="$background" class="rounded-b-md">
             @if ($userMonsters->isEmpty())
             <x-fonts.paragraph class="text-text p-2 bg-primary rounded-md">No Monsters Available To Battle</x-fonts.paragraph>

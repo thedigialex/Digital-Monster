@@ -11,7 +11,6 @@ use App\Models\UserMonster;
 use Illuminate\Http\Request;
 use App\Models\UserEquipment;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
@@ -19,7 +18,7 @@ class UserController extends Controller
     {
         $user = User::with(['userMonsters.monster', 'userItems.item', 'userEquipment.equipment'])
             ->findOrFail(session('user_edit_id'));
-        return view('pages.profile', ['user' => $user]);
+        return view('pages.user', ['user' => $user]);
     }
 
     //User Monster
@@ -109,7 +108,6 @@ class UserController extends Controller
 
         return redirect()->route('user.profile')->with('success', $message);
     }
-
 
     public function destroyUserItem()
     {

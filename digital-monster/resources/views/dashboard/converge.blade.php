@@ -15,13 +15,15 @@
             </x-fonts.paragraph>
         </x-slot>
         <x-container.background :background="$background" class="rounded-b-md">
-            <div id="egg-selection" class="flex flex-col justify-center items-center">
+            <div id="egg-selection" class="flex flex-col justify-center items-center gap-4">
                 <x-fonts.paragraph class="text-text p-2 bg-primary rounded-md">{{ $message }}</x-fonts.paragraph>
-                <div class="flex items-center gap-4 py-4">
+                @if (!empty($eggs))
+                <div class="flex items-center gap-4">
                     <x-buttons.arrow direction="left" id="scrollLeft" class="hidden"></x-buttons.arrow>
                     <div id="monsterCarousel" class="flex items-center gap-4" data-eggs='@json($eggs)'></div>
                     <x-buttons.arrow direction="right" id="scrollRight" class="hidden"></x-buttons.arrow>
                 </div>
+                @endif
             </div>
             <div id="confirm-selection" class="hidden flex flex-col justify-center items-center">
                 <x-fonts.paragraph class="text-text p-2 bg-primary rounded-md">Converge DataCrystals into this egg?</x-fonts.paragraph>

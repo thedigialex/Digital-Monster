@@ -19,7 +19,7 @@
         <x-slot name="header">
             <x-fonts.sub-header>Account Details</x-fonts.sub-header>
         </x-slot>
-        <div class="p-4 flex flex-col md:flex-row">
+        <div class="flex flex-col md:flex-row">
             <div class="flex-1 bg-secondary p-4 rounded-md">
                 <x-fonts.accent-header><strong>Name:</strong> {{ $user->name }}</x-fonts.accent-header>
                 <hr class="my-2 border-accent">
