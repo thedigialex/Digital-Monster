@@ -16,6 +16,31 @@
             <x-fonts.paragraph>
                 {{ $count }}
             </x-fonts.paragraph>
+            <x-container.modal name="user-items" title="Inventory" focusable>
+                <x-slot name="button">
+                    <x-buttons.primary id="openMenu" label="Settings" icon="fa-gear" @click="open = true" />
+                </x-slot>
+                <div class="flex gap-4 p-2 rounded-t-md bg-secondary w-full justify-center">
+                    <button id="showBackgrounds" class="bg-accent text-secondary px-4 py-2 rounded-md">Backgrounds</button>
+                </div>
+                <div class="flex flex-col justify-center items-center bg-cover bg-center rounded-b-md"
+                    style="background-image: url('{{ asset($background) }}'); height: 30vh;">
+                    <div id="backgrounds" class="flex flex-wrap justify-center items-center gap-4 overflow-y-auto">
+                        @foreach ($userBackgrounds as $userBackground)
+                        <div class="background-div flex flex-col items-center w-28 p-2 bg-secondary border-2 border-accent rounded-md"
+                            data-background-id="{{ $userBackground->id }}">
+                            <div class="w-24 h-24 p-2 rounded-md bg-primary">
+                                <button class="useBackground w-full h-full"
+                                    data-background='{{ json_encode($userBackground) }}'
+                                    style="background: url('/storage/{{ $userBackground->item->image }}') no-repeat; background-size: cover; background-position: 0 0;">
+                                </button>
+                            </div>
+                            <x-fonts.paragraph class="background-p text-text"> {{ $userBackground->item->name }}</x-fonts.paragraph>
+                        </div>
+                        @endforeach
+                    </div>
+                </div>
+            </x-container.modal>
         </x-slot>
 
         <div
@@ -322,10 +347,8 @@
                 container.classList.add("bg-secondary");
 
                 const attackText = container.querySelector(".attack-p");
-                if (attackText) {
-                    attackText.classList.remove("text-secondary");
-                    attackText.classList.add("text-text");
-                }
+                attackText.classList.remove("text-secondary");
+                attackText.classList.add("text-text");
             });
 
             document.querySelectorAll("#attacks .useAttack").forEach(button => {
@@ -336,14 +359,37 @@
                 if (activeUserMonster.attack == userAttack.id) {
                     attackContainer.classList.add("bg-accent");
                     attackContainer.classList.remove("bg-secondary");
-
-                    if (attackText) {
-                        attackText.classList.add("text-secondary");
-                        attackText.classList.remove("text-text");
-                    }
+                    attackText.classList.add("text-secondary");
+                    attackText.classList.remove("text-text");
                 }
             });
         }
+
+        function highlightEquippedBackground() {
+            console.log('Fired');
+            document.querySelectorAll(".background-div").forEach(container => {
+                container.classList.remove("bg-accent");
+                container.classList.add("bg-secondary");
+
+                const backgroundText = container.querySelector(".background-p");
+                backgroundText.classList.remove("text-secondary");
+                backgroundText.classList.add("text-text");
+            });
+
+            document.querySelectorAll("#backgrounds .useBackground").forEach(button => {
+                const userBackground = JSON.parse(button.getAttribute("data-background"));
+                const backgroundContainer = button.closest(".background-div");
+                const backgroundText = backgroundContainer.querySelector(".background-p");
+
+                if (true) {
+                    backgroundContainer.classList.add("bg-accent");
+                    backgroundContainer.classList.remove("bg-secondary");
+                    backgroundText.classList.add("text-secondary");
+                    backgroundText.classList.remove("text-text");
+                }
+            });
+        }
+
 
         JSON.parse(container.getAttribute('data-monsters')).forEach(userMonster => {
             const monsterDiv = document.createElement('div');
@@ -747,5 +793,7 @@
                     }
                 });
         });
+
+        highlightEquippedBackground();
     });
 </script>

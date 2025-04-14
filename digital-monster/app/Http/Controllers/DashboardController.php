@@ -43,12 +43,13 @@ class DashboardController extends Controller
 
         $userItems = $allUserItems->get('Consumable', collect());
         $userAttacks = $allUserItems->get('Attack', collect());
+        $userBackgrounds = $allUserItems->get('Background', collect());
         $userMaterials = $allUserItems->get('Material', collect());
 
         $background = $this->getUserBackgroundImage($user);
         $count = $userMonsters->count() . ' / ' . ($digiGarden->level * 5);
 
-        return view('dashboard.garden', compact('user', 'userMonsters', 'count', 'userEquipment', 'userItems', 'userAttacks', 'userMaterials', 'background'));
+        return view('dashboard.garden', compact('user', 'userMonsters', 'count', 'userEquipment', 'userItems', 'userAttacks', 'userBackgrounds', 'userMaterials', 'background'));
     }
 
     public function gardenUser(Request $request)
