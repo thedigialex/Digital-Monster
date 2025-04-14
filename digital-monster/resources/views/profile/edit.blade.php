@@ -15,7 +15,14 @@
             </x-fonts.paragraph>
         </x-slot>
 
-        <x-accordion title="Update Profile Information" :open="true" :icon="'fa-solid fa-user'">
+        <x-accordion title="Player Stats" :open="true" :icon="'fa-solid fa-chart-column'">
+            <x-fonts.paragraph><strong>Tamer Level:</strong> {{ $user->level }}</x-fonts.paragraph>
+            <x-fonts.paragraph><strong>Tamer Exp:</strong> {{ $user->exp }}</x-fonts.paragraph>
+            <x-fonts.paragraph><strong>Bits:</strong> {{ $user->bits }}</x-fonts.paragraph>
+            <x-fonts.paragraph><strong>Score:</strong> {{ $user->score }}</x-fonts.paragraph>
+        </x-accordion>
+
+        <x-accordion title="Update Profile Information" :open="false" :icon="'fa-solid fa-user'">
             @include('profile.partials.update-profile-information-form')
         </x-accordion>
 
