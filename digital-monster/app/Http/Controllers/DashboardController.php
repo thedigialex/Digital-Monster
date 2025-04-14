@@ -4,9 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\Item;
-use App\Models\Event;
-use App\Models\UserItem;
 use App\Models\Monster;
+use App\Models\UserItem;
 use App\Models\UserMonster;
 use App\Models\UserEquipment;
 use Illuminate\Support\Facades\Auth;
@@ -245,55 +244,6 @@ class DashboardController extends Controller
         $background = $this->getUserBackgroundImage($user);
 
         return view('dashboard.adventure', compact('userMonsters', 'background'));
-    }
-
-    public function generateStep(Request $request)
-    {
-        $user = User::find(Auth::id());
-
-        $userMonster = UserMonster::with('monster')
-            ->where('id', $request->user_monster_id)
-            ->where('user_id', $user->id)
-            ->first();
-
-
-        if (!$userMonster || $userMonster->sleep_at || $userMonster->energy <= 0) {
-            return response()->json([
-                'message' => 'Hmmm something is off.',
-                'successful' => false
-            ]);
-        }
-
-        $userMonster->steps += 1;
-        $userMonster->save();
-
-        $event = Event::inRandomOrder()->first();
-
-        if ($event->item_id) {
-            $item = Item::find($event->item_id);
-            $userItem = UserItem::where('user_id', $user->id)
-                ->where('item_id', $item->id)
-                ->first();
-
-            if ($userItem) {
-                if ($userItem->quantity < $item->max_quantity) {
-                    $userItem->quantity += 1;
-                    $userItem->save();
-                }
-            } else {
-                UserItem::create([
-                    'user_id' => $user->id,
-                    'item_id' => $item->id,
-                    'quantity' => 1,
-                ]);
-            }
-        }
-
-        return response()->json([
-            'successful' => true,
-            'message' => "{$userMonster->name} " . $event->message,
-            'duration' => rand(3, 5) * 1000,
-        ]);
     }
 
     public function shop()

@@ -118,7 +118,11 @@
                             </div>
                         </x-container.modal>
                     </div>
-                    <x-fonts.paragraph class="pt-2 text-text" id="stat-stage">Stage: <span></span></x-fonts.paragraph>
+                    <div class="flex gap-4 justify-between pt-2">
+                        <x-fonts.paragraph id="stat-stage">Stage: <span></span></x-fonts.paragraph>
+                        <x-fonts.paragraph id="stat-steps">Steps: <span></span></x-fonts.paragraph>
+                    </div>
+
                     <div class="py-2">
                         <x-fonts.paragraph>Energy</x-fonts.paragraph>
                         <div class="w-full bg-secondary rounded-md h-4">
@@ -220,6 +224,7 @@
             document.querySelector('#stat-level span').textContent = 'Lvl: ' + activeUserMonster.level + ' ';
             document.querySelector('#stat-name span').textContent = activeUserMonster.name;
             document.querySelector('#stat-stage span').textContent = activeUserMonster.monster.stage;
+            document.querySelector('#stat-steps span').textContent = activeUserMonster.steps;
             document.querySelector('#stat-strength span').textContent = activeUserMonster.strength;
             document.querySelector('#stat-agility span').textContent = activeUserMonster.agility;
             document.querySelector('#stat-defense span').textContent = activeUserMonster.defense;
@@ -678,7 +683,7 @@
             const data = {
                 user_monster_id: activeUserMonster.id
             };
-
+            this.classList.add("hidden");
             fetch("{{ route('monster.evolve') }}", {
                     method: "POST",
                     headers: {
@@ -696,9 +701,9 @@
 
                     setTimeout(() => {
                         activeUserMonster.updateUserMonster(result.userMonster);
-                        updateStats();
                         spriteDiv.classList.remove('flicker');
                         spriteDiv.style.backgroundImage = getMonsterImage(activeUserMonster);
+                        updateStats();
                         setTimeout(() => {
                             spriteDiv.style.transition = "opacity 0.5s";
                             spriteDiv.style.opacity = 1;

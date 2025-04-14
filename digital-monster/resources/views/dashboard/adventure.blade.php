@@ -29,9 +29,9 @@
             </div>
             @endif
         </x-container.background>
-        <x-container.background id="adventure-section" class="hidden rounded-b-md" :background="$background">
+        <x-container.background id="adventure-section" class="hidden rounded-b-md gap-4" :background="$background">
             <x-buttons.primary id="backButton" icon="fa-repeat" label="Switch" />
-            <div id="movementArea" class="relative w-full md:w-1/4 h-32 overflow-hidden py-4">
+            <div id="movementArea" class="relative w-full md:w-1/4 h-32 overflow-hidden">
                 <div id="movingSpriteWrapper" class="absolute left-0">
                     <x-container.sprite id="user-monster-sprite" :rotate="true" />
                 </div>
@@ -160,7 +160,7 @@
 
         stepButton.addEventListener("click", function() {
             stepButton.disabled = true;
-
+            document.getElementById("backButton").classList.add("hidden");
             const data = {
                 user_monster_id: activeUserMonster.id
             };
@@ -182,9 +182,8 @@
                             movingSpriteWrapper.style.transform = 'translateX(0)';
                             stepButton.disabled = false;
                             document.getElementById('messageBox').textContent = result.message;
+                            document.getElementById("backButton").classList.remove("hidden");
                         }, result.duration);
-                    } else {
-                        //reset battle thing and show a message.
                     }
                 });
         });

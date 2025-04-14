@@ -104,7 +104,7 @@ class ItemController extends Controller
         return redirect()->route('items.index')->with('success', $message);
     }
 
-    public function destroy(Item $item)
+    public function destroy()
     {
         $item = Item::findOrFail(session('item_id'));
         if ($item->image) {
