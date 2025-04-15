@@ -14,7 +14,7 @@
         </x-slot>
         <x-slot name="info">
             <x-fonts.paragraph>
-                Egg groups are a way to categorize monsters based on their ability. Each egg group can be modified or created by the user, allowing for customization of how different species evolve. Each egg group contains a field that determines the specific monster type the eggs within the group will evolve into. This system makes it easier for trainers to organize their breeding programs and predict the potential evolutions of their monsters.
+                This page serves as an index of digital monsters, neatly organized by their assigned Egg Groups. Each group brings together creatures with similar traits, making it easy to browse, compare, and discover new additions within a shared evolutionary theme.
             </x-fonts.paragraph>
         </x-slot>
         @foreach ($eggGroups as $index => $eggGroup)
