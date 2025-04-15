@@ -98,4 +98,9 @@ class User extends Authenticatable
     {
         return $this->getUserIdsByStatus('blocked');
     }
+
+    public function locations()
+    {
+        return $this->hasMany(UserLocation::class);
+    }
 }

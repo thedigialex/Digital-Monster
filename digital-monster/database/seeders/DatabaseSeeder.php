@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\User;
 use App\Models\Item;
 use App\Models\Event;
+use App\Models\Location;
 use App\Models\Equipment;
 use App\Events\UserRegistered;
 use Illuminate\Database\Seeder;
@@ -85,6 +86,13 @@ class DatabaseSeeder extends Seeder
             'max_quantity' => 10
         ]);
 
+        $starterLocation = Location::create([
+            'name' => 'Green Meadow',
+            'description' => 'A calm, lush field where many adventures begin.',
+            'unlock_location_id' => null,
+            'unlock_steps' => 0,
+        ]);
+        
         $messages = [
             "sniffs the air curiously...",
             "found something interesting!",
@@ -96,15 +104,16 @@ class DatabaseSeeder extends Seeder
             "seems excited about what lies ahead!",
             "picks up the pace, eager to discover more!",
         ];
-
+        
         foreach ($messages as $message) {
             Event::create([
                 'message' => $message,
                 'type' => 0,
                 'item_id' => null,
+                'location_id' => $starterLocation->id,
             ]);
         }
-
+        
         $user = User::create([
             'name' => 'Test User',
             'email' => 'test@example.com',

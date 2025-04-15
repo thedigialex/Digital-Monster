@@ -3,8 +3,10 @@
 namespace App\Listeners;
 
 use App\Models\Item;
-use App\Models\Equipment;
+use App\Models\Location;
+use App\Models\UserLocation;
 use App\Models\UserItem;
+use App\Models\Equipment;
 use App\Models\UserEquipment;
 use App\Events\UserRegistered;
 
@@ -54,6 +56,14 @@ class SetUpUserAccount
         }
 
         $user->background_id = $background->id;
+
+        $starterLocation = Location::where('name', 'Green Meadow')->first();
+        UserLocation::create([
+            'user_id' => $user->id,
+            'location_id' => $starterLocation->id,
+            'unlocked' => true,
+            'steps' => 0,
+        ]);
         $user->save();
     }
 }

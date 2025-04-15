@@ -11,22 +11,34 @@ return new class extends Migration
         Schema::create('locations', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('description');
+            $table->text('description');
+            $table->foreignId('unlock_location_id')->nullable()->constrained('locations')->nullOnDelete();
+            $table->integer('unlock_steps')->default(0);
             $table->timestamps();
         });
 
         Schema::create('events', function (Blueprint $table) {
             $table->id();
-            $table->string('message');
             $table->string('type');
-            $table->unsignedBigInteger('item_id')->nullable();
-            $table->unsignedBigInteger('location_id')->nullable();
+            $table->text('message');
+            $table->foreignId('item_id')->nullable()->constrained()->nullOnDelete();
+            $table->foreignId('location_id')->constrained()->onDelete('cascade');
+            $table->timestamps();
+        });
+
+        Schema::create('user_locations', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('location_id')->constrained()->onDelete('cascade');
+            $table->integer('unlocked')->default(0);
+            $table->integer('steps')->default(0);
             $table->timestamps();
         });
     }
 
     public function down(): void
     {
+        Schema::dropIfExists('user_locations');
         Schema::dropIfExists('events');
         Schema::dropIfExists('locations');
     }
