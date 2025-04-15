@@ -16,7 +16,7 @@
         </x-slot>
         <x-slot name="info">
             <x-fonts.paragraph>
-                Egg groups are a way to categorize monsters based on their ability. Each egg group can be modified or created by the user, allowing for customization of how different species evolve. Each egg group contains a field that determines the specific monster type the eggs within the group will evolve into. This system makes it easier for trainers to organize their breeding programs and predict the potential evolutions of their monsters.
+                This page lists all the possible events that can occur during Adventure Mode. Each entry gives a glimpse into the encounters, surprises, and challenges that may unfold as you explore, offering a handy guide to what might lie ahead.
             </x-fonts.paragraph>
         </x-slot>
         <x-accordion title="Event" :open="true" :icon="'fa-calendar'">

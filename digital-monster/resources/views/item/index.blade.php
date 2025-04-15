@@ -16,7 +16,7 @@
         </x-slot>
         <x-slot name="info">
             <x-fonts.paragraph>
-                Egg groups are a way to categorize monsters based on their ability. Each egg group can be modified or created by the user, allowing for customization of how different species evolve. Each egg group contains a field that determines the specific monster type the eggs within the group will evolve into. This system makes it easier for trainers to organize their breeding programs and predict the potential evolutions of their monsters.
+                This page provides an index of all in-game items, including backgrounds, attacks, consumables, and materials. Designed for administrative use, it allows for easy management, editing, and organization of item data across the system.
             </x-fonts.paragraph>
         </x-slot>
         @foreach ($itemTypes as $type)
@@ -47,7 +47,7 @@
                         </x-table.data>
                         <x-table.data class="w-1/2 md:w-1/3">
                             <div class="flex justify-end">
-                            <x-buttons.session model="item" :id="$item->id" route="item.edit" />
+                                <x-buttons.session model="item" :id="$item->id" route="item.edit" />
                             </div>
                         </x-table.data>
                     </tr>
