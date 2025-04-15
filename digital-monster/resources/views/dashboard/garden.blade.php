@@ -11,12 +11,10 @@
     <x-container>
         <x-slot name="header">
             <x-fonts.sub-header>
-                DigiGarden
+                DigiGarden {{ $count }}
             </x-fonts.sub-header>
-            <x-fonts.paragraph>
-                {{ $count }}
-            </x-fonts.paragraph>
-            <x-container.modal name="user-items" title="Inventory" focusable>
+
+            <x-container.modal name="user-items" title="Settings">
                 <x-slot name="button">
                     <x-buttons.primary id="openMenu" label="Settings" icon="fa-gear" @click="open = true" />
                 </x-slot>
@@ -25,13 +23,14 @@
                 </div>
                 <div class="flex flex-col justify-center items-center bg-cover bg-center rounded-b-md"
                     style="background-image: url('{{ asset($background) }}'); height: 30vh;">
+                    <x-alerts.spinner id="loading-section-background"></x-alerts.spinner>
                     <div id="backgrounds" class="flex flex-wrap justify-center items-center gap-4 overflow-y-auto">
                         @foreach ($userBackgrounds as $userBackground)
-                        <div class="background-div flex flex-col items-center w-28 p-2 bg-secondary border-2 border-accent rounded-md"
+                        <div class="background-div flex flex-col items-center w-36 p-2 bg-secondary border-2 border-accent rounded-md"
                             data-background-id="{{ $userBackground->id }}">
                             <div class="w-24 h-24 p-2 rounded-md bg-primary">
                                 <button class="useBackground w-full h-full"
-                                    data-background='{{ json_encode($userBackground) }}'
+                                    data-background='{{ json_encode($userBackground) }}' data-equipped_id='{{ json_encode($background_id) }}'
                                     style="background: url('/storage/{{ $userBackground->item->image }}') no-repeat; background-size: cover; background-position: 0 0;">
                                 </button>
                             </div>
@@ -73,7 +72,7 @@
                                 <i class="fa-solid fa-drumstick-bite fa-2x"></i>
                             </div>
                         </div>
-                        <x-container.modal name="user-items" title="Inventory" focusable>
+                        <x-container.modal name="user-items" title="Inventory">
                             <x-slot name="button">
                                 <x-buttons.primary id="openItems" label="Items" icon="fa-briefcase" @click="open = true" />
                             </x-slot>
@@ -88,7 +87,7 @@
                                 <div id="items" class="flex justify-center items-center overflow-y-auto">
                                     <div id="item-selection" class="flex flex-wrap justify-center items-center gap-4">
                                         @foreach ($userItems as $userItem)
-                                        <div class="flex flex-col items-center w-28 p-2 bg-secondary border-2 border-accent rounded-md">
+                                        <div class="flex flex-col items-center w-36 p-2 bg-secondary border-2 border-accent rounded-md">
                                             <div class="relative w-24 h-24 p-2 rounded-md bg-primary">
                                                 <button class="useItem w-full h-full"
                                                     data-item='{{ json_encode($userItem) }}'
@@ -110,7 +109,7 @@
                                 </div>
                                 <div id="attacks" class="hidden flex flex-wrap justify-center items-center gap-4 overflow-y-auto">
                                     @foreach ($userAttacks as $userAttack)
-                                    <div class="attack-div flex flex-col items-center w-28 p-2 bg-secondary border-2 border-accent rounded-md"
+                                    <div class="attack-div flex flex-col items-center w-36 p-2 bg-secondary border-2 border-accent rounded-md"
                                         data-attack-id="{{ $userAttack->id }}">
                                         <div class="w-24 h-24 p-2 rounded-md bg-primary">
                                             <button class="useAttack w-full h-full"
@@ -124,7 +123,7 @@
                                 </div>
                                 <div id="materials" class="hidden flex flex-wrap justify-center items-center gap-4 overflow-y-auto">
                                     @foreach ($userMaterials as $userMaterial)
-                                    <div class="flex flex-col items-center w-28 p-2 bg-secondary border-2 border-accent rounded-md">
+                                    <div class="flex flex-col items-center w-36 p-2 bg-secondary border-2 border-accent rounded-md">
                                         <div class="relative w-24 h-24 p-2 rounded-md bg-primary">
                                             <button class="useItem w-full h-full"
                                                 style="background: url('/storage/{{ $userMaterial->item->image }}') no-repeat; background-size: cover; background-position: 0 0;">
@@ -162,7 +161,7 @@
                     </x-fonts.paragraph>
                 </div>
                 <div class="bg-primary rounded-md md:w-3/5 flex items-center justify-center">
-                    <x-container.modal name="user-monster-training" title="Training" focusable>
+                    <x-container.modal name="user-monster-training" title="Training">
                         <x-slot name="button">
                             <div class="flex justify-center my-4">
                                 <button id="evolutionButton" class="w-[150px] relative inline-flex hover:scale-90 active:scale-90 overflow-hidden rounded-md p-1 focus:outline-none flex justify-center my-4">
@@ -366,7 +365,6 @@
         }
 
         function highlightEquippedBackground() {
-            console.log('Fired');
             document.querySelectorAll(".background-div").forEach(container => {
                 container.classList.remove("bg-accent");
                 container.classList.add("bg-secondary");
@@ -378,10 +376,11 @@
 
             document.querySelectorAll("#backgrounds .useBackground").forEach(button => {
                 const userBackground = JSON.parse(button.getAttribute("data-background"));
+                const equipped_id = JSON.parse(button.getAttribute("data-equipped_id"));
                 const backgroundContainer = button.closest(".background-div");
                 const backgroundText = backgroundContainer.querySelector(".background-p");
 
-                if (true) {
+                if (equipped_id == userBackground.id) {
                     backgroundContainer.classList.add("bg-accent");
                     backgroundContainer.classList.remove("bg-secondary");
                     backgroundText.classList.add("text-secondary");
@@ -389,7 +388,6 @@
                 }
             });
         }
-
 
         JSON.parse(container.getAttribute('data-monsters')).forEach(userMonster => {
             const monsterDiv = document.createElement('div');
@@ -650,6 +648,35 @@
                     },
                     body: JSON.stringify(data)
                 });
+            });
+        });
+
+        document.querySelectorAll(".useBackground").forEach(button => {
+            button.addEventListener("click", function() {
+                const userBackground = JSON.parse(button.getAttribute("data-background"));
+                const equipped_id = JSON.parse(button.getAttribute("data-equipped_id"));
+                document.getElementById("loading-section-background").classList.remove("hidden");
+                document.getElementById("backgrounds").classList.add("hidden");
+                if (equipped_id != userBackground.id) {
+                    const data = {
+                        user_background_id: userBackground.id,
+                    };
+
+                    fetch("{{ route('digigarden.background') }}", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+                                "X-CSRF-TOKEN": document.querySelector("meta[name='csrf-token']").getAttribute("content")
+                            },
+                            body: JSON.stringify(data)
+                        })
+                        .then(response => response.json())
+                        .then(result => {
+                            if (result.successful == true) {
+                                window.location.reload();
+                            }
+                        })
+                }
             });
         });
 

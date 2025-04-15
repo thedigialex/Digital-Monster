@@ -120,3 +120,7 @@
     }
 }
 /* Evolution */
+
+/* Modal */
+[x-cloak] { display: none !important; }
+/* Modal */

@@ -43,6 +43,7 @@ Route::middleware('headers')->group(function () {
         Route::middleware(['policy'])->group(function () {
             Route::get('/digigarden', [DashboardController::class, 'garden'])->name('digigarden');
             Route::get('/digigarden/user', [DashboardController::class, 'gardenUser'])->name('digigarden.user');
+            Route::post('/digigarden/background', [DashboardController::class, 'changeBackground'])->name('digigarden.background');
             Route::get('/colosseum', [DashboardController::class, 'colosseum'])->name('colosseum');
             Route::post('colosseum/generateBattle', [DashboardController::class, 'generateBattle'])->name('colosseum.generateBattle');
             Route::get('/adventure', [DashboardController::class, 'adventure'])->name('adventure');

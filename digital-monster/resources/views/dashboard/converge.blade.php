@@ -17,13 +17,11 @@
         <x-container.background :background="$background" class="rounded-b-md">
             <div id="egg-selection" class="flex flex-col justify-center items-center gap-4">
                 <x-fonts.paragraph class="text-text p-2 bg-primary rounded-md">{{ $message }}</x-fonts.paragraph>
-                @if (!empty($eggs))
                 <div class="flex items-center gap-4">
                     <x-buttons.arrow direction="left" id="scrollLeft" class="hidden"></x-buttons.arrow>
                     <div id="monsterCarousel" class="flex items-center gap-4" data-eggs='@json($eggs)'></div>
                     <x-buttons.arrow direction="right" id="scrollRight" class="hidden"></x-buttons.arrow>
                 </div>
-                @endif
             </div>
             <div id="confirm-selection" class="hidden flex flex-col justify-center items-center">
                 <x-fonts.paragraph class="text-text p-2 bg-primary rounded-md">Converge DataCrystals into this egg?</x-fonts.paragraph>
@@ -67,7 +65,7 @@
             confirmSelection.classList.remove("hidden");
 
             singleEgg.innerHTML = `
-                <div class="flex flex-col items-center w-32 p-2 bg-secondary border-2 border-accent rounded-md text-text">
+                <div class="flex flex-col items-center w-36 p-2 bg-secondary border-2 border-accent rounded-md text-text">
                     <div class="w-24 h-24 p-2 rounded-md bg-primary">
                         <img src="/storage/${selectedMonster.image_0}" class="w-full h-full object-cover" style="object-position: 0 0;" />
                     </div>
@@ -83,7 +81,7 @@
 
         eggMonsters.forEach(monster => {
             const monsterDiv = document.createElement("div");
-            monsterDiv.classList.add("flex", "flex-col", "items-center", "w-32", "p-2", "bg-secondary", "border-2", "border-accent", "rounded-md", "cursor-pointer", "text-text");
+            monsterDiv.classList.add("flex", "flex-col", "items-center", "w-36", "p-2", "bg-secondary", "border-2", "border-accent", "rounded-md", "cursor-pointer", "text-text");
             monsterDiv.innerHTML = `
                 <div class="w-24 h-24 p-2 rounded-md bg-primary">
                     <img src="/storage/${monster.image_0}" class="w-full h-full object-cover" style="object-position: 0 0;" />

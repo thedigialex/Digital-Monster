@@ -1,6 +1,8 @@
 @props(['title' => 'Modal Title'])
-<div x-data="{ open: false }">
+
+<div x-data="{ open: false }" x-cloak>
     {{ $button }}
+
     <div
         x-show="open"
         class="fixed inset-0 flex items-center justify-center bg-neutral p-2 bg-opacity-50 z-10"

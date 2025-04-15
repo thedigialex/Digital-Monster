@@ -47,9 +47,10 @@ class DashboardController extends Controller
         $userMaterials = $allUserItems->get('Material', collect());
 
         $background = $this->getUserBackgroundImage($user);
+        $background_id =   $user->background_id;
         $count = $userMonsters->count() . ' / ' . ($digiGarden->level * 5);
 
-        return view('dashboard.garden', compact('user', 'userMonsters', 'count', 'userEquipment', 'userItems', 'userAttacks', 'userBackgrounds', 'userMaterials', 'background'));
+        return view('dashboard.garden', compact('user', 'userMonsters', 'count', 'userEquipment', 'userItems', 'userAttacks', 'userBackgrounds', 'userMaterials', 'background', 'background_id'));
     }
 
     public function gardenUser(Request $request)
@@ -70,6 +71,31 @@ class DashboardController extends Controller
         $count = $userMonsters->count() . ' / ' . ($digiGarden->level * 5);
 
         return view('dashboard.viewGarden', compact('user', 'userMonsters', 'count', 'background'));
+    }
+
+    public function changeBackground(Request $request)
+    {
+        $user = User::find(Auth::id());
+
+        $userBackground = UserItem::with('item')
+            ->where('id', $request->user_background_id)
+            ->where('user_id', $user->id)
+            ->first();
+
+        if (!$userBackground) {
+            return response()->json([
+                'message' => 'Hmmm something is off.',
+                'successful' => false
+            ], 404);
+        }
+
+        $user->background_id = $userBackground->id;
+        $user->save();
+
+        return response()->json([
+            'message' => 'Background Changed successfully!',
+            'successful' => true
+        ], 200);
     }
 
     public function colosseum()
