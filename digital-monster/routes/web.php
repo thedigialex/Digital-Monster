@@ -104,9 +104,9 @@ Route::middleware('headers')->group(function () {
                 Route::delete('/userEquipment/delete', [UserController::class, 'destroyUserEquipment'])->name('user.equipment.destroy');
 
                 Route::get('/locations', [LocationController::class, 'index'])->name('locations.index');
-                Route::get('/event/edit', [LocationController::class, 'edit'])->name('event.edit');
-                Route::post('/event/update', [LocationController::class, 'update'])->name('event.update');
-                Route::delete('/event/delete', [LocationController::class, 'destroy'])->name('event.destroy');
+                Route::get('/location/edit', [LocationController::class, 'edit'])->name('location.edit');
+                Route::post('/location/update', [LocationController::class, 'update'])->name('location.update');
+                Route::delete('/location/delete', [LocationController::class, 'destroy'])->name('location.destroy');
             });
         });
     });

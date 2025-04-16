@@ -22,6 +22,15 @@ class LocationController extends Controller
 
     public function edit()
     {
+        $location = Location::find(session('location_id'));
+        $otherLocations = $location
+        ? Location::where('id', '!=', $location->id)->get()
+        : Location::all();
+        return view('locations.form', compact('location', 'otherLocations'));
+    }
+
+    public function editEvent()
+    {
         $event = Event::find(session('event_id'));
         $types = [
             '0' => 'Basic',

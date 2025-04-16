@@ -3,7 +3,7 @@
         <x-fonts.sub-header>
             Locations
         </x-fonts.sub-header>
-        <x-buttons.clear model="event" route="event.edit" icon="fa-plus" label="New" />
+        <x-buttons.clear model="location" route="location.edit" icon="fa-plus" label="New" />
     </x-slot>
 
     @if (session('success'))
@@ -36,7 +36,7 @@
                         </x-table.data>
                         <x-table.data class="w-1/3">
                             <div class="flex justify-end">
-                                <x-buttons.session model="location" :id="$location->id" route="event.edit" />
+                                <x-buttons.session model="location" :id="$location->id" route="location.edit" />
                             </div>
                         </x-table.data>
                     </tr>
@@ -44,7 +44,7 @@
                 </tbody>
             </x-table.table>
             @else
-            <x-fonts.paragraph class="text-text p-4">No events available</x-fonts.paragraph>
+            <x-fonts.paragraph class="text-text p-4">No locations available</x-fonts.paragraph>
             @endif
         </x-accordion>
     </x-container>
