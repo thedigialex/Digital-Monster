@@ -19,6 +19,7 @@ return new class extends Migration
             $table->integer('exp')->default(0);
             $table->integer('bits')->default(0);
             $table->integer('background_id')->default(0);
+            $table->integer('current_location_id')->default(0);
             $table->integer('score')->default(0);
             $table->integer('policy_accept')->default(0);
             $table->integer('notification_accept')->default(0);

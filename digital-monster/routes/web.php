@@ -6,7 +6,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Admin\ItemController;
 use App\Http\Controllers\Admin\UserController;
-use App\Http\Controllers\Admin\EventController;
+use App\Http\Controllers\Admin\LocationController;
 use App\Http\Controllers\Admin\MonsterController;
 use App\Http\Controllers\Admin\EggGroupController;
 use App\Http\Controllers\Admin\EquipmentController;
@@ -47,7 +47,7 @@ Route::middleware('headers')->group(function () {
             Route::get('/colosseum', [DashboardController::class, 'colosseum'])->name('colosseum');
             Route::post('colosseum/generateBattle', [DashboardController::class, 'generateBattle'])->name('colosseum.generateBattle');
             Route::get('/adventure', [DashboardController::class, 'adventure'])->name('adventure');
-            Route::post('adventure/step', [EventController::class, 'generateStep'])->name('adventure.step');
+            Route::post('adventure/step', [LocationController::class, 'generateStep'])->name('adventure.step');
             Route::get('/digiconverge', [DashboardController::class, 'converge'])->name('digiconverge');
             Route::post('/digiconverge/create', [DashboardController::class, 'convergeCreate'])->name('converge.create');
             Route::get('/shop', [DashboardController::class, 'shop'])->name('shop');
@@ -103,10 +103,10 @@ Route::middleware('headers')->group(function () {
                 Route::post('/userEquipment/update', [UserController::class, 'updateUserEquipment'])->name('user.equipment.update');
                 Route::delete('/userEquipment/delete', [UserController::class, 'destroyUserEquipment'])->name('user.equipment.destroy');
 
-                Route::get('/events', [EventController::class, 'index'])->name('events.index');
-                Route::get('/event/edit', [EventController::class, 'edit'])->name('event.edit');
-                Route::post('/event/update', [EventController::class, 'update'])->name('event.update');
-                Route::delete('/event/delete', [EventController::class, 'destroy'])->name('event.destroy');
+                Route::get('/locations', [LocationController::class, 'index'])->name('locations.index');
+                Route::get('/event/edit', [LocationController::class, 'edit'])->name('event.edit');
+                Route::post('/event/update', [LocationController::class, 'update'])->name('event.update');
+                Route::delete('/event/delete', [LocationController::class, 'destroy'])->name('event.destroy');
             });
         });
     });

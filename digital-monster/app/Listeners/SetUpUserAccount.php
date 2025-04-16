@@ -58,12 +58,14 @@ class SetUpUserAccount
         $user->background_id = $background->id;
 
         $starterLocation = Location::where('name', 'Green Meadow')->first();
-        UserLocation::create([
+        $location = UserLocation::create([
             'user_id' => $user->id,
             'location_id' => $starterLocation->id,
             'unlocked' => true,
             'steps' => 0,
         ]);
+        $user->current_location_id = $location->id;
+        
         $user->save();
     }
 }

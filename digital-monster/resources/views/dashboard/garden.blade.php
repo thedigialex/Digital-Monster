@@ -655,9 +655,9 @@
             button.addEventListener("click", function() {
                 const userBackground = JSON.parse(button.getAttribute("data-background"));
                 const equipped_id = JSON.parse(button.getAttribute("data-equipped_id"));
-                document.getElementById("loading-section-background").classList.remove("hidden");
-                document.getElementById("backgrounds").classList.add("hidden");
                 if (equipped_id != userBackground.id) {
+                    document.getElementById("loading-section-background").classList.remove("hidden");
+                    document.getElementById("backgrounds").classList.add("hidden");
                     const data = {
                         user_background_id: userBackground.id,
                     };

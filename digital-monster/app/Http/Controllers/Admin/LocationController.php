@@ -5,18 +5,19 @@ namespace App\Http\Controllers\Admin;
 use App\Models\User;
 use App\Models\Item;
 use App\Models\Event;
+use App\Models\Location;
 use App\Models\UserItem;
 use App\Models\UserMonster;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 
-class EventController extends Controller
+class LocationController extends Controller
 {
     public function index()
     {
-        $events = Event::all();
-        return view('events.index', compact('events'));
+        $locations = Location::all();
+        return view('locations.index', compact('locations'));
     }
 
     public function edit()
@@ -34,7 +35,7 @@ class EventController extends Controller
             '8' => 'Mind',
         ];
         $items = Item::all()->pluck('name', 'id');
-        return view('events.form', compact('event', 'types', 'items'));
+        return view('locations.form', compact('event', 'types', 'items'));
     }
 
     public function update(Request $request)
@@ -58,14 +59,14 @@ class EventController extends Controller
 
         $message = session('event_id') ? 'Event updated successfully.' : 'Event created successfully.';
 
-        return redirect()->route('events.index')->with('success', $message);
+        return redirect()->route('locations.index')->with('success', $message);
     }
 
     public function destroy()
     {
         $event = Event::find(session('event_id'));
         $event->delete();
-        return redirect()->route('events.index')->with('success', 'Event deleted successfully.');
+        return redirect()->route('locations.index')->with('success', 'Event deleted successfully.');
     }
 
     public function generateStep(Request $request)
