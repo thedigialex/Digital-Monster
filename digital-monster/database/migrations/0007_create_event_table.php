@@ -12,8 +12,9 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->text('description');
-            $table->foreignId('unlock_location_id')->nullable()->constrained('locations')->nullOnDelete();
+            $table->string('image')->nullable();
             $table->integer('unlock_steps')->default(0);
+            $table->foreignId('unlock_location_id')->nullable()->constrained('locations')->nullOnDelete();
             $table->timestamps();
         });
 
@@ -28,10 +29,9 @@ return new class extends Migration
 
         Schema::create('user_locations', function (Blueprint $table) {
             $table->id();
+            $table->integer('steps')->default(0);
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('location_id')->constrained()->onDelete('cascade');
-            $table->integer('unlocked')->default(0);
-            $table->integer('steps')->default(0);
             $table->timestamps();
         });
     }

@@ -9,8 +9,10 @@ use App\Models\Location;
 use App\Models\UserItem;
 use App\Models\UserMonster;
 use Illuminate\Http\Request;
+use App\Models\UserLocation;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class LocationController extends Controller
 {
@@ -41,8 +43,21 @@ class LocationController extends Controller
             'description' => 'nullable|string|max:200',
         ];
 
+        if (!$location->image) {
+            $validationRules['image'] = 'required|image|mimes:png,jpg|max:2048';
+        }
+
         $validatedData = $request->validate($validationRules);
         $locationData = $validatedData;
+
+        if ($request->hasFile('image')) {
+            $path = $request->file('image')->store('locations', 'public');
+            $locationData['image'] = $path;
+
+            if ($location->image) {
+                Storage::disk('public')->delete($location->image);
+            }
+        }
 
         $location->fill($locationData);
         $location->save();
@@ -56,6 +71,9 @@ class LocationController extends Controller
     {
         $location = Location::find(session('location_id'));
         $location->events()->delete();
+        if ($location->image) {
+            Storage::disk('public')->delete($location->image);
+        }
         $location->delete();
         return redirect()->route('locations.index')->with('success', 'Location deleted successfully.');
     }
@@ -114,7 +132,6 @@ class LocationController extends Controller
     public function generateStep(Request $request)
     {
         $user = User::find(Auth::id());
-
         $userMonster = UserMonster::with('monster')
             ->where('id', $request->user_monster_id)
             ->where('user_id', $user->id)
@@ -177,9 +194,35 @@ class LocationController extends Controller
         $userMonster->steps += 1;
         $userMonster->save();
 
+        $currentLocation = UserLocation::find($user->current_location_id);
+        $currentLocation->steps += 1;
+        $currentLocation->save();
+
+        $message = $event->message;
+        if (
+            $currentLocation->location->unlock_location_id &&
+            $currentLocation->steps > $currentLocation->location->unlock_steps
+        ) {
+            $unlockedLocationId = $currentLocation->location->unlock_location_id;
+            $userId = $currentLocation->user_id;
+
+            $alreadyUnlocked = UserLocation::where('user_id', $userId)
+                ->where('location_id', $unlockedLocationId)
+                ->exists();
+
+            if (!$alreadyUnlocked) {
+                UserLocation::create([
+                    'user_id' => $userId,
+                    'location_id' => $unlockedLocationId,
+                    'steps' => 0,
+                ]);
+                $message .= " -New Location Unlocked-";
+            }
+        }
+
         return response()->json([
             'successful' => true,
-            'message' => "{$userMonster->name} " . $event->message,
+            'message' => "{$userMonster->name} " . $message,
             'duration' => rand(3, 6) * 1000,
         ]);
     }

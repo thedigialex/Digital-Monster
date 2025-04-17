@@ -11,6 +11,7 @@ class Location extends Model
 
     protected $fillable = [
         'name',
+        'image',
         'description',
         'unlock_location_id',
         'unlock_steps',

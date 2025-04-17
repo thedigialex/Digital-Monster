@@ -7,6 +7,7 @@ use App\Models\Item;
 use App\Models\Monster;
 use App\Models\UserItem;
 use App\Models\UserMonster;
+use App\Models\UserLocation;
 use App\Models\UserEquipment;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
@@ -254,7 +255,7 @@ class DashboardController extends Controller
     public function adventure()
     {
         $user = User::find(Auth::id());
-
+        $currentLocation = UserLocation::find($user->current_location_id);
         $userMonsters = UserMonster::with('monster')
             ->where('user_id', $user->id)
             ->whereHas('monster', function ($query) {
@@ -268,7 +269,7 @@ class DashboardController extends Controller
             $userMonster->attack = UserItem::with('item')->where('id', $userMonster->attack)->first();
         }
 
-        $background = $this->getUserBackgroundImage($user);
+        $background = "/storage/" . $currentLocation->location->image;
 
         return view('dashboard.adventure', compact('userMonsters', 'background'));
     }

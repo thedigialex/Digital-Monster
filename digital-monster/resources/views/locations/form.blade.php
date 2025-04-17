@@ -25,7 +25,7 @@
             @endif
         </x-slot>
 
-        <form action="{{ route('location.update') }}" method="POST">
+        <form action="{{ route('location.update') }}" method="POST" enctype="multipart/form-data">
             @csrf
             <x-container.single>
                 <div class="flex flex-col md:flex-row gap-x-4 w-full">
@@ -52,7 +52,8 @@
                         value="{{ old('description', isset($location) ? $location->description : '') }}"
                         :messages="$errors->get('description')" />
                 </div>
-                <div class="flex justify-center py-4 mt-4">
+                <div class="flex flex-col justify-center items-center py-4 space-y-4">
+                    <x-inputs.file label="Choose an Image" name="image" class="w-1/3" :currentImage="$location->image ?? null" :messages="$errors->get('image')" />
                     <x-buttons.primary label="{{ isset($location) ? 'Update' : 'Create' }}" icon="fa-save" />
                 </div>
             </x-container.single>
