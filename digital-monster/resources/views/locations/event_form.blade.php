@@ -3,7 +3,7 @@
         <x-fonts.sub-header>
             {{ isset($event) ? 'Update Event' : 'Create Event' }}
         </x-fonts.sub-header>
-        <a href="{{ route('locations.index') }}">
+        <a href="{{ route('location.edit') }}">
             <x-buttons.primary icon="fa-arrow-left" label="Back" />
         </a>
     </x-slot>
@@ -18,11 +18,11 @@
                 {{ isset($event) ? 'Update Event' : 'Create Event' }}
             </x-fonts.sub-header>
             @if (isset($event))
-            <x-forms.delete-form :action="route('location.destroy')" label="Event" />
+            <x-forms.delete-form :action="route('event.destroy')" label="Event" />
             @endif
         </x-slot>
 
-        <form action="{{ route('location.update') }}" method="POST">
+        <form action="{{ route('event.update') }}" method="POST">
             @csrf
             <x-container.single>
                 <div class="flex flex-col md:flex-row gap-x-4 w-full">

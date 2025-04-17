@@ -11,6 +11,9 @@
     @if ($errors->any())
     <x-alerts.error />
     @endif
+    @if (session('success'))
+    <x-alerts.success>{{ session('success') }}</x-alerts.success>
+    @endif
 
     <x-container class="p-4">
         <x-slot name="header">
@@ -54,17 +57,40 @@
                 </div>
             </x-container.single>
         </form>
+
+        @if (isset($location))
+        <x-accordion title="Events" :open="false" :icon="'fa-calendar'">
+            @if ($events->isNotEmpty())
+            <x-table.table>
+                <thead class="bg-primary">
+                    <tr>
+                        <x-table.header class="w-2/3 text-left">Message</x-table.header>
+                        <x-table.header class="w-1/3"></x-table.header>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($events as $event)
+                    <tr class="{{ $loop->even ? 'bg-neutral' : 'bg-secondary' }}">
+                        <x-table.data class="w-2/3">
+                            <x-fonts.paragraph class="font-bold text-text">{{ Str::limit($event->message, 50) }}
+                            </x-fonts.paragraph>
+                        </x-table.data>
+                        <x-table.data class="w-1/3">
+                            <div class="flex justify-end">
+                                <x-buttons.session model="event" :id="$event->id" route="event.edit" />
+                            </div>
+                        </x-table.data>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </x-table.table>
+            @else
+            <x-fonts.paragraph class="text-text p-4">No events available</x-fonts.paragraph>
+            @endif
+            <div class="flex justify-center py-4 mt-4">
+                <x-buttons.clear model="event" route="event.edit" icon="fa-plus" label="New" />
+            </div>
+        </x-accordion>
+        @endif
     </x-container>
 </x-app-layout>
-<script>
-    document.addLocationListener("DOMContentLoaded", function() {
-        let dropdown = document.getElementById("type");
-        if (dropdown.value !== '1') {
-            document.getElementById('item_id_div').classList.add('hidden');
-        }
-    });
-
-    function toggleTypeDropdown(location) {
-        document.getElementById('item_id_div').classList.toggle('hidden', location.target.value !== '1');
-    }
-</script>

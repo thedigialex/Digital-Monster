@@ -24,9 +24,40 @@ class LocationController extends Controller
     {
         $location = Location::find(session('location_id'));
         $otherLocations = $location
-        ? Location::where('id', '!=', $location->id)->get()
-        : Location::all();
-        return view('locations.form', compact('location', 'otherLocations'));
+            ? Location::where('id', '!=', $location->id)->get()
+            : Location::all();
+        $events = $location ? $location->events : collect();
+        return view('locations.form', compact('location', 'otherLocations', 'events'));
+    }
+
+    public function update(Request $request)
+    {
+        $location = Location::findOrNew(session('location_id'));
+
+        $validationRules = [
+            'name' => 'required|string|max:255',
+            'unlock_steps' => 'nullable|integer|min:0',
+            'unlock_location_id' => 'nullable|exists:locations,id',
+            'description' => 'nullable|string|max:200',
+        ];
+
+        $validatedData = $request->validate($validationRules);
+        $locationData = $validatedData;
+
+        $location->fill($locationData);
+        $location->save();
+
+        $message = session('location_id') ? 'Location updated successfully.' : 'Location created successfully.';
+        session(['location_id' => $location->id]);
+        return redirect()->route('location.edit')->with('success', $message);
+    }
+
+    public function destroy()
+    {
+        $location = Location::find(session('location_id'));
+        $location->events()->delete();
+        $location->delete();
+        return redirect()->route('locations.index')->with('success', 'Location deleted successfully.');
     }
 
     public function editEvent()
@@ -44,21 +75,23 @@ class LocationController extends Controller
             '8' => 'Mind',
         ];
         $items = Item::all()->pluck('name', 'id');
-        return view('locations.form', compact('event', 'types', 'items'));
+        return view('locations.event_form', compact('event', 'types', 'items'));
     }
 
-    public function update(Request $request)
+    public function updateEvent(Request $request)
     {
         $event = Event::findOrNew(session('event_id'));
-
-        $validationRules = ([
+        $validationRules = [
             'type' => 'required|integer',
             'message' => 'required|string',
-        ]);
+            'location_id' => 'required|exists:locations,id',
+        ];
 
         if ($request->input('type') == 1) {
             $validationRules['item_id'] = 'required|integer';
         }
+
+        $request->merge(['location_id' => session('location_id')]);
 
         $validatedData = $request->validate($validationRules);
         $eventData = $validatedData;
@@ -68,14 +101,14 @@ class LocationController extends Controller
 
         $message = session('event_id') ? 'Event updated successfully.' : 'Event created successfully.';
 
-        return redirect()->route('locations.index')->with('success', $message);
+        return redirect()->route('location.edit')->with('success', $message);
     }
 
-    public function destroy()
+    public function destroyEvent()
     {
         $event = Event::find(session('event_id'));
         $event->delete();
-        return redirect()->route('locations.index')->with('success', 'Event deleted successfully.');
+        return redirect()->route('location.edit')->with('success', 'Event deleted successfully.');
     }
 
     public function generateStep(Request $request)

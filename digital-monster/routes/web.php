@@ -1,4 +1,5 @@
 <?php
+
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SessionController;
@@ -107,6 +108,10 @@ Route::middleware('headers')->group(function () {
                 Route::get('/location/edit', [LocationController::class, 'edit'])->name('location.edit');
                 Route::post('/location/update', [LocationController::class, 'update'])->name('location.update');
                 Route::delete('/location/delete', [LocationController::class, 'destroy'])->name('location.destroy');
+
+                Route::get('/location/event/edit', [LocationController::class, 'editEvent'])->name('event.edit');
+                Route::post('/location/event/update', [LocationController::class, 'updateEvent'])->name('event.update');
+                Route::delete('/location/event/delete', [LocationController::class, 'destroyEvent'])->name('event.destroy');
             });
         });
     });
