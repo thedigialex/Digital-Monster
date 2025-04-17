@@ -48,6 +48,7 @@ Route::middleware('headers')->group(function () {
             Route::get('/colosseum', [DashboardController::class, 'colosseum'])->name('colosseum');
             Route::post('colosseum/generateBattle', [DashboardController::class, 'generateBattle'])->name('colosseum.generateBattle');
             Route::get('/adventure', [DashboardController::class, 'adventure'])->name('adventure');
+            Route::post('/adventure/change/location', [DashboardController::class, 'changeLocation'])->name('adventure.location');
             Route::post('adventure/step', [LocationController::class, 'generateStep'])->name('adventure.step');
             Route::get('/digiconverge', [DashboardController::class, 'converge'])->name('digiconverge');
             Route::post('/digiconverge/create', [DashboardController::class, 'convergeCreate'])->name('converge.create');

@@ -15,11 +15,11 @@
     <x-alerts.success>{{ session('success') }}</x-alerts.success>
     @endif
 
-    <x-container class="p-4">
+    <x-container class="p-1 lg:p-4">
         <x-slot name="header">
             <x-fonts.sub-header>Account Details</x-fonts.sub-header>
         </x-slot>
-        <div class="flex flex-col md:flex-row">
+        <div class="flex flex-col md:flex-row pb-4">
             <div class="flex-1 bg-secondary p-4 rounded-md">
                 <x-fonts.accent-header><strong>Name:</strong> {{ $user->name }}</x-fonts.accent-header>
                 <hr class="my-2 border-accent">
@@ -37,16 +37,8 @@
                 <x-fonts.paragraph><strong>Last Updated At:</strong> {{ $user->updated_at->format('m/d/Y') }} </x-fonts.paragraph>
             </div>
         </div>
-    </x-container>
 
-    <x-container>
-        <x-slot name="header">
-            <x-fonts.sub-header>
-                User Monsters
-            </x-fonts.sub-header>
-            <x-buttons.clear model="user_monster" route="user.monster.edit" icon="fa-plus" label="New" />
-        </x-slot>
-        <div class="p-4">
+        <x-accordion title="User Monsters" :open="true" :icon="'fa-dragon'">
             @if (!$user->userMonsters->isEmpty())
             <x-table.table>
                 <thead class="bg-primary">
@@ -91,18 +83,12 @@
             @else
             <x-fonts.paragraph class="text-text p-4">No Monsters</x-fonts.paragraph>
             @endif
-        </div>
-    </x-container>
+            <div class="flex justify-center py-4 mt-4">
+                <x-buttons.clear model="user_monster" route="user.monster.edit" icon="fa-plus" label="New" />
+            </div>
+        </x-accordion>
 
-    <x-container>
-        <x-slot name="header">
-            <x-fonts.sub-header>
-                Inventory
-            </x-fonts.sub-header>
-
-            <x-buttons.clear model="user_item" route="user.item.edit" icon="fa-plus" label="New" />
-        </x-slot>
-        <div class="p-4">
+        <x-accordion title="Inventory" :open="false" :icon="'fa-boxes-stacked'">
             @if (!$user->userItems->isEmpty())
             <x-table.table>
                 <thead class="bg-primary">
@@ -137,17 +123,12 @@
             @else
             <x-fonts.paragraph class="text-text p-4">No Items</x-fonts.paragraph>
             @endif
-        </div>
-    </x-container>
+            <div class="flex justify-center py-4 mt-4">
+                <x-buttons.clear model="user_item" route="user.item.edit" icon="fa-plus" label="New" />
+            </div>
+        </x-accordion>
 
-    <x-container>
-        <x-slot name="header">
-            <x-fonts.sub-header>
-                Equipment
-            </x-fonts.sub-header>
-            <x-buttons.clear model="user_equipment" route="user.equipment.edit" icon="fa-plus" label="New" />
-        </x-slot>
-        <div class="p-4">
+        <x-accordion title="Equipment" :open="false" :icon="'fa-toolbox'">
             @if (!$user->userEquipment->isEmpty())
             <x-table.table>
                 <thead class="bg-primary">
@@ -182,17 +163,12 @@
             @else
             <x-fonts.paragraph class="text-text p-4">No Equipment</x-fonts.paragraph>
             @endif
-        </div>
-    </x-container>
+            <div class="flex justify-center py-4 mt-4">
+                <x-buttons.clear model="user_equipment" route="user.equipment.edit" icon="fa-plus" label="New" />
+            </div>
+        </x-accordion>
 
-    <x-container>
-        <x-slot name="header">
-            <x-fonts.sub-header>
-                Locations
-            </x-fonts.sub-header>
-            <x-buttons.clear model="location_equipment" route="user.location.edit" icon="fa-plus" label="New" />
-        </x-slot>
-        <div class="p-4">
+        <x-accordion title="Locations" :open="false" :icon="'fa-location-crosshairs'">
             @if (!$user->userLocations->isEmpty())
             <x-table.table>
                 <thead class="bg-primary">
@@ -227,7 +203,10 @@
             @else
             <x-fonts.paragraph class="text-text p-4">No Locations</x-fonts.paragraph>
             @endif
-        </div>
+            <div class="flex justify-center py-4 mt-4">
+                <x-buttons.clear model="location_equipment" route="user.location.edit" icon="fa-plus" label="New" />
+            </div>
+        </x-accordion>
     </x-container>
 </x-app-layout>
 

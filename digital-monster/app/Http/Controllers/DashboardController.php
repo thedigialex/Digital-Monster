@@ -274,7 +274,30 @@ class DashboardController extends Controller
 
         $background = "/storage/" . $currentLocation->location->image;
 
-        return view('dashboard.adventure', compact('userMonsters', 'background',  'userLocations'));
+        return view('dashboard.adventure', compact('userMonsters', 'background',  'userLocations', 'currentLocation'));
+    }
+
+    public function changeLocation(Request $request)
+    {
+        $user = User::find(Auth::id());
+        $userLocation = UserLocation::where('id', $request->user_location_id)
+            ->where('user_id', $user->id)
+            ->first();
+
+        if (!$userLocation) {
+            return response()->json([
+                'message' => 'Hmmm something is off.',
+                'successful' => false
+            ], 404);
+        }
+
+        $user->current_location_id = $userLocation->id;
+        $user->save();
+
+        return response()->json([
+            'message' => 'Location Changed successfully!',
+            'successful' => true
+        ], 200);
     }
 
     public function shop()

@@ -8,7 +8,7 @@
     <x-container>
         <x-slot name="header">
             <x-fonts.sub-header>
-                Adventure
+                {{ $currentLocation->location->name }}
             </x-fonts.sub-header>
 
             <x-container.modal name="user-items" title="Locations">
@@ -26,7 +26,7 @@
                         <div class="location-div flex flex-col items-center w-36 p-2 bg-secondary border-2 border-accent rounded-md"
                             data-location-id="{{ $userLocation->id }}">
                             <div class="w-24 h-24 p-2 rounded-md bg-primary">
-                                <button class="userLocations w-full h-full"
+                                <button class="userLocation w-full h-full"
                                     data-location='{{ json_encode($userLocation) }}'
                                     style="background: url('/storage/{{ $userLocation->location->image }}') no-repeat; background-size: cover; background-position: 0 0;">
                                 </button>
@@ -227,6 +227,32 @@
             setupSection.classList.add("hidden");
             confirmSection.classList.add("hidden");
             battleSection.classList.remove("hidden");
+        });
+
+        document.querySelectorAll(".userLocation").forEach(button => {
+            button.addEventListener("click", function() {
+                const userLocation = JSON.parse(button.getAttribute("data-location"));
+                document.getElementById("loading-section-location").classList.remove("hidden");
+                document.getElementById("locations").classList.add("hidden");
+                const data = {
+                    user_location_id: userLocation.id,
+                };
+
+                fetch("{{ route('adventure.location') }}", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "X-CSRF-TOKEN": document.querySelector("meta[name='csrf-token']").getAttribute("content")
+                        },
+                        body: JSON.stringify(data)
+                    })
+                    .then(response => response.json())
+                    .then(result => {
+                        if (result.successful == true) {
+                            window.location.reload();
+                        }
+                    })
+            });
         });
 
         generateMonsters();
