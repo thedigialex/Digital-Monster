@@ -46,6 +46,11 @@ class User extends Authenticatable
         return $this->hasMany(UserEquipment::class);
     }
 
+    public function userLocations()
+    {
+        return $this->hasMany(UserLocation::class);
+    }
+
     public function isAdmin()
     {
         return $this->role === 'admin';

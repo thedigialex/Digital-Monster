@@ -10,6 +10,33 @@
             <x-fonts.sub-header>
                 Adventure
             </x-fonts.sub-header>
+
+            <x-container.modal name="user-items" title="Locations">
+                <x-slot name="button">
+                    <x-buttons.primary id="openMenu" label="Locations" icon="fa-location-dot" @click="open = true" />
+                </x-slot>
+                <div class="flex gap-4 p-2 rounded-t-md bg-secondary w-full justify-center">
+                    <button id="showLocations" class="bg-accent text-secondary px-4 py-2 rounded-md">Locations</button>
+                </div>
+                <div class="flex flex-col justify-center items-center bg-cover bg-center rounded-b-md"
+                    style="background-image: url('{{ asset($background) }}'); height: 30vh;">
+                    <x-alerts.spinner id="loading-section-location"></x-alerts.spinner>
+                    <div id="locations" class="flex flex-wrap justify-center items-center gap-4 overflow-y-auto">
+                        @foreach ($userLocations as $userLocation)
+                        <div class="location-div flex flex-col items-center w-36 p-2 bg-secondary border-2 border-accent rounded-md"
+                            data-location-id="{{ $userLocation->id }}">
+                            <div class="w-24 h-24 p-2 rounded-md bg-primary">
+                                <button class="userLocations w-full h-full"
+                                    data-location='{{ json_encode($userLocation) }}'
+                                    style="background: url('/storage/{{ $userLocation->location->image }}') no-repeat; background-size: cover; background-position: 0 0;">
+                                </button>
+                            </div>
+                            <x-fonts.paragraph class="background-p text-text"> {{ $userLocation->location->name }}</x-fonts.paragraph>
+                        </div>
+                        @endforeach
+                    </div>
+                </div>
+            </x-container.modal>
         </x-slot>
         <x-container.background id="setup-section" :background="$background" class="rounded-b-md">
             @if ($userMonsters->isEmpty())

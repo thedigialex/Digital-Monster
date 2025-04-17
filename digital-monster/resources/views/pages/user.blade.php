@@ -184,6 +184,51 @@
             @endif
         </div>
     </x-container>
+
+    <x-container>
+        <x-slot name="header">
+            <x-fonts.sub-header>
+                Locations
+            </x-fonts.sub-header>
+            <x-buttons.clear model="location_equipment" route="user.location.edit" icon="fa-plus" label="New" />
+        </x-slot>
+        <div class="p-4">
+            @if (!$user->userLocations->isEmpty())
+            <x-table.table>
+                <thead class="bg-primary">
+                    <tr>
+                        <x-table.header class="w-1/2 md:w-1/3 text-left">Image</x-table.header>
+                        <x-table.header class="w-1/3 text-left hidden md:table-cell">Name</x-table.header>
+                        <x-table.header class="w-1/2 md:w-1/3"></x-table.header>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($user->userLocations as $userLocation)
+                    <tr class="{{ $loop->even ? 'bg-neutral' : 'bg-secondary' }}">
+                        <x-table.data class="w-1/2 md:w-1/3">
+                            <div class="w-16 h-16 overflow-hidden">
+                                <img src="{{ asset('storage/' . $userLocation->location->image) }}" alt="Location Image" class="w-full h-full object-cover" style="object-position: 0 0;">
+                            </div>
+                        </x-table.data>
+                        <x-table.data class="w-1/3 hidden md:table-cell">
+                            <x-fonts.paragraph class="font-bold text-accent">
+                                {{ $userLocation->location->name }}
+                            </x-fonts.paragraph>
+                        </x-table.data>
+                        <x-table.data class="w-1/2 md:w-1/3">
+                            <div class="flex justify-end">
+                                <x-buttons.session model="user_location" :id="$userLocation->id" route="user.location.edit" />
+                            </div>
+                        </x-table.data>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </x-table.table>
+            @else
+            <x-fonts.paragraph class="text-text p-4">No Locations</x-fonts.paragraph>
+            @endif
+        </div>
+    </x-container>
 </x-app-layout>
 
 <script>

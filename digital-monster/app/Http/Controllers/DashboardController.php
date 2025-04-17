@@ -256,6 +256,9 @@ class DashboardController extends Controller
     {
         $user = User::find(Auth::id());
         $currentLocation = UserLocation::find($user->current_location_id);
+        $userLocations = UserLocation::where('user_id', $user->id)
+        ->where('id', '!=', $currentLocation->id)
+        ->get();
         $userMonsters = UserMonster::with('monster')
             ->where('user_id', $user->id)
             ->whereHas('monster', function ($query) {
@@ -271,7 +274,7 @@ class DashboardController extends Controller
 
         $background = "/storage/" . $currentLocation->location->image;
 
-        return view('dashboard.adventure', compact('userMonsters', 'background'));
+        return view('dashboard.adventure', compact('userMonsters', 'background',  'userLocations'));
     }
 
     public function shop()
