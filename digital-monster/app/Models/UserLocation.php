@@ -12,7 +12,6 @@ class UserLocation extends Model
     protected $fillable = [
         'user_id',
         'location_id',
-        'unlocked',
         'steps',
     ];
 

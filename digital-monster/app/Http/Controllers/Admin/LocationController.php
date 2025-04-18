@@ -129,6 +129,42 @@ class LocationController extends Controller
         return redirect()->route('location.edit')->with('success', 'Event deleted successfully.');
     }
 
+    public function editUserLocation()
+    {
+        $userLocation = UserLocation::find(session('user_location_id'));
+        $locations = Location::all();
+        return view('locations.user_form', compact('userLocation', 'locations'));
+    }
+
+    public function updateUserLocation(Request $request)
+    {
+        $userLocation = UserLocation::findOrNew(session('user_location_id'));
+        $validationRules = [
+            'location_id' => 'required|integer',
+            'steps' => 'required|integer',
+        ];
+
+        $validatedData = $request->validate($validationRules);
+        $userLocationData = $validatedData;
+
+        $userLocation->user_id =  session('user_edit_id');
+        
+        $userLocation->fill($userLocationData);
+        $userLocation->save();
+
+        $message = session('user_location_id') ? 'Location updated successfully.' : 'Location created successfully.';
+
+        return redirect()->route('user.profile')->with('success', $message);
+    }
+
+    public function destroyUserLocation()
+    {
+        $userLocation = UserLocation::find(session('user_location_id'));
+        $userLocation->delete();
+        return redirect()->route('user.profile')->with('success', 'Event deleted successfully.');
+    }
+
+
     public function generateStep(Request $request)
     {
         $user = User::find(Auth::id());

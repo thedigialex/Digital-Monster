@@ -364,31 +364,6 @@
             });
         }
 
-        function highlightEquippedBackground() {
-            document.querySelectorAll(".background-div").forEach(container => {
-                container.classList.remove("bg-accent");
-                container.classList.add("bg-secondary");
-
-                const backgroundText = container.querySelector(".background-p");
-                backgroundText.classList.remove("text-secondary");
-                backgroundText.classList.add("text-text");
-            });
-
-            document.querySelectorAll("#backgrounds .useBackground").forEach(button => {
-                const userBackground = JSON.parse(button.getAttribute("data-background"));
-                const equipped_id = JSON.parse(button.getAttribute("data-equipped_id"));
-                const backgroundContainer = button.closest(".background-div");
-                const backgroundText = backgroundContainer.querySelector(".background-p");
-
-                if (equipped_id == userBackground.id) {
-                    backgroundContainer.classList.add("bg-accent");
-                    backgroundContainer.classList.remove("bg-secondary");
-                    backgroundText.classList.add("text-secondary");
-                    backgroundText.classList.remove("text-text");
-                }
-            });
-        }
-
         JSON.parse(container.getAttribute('data-monsters')).forEach(userMonster => {
             const monsterDiv = document.createElement('div');
             monsterDiv.className = 'monster';
@@ -820,7 +795,5 @@
                     }
                 });
         });
-
-        highlightEquippedBackground();
     });
 </script>

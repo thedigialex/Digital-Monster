@@ -112,6 +112,9 @@ Route::middleware('headers')->group(function () {
                 Route::get('/location/event/edit', [LocationController::class, 'editEvent'])->name('event.edit');
                 Route::post('/location/event/update', [LocationController::class, 'updateEvent'])->name('event.update');
                 Route::delete('/location/event/delete', [LocationController::class, 'destroyEvent'])->name('event.destroy');
+                Route::get('/userLocation/edit', [LocationController::class, 'editUserLocation'])->name('user.location.edit');
+                Route::post('/userLocation/update', [LocationController::class, 'updateUserLocation'])->name('user.location.update');
+                Route::delete('/userLocation/delete', [LocationController::class, 'destroyUserLocation'])->name('user.location.destroy');
             });
         });
     });

@@ -49,6 +49,9 @@ class DashboardController extends Controller
 
         $background = $this->getUserBackgroundImage($user);
         $background_id =   $user->background_id;
+        $userBackgrounds = $userBackgrounds->filter(function ($background) use ($background_id) {
+            return $background->id !== $background_id;
+        });
         $count = $userMonsters->count() . ' / ' . ($digiGarden->level * 5);
 
         return view('dashboard.garden', compact('user', 'userMonsters', 'count', 'userEquipment', 'userItems', 'userAttacks', 'userBackgrounds', 'userMaterials', 'background', 'background_id'));
@@ -257,8 +260,8 @@ class DashboardController extends Controller
         $user = User::find(Auth::id());
         $currentLocation = UserLocation::find($user->current_location_id);
         $userLocations = UserLocation::where('user_id', $user->id)
-        ->where('id', '!=', $currentLocation->id)
-        ->get();
+            ->where('id', '!=', $currentLocation->id)
+            ->get();
         $userMonsters = UserMonster::with('monster')
             ->where('user_id', $user->id)
             ->whereHas('monster', function ($query) {
