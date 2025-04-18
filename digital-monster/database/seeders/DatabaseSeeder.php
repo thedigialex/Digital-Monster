@@ -86,13 +86,40 @@ class DatabaseSeeder extends Seeder
             'max_quantity' => 10
         ]);
 
+        Item::create([
+            'name' => 'DigiCore V1',
+            'price' => 5000,
+            'type' => 'Consumable',
+            'rarity' => 'Uncommon',
+            'effect' => 'STATS,10',
+            'max_quantity' => 99
+        ]);
+
+        Item::create([
+            'name' => 'DigiCore V2',
+            'price' => 5000,
+            'type' => 'Consumable',
+            'rarity' => 'Rare',
+            'effect' => 'STATS,20',
+            'max_quantity' => 99
+        ]);
+
+        Item::create([
+            'name' => 'DigiCore V3',
+            'price' => 5000,
+            'type' => 'Consumable',
+            'rarity' => 'Legendary',
+            'effect' => 'STATS,30',
+            'max_quantity' => 99
+        ]);
+
         $starterLocation = Location::create([
             'name' => 'Green Meadow',
             'description' => 'A calm, lush field where many adventures begin.',
             'unlock_location_id' => null,
             'unlock_steps' => 0,
         ]);
-        
+
         $messages = [
             "sniffs the air curiously...",
             "found something interesting!",
@@ -104,7 +131,7 @@ class DatabaseSeeder extends Seeder
             "seems excited about what lies ahead!",
             "picks up the pace, eager to discover more!",
         ];
-        
+
         foreach ($messages as $message) {
             Event::create([
                 'message' => $message,
@@ -113,7 +140,7 @@ class DatabaseSeeder extends Seeder
                 'location_id' => $starterLocation->id,
             ]);
         }
-        
+
         $user = User::create([
             'name' => 'Test User',
             'email' => 'test@example.com',

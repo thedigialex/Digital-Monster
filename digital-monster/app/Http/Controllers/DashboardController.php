@@ -451,6 +451,71 @@ class DashboardController extends Controller
         return view('dashboard.converge', compact('count', 'background', 'eggs', 'message'));
     }
 
+    public function extract()
+    {
+        $user = User::find(Auth::id());
+        $background = $this->getUserBackgroundImage($user);
+        $userMonsters = UserMonster::with('monster')
+            ->where('user_id', $user->id)
+            ->whereHas('monster', function ($query) {
+                $query->whereNotIn('stage', ['Egg', 'Fresh', 'Child']);
+            })
+            ->get();
+        $message = $userMonsters->count() > 0
+            ? "Select a monster to extract"
+            : "You have no monsters to extract";
+        return view('dashboard.extract', compact('userMonsters', 'background', 'message'));
+    }
+
+    public function extractMonster(Request $request)
+    {
+        $user = User::find(Auth::id());
+        $userMonster = UserMonster::find($request->user_monster_id);
+
+        $totalStats = $userMonster->strength + $userMonster->agility +
+            $userMonster->defense + $userMonster->mind;
+
+        $digiCoreVersion = 'V1';
+        if ($totalStats > 5000) {
+            $digiCoreVersion = 'V3';
+        } elseif ($totalStats > 1000) {
+            $digiCoreVersion = 'V2';
+        }
+
+        switch ($userMonster->monster->stage) {
+            case 'Champion':
+                $amount = 2;
+                break;
+            case 'Ultimate':
+                $amount = 3;
+                break;
+            case 'Mega':
+                $amount = 4;
+                break;
+            default:
+                $amount = 1;
+                break;
+        }
+
+        $digiCoreItem = Item::where('name', "DigiCore $digiCoreVersion")->first();
+        $userItem = UserItem::firstOrNew(['user_id' => $user->id, 'item_id' => $digiCoreItem->id]);
+
+        if ($userItem->exists && $userItem->quantity >= $digiCoreItem->max_quantity) {
+            return response()->json(['message' => 'Hmmm something is off.', 'successful' => false]);
+        }
+
+        $userItem->quantity = ($userItem->exists ? $userItem->quantity + $amount : $amount);
+        $userItem->save();
+        $userMonster->delete();
+        $user->extracted_count += 1;
+        $user->save();
+        
+        return response()->json([
+            'message' => 'Monster Extracted Successfully!',
+            'successful' => true,
+        ]);
+    }
+
     public function convergeCreate(Request $request)
     {
         $user = User::find(Auth::id());
@@ -601,6 +666,12 @@ class DashboardController extends Controller
             $value = (int) $value;
 
             switch ($type) {
+                case 'STATS':
+                    $userMonster->strength += intval(($userMonster->strength * $value) / 100);
+                    $userMonster->agility  += intval(($userMonster->agility * $value) / 100);
+                    $userMonster->defense  += intval(($userMonster->defense * $value) / 100);
+                    $userMonster->mind     += intval(($userMonster->mind * $value) / 100);
+                    break;
                 case 'EVO':
                     $userMonster->evo_points += $value;
                     $userMonster->evo_points = min($userMonster->evo_points, $userMonster->monster->evo_requirement);

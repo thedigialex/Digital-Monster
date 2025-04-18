@@ -21,10 +21,12 @@ return new class extends Migration
             $table->integer('background_id')->default(0);
             $table->integer('current_location_id')->default(0);
             $table->integer('score')->default(0);
+            $table->integer('extracted_count')->default(0);
             $table->integer('policy_accept')->default(0);
             $table->integer('notification_accept')->default(0);
             $table->integer('guild_id')->default(0);
             $table->integer('ban')->default(0);
+            $table->integer('ban_count')->default(0);
             $table->rememberToken();
             $table->timestamps();
         });

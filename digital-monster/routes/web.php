@@ -51,7 +51,9 @@ Route::middleware('headers')->group(function () {
             Route::post('/adventure/change/location', [DashboardController::class, 'changeLocation'])->name('adventure.location');
             Route::post('adventure/step', [LocationController::class, 'generateStep'])->name('adventure.step');
             Route::get('/digiconverge', [DashboardController::class, 'converge'])->name('digiconverge');
+            Route::get('/digiconverge/extract', [DashboardController::class, 'extract'])->name('digiconverge.extract');
             Route::post('/digiconverge/create', [DashboardController::class, 'convergeCreate'])->name('converge.create');
+            Route::post('/digiconverge/extract/monster', [DashboardController::class, 'extractMonster'])->name('extract.monster');
             Route::get('/shop', [DashboardController::class, 'shop'])->name('shop');
             Route::post('/shop/buy', [DashboardController::class, 'buyItem'])->name('shop.buy');
             Route::get('/upgradeStation', [DashboardController::class, 'upgradeStation'])->name('upgradeStation');

@@ -19,7 +19,7 @@
                     <button id="showLocations" class="bg-accent text-secondary px-4 py-2 rounded-md">Locations</button>
                 </div>
                 <div class="flex flex-col justify-center items-center bg-cover bg-center rounded-b-md"
-                    style="background-image: url('{{ asset($background) }}'); height: 30vh;">
+                    style="background-image: url('{{ asset($background) }}'); height: 40vh;">
                     <x-alerts.spinner id="loading-section-location"></x-alerts.spinner>
                     <div id="locations" class="flex flex-wrap justify-center items-center gap-4 overflow-y-auto">
                         @foreach ($userLocations as $userLocation)

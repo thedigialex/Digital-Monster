@@ -22,7 +22,7 @@
                     <button id="showBackgrounds" class="bg-accent text-secondary px-4 py-2 rounded-md">Backgrounds</button>
                 </div>
                 <div class="flex flex-col justify-center items-center bg-cover bg-center rounded-b-md"
-                    style="background-image: url('{{ asset($background) }}'); height: 30vh;">
+                    style="background-image: url('{{ asset($background) }}'); height: 40vh;">
                     <x-alerts.spinner id="loading-section-background"></x-alerts.spinner>
                     <div id="backgrounds" class="flex flex-wrap justify-center items-center gap-4 overflow-y-auto">
                         @foreach ($userBackgrounds as $userBackground)
@@ -83,7 +83,7 @@
                             </div>
 
                             <div class="flex flex-col justify-center items-center bg-cover bg-center rounded-b-md"
-                                style="background-image: url('{{ asset($background) }}'); height: 30vh;">
+                                style="background-image: url('{{ asset($background) }}'); height: 40vh;">
                                 <div id="items" class="flex justify-center items-center overflow-y-auto">
                                     <div id="item-selection" class="flex flex-wrap justify-center items-center gap-4">
                                         @foreach ($userItems as $userItem)
@@ -188,7 +188,7 @@
                         </x-slot>
 
                         <div class="flex flex-col justify-center items-center bg-cover bg-center"
-                            style="background-image: url('{{ asset($background) }}'); height: 30vh;">
+                            style="background-image: url('{{ asset($background) }}'); height: 40vh;">
                             <div id="training-section" class="flex flex-col justify-center items-center gap-4 p-2 w-full">
                                 <div id="equipment-info" class="text-center py-2 px-4 bg-primary rounded-md">
                                     <x-fonts.paragraph id="equipment-name"></x-fonts.paragraph>

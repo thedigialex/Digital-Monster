@@ -1,33 +1,30 @@
 <x-app-layout>
     <x-slot name="header">
         <x-fonts.sub-header>
-            DigiConverge
+            DigiExtract
         </x-fonts.sub-header>
-        <a href="{{ route('digiconverge.extract') }}">
-            <x-buttons.primary icon="fa-expand-arrows-alt" label="Extract" />
+        <a href="{{ route('digiconverge') }}">
+            <x-buttons.primary icon="fa-arrow-left" label="Back" />
         </a>
     </x-slot>
 
     <x-container>
         <x-slot name="header">
             <x-fonts.sub-header>
-                DigiConverge
+                DigiExtract
             </x-fonts.sub-header>
-            <x-fonts.paragraph id="user-balance">
-                DataCrystals <span>{{ $count}} / 10</span>
-            </x-fonts.paragraph>
         </x-slot>
         <x-container.background :background="$background" class="rounded-b-md">
-            <div id="egg-selection" class="flex flex-col justify-center items-center gap-4">
+            <div id="monster-selection" class="flex flex-col justify-center items-center gap-4">
                 <x-fonts.paragraph class="text-text p-2 bg-primary rounded-md">{{ $message }}</x-fonts.paragraph>
                 <div class="flex items-center gap-4">
                     <x-buttons.arrow direction="left" id="scrollLeft" class="hidden"></x-buttons.arrow>
-                    <div id="monsterCarousel" class="flex items-center gap-4" data-eggs='@json($eggs)'></div>
+                    <div id="monsterCarousel" class="flex items-center gap-4" data-monsters='@json($userMonsters)'></div>
                     <x-buttons.arrow direction="right" id="scrollRight" class="hidden"></x-buttons.arrow>
                 </div>
             </div>
             <div id="confirm-selection" class="hidden flex flex-col justify-center items-center">
-                <x-fonts.paragraph class="text-text p-2 bg-primary rounded-md">Converge DataCrystals into this egg?</x-fonts.paragraph>
+                <x-fonts.paragraph class="text-text p-2 bg-primary rounded-md">Extract DataCore from this Monster?</x-fonts.paragraph>
                 <div id="single-egg" class="flex items-center gap-4 py-4"></div>
                 <div class="flex gap-4">
                     <x-buttons.primary id="backButton" label="Back" icon="fa-backward" />
@@ -42,17 +39,28 @@
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         const carousel = document.getElementById("monsterCarousel");
-        const eggSelection = document.getElementById("egg-selection");
+        const monsterSection = document.getElementById("monster-selection");
         const confirmSelection = document.getElementById("confirm-selection");
         const singleEgg = document.getElementById("single-egg");
         const scrollLeft = document.getElementById("scrollLeft");
         const scrollRight = document.getElementById("scrollRight");
-        const eggMonsters = JSON.parse(carousel.getAttribute("data-eggs"));
+        const userMonsters = JSON.parse(carousel.getAttribute("data-monsters"));
 
         let currentIndex = 0;
         let selectedMonster;
         const itemsPerPage = window.innerWidth <= 640 ? 2 : 4;
         let monsterElements = [];
+
+        function getMonsterImage(userMonster) {
+            if (['Fresh', 'Child'].includes(userMonster.monster.stage)) {
+                return `/storage/${userMonster.monster.image_0}`;
+            }
+            const imageMap = {
+                "Virus": userMonster.monster.image_1,
+                "Vaccine": userMonster.monster.image_2
+            };
+            return `/storage/${imageMap[userMonster.type] || userMonster.monster.image_0}`;
+        }
 
         function renderMonsters() {
             carousel.innerHTML = "";
@@ -64,13 +72,14 @@
         }
 
         function showConfirmation() {
-            eggSelection.classList.add("hidden");
+            const imageSrc = getMonsterImage(selectedMonster);
+            monsterSection.classList.add("hidden");
             confirmSelection.classList.remove("hidden");
 
             singleEgg.innerHTML = `
                 <div class="flex flex-col items-center w-36 p-2 bg-secondary border-2 border-accent rounded-md text-text">
                     <div class="w-24 h-24 p-2 rounded-md bg-primary">
-                        <img src="/storage/${selectedMonster.image_0}" class="w-full h-full object-cover" style="object-position: 0 0;" />
+                        <img src="${imageSrc}" class="w-full h-full object-cover" style="object-position: 0 0;" />
                     </div>
                     <p class="text-center">${selectedMonster.name}</p>
                 </div>
@@ -79,21 +88,22 @@
 
         function showEggSelection() {
             confirmSelection.classList.add("hidden");
-            eggSelection.classList.remove("hidden");
+            monsterSection.classList.remove("hidden");
         }
 
-        eggMonsters.forEach(monster => {
+        userMonsters.forEach(userMonster => {
             const monsterDiv = document.createElement("div");
+            const imageSrc = getMonsterImage(userMonster);
             monsterDiv.classList.add("flex", "flex-col", "items-center", "w-36", "p-2", "bg-secondary", "border-2", "border-accent", "rounded-md", "cursor-pointer", "text-text");
             monsterDiv.innerHTML = `
                 <div class="w-24 h-24 p-2 rounded-md bg-primary">
-                    <img src="/storage/${monster.image_0}" class="w-full h-full object-cover" style="object-position: 0 0;" />
+                    <img src="${imageSrc}" class="w-full h-full object-cover" style="object-position: 0 0;" />
                 </div>
-                <p class="text-center">${monster.name}</p>
+                <p class="text-center">${userMonster.name}</p>
             `;
 
             monsterDiv.addEventListener("click", function() {
-                selectedMonster = monster;
+                selectedMonster = userMonster;
                 showConfirmation();
             });
 
@@ -120,9 +130,9 @@
             document.getElementById("loading-section").classList.remove("hidden");
             confirmSelection.classList.add("hidden");
             const data = {
-                monster_id: selectedMonster.id
+                user_monster_id: selectedMonster.id
             };
-            fetch("{{ route('converge.create') }}", {
+            fetch("{{ route('extract.monster') }}", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
