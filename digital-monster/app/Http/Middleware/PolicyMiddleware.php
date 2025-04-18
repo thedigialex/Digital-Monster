@@ -10,9 +10,13 @@ class PolicyMiddleware
 {
     public function handle(Request $request, Closure $next)
     {
-        if (Auth::user() && Auth::user()->policy_accept == 1) {
-            return $next($request);
+        if (Auth::user()->ban == 1) {
+            return redirect('/profile/policy')->with('error', 'You have violated the policy');
+        } else {
+            if (Auth::user()->policy_accept == 1) {
+                return $next($request);
+            }
+            return redirect('/profile/policy')->with('error', 'You must accept the policy');
         }
-        return redirect('/profile/policy')->with('error', 'You must accept the policy');
     }
 }

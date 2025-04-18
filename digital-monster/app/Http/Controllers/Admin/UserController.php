@@ -96,7 +96,7 @@ class UserController extends Controller
 
         if (!$userItem) {
             $userItem = new UserItem();
-            $userItem->user_id =  session('user_edit_id');
+            $userItem->user_id = session('user_edit_id');
         }
 
         $validationData = $request->validate($rules);

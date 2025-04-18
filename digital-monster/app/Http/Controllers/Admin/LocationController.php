@@ -180,7 +180,11 @@ class LocationController extends Controller
             ]);
         }
 
-        $event = Event::inRandomOrder()->first();
+        $currentLocation = UserLocation::find($user->current_location_id);
+        $currentLocation->steps += 1;
+        $currentLocation->save();
+
+        $event = $currentLocation->location->events()->inRandomOrder()->first();
 
         if ($event->item_id) {
             $item = Item::find($event->item_id);
@@ -229,10 +233,6 @@ class LocationController extends Controller
 
         $userMonster->steps += 1;
         $userMonster->save();
-
-        $currentLocation = UserLocation::find($user->current_location_id);
-        $currentLocation->steps += 1;
-        $currentLocation->save();
 
         $message = $event->message;
         if (

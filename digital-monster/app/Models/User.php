@@ -51,11 +51,6 @@ class User extends Authenticatable
         return $this->hasMany(UserLocation::class);
     }
 
-    public function isAdmin()
-    {
-        return $this->role === 'admin';
-    }
-
     public function friendships()
     {
         return $this->hasMany(Friendship::class, 'requester_user_id');
