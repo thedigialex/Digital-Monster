@@ -247,5 +247,42 @@
             </div>
         </x-accordion>
 
+        <x-accordion title="DigiExtract" :open="false" :icon="'fa-expand-arrows-alt'">
+            <x-fonts.paragraph>
+                Running out of space in your DigiGarden? Or maybe you want to pass the power of one monster onto another? That's where <strong>DigiExtract</strong> comes in. Head to the DigiExtract section on the DigiConverge page to get started!
+            </x-fonts.paragraph>
+
+            <div class="py-4">
+                <x-fonts.sub-header>1. Extracting Digicores</x-fonts.sub-header>
+                <x-fonts.paragraph>
+                    You can select a monster to extract its core from. This process will remove the monster from your garden, but you'll receive 1–4 Digicores in return.
+                </x-fonts.paragraph>
+                <x-fonts.paragraph>
+                    The number and quality of Digicores depends on the monster’s stage and current stats.
+                </x-fonts.paragraph>
+            </div>
+
+            <div class="py-4">
+                <x-fonts.sub-header>2. Core Versions & Stat Boosts</x-fonts.sub-header>
+                <x-fonts.paragraph>
+                    Digicores come in three versions, each offering a different bonus when consumed by another monster:
+                </x-fonts.paragraph>
+                <ul class="list-disc pl-6 text-text">
+                    <li><strong>V1 Core:</strong> +10% stat growth</li>
+                    <li><strong>V2 Core:</strong> +20% stat growth</li>
+                    <li><strong>V3 Core:</strong> +30% stat growth</li>
+                </ul>
+            </div>
+
+            <div class="py-4">
+                <x-fonts.sub-header>3. Strategize & Power Up</x-fonts.sub-header>
+                <x-fonts.paragraph>
+                    Choosing which monster to extract is a strategic decision. Sometimes it's better to extract a fully trained monster to boost a stronger candidate with those Digicores.
+                </x-fonts.paragraph>
+                <x-fonts.paragraph>
+                    Stat increase from this method bypass the training growth restriction
+                </x-fonts.paragraph>
+            </div>
+        </x-accordion>
     </x-container>
 </x-app-layout>
