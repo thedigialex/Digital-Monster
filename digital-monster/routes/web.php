@@ -12,7 +12,6 @@ use App\Http\Controllers\Admin\MonsterController;
 use App\Http\Controllers\Admin\EggGroupController;
 use App\Http\Controllers\Admin\EquipmentController;
 
-
 Route::middleware('headers')->group(function () {
     //Public
     Route::get('/', function () {
@@ -37,7 +36,6 @@ Route::middleware('headers')->group(function () {
         Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
         Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
         Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-
         Route::get('/profile/policy', [ProfileController::class, 'policy'])->name('profile.policy');
         Route::post('/profile/policy', [ProfileController::class, 'updatePolicy'])->name('profile.policy.update');
 
@@ -60,12 +58,10 @@ Route::middleware('headers')->group(function () {
             Route::post('/upgradeStation/upgrade', [DashboardController::class, 'upgradeEquipment'])->name('upgradeStation.upgrade');
             Route::post('monster/train', [DashboardController::class, 'useTraining'])->name('monster.train');
             Route::post('monster/changeName', [DashboardController::class, 'changeName'])->name('monster.name');
-
             Route::post('monster/item', [DashboardController::class, 'useItem'])->name('monster.item');
             Route::post('monster/attack', [DashboardController::class, 'changeAttack'])->name('monster.attack');
             Route::post('monster/sleep', [DashboardController::class, 'sleepToggle'])->name('monster.sleep');
             Route::post('monster/evolve', [DashboardController::class, 'evolve'])->name('monster.evolve');
-
             Route::get('/users', [ProfileController::class, 'index'])->name('users.index');
             Route::post('/users/friend/add', [ProfileController::class, 'addFriend'])->name('users.friend.add');
             Route::post('/users/friend/cancel', [ProfileController::class, 'cancelFriend'])->name('users.friend.cancel');
@@ -121,6 +117,5 @@ Route::middleware('headers')->group(function () {
         });
     });
 });
-
 
 require __DIR__ . '/auth.php';
