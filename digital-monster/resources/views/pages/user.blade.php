@@ -53,15 +53,15 @@
                     <tr class="{{ $loop->even ? 'bg-neutral' : 'bg-secondary' }}">
                         <x-table.data class="w-1/2 md:w-1/3">
                             @if (in_array($userMonster->monster->stage, ['Egg', 'Fresh', 'Child']) || $userMonster->type == 'Data')
-                            <div class="w-16 h-16 overflow-hidden">
+                            <div class="w-16 h-16 flex items-center justify-center">
                                 <img src="{{ asset('storage/' . $userMonster->monster->image_0) }}" alt="Monster Image" class="w-full h-full object-cover" style="object-position: 0 0;">
                             </div>
                             @elseif ($userMonster->type == 'Virus')
-                            <div class="w-16 h-16 overflow-hidden">
+                            <div class="w-16 h-16 flex items-center justify-center">
                                 <img src="{{ asset('storage/' . $userMonster->monster->image_1) }}" alt="Monster Image" class="w-full h-full object-cover" style="object-position: 0 0;">
                             </div>
                             @elseif ($userMonster->type == 'Vaccine')
-                            <div class="w-16 h-16 overflow-hidden">
+                            <div class="w-16 h-16 flex items-center justify-center">
                                 <img src="{{ asset('storage/' . $userMonster->monster->image_2) }}" alt="Monster Image" class="w-full h-full object-cover" style="object-position: 0 0;">
                             </div>
                             @endif
@@ -102,7 +102,7 @@
                     @foreach ($user->userItems as $userItem)
                     <tr class="{{ $loop->even ? 'bg-neutral' : 'bg-secondary' }}">
                         <x-table.data class="w-1/2 md:w-1/3">
-                            <div class="w-16 h-16 overflow-hidden">
+                            <div class="w-16 h-16 flex items-center justify-center">
                                 <img src="{{ asset('storage/' . $userItem->item->image) }}" alt="Item Image" class="w-full h-full object-cover" style="object-position: 0 0;">
                             </div>
                         </x-table.data>
@@ -142,8 +142,12 @@
                     @foreach ($user->userEquipment as $userEquipment)
                     <tr class="{{ $loop->even ? 'bg-neutral' : 'bg-secondary' }}">
                         <x-table.data class="w-1/2 md:w-1/3">
-                            <div class="w-16 h-16 overflow-hidden">
+                            <div class="w-16 h-16 flex items-center justify-center">
+                                @if ($userEquipment->equipment->type == 'Stat')
                                 <img src="{{ asset('storage/' . $userEquipment->equipment->image) }}" alt="Equipment Image" class="w-full h-full object-cover" style="object-position: 0 0;">
+                                @else
+                                <i class="fa {{ $userEquipment->equipment->icon }} text-accent text-5xl"></i>
+                                @endif
                             </div>
                         </x-table.data>
                         <x-table.data class="w-1/3 hidden md:table-cell">
@@ -182,7 +186,7 @@
                     @foreach ($user->userLocations as $userLocation)
                     <tr class="{{ $loop->even ? 'bg-neutral' : 'bg-secondary' }}">
                         <x-table.data class="w-1/2 md:w-1/3">
-                            <div class="w-16 h-16 overflow-hidden">
+                            <div class="w-16 h-16 flex items-center justify-center">
                                 <img src="{{ asset('storage/' . $userLocation->location->image) }}" alt="Location Image" class="w-full h-full object-cover" style="object-position: 0 0;">
                             </div>
                         </x-table.data>

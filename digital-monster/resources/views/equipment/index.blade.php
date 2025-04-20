@@ -31,7 +31,7 @@
                 <tbody>
                     @foreach ($allEquipment[$label] as $equipment)
                     <tr class="{{ $loop->even ? 'bg-neutral' : 'bg-secondary' }}">
-                        <x-table.data class="w-1/2 md:w-1/4">
+                        <x-table.data class="w-1/2 md:w-1/3">
                             <div class="w-16 h-16 flex items-center justify-center">
                                 @if ($equipment->type == 'Stat')
                                 <img src="{{ asset('storage/' . $equipment->image) }}" alt="Equipment Image" class="w-full h-full object-cover" style="object-position: 0 0;">
