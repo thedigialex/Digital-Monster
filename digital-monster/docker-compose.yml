@@ -5,14 +5,13 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: digi_portal
+    image: digi-portal  
+    container_name: digi-portal
+    restart: unless-stopped
+    ports:
+      - "8010:80"
     volumes:
       - .:/var/www
-    networks:
-      - laravel
-
-volumes:
-  dbdata:
 
 networks:
   laravel:
