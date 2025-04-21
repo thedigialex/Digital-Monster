@@ -21,9 +21,9 @@
             <div id="egg-selection" class="flex flex-col justify-center items-center gap-4">
                 <x-fonts.paragraph class="text-text p-2 bg-primary rounded-md">{{ $message }}</x-fonts.paragraph>
                 <div class="flex items-center gap-4">
-                    <x-buttons.arrow direction="left" id="scrollLeft" class="hidden"></x-buttons.arrow>
+                    <x-buttons.arrow direction="left" id="scrollLeft"></x-buttons.arrow>
                     <div id="monsterCarousel" class="flex items-center gap-4" data-eggs='@json($eggs)'></div>
-                    <x-buttons.arrow direction="right" id="scrollRight" class="hidden"></x-buttons.arrow>
+                    <x-buttons.arrow direction="right" id="scrollRight"></x-buttons.arrow>
                 </div>
             </div>
             <div id="confirm-selection" class="hidden flex flex-col justify-center items-center">
@@ -51,16 +51,15 @@
 
         let currentIndex = 0;
         let selectedMonster;
-        const itemsPerPage = window.innerWidth <= 640 ? 2 : 4;
+        const itemsPerPage = window.innerWidth <= 640 ? 1 : 4;
         let monsterElements = [];
 
         function renderMonsters() {
+            scrollLeft.style.visibility = currentIndex === 0 ? "hidden" : "visible";
+            scrollRight.style.visibility = currentIndex + itemsPerPage >= monsterElements.length ? "hidden" : "visible";
             carousel.innerHTML = "";
             const monstersToShow = monsterElements.slice(currentIndex, currentIndex + itemsPerPage);
             monstersToShow.forEach(monster => carousel.appendChild(monster));
-
-            scrollLeft.style.visibility = currentIndex === 0 ? "hidden" : "visible";
-            scrollRight.style.visibility = currentIndex + itemsPerPage >= monsterElements.length ? "hidden" : "visible";
         }
 
         function showConfirmation() {

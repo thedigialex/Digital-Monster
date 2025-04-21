@@ -26,7 +26,7 @@
                 <x-fonts.paragraph><strong>Tamer Level:</strong> {{ $user->level }}</x-fonts.paragraph>
                 <x-fonts.paragraph><strong>Tamer Exp:</strong> {{ $user->exp }}</x-fonts.paragraph>
                 <x-fonts.paragraph><strong>Bits:</strong> {{ $user->bits }}</x-fonts.paragraph>
-                <x-fonts.paragraph><strong>Score:</strong> {{ $user->score }}</x-fonts.paragraph>
+                <x-fonts.paragraph><strong>Extracted Count:</strong> {{ $user->extracted_count }}</x-fonts.paragraph>
             </div>
             <div class="w-full md:w-1/4 bg-neutral p-4 rounded-md md:ml-4">
                 <x-fonts.paragraph><strong>Role:</strong> {{ ucfirst($user->role) }}</x-fonts.paragraph>

@@ -17,10 +17,10 @@
             @else
             <x-fonts.paragraph class="text-text p-2 bg-primary rounded-md">Select a monster</x-fonts.paragraph>
             <div class="flex items-center gap-4 pt-4">
-                <x-buttons.arrow direction="left" id="scrollLeft" class="hidden"></x-buttons.arrow>
+                <x-buttons.arrow direction="left" id="scrollLeft"></x-buttons.arrow>
                 <div id="monsterCarousel" class="flex items-center gap-4" data-monsters='@json($userMonsters)'>
                 </div>
-                <x-buttons.arrow direction="right" id="scrollRight" class="hidden"></x-buttons.arrow>
+                <x-buttons.arrow direction="right" id="scrollRight"></x-buttons.arrow>
             </div>
 
             <div id="type-section" class="hidden flex items-center gap-4 flex-col pt-4">
@@ -56,7 +56,7 @@
         const scrollRight = document.getElementById("scrollRight");
 
         const userMonsters = JSON.parse(carousel.getAttribute("data-monsters"));
-        let itemsPerPage = window.innerWidth <= 640 ? 2 : 4;
+        let itemsPerPage = window.innerWidth <= 640 ? 1 : 4;
         let currentIndex = 0;
         let activeUserMonster;
         let monsterElements = [];
@@ -120,12 +120,11 @@
         }
 
         function renderMonsters() {
+            scrollLeft.style.visibility = currentIndex === 0 ? "hidden" : "visible";
+            scrollRight.style.visibility = currentIndex + itemsPerPage >= monsterElements.length ? "hidden" : "visible";
             carousel.innerHTML = "";
             const monstersToShow = monsterElements.slice(currentIndex, currentIndex + itemsPerPage);
             monstersToShow.forEach(monster => carousel.appendChild(monster));
-
-            scrollLeft.style.visibility = currentIndex === 0 ? "hidden" : "visible";
-            scrollRight.style.visibility = currentIndex + itemsPerPage >= monsterElements.length ? "hidden" : "visible";
         }
 
         function startBattle(animationFrame, removeUserMonster) {
