@@ -58,14 +58,14 @@
         <span>Locations</span>
     </x-nav-link>
 
-    <x-nav-link :href="route('items.index')" :active="request()->routeIs(['items.index', 'item.edit'])">
-        <i class="fas fa-tags"></i>
-        <span>Items</span>
-    </x-nav-link>
-
     <x-nav-link :href="route('equipment.index')" :active="request()->routeIs(['equipment.index', 'equipment.edit'])">
         <i class="fas fa-toolbox"></i>
         <span>Equipment</span>
+    </x-nav-link>
+
+    <x-nav-link :href="route('items.index')" :active="request()->routeIs(['items.index', 'item.edit'])">
+        <i class="fas fa-tags"></i>
+        <span>Items</span>
     </x-nav-link>
     @endif
 </nav>

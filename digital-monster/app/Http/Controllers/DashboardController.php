@@ -679,7 +679,7 @@ class DashboardController extends Controller
                 case 'H':
                     $userMonster->hunger += $value;
                     break;
-                case 'e':
+                case 'E':
                     $userMonster->energy += $value;
                     break;
             }

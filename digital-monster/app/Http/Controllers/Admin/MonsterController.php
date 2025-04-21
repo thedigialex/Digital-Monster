@@ -72,11 +72,11 @@ class MonsterController extends Controller
         }
         $evoMap = [
             'Egg' => 0,
-            'Fresh' => 20,
-            'Child' => 60,
-            'Rookie' => 160,
-            'Champion' => 400,
-            'Ultimate' => 960,
+            'Fresh' => 10,
+            'Child' => 20,
+            'Rookie' => 200,
+            'Champion' => 500,
+            'Ultimate' => 1000,
             'Mega' => 0,
         ];
         $evoRequirement = $evoMap[$request->input('stage')];
