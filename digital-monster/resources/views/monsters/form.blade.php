@@ -84,8 +84,7 @@
 
         if (
             stageDropdown.value != "Egg" &&
-            stageDropdown.value != "Fresh" &&
-            stageDropdown.value != "Child"
+            stageDropdown.value != "Fresh"
         ) {
             nonRouteElements.forEach(id => {
                 const element = document.getElementById(id);

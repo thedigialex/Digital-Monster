@@ -61,7 +61,6 @@ class SetUpUserAccount
         $location = UserLocation::create([
             'user_id' => $user->id,
             'location_id' => $starterLocation->id,
-            'unlocked' => true,
             'steps' => 0,
         ]);
         $user->current_location_id = $location->id;
