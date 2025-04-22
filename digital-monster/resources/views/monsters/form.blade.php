@@ -86,18 +86,19 @@
             stageDropdown.value != "Egg" &&
             stageDropdown.value != "Fresh"
         ) {
-            nonRouteElements.forEach(id => {
-                const element = document.getElementById(id);
-                element.classList.remove('hidden');
-            });
             routeDivB.classList.remove("hidden");
             if (stageDropdown.value == "Mega") {
                 routeDivA.classList.add("hidden");
                 routeDivB.classList.add("hidden");
             }
+            if (stageDropdown.value != "Child") {
+                nonRouteElements.forEach(id => {
+                    const element = document.getElementById(id);
+                    element.classList.remove('hidden');
+                });
+            }
         }
     }
-
     window.onload = function() {
         toggleElementFields();
     };
