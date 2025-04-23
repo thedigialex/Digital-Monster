@@ -23,7 +23,7 @@ class AppServiceProvider extends ServiceProvider
             URL::forceScheme('https');
         }
         // Add trusted proxies and headers from environment
-        $trustedProxies = env('TRUSTED_PROXIES', '127.0.0.1');  // Default to 127.0.0.1 if not set
+        $trustedProxies = env('TRUSTED_PROXIES', '127.0.0.1');
 
         // Set trusted proxies dynamically
         TrustProxies::at($trustedProxies);
