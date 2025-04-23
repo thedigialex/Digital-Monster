@@ -40,14 +40,18 @@
                 </div>
                 <div class="flex flex-col justify-center items-center py-4 space-y-4">
                     <div class="flex flex-col md:flex-row justify-center items-center gap-4 w-full ">
-                        @foreach(['0', '1'] as $route)
                         <x-inputs.dropdown
-                            name="route_{{ $route }}"
+                            name="route_0"
                             class="w-full md:w-1/4 mt-0"
                             useOptionKey="true"
-                            :options="$allMonsters->where('egg_group_id')->pluck('name', 'id')->toArray()"
-                            :value="$monster && $monster->evolution ? $monster->evolution->where('route_'.$route, '!=', null)->pluck('route_'.$route)->first() ?? '' : ''" />
-                        @endforeach
+                            :options="$allMonsters->pluck('name', 'id')->toArray()"
+                            :value="$monster->evolution?->route_0" />
+                        <x-inputs.dropdown
+                            name="route_1"
+                            class="w-full md:w-1/4 mt-0"
+                            useOptionKey="true"
+                            :options="$allMonsters->pluck('name', 'id')->toArray()"
+                            :value="$monster->evolution?->route_1" />
                     </div>
                     <div class="flex flex-col md:flex-row justify-center items-center gap-4 w-full md:1/3">
                         <x-inputs.file label="Primary Image" name="image_0" :currentImage="$monster->image_0 ?? null" :messages="$errors->get('image_0')" />

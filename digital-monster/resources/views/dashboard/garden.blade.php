@@ -594,11 +594,11 @@
                     .then(result => {
                         activeUserMonster.updateUserMonster(result.userMonster);
                         result.userItemQuantity == 0 ? this.closest('.flex.flex-col.items-center').remove() : this.nextElementSibling.textContent = result.userItemQuantity;
-                        updateStats();
                         setTimeout(() => {
                             itemSelectionSection.classList.remove('hidden');
                             animationSection.classList.add('hidden');
                             updateItemSections();
+                            updateStats();
                         }, 3800);
                     });
             });

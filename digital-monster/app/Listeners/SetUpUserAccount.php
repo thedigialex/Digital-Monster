@@ -17,13 +17,6 @@ class SetUpUserAccount
         $user = $event->user;
         $user->bits = 50;
 
-        $backgroundItem = Item::where('name', 'Default')->where('type', 'Background')->first();
-        $background = UserItem::create([
-            'user_id' => $user->id,
-            'item_id' => $backgroundItem->id,
-            'quantity' => 1,
-        ]);
-
         $attackItem = Item::where('name', 'Bubble')->where('type', 'Attack')->first();
         UserItem::create([
             'user_id' => $user->id,
@@ -55,6 +48,12 @@ class SetUpUserAccount
             ]);
         }
 
+        $backgroundItem = Item::where('name', 'Default')->where('type', 'Background')->first();
+        $background = UserItem::create([
+            'user_id' => $user->id,
+            'item_id' => $backgroundItem->id,
+            'quantity' => 1,
+        ]);
         $user->background_id = $background->id;
 
         $starterLocation = Location::where('name', 'Green Meadow')->first();

@@ -36,9 +36,9 @@ class DatabaseSeeder extends Seeder
             ['name' => 'Bubble', 'price' => 0, 'type' => 'Attack', 'rarity' => 'Common'],
             ['name' => 'Meat', 'price' => 5, 'type' => 'Consumable', 'rarity' => 'Common', 'effect' => 'H,1-EVO,5', 'max_quantity' => 99],
             ['name' => 'DataCrystal', 'price' => 5000, 'type' => 'Material', 'rarity' => 'Legendary', 'max_quantity' => 10],
-            ['name' => 'DigiCore V1', 'price' => 5000, 'type' => 'Consumable', 'rarity' => 'Uncommon', 'effect' => 'STATS,10', 'max_quantity' => 99],
-            ['name' => 'DigiCore V2', 'price' => 5000, 'type' => 'Consumable', 'rarity' => 'Rare', 'effect' => 'STATS,20', 'max_quantity' => 99],
-            ['name' => 'DigiCore V3', 'price' => 5000, 'type' => 'Consumable', 'rarity' => 'Legendary', 'effect' => 'STATS,30', 'max_quantity' => 99],
+            ['name' => 'DigiCore V1', 'price' => 5000, 'type' => 'Consumable', 'rarity' => 'Uncommon', 'effect' => 'STATS,10', 'max_quantity' => 99, 'available' => 0],
+            ['name' => 'DigiCore V2', 'price' => 5000, 'type' => 'Consumable', 'rarity' => 'Rare', 'effect' => 'STATS,20', 'max_quantity' => 99, 'available' => 0],
+            ['name' => 'DigiCore V3', 'price' => 5000, 'type' => 'Consumable', 'rarity' => 'Legendary', 'effect' => 'STATS,30', 'max_quantity' => 99, 'available' => 0],
         ];
 
         foreach ($items as $item) {

@@ -14,7 +14,6 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([
             'admin' => \App\Http\Middleware\AdminMiddleware::class,
-            'headers' => \App\Http\Middleware\SecureHeaders::class,
             'check-api-key' => \App\Http\Middleware\CheckApiKey::class,
             'policy' => \App\Http\Middleware\PolicyMiddleware::class,
         ]);
