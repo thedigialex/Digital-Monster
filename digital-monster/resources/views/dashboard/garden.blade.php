@@ -146,14 +146,13 @@
                         <x-fonts.paragraph id="stat-stage">Stage: <span></span></x-fonts.paragraph>
                         <x-fonts.paragraph id="stat-steps">Steps: <span></span></x-fonts.paragraph>
                     </div>
-
                     <div class="py-2">
                         <x-fonts.paragraph>Energy</x-fonts.paragraph>
                         <div class="w-full bg-secondary rounded-md h-4">
                             <div id="energy-bar" class="bg-success h-4 rounded-md transition-all duration-300"></div>
                         </div>
                     </div>
-                    <x-fonts.paragraph id="stat-stats" class="flex flex-wrap w-full md:flex-row flex-col md:space-x-4 space-y-2 md:space-y-0 text-text">
+                    <x-fonts.paragraph id="stat-stats" class="flex flex-wrap w-full flex-row md:space-x-4 text-text pt-2">
                         <span id="stat-strength" class="flex-1 text-center">Strength<br><span></span></span>
                         <span id="stat-agility" class="flex-1 text-center">Agility<br><span></span></span>
                         <span id="stat-defense" class="flex-1 text-center">Defense<br><span></span></span>

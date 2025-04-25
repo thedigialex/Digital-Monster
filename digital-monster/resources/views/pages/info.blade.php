@@ -16,6 +16,7 @@
                 This site lets you collect, evolve, and manage digital creatures. Start by registering an account to receive dataCrystals, which you can use to choose an egg from the DigiConverge page. Hatch and evolve your creatures in the DigiGarden, track their progress, and build your ultimate digital team!
             </x-fonts.paragraph>
         </x-slot>
+
         <x-accordion title="Getting Started" :open="true" :icon="'fa-rocket'">
             <x-fonts.paragraph>Welcome! Here’s how to begin your journey in the world of digital monsters:</x-fonts.paragraph>
 
@@ -52,6 +53,7 @@
                 </x-fonts.paragraph>
             </div>
         </x-accordion>
+
         <x-accordion title="Training" :open="false" :icon="'fa-chart-line'">
             <x-fonts.paragraph>
                 In the Digital World, monsters must train to survive! While your DigiGarden keeps them safe from danger, they’ll need to venture out to earn <strong>Bits</strong> for buying food and other items. To keep them safe and strong, you’ll need to boost their <strong>STATS</strong>!
@@ -113,6 +115,43 @@
                 </x-fonts.paragraph>
                 <x-fonts.paragraph>
                     Bonus tip: Training your monster before evolution grants bonus stats after it evolves!
+                </x-fonts.paragraph>
+            </div>
+        </x-accordion>
+
+        <x-accordion title="Energy" :open="false" :icon="'fa-bolt'">
+            <x-fonts.paragraph>
+                In the Digital World, your monster's energy is everything! Energy powers training and battles—and without it, your monster won’t be able to grow stronger. Managing energy wisely is key to success.
+            </x-fonts.paragraph>
+
+            <div class="py-4">
+                <x-fonts.sub-header>1. What is Energy?</x-fonts.sub-header>
+                <x-fonts.paragraph>
+                    Energy is a resource your monster uses to train and fight. Every action in a training session or battle costs a certain amount of energy. Once your monster’s energy runs out, it’ll need to rest before doing more.
+                </x-fonts.paragraph>
+            </div>
+
+            <div class="py-4">
+                <x-fonts.sub-header>2. Energy Costs per Stage</x-fonts.sub-header>
+                <x-fonts.paragraph>
+                    Each evolution stage has a different total energy pool. Stronger monsters can do more before needing rest. Plan your training and battles based on how much energy your monster has left.
+                </x-fonts.paragraph>
+            </div>
+
+            <div class="py-4">
+                <x-fonts.sub-header>3. Resting & Regaining Energy</x-fonts.sub-header>
+                <x-fonts.paragraph>
+                    When your monster is low on energy, it’s time for a nap! Open the <strong>stat menu</strong> and click the <strong>light icon</strong> to put your monster to sleep. While asleep, a resting animation will play.
+                </x-fonts.paragraph>
+                <x-fonts.paragraph>
+                    After a certain amount of time, your monster will regain a percentage of its max energy. The longer it sleeps, the more energy it recovers.
+                </x-fonts.paragraph>
+            </div>
+
+            <div class="py-4">
+                <x-fonts.sub-header>4. Energy Management Tips</x-fonts.sub-header>
+                <x-fonts.paragraph>
+                    Train smart—don’t let your monster run on empty. Keep an eye on their energy level and let them rest when needed. This keeps them in peak condition for future battles and evolutions.
                 </x-fonts.paragraph>
             </div>
         </x-accordion>

@@ -19,6 +19,11 @@
             <x-fonts.paragraph>
                 To use this site, you must agree to our Website Policy.
             </x-fonts.paragraph>
+            @if ($user->policy_accept == 1)
+            <a href="{{ route('info') }}" class="flex flex-col items-center gap-4 py-4 text-center">
+                <x-buttons.primary icon="fa-circle-info" label="Info" />
+            </a>
+            @endif
         </x-slot>
         <x-accordion title="Website Policy" :open="true" :icon="'fa fa-file-contract'">
             <x-fonts.paragraph><strong>Effective Date:</strong> 4/6/2025</x-fonts.paragraph>
@@ -89,6 +94,5 @@
             </div>
             @endif
         </x-accordion>
-
     </x-container>
 </x-app-layout>
