@@ -12,6 +12,7 @@ services:
       - "8004:80"
     volumes:
       - .:/var/www
+      - /mnt/user/digi-portal/uploads:/var/www/storage/app/public 
 
 networks:
   laravel:
