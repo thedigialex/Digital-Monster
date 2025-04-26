@@ -37,6 +37,9 @@
                             <x-fonts.paragraph class="background-p text-text"> {{ $userBackground->item->name }}</x-fonts.paragraph>
                         </div>
                         @endforeach
+                        @if($userBackgrounds->isEmpty())
+                        <x-fonts.paragraph class="text-text p-2 bg-primary rounded-md">No Additional Backgrounds</x-fonts.paragraph>
+                        @endif
                     </div>
                 </div>
             </x-container.modal>

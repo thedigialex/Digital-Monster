@@ -64,7 +64,7 @@
     </x-nav-link>
 
     <x-nav-link :href="route('items.index')" :active="request()->routeIs(['items.index', 'item.edit'])">
-        <i class="fas fa-tags"></i>
+        <i class="fas fa-boxes-stacked"></i>
         <span>Items</span>
     </x-nav-link>
     @endif
