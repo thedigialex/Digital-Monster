@@ -47,7 +47,7 @@
                                     name="type"
                                     :messages="$errors->get('type')"
                                     class="w-full lg:w-1/2"
-                                    :options="['Data', 'Virus', 'Vaccine']"
+                                    :options="['Data', 'Vaccine', 'Virus']"
                                     :value="$userMonster->type ?? ''" />
                                 <x-inputs.dropdown
                                     name="main"

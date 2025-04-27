@@ -36,8 +36,8 @@
                 return `url(/storage/${userMonster.monster.image_0})`;
             }
             const imageMap = {
-                "Virus": userMonster.monster.image_1,
-                "Vaccine": userMonster.monster.image_2
+                "Vaccine": userMonster.monster.image_1,
+                "Virus": userMonster.monster.image_2,
             };
             return `url(/storage/${imageMap[userMonster.type] || userMonster.monster.image_0})`;
         }

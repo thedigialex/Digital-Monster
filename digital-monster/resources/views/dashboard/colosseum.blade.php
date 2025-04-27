@@ -100,12 +100,11 @@
 
                 if (["Egg", "Fresh", "Child"].includes(userMonster.monster.stage) || userMonster.type === "Data") {
                     img.src = `/storage/${userMonster.monster.image_0}`;
-                } else if (userMonster.type == "Virus") {
-                    img.src = `/storage/${userMonster.monster.image_1}`;
                 } else if (userMonster.type == "Vaccine") {
+                    img.src = `/storage/${userMonster.monster.image_1}`;
+                } else if (userMonster.type == "Virus") {
                     img.src = `/storage/${userMonster.monster.image_2}`;
                 }
-
                 imgDiv.appendChild(img);
 
                 const nameParagraph = document.createElement("p");
@@ -239,8 +238,8 @@
                 return `url(/storage/${userMonster.monster.image_0})`;
             }
             const imageMap = {
-                "Virus": userMonster.monster.image_1,
-                "Vaccine": userMonster.monster.image_2
+                "Vaccine": userMonster.monster.image_1,
+                "Virus": userMonster.monster.image_2,
             };
             return `url(/storage/${imageMap[userMonster.type] || userMonster.monster.image_0})`;
         }
