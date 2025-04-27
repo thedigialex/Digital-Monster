@@ -56,11 +56,11 @@
                             <div class="w-16 h-16 flex items-center justify-center">
                                 <img src="{{ asset('storage/' . $userMonster->monster->image_0) }}" alt="Monster Image" class="w-full h-full object-cover" style="object-position: 0 0;">
                             </div>
-                            @elseif ($userMonster->type == 'Virus')
+                            @elseif ($userMonster->type == 'Vaccine')
                             <div class="w-16 h-16 flex items-center justify-center">
                                 <img src="{{ asset('storage/' . $userMonster->monster->image_1) }}" alt="Monster Image" class="w-full h-full object-cover" style="object-position: 0 0;">
                             </div>
-                            @elseif ($userMonster->type == 'Vaccine')
+                            @elseif ($userMonster->type == 'Virus')
                             <div class="w-16 h-16 flex items-center justify-center">
                                 <img src="{{ asset('storage/' . $userMonster->monster->image_2) }}" alt="Monster Image" class="w-full h-full object-cover" style="object-position: 0 0;">
                             </div>
