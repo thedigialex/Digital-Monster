@@ -97,7 +97,7 @@
                 const img = document.createElement("img");
                 img.classList.add("w-full", "h-full", "object-cover");
                 img.style.objectPosition = "0 0";
-
+ 
                 if (["Egg", "Fresh", "Child"].includes(userMonster.monster.stage) || userMonster.type === "Data") {
                     img.src = `/storage/${userMonster.monster.image_0}`;
                 } else if (userMonster.type == "Vaccine") {
