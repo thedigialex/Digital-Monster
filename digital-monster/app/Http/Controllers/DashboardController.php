@@ -450,23 +450,33 @@ class DashboardController extends Controller
 
         return view('dashboard.converge', compact('count', 'background', 'eggs', 'message'));
     }
-
+    
     public function extract()
     {
         $user = User::find(Auth::id());
         $background = $this->getUserBackgroundImage($user);
-        $userMonsters = UserMonster::with('monster')
-            ->where('user_id', $user->id)
+        $monsterCount = UserMonster::where('user_id', $user->id)
             ->whereHas('monster', function ($query) {
                 $query->whereNotIn('stage', ['Egg', 'Fresh', 'Child']);
             })
-            ->get();
-        $message = $userMonsters->count() > 0
-            ? "Select a monster to extract"
-            : "You have no monsters to extract";
+            ->count();
+    
+        $userMonsters = collect();
+    
+        if ($monsterCount > 1) {
+            $userMonsters = UserMonster::with('monster')
+                ->where('user_id', $user->id)
+                ->whereHas('monster', function ($query) {
+                    $query->whereNotIn('stage', ['Egg', 'Fresh', 'Child']);
+                })
+                ->get();
+            $message = "Select a monster to extract";
+        } else {
+            $message = "You have no monsters to extract";
+        }
         return view('dashboard.extract', compact('userMonsters', 'background', 'message'));
     }
-
+    
     public function extractMonster(Request $request)
     {
         $user = User::find(Auth::id());

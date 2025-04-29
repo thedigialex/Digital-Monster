@@ -37,7 +37,6 @@
                 <x-fonts.paragraph><strong>Last Updated At:</strong> {{ $user->updated_at->format('m/d/Y') }} </x-fonts.paragraph>
             </div>
         </div>
-        
 
         <x-accordion title="User Monsters" :open="true" :icon="'fa-dragon'">
             @if (!$user->userMonsters->isEmpty())
