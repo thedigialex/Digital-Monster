@@ -20,14 +20,14 @@
         type="password"
         name="password"
         :messages="$errors->get('password')" />
-        
+
     <x-inputs.text
         class="w-full"
         type="password"
         name="password_confirmation"
         :messages="$errors->get('password_confirmation')" />
 
-    <div class="flex items-center justify-center pt-4">
+    <div class="flex items-center justify-center py-4">
         <x-buttons.primary icon="fa-user-plus" label="Register" />
     </div>
 </form>

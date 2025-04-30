@@ -1,10 +1,10 @@
 <x-app-layout>
     <div class="min-h-screen flex flex-col lg:flex-row justify-center">
         <div class="hidden lg:flex flex-col lg:w-1/2 bg-secondary items-center justify-center">
-            <x-application-logo class="fill-current rounded-md"  />
+            <x-application-logo />
         </div>
         <div class="w-full lg:w-1/2 flex items-center">
-            <div class="w-full lg:w-4/5 mx-auto">
+            <div class="w-full lg:w-4/5 m-4 lg:mx-auto lg:m-0">
                 <x-container>
                     <div class="bg-secondary py-4 text-center fixed top-0 left-0 w-full lg:hidden border-b-4 border-accent">
                         <x-fonts.sub-header>Digital Portal</x-fonts.sub-header>
@@ -22,7 +22,7 @@
                         </button>
                     </div>
 
-                    <div id="form-container" class="w-full px-4 py-6">
+                    <div class="w-full p-6">
                         <div id="login-form" class="form block">
                             @include('auth.login')
                         </div>
@@ -32,7 +32,6 @@
                         <div id="forgot-form" class="form hidden">
                             @include('auth.forgot-password')
                         </div>
-
                         <x-copyright />
                     </div>
                 </x-container>
