@@ -1,7 +1,7 @@
 <x-app-layout>
     <div class="min-h-screen flex flex-col lg:flex-row justify-center">
         <div class="hidden lg:flex flex-col lg:w-1/2 bg-secondary items-center justify-center">
-            <x-application-logo />
+            <x-application-logo /> 
         </div>
         <div class="w-full lg:w-1/2 flex items-center">
             <div class="w-full lg:w-4/5 m-4 lg:mx-auto lg:m-0">
