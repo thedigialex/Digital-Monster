@@ -6,8 +6,11 @@
         <div class="w-full lg:w-1/2 flex items-center">
             <div class="w-full lg:w-4/5 m-4 lg:mx-auto lg:m-0">
                 <x-container>
-                    <div class="bg-secondary py-4 text-center fixed top-0 left-0 w-full lg:hidden border-b-4 border-accent">
-                        <x-fonts.sub-header>Digital Portal</x-fonts.sub-header>
+                    <div class="bg-secondary py-4 text-center fixed top-0 left-0 flex items-center justify-center space-x-4 w-full lg:hidden border-b-4 border-accent">
+                        <img src="{{ asset('images/logo.png') }}" alt="Logo" class="rounded-md w-10 h-10" />
+                        <x-fonts.sub-header class="flex items-center">
+                            {{ config('app.name') }}
+                        </x-fonts.sub-header>
                     </div>
 
                     <div class="bg-secondary flex pt-4 px-4 rounded-t-md border-b-4 border-accent gap-x-4 mt-16">
@@ -37,7 +40,6 @@
                 </x-container>
             </div>
         </div>
-
     </div>
 </x-app-layout>
 

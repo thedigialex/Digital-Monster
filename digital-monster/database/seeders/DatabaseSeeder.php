@@ -86,8 +86,7 @@ class DatabaseSeeder extends Seeder
                 'role' => 'admin',
             ]
         );
-
-        // Only fire the event the first time the user is created
+        
         if ($user->wasRecentlyCreated) {
             event(new UserRegistered($user));
         }
