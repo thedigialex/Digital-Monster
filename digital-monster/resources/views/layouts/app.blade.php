@@ -47,16 +47,14 @@
                 </div>
             </aside>
 
-            <div class="md:hidden">
-                @include('layouts.mobile_navigation')
-            </div>
+            @include('layouts.mobile_navigation')
 
             <div class="flex-1 md:ml-64 overflow-hidden">
-                <div class="md:fixed md:top-0 left-0 md:left-64 w-full md:w-[calc(100%-16rem)] bg-primary border-b-4 border-accent p-6 z-10 flex justify-between items-center">
+                <div class="md:fixed md:top-0 left-0 md:left-64 w-full bg-primary border-b-4 border-accent p-6 z-10 flex justify-between items-center">
                     {{ $header }}
                 </div>
 
-                <main class="md:mt-24 h-[calc(100vh-6rem)] overflow-y-auto">
+                <main class="md:mt-24 overflow-y-auto">
                     {{ $slot }}
                 </main>
             </div>

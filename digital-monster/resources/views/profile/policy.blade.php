@@ -10,6 +10,7 @@
     @if (session('error'))
     <x-alerts.error :message="session('error')" />
     @endif
+    <x-alerts.alert type="Info" message="Saving data, please fix fields." />
 
     <x-container class="p-4">
         <x-slot name="header">

@@ -1,4 +1,4 @@
-<nav x-data="{ open: false }" class="bg-primary">
+<nav x-data="{ open: false }" class="md:hidden bg-primary">
     <div class="px-6 py-4 border-b-4 border-secondary flex justify-between">
         <a href="{{ route('digigarden') }}" class="flex items-center justify-center space-x-4">
             <img src="{{ asset('images/logo.png') }}" alt="Logo" class="rounded-md w-10 h-10" />

@@ -20,6 +20,7 @@ export default {
                 accent: '#e47e00',
                 neutral: '#545454',
                 error: '#dc2626',
+                info: '#F8C7AD',
                 success: '#ADF8C7', 
                 text: '#FAFAFA'
             }                       
