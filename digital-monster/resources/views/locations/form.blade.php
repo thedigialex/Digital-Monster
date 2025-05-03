@@ -9,10 +9,10 @@
     </x-slot>
 
     @if ($errors->any())
-    <x-alerts.error />
+    <x-alerts.alert type="Error" />
     @endif
     @if (session('success'))
-    <x-alerts.success>{{ session('success') }}</x-alerts.success>
+    <x-alerts.alert type="Success" message="Saved!"  />
     @endif
 
     <x-container class="p-4">

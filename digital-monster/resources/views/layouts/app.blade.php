@@ -54,7 +54,7 @@
                     {{ $header }}
                 </div>
 
-                <main class="md:mt-24 overflow-y-auto">
+                <main class="md:mt-[92px] overflow-y-auto">
                     {{ $slot }}
                 </main>
             </div>

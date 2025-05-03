@@ -7,10 +7,10 @@
             <x-buttons.primary icon="fa-arrow-left" label="Back" />
         </a>
     </x-slot>
+    
     @if (session('error'))
-    <x-alerts.error :message="session('error')" />
+    <x-alerts.alert type="Info" :message="session('error')"  />
     @endif
-    <x-alerts.alert type="Info" message="Saving data, please fix fields." />
 
     <x-container class="p-4">
         <x-slot name="header">

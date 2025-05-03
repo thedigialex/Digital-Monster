@@ -1,6 +1,6 @@
 @props([
     'type' => 'Info',
-    'message' => 'Default Message',
+    'message' => 'Please fix fields.',
 ])
 @php
     $typeClasses = [

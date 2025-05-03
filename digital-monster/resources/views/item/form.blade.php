@@ -9,7 +9,7 @@
     </x-slot>
 
     @if ($errors->any())
-    <x-alerts.error />
+    <x-alerts.alert type="Error" />
     @endif
 
     <x-container class="p-4">
