@@ -18,8 +18,6 @@
     </div>
 
     <div class="flex justify-end mt-4">
-        <x-buttons.primary>
-            {{ __('Confirm') }}
-        </x-buttons.primary>
+        <x-buttons.button type="edit" icon="fa-check" label="Confirm" />
     </div>
 </form>

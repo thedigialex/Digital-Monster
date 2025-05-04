@@ -43,7 +43,7 @@
                                 :messages="$errors->get('password_confirmation')" />
 
                             <div class="flex items-center justify-center py-4">
-                                <x-buttons.primary icon="fa-sync-alt" label="Reset Password" />
+                                <x-buttons.button type="edit" icon="fa-sync-alt" label="Reset Password" />
                             </div>
                         </form>
                         <x-copyright />

@@ -13,7 +13,7 @@
 
             <x-container.modal name="user-items" title="Locations">
                 <x-slot name="button">
-                    <x-buttons.primary id="openMenu" label="Locations" icon="fa-location-dot" @click="open = true" />
+                    <x-buttons.button type="edit" label="Locations" icon="fa-location-dot" @click="open = true" id="openMenu" />
                 </x-slot>
                 <div class="flex gap-4 p-2 rounded-t-md bg-secondary w-full justify-center">
                     <button id="showLocations" class="bg-accent text-secondary px-4 py-2 rounded-md">Locations</button>
@@ -57,7 +57,7 @@
             @endif
         </x-container.background>
         <x-container.background id="adventure-section" class="hidden rounded-b-md gap-4" :background="$background">
-            <x-buttons.primary id="backButton" icon="fa-repeat" label="Switch" />
+            <x-buttons.button type="edit" icon="fa-repeat" label="Switch" id="backButton" />
             <div id="movementArea" class="relative w-full md:w-1/4 h-32 overflow-hidden">
                 <div id="movingSpriteWrapper" class="absolute left-0">
                     <x-container.sprite id="user-monster-sprite" :rotate="true" />

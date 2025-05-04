@@ -37,20 +37,12 @@
                 </div>
 
                 @include('layouts.navigation')
-
-                <div class="mt-auto flex flex-col items-center justify-center border-t-4 border-secondary p-4 gap-y-2">
-                    <form method="POST" action="{{ route('logout') }}">
-                        @csrf
-                        <x-buttons.primary type="submit" icon="fa-sign-out" label="Log Out" />
-                    </form>
-                    <x-copyright />
-                </div>
             </aside>
 
             @include('layouts.mobile_navigation')
 
             <div class="flex-1 md:ml-64 overflow-hidden">
-                <div class="md:fixed md:top-0 left-0 md:left-64 w-full bg-primary border-b-4 border-accent p-6 z-10 flex justify-between items-center">
+                <div class="md:fixed md:top-0 w-full md:w-[calc(100%-16rem)] bg-primary border-b-4 border-accent p-6 z-10 flex justify-between items-center">
                     {{ $header }}
                 </div>
 

@@ -18,6 +18,6 @@
         :messages="$errors->get('password')" />
 
     <div class="flex items-center justify-center py-4">
-        <x-buttons.primary icon="fa-sign-in" label="Log in" />
+        <x-buttons.button type="edit" icon="fa-sign-in" label="Log in" />
     </div>
 </form>

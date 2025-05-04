@@ -12,11 +12,7 @@
         </div>
     </div>
 
-    <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden bg-secondary rounded-b-md">
+    <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden bg-secondary">
         @include('layouts.navigation')
-        <form method="POST" action="{{ route('logout') }}" class="mt-auto flex flex-col items-center justify-center border-t-4 border-accent py-4 gap-y-2">
-            @csrf
-            <x-buttons.primary type="submit" icon="fa-sign-out" label="Log Out" />
-        </form>
     </div>
 </nav>

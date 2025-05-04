@@ -4,7 +4,7 @@
             DigiGarden
         </x-fonts.sub-header>
         <a href="{{ route('info') }}">
-            <x-buttons.primary icon="fa-circle-info" label="Info" />
+            <x-buttons.button type="edit" icon="fa-circle-info" label="Info" />
         </a>
     </x-slot>
 
@@ -16,7 +16,7 @@
 
             <x-container.modal name="user-items" title="Settings">
                 <x-slot name="button">
-                    <x-buttons.primary id="openMenu" label="Settings" icon="fa-gear" @click="open = true" />
+                    <x-buttons.button type="edit" icon="fa-gear" label="Settings" id="openMenu" @click="open = true" />
                 </x-slot>
                 <div class="flex gap-4 p-2 rounded-t-md bg-secondary w-full justify-center">
                     <button id="showBackgrounds" class="bg-accent text-secondary px-4 py-2 rounded-md">Backgrounds</button>

@@ -11,12 +11,7 @@
 <div class="mt-4 flex items-center justify-between">
     <form method="POST" action="{{ route('verification.send') }}">
         @csrf
-
-        <div>
-            <x-buttons.primary>
-                {{ __('Resend Verification Email') }}
-            </x-buttons.primary>
-        </div>
+        <x-buttons.button type="edit" icon="fa-envelope" label="Resend Verification Email" />
     </form>
 
     <form method="POST" action="{{ route('logout') }}">
