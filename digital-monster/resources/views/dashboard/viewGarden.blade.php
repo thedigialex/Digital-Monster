@@ -1,17 +1,17 @@
 <x-app-layout>
     <x-slot name="header">
         <x-fonts.sub-header>
-        {{ $user->name }}'s DigiGarden
+            {{ $user->name }}'s DigiGarden
         </x-fonts.sub-header>
         <a href="{{ route('users.index') }}">
-            <x-buttons.primary icon="fa-arrow-left" label="Back" />
+            <x-buttons.button type="edit" icon="fa-arrow-left" label="Back" />
         </a>
     </x-slot>
 
     <x-container>
         <x-slot name="header">
             <x-fonts.sub-header>
-            {{ $user->name }}'s DigiGarden
+                {{ $user->name }}'s DigiGarden
             </x-fonts.sub-header>
         </x-slot>
         <div

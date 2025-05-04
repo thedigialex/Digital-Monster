@@ -36,7 +36,7 @@
 
         <div class="flex justify-center py-4">
             <a href="{{ route('profile.policy') }}">
-                <x-buttons.primary icon="fa-file-contract" label="Policy" />
+                <x-buttons.button type="edit" icon="fa-file-contract" label="Policy" />
             </a>
         </div>
     </x-container>

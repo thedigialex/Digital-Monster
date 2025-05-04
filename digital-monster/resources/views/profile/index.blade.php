@@ -65,7 +65,7 @@
                         </x-table.data>
 
                         <x-table.data class="w-1/3 hidden md:table-cell">
-                            <x-buttons.primary class="add_friend_button" label="Add" icon="fa-plus" :data-user="$user->id" />
+                            <x-buttons.button type="edit" class="add_friend_button" label="Add" icon="fa-plus" :data-user="$user->id" />
                         </x-table.data>
 
                         <x-table.data class="w-1/2 md:w-1/3">
@@ -104,7 +104,7 @@
                         </x-table.data>
 
                         <x-table.data class="w-1/3 hidden md:table-cell">
-                            <x-buttons.primary class="cancel_friend_button" label="Cancel" icon="fa-xmark" :data-user="$user->id" />
+                            <x-buttons.button type="edit" class="cancel_friend_button" label="Cancel" icon="fa-xmark" :data-user="$user->id" />
                         </x-table.data>
 
                         <x-table.data class="w-1/2 md:w-1/3">
@@ -142,8 +142,8 @@
 
                         <x-table.data class="w-1/3 hidden md:table-cell">
                             <div class="flex justify-start gap-4">
-                                <x-buttons.primary class="add_friend_button" label="Accpet" icon="fa-plus" :data-user="$user->id" />
-                                <x-buttons.primary class="cancel_friend_button" label="Deny" icon="fa-xmark" :data-user="$user->id" />
+                                <x-buttons.button type="edit" class="add_friend_button" label="Accpet" icon="fa-plus" :data-user="$user->id" />
+                                <x-buttons.button type="edit" class="cancel_friend_button" label="Deny" icon="fa-xmark" :data-user="$user->id" />
                             </div>
                         </x-table.data>
 

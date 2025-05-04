@@ -7,8 +7,8 @@
             </x-fonts.sub-header>
         </a>
         <div class="flex items-center sm:hidden">
-            <x-buttons.primary x-show="!open" @click="open = true" icon="fa-bars" label="Menu" />
-            <x-buttons.primary x-show="open" @click="open = false" icon="fa-x" label="Menu" />
+            <x-buttons.button type="edit" x-show="!open" @click="open = true" icon="fa-bars" label="Menu" />
+            <x-buttons.button type="edit" x-show="open" @click="open = false" icon="fa-x" label="Menu" />
         </div>
     </div>
 

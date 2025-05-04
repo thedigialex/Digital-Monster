@@ -4,7 +4,7 @@
             {{ isset($userMonster) ? 'Update Monster' : 'Assign Monster' }}
         </x-fonts.sub-header>
         <a href="{{ route('user.profile') }}">
-            <x-buttons.primary icon="fa-arrow-left" label="Back" />
+            <x-buttons.button type="edit" icon="fa-arrow-left" label="Back" />
         </a>
     </x-slot>
 
@@ -83,7 +83,7 @@
                     </x-container.single>
                 </div>
                 <div class="flex justify-center py-4 mt-4">
-                    <x-buttons.primary label="{{ isset($userMonster) ? 'Update' : 'Create' }}" icon="fa-save" />
+                    <x-buttons.button type="edit" label="{{ isset($userMonster) ? 'Update' : 'Create' }}" icon="fa-save" />
                 </div>
             </x-container.single>
         </form>

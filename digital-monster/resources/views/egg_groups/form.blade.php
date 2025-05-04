@@ -4,7 +4,8 @@
             {{ isset($eggGroup) ? 'Update Egg Group' : 'Create Egg Group' }}
         </x-fonts.sub-header>
         <a href="{{ route('egg_groups.index') }}">
-            <x-buttons.primary icon="fa-arrow-left" label="Back" />
+
+            <x-buttons.button type="edit" icon="fa-arrow-left" label="Back" />
         </a>
     </x-slot>
 
@@ -39,7 +40,7 @@
                         :messages="$errors->get('field')" />
                 </div>
                 <div class="flex justify-center py-4 mt-4">
-                    <x-buttons.primary label="{{ isset($eggGroup) ? 'Update' : 'Create' }}" icon="fa-save" />
+                    <x-buttons.button type="edit" label="{{ isset($eggGroup) ? 'Update' : 'Create' }}" icon="fa-save" />
                 </div>
             </x-container.single>
         </form>

@@ -4,7 +4,7 @@
             {{ isset($equipment) ? 'Update Equipment' : 'Create Equipment' }}
         </x-fonts.sub-header>
         <a href="{{ route('equipment.index') }}">
-            <x-buttons.primary icon="fa-arrow-left" label="Back" />
+            <x-buttons.button type="edit" icon="fa-arrow-left" label="Back" />
         </a>
     </x-slot>
 
@@ -62,7 +62,7 @@
                 </div>
                 <div class="flex flex-col justify-center items-center py-4 space-y-4">
                     <x-inputs.file label="Choose an Image" name="image" class="hidden w-full md:w-1/3" :currentImage="$equipment->image ?? null" :messages="$errors->get('image')" />
-                    <x-buttons.primary label="{{ isset($equipment) ? 'Update' : 'Create' }}" icon="fa-save" />
+                    <x-buttons.button type="edit" label="{{ isset($equipment) ? 'Update' : 'Create' }}" icon="fa-save" />
                 </div>
             </x-container.single>
         </form>

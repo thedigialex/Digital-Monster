@@ -4,7 +4,7 @@
             {{ isset($monster) ? 'Update Monster' : 'Create Monster' }}
         </x-fonts.sub-header>
         <a href="{{ route('monsters.index') }}">
-            <x-buttons.primary icon="fa-arrow-left" label="Back" />
+            <x-buttons.button type="edit" icon="fa-arrow-left" label="Back" />
         </a>
     </x-slot>
 
@@ -58,7 +58,7 @@
                         <x-inputs.file label="Secondary Image" name="image_1" :currentImage="$monster->image_1 ?? null" />
                         <x-inputs.file label="Tertiary Image" name="image_2" :currentImage="$monster->image_2 ?? null" />
                     </div>
-                    <x-buttons.primary label="{{ isset($monster) ? 'Update' : 'Create' }}" icon="fa-save" />
+                    <x-buttons.button type="edit" label="{{ isset($monster) ? 'Update' : 'Create' }}" icon="fa-save" />
                 </div>
             </x-container.single>
         </form>

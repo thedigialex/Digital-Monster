@@ -4,7 +4,7 @@
             DigiExtract
         </x-fonts.sub-header>
         <a href="{{ route('digiconverge') }}">
-            <x-buttons.primary icon="fa-arrow-left" label="Back" />
+            <x-buttons.button type="edit" icon="fa-arrow-left" label="Back" />
         </a>
     </x-slot>
 
@@ -27,8 +27,8 @@
                 <x-fonts.paragraph class="text-text p-2 bg-primary rounded-md">Extract DataCore from this Monster?</x-fonts.paragraph>
                 <div id="single-egg" class="flex items-center gap-4 py-4"></div>
                 <div class="flex gap-4">
-                    <x-buttons.primary id="backButton" label="Back" icon="fa-backward" />
-                    <x-buttons.primary id="confirmButton" label="Confirm" icon="fa-check" />
+                    <x-buttons.button type="edit" id="backButton" label="Back" icon="fa-backward" />
+                    <x-buttons.button type="edit" id="confirmButton" label="Confirm" icon="fa-check" />
                 </div>
             </div>
             <x-alerts.spinner id="loading-section"></x-alerts.spinner>

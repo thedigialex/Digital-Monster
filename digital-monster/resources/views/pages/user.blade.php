@@ -7,12 +7,12 @@
             </span>
         </x-fonts.sub-header>
         <a href="{{ route('users.index') }}">
-            <x-buttons.primary icon="fa-arrow-left" label="Back" />
+            <x-buttons.button type="edit" icon="fa-arrow-left" label="Back" />
         </a>
     </x-slot>
 
     @if (session('success'))
-    <x-alerts.alert type="Success" message="Saved!"  />
+    <x-alerts.alert type="Success" message="Saved!" />
     @endif
 
     <x-container class="p-1 lg:p-4">

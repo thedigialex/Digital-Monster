@@ -43,7 +43,7 @@
         </label>
 
         <div class="flex items-center justify-center my-4">
-            <x-buttons.primary label="Update" icon="fa-save" />
+            <x-buttons.button type="edit" label="Update" icon="fa-save" />
             @if (session('status') === 'profile-updated')
             <p
                 x-data="{ show: true }"

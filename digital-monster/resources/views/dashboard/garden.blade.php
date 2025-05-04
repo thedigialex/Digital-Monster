@@ -61,7 +61,7 @@
                     <i class="fa-solid fa-pen-to-square ml-2 cursor-pointer" id="edit-icon"></i>
                     <i class="fa-solid fa-save ml-2 cursor-pointer hidden" id="save-name-btn"></i>
                 </x-fonts.sub-header>
-                <x-buttons.primary id="close-stats" label="Close" icon="fa-x" />
+                <x-buttons.button type="edit" id="close-stats" label="Close" icon="fa-x" />
             </div>
             <div class="flex flex-col md:flex-row gap-4">
                 <div class="bg-primary p-4 rounded-md md:w-2/5">
@@ -77,7 +77,7 @@
                         </div>
                         <x-container.modal name="user-items" title="Inventory">
                             <x-slot name="button">
-                                <x-buttons.primary id="openItems" label="Items" icon="fa-briefcase" @click="open = true" />
+                                <x-buttons.button type="edit" id="openItems" label="Items" icon="fa-briefcase" @click="open = true" />
                             </x-slot>
                             <div class="flex gap-4 p-2 rounded-t-md bg-secondary w-full justify-center">
                                 <button id="showItems" class="bg-accent text-secondary px-4 py-2 rounded-md">Consumable</button>
@@ -203,7 +203,7 @@
                                 <div class="w-full h-8 bg-secondary rounded-md">
                                     <div id="progress-bar" class="h-full bg-accent w-0 rounded-md"></div>
                                 </div>
-                                <x-buttons.primary id="trainingButton" label="Start" icon="fa-play" />
+                                <x-buttons.button type="edit" id="trainingButton" label="Start" icon="fa-play" />
                             </div>
                             <x-fonts.paragraph id="sleep-section" class="text-text p-2 bg-primary rounded-md">Monster is sleeping</x-fonts.paragraph>
                         </div>

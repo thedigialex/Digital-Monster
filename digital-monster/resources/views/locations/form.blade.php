@@ -4,7 +4,7 @@
             {{ isset($location) ? 'Update Location' : 'Create Location' }}
         </x-fonts.sub-header>
         <a href="{{ route('locations.index') }}">
-            <x-buttons.primary icon="fa-arrow-left" label="Back" />
+            <x-buttons.button type="edit" icon="fa-arrow-left" label="Back" />
         </a>
     </x-slot>
 
@@ -12,7 +12,7 @@
     <x-alerts.alert type="Error" />
     @endif
     @if (session('success'))
-    <x-alerts.alert type="Success" message="Saved!"  />
+    <x-alerts.alert type="Success" message="Saved!" />
     @endif
 
     <x-container class="p-4">
@@ -54,7 +54,7 @@
                 </div>
                 <div class="flex flex-col justify-center items-center py-4 space-y-4">
                     <x-inputs.file label="Choose an Image" name="image" class="w-1/3" :currentImage="$location->image ?? null" :messages="$errors->get('image')" />
-                    <x-buttons.primary label="{{ isset($location) ? 'Update' : 'Create' }}" icon="fa-save" />
+                    <x-buttons.button type="edit" label="{{ isset($location) ? 'Update' : 'Create' }}" icon="fa-save" />
                 </div>
             </x-container.single>
         </form>
