@@ -1,7 +1,10 @@
 <x-app-layout>
     <div class="min-h-screen flex flex-col lg:flex-row justify-center">
         <div id="pixel-container" class="hidden lg:flex flex-col lg:w-1/2 items-center justify-center relative overflow-hidden bg-gradient-to-tr from-primary to-secondary">
-            <x-application-logo class="z-10" />
+            <x-fonts.sub-header class="absolute top-0 bg-primary text-text rounded-b-md w-full text-center z-20 h-[80px] flex items-center justify-center">
+                {{ config('app.name') }}
+            </x-fonts.sub-header>
+            <x-application-logo />
         </div>
         <div class="w-full lg:w-1/2 flex items-center">
             <div class="w-full lg:w-4/5 m-4 lg:mx-auto lg:m-0">
@@ -58,7 +61,7 @@
             pixel.style.height = `${size}px`;
 
             const left = Math.random() * 100;
-            const bottom = Math.random() * 50; 
+            const bottom = Math.random() * 50;
 
             const delay = (Math.random() * 0.5).toFixed(2);
             const duration = Math.floor(Math.random() * 3) + 3;
