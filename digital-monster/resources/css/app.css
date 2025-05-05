@@ -124,3 +124,24 @@
 /* Modal */
 [x-cloak] { display: none !important; }
 /* Modal */
+
+/* Floating Pixel */
+@keyframes rise {
+    0% {
+      transform: translateY(0) scale(1);
+      opacity: 0.4;
+    }
+    50% {
+      opacity: 0.8;
+    }
+    100% {
+      transform: translateY(-150vh) scale(1.1);
+      opacity: 0;
+    }
+  }
+  .animate-rise {
+    animation-name: rise;
+    animation-timing-function: ease-in;
+    animation-iteration-count: infinite;
+  }
+  /* Floating Pixel */

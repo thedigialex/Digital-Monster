@@ -1,7 +1,7 @@
 <x-app-layout>
     <div class="min-h-screen flex flex-col lg:flex-row justify-center">
-        <div class="hidden lg:flex flex-col lg:w-1/2 bg-secondary items-center justify-center">
-            <x-application-logo /> 
+        <div id="pixel-container" class="hidden lg:flex flex-col lg:w-1/2 items-center justify-center relative overflow-hidden bg-gradient-to-tr from-primary to-secondary">
+            <x-application-logo class="z-10" />
         </div>
         <div class="w-full lg:w-1/2 flex items-center">
             <div class="w-full lg:w-4/5 m-4 lg:mx-auto lg:m-0">
@@ -13,7 +13,6 @@
                         </x-fonts.sub-header>
                     </div>
 
-                    
                     <div class="bg-secondary flex pt-4 px-4 rounded-t-md border-b-4 border-accent gap-x-4 mt-16">
                         <button id="login-tab" onclick="toggleForms('login')" class="w-1/3 py-2 text-text bg-accent font-semibold rounded-t-md hover:bg-accent">
                             Login
@@ -45,6 +44,34 @@
 </x-app-layout>
 
 <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const pixelContainer = document.getElementById('pixel-container');
+        const pixelCount = 40;
+        const colors = ['#FAFAFA', '#545454'];
+
+        for (let i = 0; i < pixelCount; i++) {
+            const pixel = document.createElement('div');
+            pixel.className = 'absolute opacity-40 animate-rise';
+
+            const size = Math.random() * 6 + 2;
+            pixel.style.width = `${size}px`;
+            pixel.style.height = `${size}px`;
+
+            const left = Math.random() * 100;
+            const bottom = Math.random() * 50; 
+
+            const delay = (Math.random() * 0.5).toFixed(2);
+            const duration = Math.floor(Math.random() * 3) + 3;
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            pixel.style.backgroundColor = color;
+            pixel.style.left = `${left}%`;
+            pixel.style.bottom = `-${bottom}px`;
+            pixel.style.animationDelay = `${delay}s`;
+            pixel.style.animationDuration = `${duration}s`;
+            pixelContainer.appendChild(pixel);
+        }
+    });
+
     function toggleForms(formType) {
         const loginForm = document.getElementById('login-form');
         const registerForm = document.getElementById('register-form');

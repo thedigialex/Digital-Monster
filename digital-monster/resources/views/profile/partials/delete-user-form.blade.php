@@ -7,7 +7,7 @@
     <x-container.modal name="confirm-user-deletion" title="Delete User Account">
         <x-slot name="button">
             <div class="flex items-center justify-center my-4">
-                <x-buttons.danger @click="open = true" label="Delete" />
+                <x-buttons.button type="delete" @click="open = true" label="Delete" />
             </div>
         </x-slot>
         <form method="post" action="{{ route('profile.destroy') }}">
@@ -19,7 +19,7 @@
             <x-inputs.text name="password" type="password" divClasses="w-full" value="" :messages="$errors->userDeletion->get('password')" />
 
             <div class="flex items-center justify-center my-4">
-                <x-buttons.danger label="Confirm" />
+                <x-buttons.button type="delete" label="Confirm" icon="fa-trash" />
             </div>
 
         </form>

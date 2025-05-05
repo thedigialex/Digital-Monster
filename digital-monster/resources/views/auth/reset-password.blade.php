@@ -7,7 +7,7 @@
             <div class="w-full lg:w-4/5 mx-auto">
                 <x-container>
                     <div class="bg-secondary py-4 text-center fixed top-0 left-0 w-full lg:hidden border-b-4 border-accent">
-                        <x-fonts.sub-header>Digital Portal</x-fonts.sub-header>
+                        <x-fonts.sub-header> {{ config('app.name') }}</x-fonts.sub-header>
                     </div>
 
                     <div class="bg-secondary flex pt-4 px-4 rounded-t-md border-b-4 border-accent gap-x-4 mt-16">
@@ -43,7 +43,7 @@
                                 :messages="$errors->get('password_confirmation')" />
 
                             <div class="flex items-center justify-center py-4">
-                                <x-buttons.button type="edit" icon="fa-sync-alt" label="Reset Password" />
+                                <x-buttons.button type="edit" icon="fa-sync-alt" label="Reset" />
                             </div>
                         </form>
                         <x-copyright />
