@@ -28,7 +28,7 @@
     <body class="font-sans antialiased selection:bg-accent square-grid-bg">
         @if (Auth::check())
         <div class="flex flex-col md:flex-row min-h-screen">
-            <aside class="hidden md:flex fixed top-0 left-0 w-64 bg-primary h-screen flex-col">
+            <aside class="hidden md:flex fixed top-0 left-0 w-64 bg-gradient-to-t from-primary to-tertiary h-screen flex-col">
                 <div class="border-b-4 border-secondary p-6 flex items-center justify-center space-x-4">
                     <img src="{{ asset('images/logo.png') }}" alt="Logo" class="rounded-md w-10 h-10" />
                     <x-fonts.sub-header class="flex items-center">
@@ -42,7 +42,7 @@
             @include('layouts.mobile_navigation')
 
             <div class="flex-1 md:ml-64 overflow-hidden">
-                <div class="md:fixed md:top-0 w-full md:w-[calc(100%-16rem)] bg-primary border-b-4 border-accent p-6 z-10 flex justify-between items-center">
+                <div class="md:fixed md:top-0 w-full md:w-[calc(100%-16rem)] bg-gradient-to-l from-primary to-tertiary border-b-4 border-accent p-6 z-10 flex justify-between items-center">
                     {{ $header }}
                 </div>
 

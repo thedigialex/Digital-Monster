@@ -20,6 +20,11 @@
             <x-fonts.paragraph><strong>Tamer Exp:</strong> {{ $user->exp }}</x-fonts.paragraph>
             <x-fonts.paragraph><strong>Bits:</strong> {{ $user->bits }}</x-fonts.paragraph>
             <x-fonts.paragraph><strong>Extracted Count:</strong> {{ $user->extracted_count }}</x-fonts.paragraph>
+            <div class="flex justify-center py-4">
+                <a href="{{ route('profile.policy') }}">
+                    <x-buttons.button type="edit" icon="fa-file-contract" label="Policy" />
+                </a>
+            </div>
         </x-accordion>
 
         <x-accordion title="Update Profile Information" :open="false" :icon="'fa-solid fa-user'">
@@ -33,11 +38,5 @@
         <x-accordion title="Delete Account" :open="false" :icon="'fa-solid fa-trash-alt'">
             @include('profile.partials.delete-user-form')
         </x-accordion>
-
-        <div class="flex justify-center py-4">
-            <a href="{{ route('profile.policy') }}">
-                <x-buttons.button type="edit" icon="fa-file-contract" label="Policy" />
-            </a>
-        </div>
     </x-container>
 </x-app-layout>
