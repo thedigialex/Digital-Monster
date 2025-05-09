@@ -27,7 +27,6 @@
                             Forgot Password?
                         </button>
                     </div>
-                    
 
                     <div class="w-full p-6">
                         <div id="login-form" class="form block">
