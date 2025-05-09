@@ -1,6 +1,6 @@
 <x-app-layout>
     <div class="min-h-screen flex flex-col lg:flex-row justify-center">
-        <div id="pixel-container" class="hidden lg:flex flex-col lg:w-1/2 items-center justify-center relative overflow-hidden bg-gradient-to-tr from-primary to-secondary">
+        <div id="pixel-container" class="hidden lg:flex flex-col lg:w-1/2 items-center justify-center relative overflow-hidden bg-gradient-to-tr from-primary to-tertiary">
             <x-fonts.sub-header class="absolute top-0 bg-primary text-text rounded-b-md w-full text-center z-20 h-[80px] flex items-center justify-center">
                 {{ config('app.name') }}
             </x-fonts.sub-header>
@@ -27,6 +27,7 @@
                             Forgot Password?
                         </button>
                     </div>
+                    
 
                     <div class="w-full p-6">
                         <div id="login-form" class="form block">
