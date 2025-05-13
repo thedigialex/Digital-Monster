@@ -40,7 +40,9 @@ class MonsterController extends Controller
     {
         $eggGroups = EggGroup::all();
         $monster = Monster::with('evolution')->find(session('monster_id'));
-        $allMonsters = Monster::where('id', '!=', $monster->id)->get();
+        $allMonsters = $monster
+            ? Monster::where('id', '!=', $monster->id)->get()
+            : Monster::all();        
         return view('monsters.form', ['monster' => $monster, 'eggGroups' => $eggGroups, 'stages' => $this->stages, 'elements' => $this->elements, 'allMonsters' => $allMonsters]);
     }
 

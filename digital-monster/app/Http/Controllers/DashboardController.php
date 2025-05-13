@@ -450,7 +450,7 @@ class DashboardController extends Controller
 
         return view('dashboard.converge', compact('count', 'background', 'eggs', 'message'));
     }
-    
+
     public function extract()
     {
         $user = User::find(Auth::id());
@@ -460,9 +460,9 @@ class DashboardController extends Controller
                 $query->whereNotIn('stage', ['Egg', 'Fresh', 'Child']);
             })
             ->count();
-    
+
         $userMonsters = collect();
-    
+
         if ($monsterCount > 1) {
             $userMonsters = UserMonster::with('monster')
                 ->where('user_id', $user->id)
@@ -476,7 +476,7 @@ class DashboardController extends Controller
         }
         return view('dashboard.extract', compact('userMonsters', 'background', 'message'));
     }
-    
+
     public function extractMonster(Request $request)
     {
         $user = User::find(Auth::id());
@@ -519,7 +519,7 @@ class DashboardController extends Controller
         $userMonster->delete();
         $user->extracted_count += 1;
         $user->save();
-        
+
         return response()->json([
             'message' => 'Monster Extracted Successfully!',
             'successful' => true,
@@ -560,6 +560,10 @@ class DashboardController extends Controller
         $userMonster->name = 'New Egg';
         $userMonster->type = $types[array_rand($types)];
         $userMonster->save();
+
+        $user->monsterDex()->syncWithoutDetaching([
+            $monster->id => ['obtained' => true]
+        ]);
 
         $user->userItems()
             ->whereHas('item', function ($query) {
@@ -804,6 +808,10 @@ class DashboardController extends Controller
 
         $userMonster->evolve();
         $userMonster->refresh();
+
+        $user->monsterDex()->syncWithoutDetaching([
+            $userMonster->monster->id => ['obtained' => true]
+        ]);
 
         return response()->json([
             'message' => 'Evolved successfully!',

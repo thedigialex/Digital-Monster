@@ -103,4 +103,10 @@ class User extends Authenticatable
     {
         return $this->hasMany(UserLocation::class);
     }
+
+    public function monsterDex()
+    {
+        return $this->belongsToMany(Monster::class, 'monster_user_dex')
+            ->withPivot('obtained');
+    }
 }

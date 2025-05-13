@@ -45,13 +45,13 @@
                             class="w-full md:w-1/4 mt-0"
                             useOptionKey="true"
                             :options="$allMonsters->pluck('name', 'id')->toArray()"
-                            :value="$monster->evolution?->route_0" />
+                            :value="$monster?->evolution?->route_0" />
                         <x-inputs.dropdown
                             name="route_1"
                             class="w-full md:w-1/4 mt-0"
                             useOptionKey="true"
                             :options="$allMonsters->pluck('name', 'id')->toArray()"
-                            :value="$monster->evolution?->route_1" />
+                            :value="$monster?->evolution?->route_1" />
                     </div>
                     <div class="flex flex-col md:flex-row justify-center items-center gap-4 w-full md:1/3">
                         <x-inputs.file label="Primary Image" name="image_0" :currentImage="$monster->image_0 ?? null" :messages="$errors->get('image_0')" />
