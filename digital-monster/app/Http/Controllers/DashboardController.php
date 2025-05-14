@@ -105,7 +105,6 @@ class DashboardController extends Controller
     public function chart()
     {
         $user = User::find(Auth::id());
-
         return view('dashboard.chart', compact('user'));
     }
 
