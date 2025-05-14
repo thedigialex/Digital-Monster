@@ -64,8 +64,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/users', [ProfileController::class, 'index'])->name('users.index');
         Route::post('/users/friend/add', [ProfileController::class, 'addFriend'])->name('users.friend.add');
         Route::post('/users/friend/cancel', [ProfileController::class, 'cancelFriend'])->name('users.friend.cancel');
-
-        Route::view('/info', 'pages.info')->name('info');
+        Route::view('/chart', [DashboardController::class, 'chart'])->name('digigarden/chart');
+        Route::view('/info', 'dashboard.info')->name('digigarden/info');
         Route::post('/session/store', [SessionController::class, 'store'])->name('session.store');
         Route::post('/session/clear', [SessionController::class, 'clear'])->name('session.clear');
 

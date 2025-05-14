@@ -102,6 +102,13 @@ class DashboardController extends Controller
         ], 200);
     }
 
+    public function chart()
+    {
+        $user = User::find(Auth::id());
+
+        return view('dashboard.chart', compact('user'));
+    }
+
     public function colosseum()
     {
         $user = User::find(Auth::id());
