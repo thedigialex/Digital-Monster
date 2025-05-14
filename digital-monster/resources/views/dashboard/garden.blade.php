@@ -3,7 +3,10 @@
         <x-fonts.sub-header>
             DigiGarden
         </x-fonts.sub-header>
-        <a href="{{ route('info') }}">
+        <a href="{{ route('digigarden.chart') }}">
+            <x-buttons.button type="edit" icon="fa-circle-info" label="Chart" />
+        </a>
+        <a href="{{ route('digigarden/info') }}">
             <x-buttons.button type="edit" icon="fa-circle-info" label="Info" />
         </a>
     </x-slot>

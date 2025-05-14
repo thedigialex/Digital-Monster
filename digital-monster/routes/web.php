@@ -40,6 +40,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::middleware(['policy'])->group(function () {
         Route::get('/digigarden', [DashboardController::class, 'garden'])->name('digigarden');
+        Route::get('/digigarden/chart', [DashboardController::class, 'chart'])->name('digigarden.chart');
         Route::get('/digigarden/user', [DashboardController::class, 'gardenUser'])->name('digigarden.user');
         Route::post('/digigarden/background', [DashboardController::class, 'changeBackground'])->name('digigarden.background');
         Route::get('/colosseum', [DashboardController::class, 'colosseum'])->name('colosseum');
@@ -64,7 +65,6 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/users', [ProfileController::class, 'index'])->name('users.index');
         Route::post('/users/friend/add', [ProfileController::class, 'addFriend'])->name('users.friend.add');
         Route::post('/users/friend/cancel', [ProfileController::class, 'cancelFriend'])->name('users.friend.cancel');
-        Route::view('/chart', [DashboardController::class, 'chart'])->name('digigarden/chart');
         Route::view('/info', 'dashboard.info')->name('digigarden/info');
         Route::post('/session/store', [SessionController::class, 'store'])->name('session.store');
         Route::post('/session/clear', [SessionController::class, 'clear'])->name('session.clear');
