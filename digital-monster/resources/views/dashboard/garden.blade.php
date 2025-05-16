@@ -11,6 +11,7 @@
                 <x-buttons.button type="edit" icon="fa-circle-info" label="Info" />
             </a>
         </div>
+        
     </x-slot>
 
     <x-container>
