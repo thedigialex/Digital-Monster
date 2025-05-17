@@ -17,17 +17,57 @@
             </x-fonts.paragraph>
         </x-slot>
         @foreach ($monsters as $eggGroupId => $group)
-        <h2>{{ $group->first()->eggGroup->name ?? 'Unknown Egg Group' }}</h2>
+        <h2 class="text-lg font-bold my-4">{{ $group->first()->eggGroup->name ?? 'Unknown Egg Group' }}</h2>
 
-        <ul>
-            @foreach ($group as $monster)
-            <li>{{ $monster->name }}</li>
-            <div class="w-16 h-16 overflow-hidden">
-                <img src="{{ asset('storage/' . $monster->image_0) }}" alt="Monster Image" class="w-full h-full object-cover" style="object-position: 0 0;">
-            </div>
-            @endforeach
-        </ul>
+        <div class="flex flex-col gap-2 mb-4">
+            @for ($i = 0; $i < 3; $i++)
+                @if (isset($group[$i]))
+                <div class="w-16 h-16 overflow-hidden">
+                <img src="{{ asset('storage/' . $group[$i]->image_0) }}" alt="Monster Image" class="w-full h-full object-cover" style="object-position: 0 0;">
+        </div>
+        @endif
+        @endfor
+        </div>
+
+        <div class="flex flex-row gap-2 mb-4">
+            @for ($i = 3; $i < 5; $i++)
+                @if (isset($group[$i]))
+                <div class="w-16 h-16 overflow-hidden">
+                <img src="{{ asset('storage/' . $group[$i]->image_0) }}" alt="Monster Image" class="w-full h-full object-cover" style="object-position: 0 0;">
+        </div>
+        @endif
+        @endfor
+        </div>
+
+        <div class="flex flex-row gap-2 mb-4">
+            @for ($i = 5; $i < 9; $i++)
+                @if (isset($group[$i]))
+                <div class="w-16 h-16 overflow-hidden">
+                <img src="{{ asset('storage/' . $group[$i]->image_0) }}" alt="Monster Image" class="w-full h-full object-cover" style="object-position: 0 0;">
+        </div>
+        @endif
+        @endfor
+        </div>
+
+        <div class="flex flex-row gap-2 mb-4">
+            @for ($i = 9; $i < 17; $i++)
+                @if (isset($group[$i]))
+                <div class="w-16 h-16 overflow-hidden">
+                <img src="{{ asset('storage/' . $group[$i]->image_0) }}" alt="Monster Image" class="w-full h-full object-cover" style="object-position: 0 0;">
+        </div>
+        @endif
+        @endfor
+        </div>
+
+        <div class="flex gap-2">
+            @for ($i = 17; $i <= 24; $i++)
+                @if (isset($group[$i]))
+                <div class="w-16 h-16 overflow-hidden">
+                <img src="{{ asset('storage/' . $group[$i]->image_0) }}" alt="Monster Image" class="w-full h-full object-cover" style="object-position: 0 0;" />
+        </div>
+        @endif
+        @endfor
+        </div>
         @endforeach
-
     </x-container>
 </x-app-layout>

@@ -16,10 +16,10 @@
 @endphp
 
 <button {{ $attributes->merge(['type' => 'submit', 'class' => "relative rounded-md flex items-center overflow-hidden transition-all duration-300 group active:scale-95 h-[40px] border $buttonWidth $borderColor $bgColor"]) }}>
-    <span class="absolute left-1/3 text-secondary transform -translate-x-1/2 font-semibold transition-all duration-300 group-hover:opacity-0 md:block hidden">
+    <span class="label absolute left-1/3 text-secondary transform -translate-x-1/2 font-semibold transition-all duration-300 group-hover:opacity-0 md:block hidden">
         {{ $label }}
     </span>
     <span class="absolute right-0 {{ $textColor }} {{ $iconWidth }} h-full bg-secondary flex items-center justify-center transition-all duration-300 group-hover:w-full group-hover:bg-secondary">
-        <i class="fa {{ $icon }}"></i>
+        <i class="icon fa {{ $icon }}"></i>
     </span>
 </button>
