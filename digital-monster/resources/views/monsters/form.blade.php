@@ -91,6 +91,9 @@
             stageDropdown.value != "Fresh"
         ) {
             routeDivB.classList.remove("hidden");
+            if (stageDropdown.value == "Ultimate") {
+                routeDivB.classList.add("hidden");
+            }
             if (stageDropdown.value == "Mega") {
                 routeDivA.classList.add("hidden");
                 routeDivB.classList.add("hidden");

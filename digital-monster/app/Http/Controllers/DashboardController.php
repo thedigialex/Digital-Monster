@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Item;
 use App\Models\Monster;
+use App\Models\Evolution;
 use App\Models\UserItem;
 use App\Models\UserMonster;
 use App\Models\UserLocation;
@@ -105,7 +106,38 @@ class DashboardController extends Controller
     public function chart()
     {
         $user = User::find(Auth::id());
-        return view('dashboard.chart', compact('user'));
+        $userMonsterIds = $user->userMonsters()
+            ->with('monster')
+            ->get()
+            ->pluck('monster.id')
+            ->filter() // removes nulls in case of broken relations
+            ->unique()
+            ->toArray();
+
+        // Load all monsters with their children
+        $monsters = Monster::with('children')->get()->keyBy('id');
+
+        // Identify monsters that are *not* a child of any evolution = egg starters
+        $allChildIds = Evolution::pluck('child_monster_id')->toArray();
+        $eggMonsters = $monsters->filter(function ($monster) use ($allChildIds) {
+            return !in_array($monster->id, $allChildIds);
+        });
+
+        // Recursive function to build the evolution tree
+        $buildTree = function ($monster) use (&$buildTree, $monsters) {
+            return [
+                'monster' => $monster,
+                'children' => $monster->children->map($buildTree)->toArray(),
+            ];
+        };
+
+        // Build trees starting from each egg monster
+        $evolutionTrees = $eggMonsters->map(function ($egg) use ($buildTree) {
+            return $buildTree($egg);
+        });
+
+        // Send the tree and user's monster IDs to the view
+        return view('dashboard.chart', compact('evolutionTrees', 'userMonsterIds'));
     }
 
     public function colosseum()
