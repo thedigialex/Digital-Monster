@@ -16,40 +16,18 @@
                 This site lets you collect, evolve, and manage digital creatures. Start by registering an account to receive dataCrystals, which you can use to choose an egg from the DigiConverge page. Hatch and evolve your creatures in the DigiGarden, track their progress, and build your ultimate digital team!
             </x-fonts.paragraph>
         </x-slot>
+        @foreach ($monsters as $eggGroupId => $group)
+        <h2>{{ $group->first()->eggGroup->name ?? 'Unknown Egg Group' }}</h2>
 
-        <div class="container text-center">
-            <h2>Monster Evolution Chart</h2>
-
-            <div class="d-flex justify-content-center">
-                <ul class="tree">
-                    @foreach($evolutionTrees as $tree)
-                    @php
-                    function renderNode($node, $userMonsterIds) {
-                    $html = '<li>';
-
-                        if (in_array($node['monster']->id, $userMonsterIds)) {
-                        $html .= '<div>' . e($node['monster']->name) . '</div>';
-                        } else {
-                        $html .= '<div><i class="fas fa-question-circle fa-2x text-muted"></i></div>';
-                        }
-
-                        if (!empty($node['children'])) {
-                        $html .= '<ul class="tree">';
-                            foreach ($node['children'] as $child) {
-                            $html .= renderNode($child, $userMonsterIds);
-                            }
-                            $html .= '</ul>';
-                        }
-
-                        $html .= '</li>';
-                    return $html;
-                    }
-                    @endphp
-
-                    {!! renderNode($tree, $userMonsterIds) !!}
-                    @endforeach
-                </ul>
+        <ul>
+            @foreach ($group as $monster)
+            <li>{{ $monster->name }}</li>
+            <div class="w-16 h-16 overflow-hidden">
+                <img src="{{ asset('storage/' . $monster->image_0) }}" alt="Monster Image" class="w-full h-full object-cover" style="object-position: 0 0;">
             </div>
-        </div>
+            @endforeach
+        </ul>
+        @endforeach
+
     </x-container>
 </x-app-layout>

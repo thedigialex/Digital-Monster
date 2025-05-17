@@ -114,30 +114,15 @@ class DashboardController extends Controller
             ->unique()
             ->toArray();
 
-        // Load all monsters with their children
-        $monsters = Monster::with('children')->get()->keyBy('id');
 
-        // Identify monsters that are *not* a child of any evolution = egg starters
-        $allChildIds = Evolution::pluck('child_monster_id')->toArray();
-        $eggMonsters = $monsters->filter(function ($monster) use ($allChildIds) {
-            return !in_array($monster->id, $allChildIds);
-        });
 
-        // Recursive function to build the evolution tree
-        $buildTree = function ($monster) use (&$buildTree, $monsters) {
-            return [
-                'monster' => $monster,
-                'children' => $monster->children->map($buildTree)->toArray(),
-            ];
-        };
+        $monsters = Monster::with('eggGroup')
+            ->orderBy('egg_group_id')
+            ->get()
+            ->groupBy('egg_group_id');
 
-        // Build trees starting from each egg monster
-        $evolutionTrees = $eggMonsters->map(function ($egg) use ($buildTree) {
-            return $buildTree($egg);
-        });
 
-        // Send the tree and user's monster IDs to the view
-        return view('dashboard.chart', compact('evolutionTrees', 'userMonsterIds'));
+        return view('dashboard.chart', compact('monsters'));
     }
 
     public function colosseum()
