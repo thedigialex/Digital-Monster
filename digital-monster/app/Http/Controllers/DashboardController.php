@@ -106,23 +106,93 @@ class DashboardController extends Controller
     public function chart()
     {
         $user = User::find(Auth::id());
-        $userMonsterIds = $user->userMonsters()
-            ->with('monster')
-            ->get()
-            ->pluck('monster.id')
-            ->filter() // removes nulls in case of broken relations
-            ->unique()
-            ->toArray();
+        $obtainedMonsterIds = $user->monsterDex()
+            ->wherePivot('obtained', true)
+            ->pluck('monsters.id');
+        $allMonsters = Monster::with(['eggGroup', 'evolution'])->get();
+        $stageOrder = [
+            'Egg' => 0,
+            'Fresh' => 1,
+            'Child' => 2,
+            'Rookie' => 3,
+            'Champion' => 4,
+            'Ultimate' => 5,
+            'Mega' => 6,
+        ];
+        $monsters = $allMonsters->groupBy('egg_group_id')
+            ->filter(fn($group) => $group->count() === 25)
+            ->map(function ($group) use ($stageOrder) {
+                $sorted = $group
+                    ->sortBy(fn($monster) => $stageOrder[$monster->stage])
+                    ->values();
+                $child = $sorted[2];
+                $rookieA = $sorted[3];
+                $rookieB = $sorted[4];
 
+                if ($child->evolution->route_0 != $rookieA->id) {
+                    $sorted[3] = $rookieB;
+                    $sorted[4] = $rookieA;
+                }
 
+                $champions = collect([$sorted[5], $sorted[6], $sorted[7], $sorted[8]]);
 
-        $monsters = Monster::with('eggGroup')
-            ->orderBy('egg_group_id')
-            ->get()
-            ->groupBy('egg_group_id');
+                $rookieA = $sorted[3];
+                if ($rookieA->evolution) {
+                    $route0 = $rookieA->evolution->route_0;
+                    $route1 = $rookieA->evolution->route_1;
+                    $sorted[5] = $champions->firstWhere('id', $route0);
+                    $sorted[6] = $champions->firstWhere('id', $route1);
+                }
 
+                $rookieB = $sorted[4];
+                if ($rookieB->evolution) {
+                    $route0 = $rookieB->evolution->route_0;
+                    $route1 = $rookieB->evolution->route_1;
 
-        return view('dashboard.chart', compact('monsters'));
+                    $sorted[7] = $champions->firstWhere('id', $route0);
+                    $sorted[8] = $champions->firstWhere('id', $route1);
+                }
+                $ultimates = collect([$sorted[9], $sorted[10], $sorted[11], $sorted[12], $sorted[13], $sorted[14], $sorted[15], $sorted[16]]);
+                if ($sorted[5]->evolution) {
+                    $sorted[9] = $ultimates->firstWhere('id', $sorted[5]->evolution->route_0);
+                    $sorted[10] = $ultimates->firstWhere('id', $sorted[5]->evolution->route_1);
+                }
+                if ($sorted[6]->evolution) {
+                    $sorted[11] = $ultimates->firstWhere('id', $sorted[6]->evolution->route_0);
+                    $sorted[12] = $ultimates->firstWhere('id', $sorted[6]->evolution->route_1);
+                }
+
+                if ($sorted[7]->evolution) {
+                    $sorted[13] = $ultimates->firstWhere('id', $sorted[7]->evolution->route_0);
+                    $sorted[14] = $ultimates->firstWhere('id', $sorted[7]->evolution->route_1);
+                }
+                if ($sorted[8]->evolution) {
+                    $sorted[15] = $ultimates->firstWhere('id', $sorted[8]->evolution->route_0);
+                    $sorted[16] = $ultimates->firstWhere('id', $sorted[8]->evolution->route_1);
+                }
+
+                $megas = collect([
+                    $sorted[17],
+                    $sorted[18],
+                    $sorted[19],
+                    $sorted[20],
+                    $sorted[21],
+                    $sorted[22],
+                    $sorted[23],
+                    $sorted[24],
+                ]);
+
+                for ($i = 9; $i <= 16; $i++) {
+                    $ultimate = $sorted[$i];
+                    if ($ultimate->evolution) {
+                        $targetIndex = 8 + $i;
+                        $sorted[$targetIndex] = $megas->firstWhere('id', $ultimate->evolution->route_0);
+                    }
+                }
+
+                return $sorted;
+            });
+        return view('dashboard.chart', compact('monsters', 'obtainedMonsterIds'));
     }
 
     public function colosseum()
