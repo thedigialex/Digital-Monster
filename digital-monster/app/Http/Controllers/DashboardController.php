@@ -6,7 +6,6 @@ use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Item;
 use App\Models\Monster;
-use App\Models\Evolution;
 use App\Models\UserItem;
 use App\Models\UserMonster;
 use App\Models\UserLocation;
@@ -110,6 +109,14 @@ class DashboardController extends Controller
             ->wherePivot('obtained', true)
             ->pluck('monsters.id');
         $allMonsters = Monster::with(['eggGroup', 'evolution'])->get();
+        $fieldIconMap = [
+            'Tyrannos' => 'fa-dragon',
+            'Insecta' => 'fa-bug',
+            'Beast' => 'fa-paw',
+            'Flora' => 'fa-leaf',
+            'Abyss' => 'fa-water',
+            'Arcane' => 'fa-magic',
+        ];
         $stageOrder = [
             'Egg' => 0,
             'Fresh' => 1,
@@ -192,7 +199,8 @@ class DashboardController extends Controller
 
                 return $sorted;
             });
-        return view('dashboard.chart', compact('monsters', 'obtainedMonsterIds'));
+
+        return view('dashboard.chart', compact('monsters', 'obtainedMonsterIds','fieldIconMap'));
     }
 
     public function colosseum()
