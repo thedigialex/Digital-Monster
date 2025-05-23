@@ -63,6 +63,7 @@
                 </div>
             </div>
         </x-accordion>
+        
         @endforeach
     </x-container>
 </x-app-layout>
