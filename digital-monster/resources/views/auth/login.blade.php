@@ -8,6 +8,7 @@
         class="w-full"
         type="email"
         name="email"
+        id="email-login"
         :value="old('email')"
         :messages="$errors->get('email')" />
 
@@ -15,6 +16,7 @@
         class="w-full"
         type="password"
         name="password"
+        id="password-login"
         :messages="$errors->get('password')" />
 
     <div class="flex items-center justify-center py-4">

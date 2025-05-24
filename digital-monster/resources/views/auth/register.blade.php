@@ -12,6 +12,7 @@
         class="w-full"
         type="email"
         name="email"
+        id="email-register"
         :value="old('email')"
         :messages="$errors->get('email')" />
 
@@ -19,6 +20,7 @@
         class="w-full"
         type="password"
         name="password"
+        id="password-register"
         :messages="$errors->get('password')" />
 
     <x-inputs.text

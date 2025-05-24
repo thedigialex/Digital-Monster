@@ -8,6 +8,7 @@
         class="w-full"
         type="email"
         name="email"
+        id="email-password"
         :value="old('email')"
         :messages="$errors->get('email')" />
 
