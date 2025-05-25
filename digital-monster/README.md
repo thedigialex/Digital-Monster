@@ -90,3 +90,21 @@ Once the backend is set up, you can compile frontend assets by running:
 
 ```bash
 npm run dev
+```
+
+### Docker Notes
+
+To create a docker image to run
+
+-   `Update ENV File`: Use your production level .env
+-   `Disconnect storage`: rm public/storage
+-   `Build NPM`: npm run build
+-   `Build Image`: docker build -t digi-portal .
+-   `Save Image`: docker save -o digi-portal.tar digi-portal:latest
+
+Update to production location
+
+-   `Load Image`: docker load -i digi-portal.tar
+-   `Stop Current`: docker stop staging-digi-portal
+-   `Remove Current`: docker rm staging-digi-portal
+-   `Run Image`: docker run -d --name staging-digi-portal -p 8004:80 --network bridge --restart unless-stopped digi-portal:latest
