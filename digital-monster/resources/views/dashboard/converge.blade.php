@@ -21,9 +21,10 @@
             <div id="egg-selection" class="flex flex-col justify-center items-center gap-4">
                 <x-fonts.paragraph class="text-text p-2 bg-primary rounded-md">{{ $message }}</x-fonts.paragraph>
                 <div class="flex items-center gap-4">
-                    <x-buttons.arrow direction="left" id="scrollLeft"></x-buttons.arrow>
+                    <x-buttons.button type="edit" id="scrollLeft" label="" icon="fa-chevron-left" />
                     <div id="monsterCarousel" class="flex items-center gap-4" data-eggs='@json($eggs)'></div>
-                    <x-buttons.arrow direction="right" id="scrollRight"></x-buttons.arrow>
+
+                    <x-buttons.button type="edit" id="scrollRight" label="" icon="fa-chevron-right" />
                 </div>
             </div>
             <div id="confirm-selection" class="hidden flex flex-col justify-center items-center">
@@ -31,7 +32,7 @@
                 <div id="single-egg" class="flex items-center gap-4 py-4"></div>
                 <div class="flex gap-4">
                     <x-buttons.button type="edit" id="backButton" label="Back" icon="fa-backward" />
-                    <x-buttons.button type="edit" id="confirmButton" label="Confirm" icon="fa-check"/>
+                    <x-buttons.button type="edit" id="confirmButton" label="Confirm" icon="fa-check" />
                 </div>
             </div>
             <x-alerts.spinner id="loading-section"></x-alerts.spinner>

@@ -45,14 +45,14 @@
 
             <x-fonts.paragraph class="text-text p-2 bg-primary rounded-md">Select a monster</x-fonts.paragraph>
             <div class="flex items-center gap-4 pt-4">
-                <x-buttons.arrow direction="left" id="scrollLeft"></x-buttons.arrow>
+                <x-buttons.button type="edit" id="scrollLeft" label="" icon="fa-chevron-left" />
                 <div id="monsterCarousel" class="flex items-center gap-4" data-monsters='@json($userMonsters)'>
                 </div>
-                <x-buttons.arrow direction="right" id="scrollRight"></x-buttons.arrow>
+                <x-buttons.button type="edit" id="scrollRight" label="" icon="fa-chevron-right" />
             </div>
 
             <div id="confirm-section" class="hidden flex justify-center  items-center gap-4 flex-col pt-4">
-                <x-buttons.square id="selectMonsterButton" text="Adventure" icon="fa-map" />
+                <x-buttons.button type="edit" id="selectMonsterButton" label="Adventure" icon="fa-map" />
             </div>
             @endif
         </x-container.background>
@@ -64,7 +64,8 @@
                 </div>
             </div>
             <x-fonts.paragraph id="messageBox" class="text-text p-2 bg-primary rounded-md">Adventure Forth!</x-fonts.paragraph>
-            <x-buttons.square id="stepButton" text="Step" icon="fa-forward" />
+
+            <x-buttons.button type="edit" id="stepButton" label="Step" icon="fa-forward" />
         </x-container.background>
     </x-container>
 </x-app-layout>

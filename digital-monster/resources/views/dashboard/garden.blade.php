@@ -143,6 +143,16 @@
                         </div>
                     </x-container.modal>
                 </div>
+                <div class="flex flex-wrap gap-x-4 gap-y-2 justify-start">
+                    <x-fonts.paragraph id="stat-stage">Stage: <span></span></x-fonts.paragraph>
+                    <x-fonts.paragraph id="stat-steps">Steps: <span></span></x-fonts.paragraph>
+                </div>
+                <div class="flex flex-wrap gap-x-4 gap-y-2 justify-between">
+                    <x-fonts.paragraph id="stat-strength">Strength: <span></span></x-fonts.paragraph>
+                    <x-fonts.paragraph id="stat-agility">Agility: <span></span></x-fonts.paragraph>
+                    <x-fonts.paragraph id="stat-defense">Defense: <span></span></x-fonts.paragraph>
+                    <x-fonts.paragraph id="stat-mind">Mind: <span></span></x-fonts.paragraph>
+                </div>
                 <div class="flex gap-x-4 gap-y-2 justify-between">
                     <div class="flex-1">
                         <x-fonts.paragraph>Hunger</x-fonts.paragraph>
@@ -159,14 +169,6 @@
                             <div id="energy-bar" class="bg-success h-8 rounded-md transition-all duration-300"></div>
                         </div>
                     </div>
-                </div>
-                <div class="flex flex-wrap gap-x-4 gap-y-2 justify-between">
-                    <x-fonts.paragraph id="stat-stage">Stage: <span></span></x-fonts.paragraph>
-                    <x-fonts.paragraph id="stat-steps">Steps: <span></span></x-fonts.paragraph>
-                    <x-fonts.paragraph id="stat-strength">Strength: <span></span></x-fonts.paragraph>
-                    <x-fonts.paragraph id="stat-agility">Agility: <span></span></x-fonts.paragraph>
-                    <x-fonts.paragraph id="stat-defense">Defense: <span></span></x-fonts.paragraph>
-                    <x-fonts.paragraph id="stat-mind">Mind: <span></span></x-fonts.paragraph>
                 </div>
                 <div id="evolutionButton" class="flex justify-center">
                     <button class="w-[150px] relative inline-flex hover:scale-90 active:scale-90 overflow-hidden rounded-md p-1 focus:outline-none flex justify-center">

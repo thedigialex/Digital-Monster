@@ -17,17 +17,17 @@
             @else
             <x-fonts.paragraph class="text-text p-2 bg-primary rounded-md">Select a monster</x-fonts.paragraph>
             <div class="flex items-center gap-4 pt-4">
-                <x-buttons.arrow direction="left" id="scrollLeft"></x-buttons.arrow>
+                <x-buttons.button type="edit" id="scrollLeft" label="" icon="fa-chevron-left" />
                 <div id="monsterCarousel" class="flex items-center gap-4" data-monsters='@json($userMonsters)'>
                 </div>
-                <x-buttons.arrow direction="right" id="scrollRight"></x-buttons.arrow>
+                <x-buttons.button type="edit" id="scrollRight" label="" icon="fa-chevron-right" />
             </div>
 
             <div id="type-section" class="hidden flex items-center gap-4 flex-col pt-4">
                 <x-fonts.paragraph class="text-text p-2 bg-primary rounded-md">Player OR Wild</x-fonts.paragraph>
                 <div class="flex justify-center items-center gap-4 ">
-                    <x-buttons.square id="userBattleButton" text="Player" icon="fa-user" />
-                    <x-buttons.square id="wildBattleButton" text="Wild" icon="fa-robot" />
+                    <x-buttons.button type="edit" id="userBattleButton" label="Player" icon="fa-user" />
+                    <x-buttons.button type="edit" id="wildBattleButton" label="Wild" icon="fa-robot" />
                 </div>
             </div>
             @endif
@@ -97,7 +97,7 @@
                 const img = document.createElement("img");
                 img.classList.add("w-full", "h-full", "object-cover");
                 img.style.objectPosition = "0 0";
- 
+
                 if (["Egg", "Fresh", "Child"].includes(userMonster.monster.stage) || userMonster.type === "Data") {
                     img.src = `/storage/${userMonster.monster.image_0}`;
                 } else if (userMonster.type == "Vaccine") {
