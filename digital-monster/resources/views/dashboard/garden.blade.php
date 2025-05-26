@@ -69,17 +69,10 @@
                 </x-fonts.sub-header>
                 <x-buttons.button type="edit" id="close-stats" label="Close" icon="fa-x" />
             </div>
-            <div class="bg-primary p-4 rounded-md w-full">
-                <div class="flex justify-between w-full">
-                    <div>
-                        <x-fonts.paragraph>Hunger</x-fonts.paragraph>
-                        <div class="hunger-icons">
-                            <i class="fa-solid fa-drumstick-bite fa-2x"></i>
-                            <i class="fa-solid fa-drumstick-bite fa-2x"></i>
-                            <i class="fa-solid fa-drumstick-bite fa-2x"></i>
-                            <i class="fa-solid fa-drumstick-bite fa-2x"></i>
-                        </div>
-                    </div>
+
+            <div class="bg-primary p-4 rounded-md flex flex-col gap-4">
+                <div class="flex justify-end gap-4 w-full">
+                    <x-buttons.button type="edit" id="sleepButton" label="Light" icon="fa-lightbulb" class="buttonContainer" />
                     <x-container.modal name="user-items" title="Inventory">
                         <x-slot name="button">
                             <x-buttons.button type="edit" id="openItems" label="Items" icon="fa-briefcase" @click="open = true" />
@@ -150,45 +143,50 @@
                         </div>
                     </x-container.modal>
                 </div>
-                <div class="flex gap-4 justify-between pt-2">
-                    <x-fonts.paragraph id="stat-stage">Stage: <span></span></x-fonts.paragraph>
-                    <x-fonts.paragraph id="stat-steps">Steps: <span></span></x-fonts.paragraph>
-                </div>
-                <div class="py-2">
-                    <x-fonts.paragraph>Energy</x-fonts.paragraph>
-                    <div class="w-full bg-secondary rounded-md h-4">
-                        <div id="energy-bar" class="bg-success h-4 rounded-md transition-all duration-300"></div>
+                <div class="flex gap-x-4 gap-y-2 justify-between">
+                    <div class="flex-1">
+                        <x-fonts.paragraph>Hunger</x-fonts.paragraph>
+                        <div class="hunger-icons">
+                            <i class="fa-solid fa-drumstick-bite fa-2x"></i>
+                            <i class="fa-solid fa-drumstick-bite fa-2x"></i>
+                            <i class="fa-solid fa-drumstick-bite fa-2x"></i>
+                            <i class="fa-solid fa-drumstick-bite fa-2x"></i>
+                        </div>
+                    </div>
+                    <div class="flex-1">
+                        <x-fonts.paragraph>Energy</x-fonts.paragraph>
+                        <div class="w-full bg-secondary rounded-md h-8">
+                            <div id="energy-bar" class="bg-success h-8 rounded-md transition-all duration-300"></div>
+                        </div>
                     </div>
                 </div>
-                <x-fonts.paragraph id="stat-stats" class="flex flex-wrap w-full flex-row md:space-x-4 text-text pt-2">
-                    <span id="stat-strength" class="flex-1 text-center">Strength<br><span></span></span>
-                    <span id="stat-agility" class="flex-1 text-center">Agility<br><span></span></span>
-                    <span id="stat-defense" class="flex-1 text-center">Defense<br><span></span></span>
-                    <span id="stat-mind" class="flex-1 text-center">Mind<br><span></span></span>
-                </x-fonts.paragraph>
+                <div class="flex flex-wrap gap-x-4 gap-y-2 justify-between">
+                    <x-fonts.paragraph id="stat-stage">Stage: <span></span></x-fonts.paragraph>
+                    <x-fonts.paragraph id="stat-steps">Steps: <span></span></x-fonts.paragraph>
+                    <x-fonts.paragraph id="stat-strength">Strength: <span></span></x-fonts.paragraph>
+                    <x-fonts.paragraph id="stat-agility">Agility: <span></span></x-fonts.paragraph>
+                    <x-fonts.paragraph id="stat-defense">Defense: <span></span></x-fonts.paragraph>
+                    <x-fonts.paragraph id="stat-mind">Mind: <span></span></x-fonts.paragraph>
+                </div>
+                <div id="evolutionButton" class="flex justify-center">
+                    <button class="w-[150px] relative inline-flex hover:scale-90 active:scale-90 overflow-hidden rounded-md p-1 focus:outline-none flex justify-center">
+                        <span class="absolute inset-[-1000%] animate-spin bg-[conic-gradient(from_90deg_at_50%_50%,#333_0%,#545454_50%,#e47e00_100%)]">
+                        </span>
+                        <span class="inline-flex h-full w-full items-center justify-center rounded-md bg-secondary p-4 text-text backdrop-blur-3xl">
+                            Evolve
+                        </span>
+                    </button>
+                </div>
+
                 <x-container.modal name="user-monster-training" title="Training">
                     <x-slot name="button">
-                        <div class="flex justify-center my-4">
-                            <button id="evolutionButton" class="w-[150px] relative inline-flex hover:scale-90 active:scale-90 overflow-hidden rounded-md p-1 focus:outline-none flex justify-center my-4">
-                                <span class="absolute inset-[-1000%] animate-spin bg-[conic-gradient(from_90deg_at_50%_50%,#333_0%,#545454_50%,#e47e00_100%)]">
-                                </span>
-                                <span class="inline-flex h-full w-full items-center justify-center rounded-md bg-secondary p-4 text-text backdrop-blur-3xl">
-                                    Evolve
-                                </span>
-                            </button>
-                        </div>
-                        <div id="buttonContainer">
-                            <div class="flex flex-wrap justify-center gap-4 items-center">
-                                @foreach ($userEquipment as $userEquipment)
-                                <x-buttons.button type="edit" class="openTraining" @click="open = true"
-                                    data-equipment='{{ json_encode($userEquipment) }}'
-                                    label="{{ $userEquipment->equipment->stat }}"
-                                    icon="{{ $userEquipment->equipment->icon }}" />
-                                @endforeach
-                            </div>
-                            <div class="flex justify-center my-4">
-                                <x-buttons.button type="edit" id="sleepButton" label="Light" icon="fa-lightbulb" />
-                            </div>
+                        <div class="flex flex-wrap justify-center gap-4 items-center buttonContainer py-4">
+                            @foreach ($userEquipment as $userEquipment)
+                            <x-buttons.button type="edit" class="openTraining" @click="open = true"
+                                data-equipment='{{ json_encode($userEquipment) }}'
+                                label="{{ $userEquipment->equipment->stat }}"
+                                icon="{{ $userEquipment->equipment->icon }}" />
+                            @endforeach
                         </div>
                     </x-slot>
 
@@ -263,9 +261,14 @@
                 document.getElementById("evolutionButton").classList.remove("hidden");
             }
 
-            document.getElementById("buttonContainer").classList.remove("hidden");
+            document.querySelectorAll(".buttonContainer").forEach(el => {
+                el.classList.remove("hidden");
+            });
+
             if (activeUserMonster.monster.stage == "Egg") {
-                document.getElementById("buttonContainer").classList.add("hidden");
+                document.querySelectorAll(".buttonContainer").forEach(el => {
+                    el.classList.add("hidden");
+                });
             }
         }
 
