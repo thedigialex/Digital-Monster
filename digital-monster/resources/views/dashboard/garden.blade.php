@@ -11,7 +11,7 @@
                 <x-buttons.button type="edit" icon="fa-circle-info" label="Info" />
             </a>
         </div>
-        
+
     </x-slot>
 
     <x-container>
@@ -69,152 +69,148 @@
                 </x-fonts.sub-header>
                 <x-buttons.button type="edit" id="close-stats" label="Close" icon="fa-x" />
             </div>
-            <div class="flex flex-col md:flex-row gap-4">
-                <div class="bg-primary p-4 rounded-md md:w-2/5">
-                    <div class="flex justify-between w-full">
-                        <div>
-                            <x-fonts.paragraph>Hunger</x-fonts.paragraph>
-                            <div class="hunger-icons">
-                                <i class="fa-solid fa-drumstick-bite fa-2x"></i>
-                                <i class="fa-solid fa-drumstick-bite fa-2x"></i>
-                                <i class="fa-solid fa-drumstick-bite fa-2x"></i>
-                                <i class="fa-solid fa-drumstick-bite fa-2x"></i>
-                            </div>
+            <div class="bg-primary p-4 rounded-md w-full">
+                <div class="flex justify-between w-full">
+                    <div>
+                        <x-fonts.paragraph>Hunger</x-fonts.paragraph>
+                        <div class="hunger-icons">
+                            <i class="fa-solid fa-drumstick-bite fa-2x"></i>
+                            <i class="fa-solid fa-drumstick-bite fa-2x"></i>
+                            <i class="fa-solid fa-drumstick-bite fa-2x"></i>
+                            <i class="fa-solid fa-drumstick-bite fa-2x"></i>
                         </div>
-                        <x-container.modal name="user-items" title="Inventory">
-                            <x-slot name="button">
-                                <x-buttons.button type="edit" id="openItems" label="Items" icon="fa-briefcase" @click="open = true" />
-                            </x-slot>
-                            <div class="flex gap-4 p-2 rounded-t-md bg-secondary w-full justify-center">
-                                <button id="showItems" class="bg-accent text-secondary px-4 py-2 rounded-md">Consumable</button>
-                                <button id="showAttacks" class="bg-primary text-text px-4 py-2 rounded-md">Attacks</button>
-                                <button id="showMaterials" class="bg-primary text-text px-4 py-2 rounded-md">Materials</button>
-                            </div>
+                    </div>
+                    <x-container.modal name="user-items" title="Inventory">
+                        <x-slot name="button">
+                            <x-buttons.button type="edit" id="openItems" label="Items" icon="fa-briefcase" @click="open = true" />
+                        </x-slot>
+                        <div class="flex gap-4 p-2 rounded-t-md bg-secondary w-full justify-center">
+                            <button id="showItems" class="bg-accent text-secondary px-4 py-2 rounded-md">Consumable</button>
+                            <button id="showAttacks" class="bg-primary text-text px-4 py-2 rounded-md">Attacks</button>
+                            <button id="showMaterials" class="bg-primary text-text px-4 py-2 rounded-md">Materials</button>
+                        </div>
 
-                            <div class="flex flex-col justify-center items-center bg-cover bg-center rounded-b-md"
-                                style="background-image: url('{{ asset($background) }}'); height: 40vh;">
-                                <div id="items" class="flex justify-center items-center overflow-y-auto">
-                                    <div id="item-selection" class="flex flex-wrap justify-center items-center gap-4">
-                                        @foreach ($userItems as $userItem)
-                                        <div class="flex flex-col items-center w-36 p-2 bg-secondary border-2 border-accent rounded-md">
-                                            <div class="relative w-24 h-24 p-2 rounded-md bg-primary">
-                                                <button class="useItem w-full h-full"
-                                                    data-item='{{ json_encode($userItem) }}'
-                                                    style="background: url('/storage/{{ $userItem->item->image }}') no-repeat; background-size: cover; background-position: 0 0;">
-                                                </button>
-                                                <span class="absolute bottom-1 right-1 bg-accent text-text text-xs px-2 py-1 rounded-md">
-                                                    {{ $userItem->quantity }}
-                                                </span>
-                                            </div>
-                                            <x-fonts.paragraph> {{ $userItem->item->name }}</x-fonts.paragraph>
-                                        </div>
-                                        @endforeach
-                                    </div>
-                                    <x-fonts.paragraph id="status-text-item" class="text-text p-2 bg-primary rounded-md">Monster is full</x-fonts.paragraph>
-                                    <div id="item-usage-section" class="hidden flex justify-center items-center gap-4 w-full">
-                                        <x-container.sprite id="item-sprite"></x-container.sprite>
-                                        <x-container.sprite id="monster-item-sprite"></x-container.sprite>
-                                    </div>
-                                </div>
-                                <div id="attacks" class="hidden flex flex-wrap justify-center items-center gap-4 overflow-y-auto">
-                                    @foreach ($userAttacks as $userAttack)
-                                    <div class="attack-div flex flex-col items-center w-36 p-2 bg-secondary border-2 border-accent rounded-md"
-                                        data-attack-id="{{ $userAttack->id }}">
-                                        <div class="w-24 h-24 p-2 rounded-md bg-primary">
-                                            <button class="useAttack w-full h-full"
-                                                data-attack='{{ json_encode($userAttack) }}'
-                                                style="background: url('/storage/{{ $userAttack->item->image }}') no-repeat; background-size: cover; background-position: 0 0;">
-                                            </button>
-                                        </div>
-                                        <x-fonts.paragraph class="attack-p text-text"> {{ $userAttack->item->name }}</x-fonts.paragraph>
-                                    </div>
-                                    @endforeach
-                                </div>
-                                <div id="materials" class="hidden flex flex-wrap justify-center items-center gap-4 overflow-y-auto">
-                                    @foreach ($userMaterials as $userMaterial)
+                        <div class="flex flex-col justify-center items-center bg-cover bg-center rounded-b-md"
+                            style="background-image: url('{{ asset($background) }}'); height: 40vh;">
+                            <div id="items" class="flex justify-center items-center overflow-y-auto">
+                                <div id="item-selection" class="flex flex-wrap justify-center items-center gap-4">
+                                    @foreach ($userItems as $userItem)
                                     <div class="flex flex-col items-center w-36 p-2 bg-secondary border-2 border-accent rounded-md">
                                         <div class="relative w-24 h-24 p-2 rounded-md bg-primary">
                                             <button class="useItem w-full h-full"
-                                                style="background: url('/storage/{{ $userMaterial->item->image }}') no-repeat; background-size: cover; background-position: 0 0;">
+                                                data-item='{{ json_encode($userItem) }}'
+                                                style="background: url('/storage/{{ $userItem->item->image }}') no-repeat; background-size: cover; background-position: 0 0;">
                                             </button>
                                             <span class="absolute bottom-1 right-1 bg-accent text-text text-xs px-2 py-1 rounded-md">
-                                                {{ $userMaterial->quantity }}
+                                                {{ $userItem->quantity }}
                                             </span>
                                         </div>
-                                        <x-fonts.paragraph> {{ $userMaterial->item->name }}</x-fonts.paragraph>
+                                        <x-fonts.paragraph> {{ $userItem->item->name }}</x-fonts.paragraph>
                                     </div>
                                     @endforeach
-                                    @if($userMaterials->isEmpty())
-                                    <x-fonts.paragraph class="text-text p-2 bg-primary rounded-md">No Materials</x-fonts.paragraph>
-                                    @endif
+                                </div>
+                                <x-fonts.paragraph id="status-text-item" class="text-text p-2 bg-primary rounded-md">Monster is full</x-fonts.paragraph>
+                                <div id="item-usage-section" class="hidden flex justify-center items-center gap-4 w-full">
+                                    <x-container.sprite id="item-sprite"></x-container.sprite>
+                                    <x-container.sprite id="monster-item-sprite"></x-container.sprite>
                                 </div>
                             </div>
-                        </x-container.modal>
-                    </div>
-                    <div class="flex gap-4 justify-between pt-2">
-                        <x-fonts.paragraph id="stat-stage">Stage: <span></span></x-fonts.paragraph>
-                        <x-fonts.paragraph id="stat-steps">Steps: <span></span></x-fonts.paragraph>
-                    </div>
-                    <div class="py-2">
-                        <x-fonts.paragraph>Energy</x-fonts.paragraph>
-                        <div class="w-full bg-secondary rounded-md h-4">
-                            <div id="energy-bar" class="bg-success h-4 rounded-md transition-all duration-300"></div>
-                        </div>
-                    </div>
-                    <x-fonts.paragraph id="stat-stats" class="flex flex-wrap w-full flex-row md:space-x-4 text-text pt-2">
-                        <span id="stat-strength" class="flex-1 text-center">Strength<br><span></span></span>
-                        <span id="stat-agility" class="flex-1 text-center">Agility<br><span></span></span>
-                        <span id="stat-defense" class="flex-1 text-center">Defense<br><span></span></span>
-                        <span id="stat-mind" class="flex-1 text-center">Mind<br><span></span></span>
-                    </x-fonts.paragraph>
-                </div>
-                <div class="bg-primary rounded-md md:w-3/5 flex items-center justify-center">
-                    <x-container.modal name="user-monster-training" title="Training">
-                        <x-slot name="button">
-                            <div class="flex justify-center my-4">
-                                <button id="evolutionButton" class="w-[150px] relative inline-flex hover:scale-90 active:scale-90 overflow-hidden rounded-md p-1 focus:outline-none flex justify-center my-4">
-                                    <span class="absolute inset-[-1000%] animate-spin bg-[conic-gradient(from_90deg_at_50%_50%,#333_0%,#545454_50%,#e47e00_100%)]">
-                                    </span>
-                                    <span class="inline-flex h-full w-full items-center justify-center rounded-md bg-secondary p-4 text-text backdrop-blur-3xl">
-                                        Evolve
-                                    </span>
-                                </button>
+                            <div id="attacks" class="hidden flex flex-wrap justify-center items-center gap-4 overflow-y-auto">
+                                @foreach ($userAttacks as $userAttack)
+                                <div class="attack-div flex flex-col items-center w-36 p-2 bg-secondary border-2 border-accent rounded-md"
+                                    data-attack-id="{{ $userAttack->id }}">
+                                    <div class="w-24 h-24 p-2 rounded-md bg-primary">
+                                        <button class="useAttack w-full h-full"
+                                            data-attack='{{ json_encode($userAttack) }}'
+                                            style="background: url('/storage/{{ $userAttack->item->image }}') no-repeat; background-size: cover; background-position: 0 0;">
+                                        </button>
+                                    </div>
+                                    <x-fonts.paragraph class="attack-p text-text"> {{ $userAttack->item->name }}</x-fonts.paragraph>
+                                </div>
+                                @endforeach
                             </div>
-                            <div id="buttonContainer">
-                                <div class="flex flex-wrap justify-center gap-4 items-center">
-                                    @foreach ($userEquipment as $userEquipment)
-                                    <x-buttons.square class="openTraining " @click="open = true"
-                                        data-equipment='{{ json_encode($userEquipment) }}'
-                                        text="{{ $userEquipment->equipment->stat }}"
-                                        icon="{{ $userEquipment->equipment->icon }}" />
-                                    @endforeach
+                            <div id="materials" class="hidden flex flex-wrap justify-center items-center gap-4 overflow-y-auto">
+                                @foreach ($userMaterials as $userMaterial)
+                                <div class="flex flex-col items-center w-36 p-2 bg-secondary border-2 border-accent rounded-md">
+                                    <div class="relative w-24 h-24 p-2 rounded-md bg-primary">
+                                        <button class="useItem w-full h-full"
+                                            style="background: url('/storage/{{ $userMaterial->item->image }}') no-repeat; background-size: cover; background-position: 0 0;">
+                                        </button>
+                                        <span class="absolute bottom-1 right-1 bg-accent text-text text-xs px-2 py-1 rounded-md">
+                                            {{ $userMaterial->quantity }}
+                                        </span>
+                                    </div>
+                                    <x-fonts.paragraph> {{ $userMaterial->item->name }}</x-fonts.paragraph>
                                 </div>
-                                <div class="flex justify-center my-4">
-                                    <x-buttons.square id="sleepButton" text="Light" icon="fa-lightbulb" />
-                                </div>
+                                @endforeach
+                                @if($userMaterials->isEmpty())
+                                <x-fonts.paragraph class="text-text p-2 bg-primary rounded-md">No Materials</x-fonts.paragraph>
+                                @endif
                             </div>
-                        </x-slot>
-
-                        <div class="flex flex-col justify-center items-center bg-cover bg-center"
-                            style="background-image: url('{{ asset($background) }}'); height: 40vh;">
-                            <div id="training-section" class="flex flex-col justify-center items-center gap-4 p-2 w-full">
-                                <div id="equipment-info" class="text-center py-2 px-4 bg-primary rounded-md">
-                                    <x-fonts.paragraph id="equipment-name"></x-fonts.paragraph>
-                                    <x-fonts.paragraph id="equipment-level"></x-fonts.paragraph>
-                                </div>
-                                <div class="flex justify-center items-center">
-                                    <x-container.sprite id="equipment-sprite"></x-container.sprite>
-                                    <x-container.sprite id="monster-sprite"></x-container.sprite>
-                                </div>
-                                <div class="w-full h-8 bg-secondary rounded-md">
-                                    <div id="progress-bar" class="h-full bg-accent w-0 rounded-md"></div>
-                                </div>
-                                <x-buttons.button type="edit" id="trainingButton" label="Start" icon="fa-play" />
-                            </div>
-                            <x-fonts.paragraph id="sleep-section" class="text-text p-2 bg-primary rounded-md">Monster is sleeping</x-fonts.paragraph>
                         </div>
                     </x-container.modal>
                 </div>
+                <div class="flex gap-4 justify-between pt-2">
+                    <x-fonts.paragraph id="stat-stage">Stage: <span></span></x-fonts.paragraph>
+                    <x-fonts.paragraph id="stat-steps">Steps: <span></span></x-fonts.paragraph>
+                </div>
+                <div class="py-2">
+                    <x-fonts.paragraph>Energy</x-fonts.paragraph>
+                    <div class="w-full bg-secondary rounded-md h-4">
+                        <div id="energy-bar" class="bg-success h-4 rounded-md transition-all duration-300"></div>
+                    </div>
+                </div>
+                <x-fonts.paragraph id="stat-stats" class="flex flex-wrap w-full flex-row md:space-x-4 text-text pt-2">
+                    <span id="stat-strength" class="flex-1 text-center">Strength<br><span></span></span>
+                    <span id="stat-agility" class="flex-1 text-center">Agility<br><span></span></span>
+                    <span id="stat-defense" class="flex-1 text-center">Defense<br><span></span></span>
+                    <span id="stat-mind" class="flex-1 text-center">Mind<br><span></span></span>
+                </x-fonts.paragraph>
+                <x-container.modal name="user-monster-training" title="Training">
+                    <x-slot name="button">
+                        <div class="flex justify-center my-4">
+                            <button id="evolutionButton" class="w-[150px] relative inline-flex hover:scale-90 active:scale-90 overflow-hidden rounded-md p-1 focus:outline-none flex justify-center my-4">
+                                <span class="absolute inset-[-1000%] animate-spin bg-[conic-gradient(from_90deg_at_50%_50%,#333_0%,#545454_50%,#e47e00_100%)]">
+                                </span>
+                                <span class="inline-flex h-full w-full items-center justify-center rounded-md bg-secondary p-4 text-text backdrop-blur-3xl">
+                                    Evolve
+                                </span>
+                            </button>
+                        </div>
+                        <div id="buttonContainer">
+                            <div class="flex flex-wrap justify-center gap-4 items-center">
+                                @foreach ($userEquipment as $userEquipment)
+                                <x-buttons.button type="edit" class="openTraining" @click="open = true"
+                                    data-equipment='{{ json_encode($userEquipment) }}'
+                                    label="{{ $userEquipment->equipment->stat }}"
+                                    icon="{{ $userEquipment->equipment->icon }}" />
+                                @endforeach
+                            </div>
+                            <div class="flex justify-center my-4">
+                                <x-buttons.button type="edit" id="sleepButton" label="Light" icon="fa-lightbulb" />
+                            </div>
+                        </div>
+                    </x-slot>
+
+                    <div class="flex flex-col justify-center items-center bg-cover bg-center"
+                        style="background-image: url('{{ asset($background) }}'); height: 40vh;">
+                        <div id="training-section" class="flex flex-col justify-center items-center gap-4 p-2 w-full">
+                            <div id="equipment-info" class="text-center py-2 px-4 bg-primary rounded-md">
+                                <x-fonts.paragraph id="equipment-name"></x-fonts.paragraph>
+                                <x-fonts.paragraph id="equipment-level"></x-fonts.paragraph>
+                            </div>
+                            <div class="flex justify-center items-center">
+                                <x-container.sprite id="equipment-sprite"></x-container.sprite>
+                                <x-container.sprite id="monster-sprite"></x-container.sprite>
+                            </div>
+                            <div class="w-full h-8 bg-secondary rounded-md">
+                                <div id="progress-bar" class="h-full bg-accent w-0 rounded-md"></div>
+                            </div>
+                            <x-buttons.button type="edit" id="trainingButton" label="Start" icon="fa-play" />
+                        </div>
+                        <x-fonts.paragraph id="sleep-section" class="text-text p-2 bg-primary rounded-md">Monster is sleeping</x-fonts.paragraph>
+                    </div>
+                </x-container.modal>
             </div>
         </div>
     </x-container>

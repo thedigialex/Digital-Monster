@@ -107,4 +107,4 @@ Update to production location
 -   `Load Image`: docker load -i digi-portal.tar
 -   `Stop Current`: docker stop staging-digi-portal
 -   `Remove Current`: docker rm staging-digi-portal
--   `Run Image`: docker run -d --name staging-digi-portal -p 8004:80 --network bridge --restart unless-stopped digi-portal:latest
+-   `Run Image`: docker run -d --name staging-digi-portal -p 8004:80 --network bridge --restart unless-stopped -v digi-uploads:/var/www/html/public/uploads digi-portal:latest
