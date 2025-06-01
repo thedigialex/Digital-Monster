@@ -1,120 +1,80 @@
 <x-app-layout>
-    <div class="min-h-screen flex flex-col lg:flex-row justify-center">
-        <div id="pixel-container" class="hidden lg:flex flex-col lg:w-1/2 items-center justify-center relative overflow-hidden bg-gradient-to-tr from-primary to-tertiary">
-            <x-fonts.sub-header class="absolute top-0 bg-primary rounded-b-md w-full text-center z-20 h-[80px] flex items-center justify-center shadow-lg shadow-secondary">
-                {{ config('app.name') }}
-            </x-fonts.sub-header>
-            <x-application-logo />
-        </div>
-        <div class="w-full lg:w-1/2 flex items-center">
-            <div class="w-full lg:w-4/5 m-4 lg:mx-auto lg:m-0">
-                <x-container>
-                    <div class="shadow-lg shadow-secondary bg-gradient-to-tr from-primary to-tertiary py-4 text-center fixed top-0 left-0 flex items-center justify-center space-x-4 w-full lg:hidden border-b-4 border-accent">
-                        <img src="{{ asset('images/logo.png') }}" alt="Logo" class="rounded-md w-10 h-10" />
-                        <x-fonts.sub-header class="flex items-center">
-                            {{ config('app.name') }}
-                        </x-fonts.sub-header>
-                    </div>
-
-                    <div class="bg-secondary flex pt-4 px-4 rounded-t-md border-b-4 border-accent gap-x-4 mt-16">
-                        <button id="login-tab" onclick="toggleForms('login')" class="w-1/3 py-2 text-text bg-accent font-semibold rounded-t-md hover:bg-accent">
+    <div class="min-h-screen flex lg:flex-row">
+        <div class="w-full lg:w-1/2 bg-primary m-2 rounded-lg shadow-lg shadow-secondary overflow-hidden">
+            <div class="flex items-evenly flex-col gap-8">
+                <div class="bg-gradient-to-tr from-primary to-tertiary py-4 flex items-center justify-center gap-4 border-b-4 border-accent">
+                    <i class="fa-solid fa-server text-accent text-4xl"></i>
+                    <x-fonts.sub-header class="flex items-center">
+                        {{ config('app.name') }}
+                    </x-fonts.sub-header>
+                </div>
+                <div class="flex flex-col gap-8 p-4">
+                    <div class="flex border-b-4 border-accent gap-4">
+                        <button id="login-tab" onclick="toggleForms('login-form', 'login-tab')" class="w-1/3 py-2 bg-secondary text-text font-semibold rounded-t-md hover:bg-accent">
                             Login
                         </button>
-                        <button id="register-tab" onclick="toggleForms('register')" class="w-1/3 py-2 text-text bg-primary hover:bg-accent font-semibold rounded-t-md">
+                        <button id="register-tab" onclick="toggleForms('register-form', 'register-tab')" class="w-1/3 py-2 bg-secondary text-text font-semibold rounded-t-md hover:bg-accent">
                             Register
                         </button>
-                        <button id="forgot-tab" onclick="showForm('forgot-form'); setActiveTab('forgot')" class="w-1/3 py-2 text-text bg-primary hover:bg-accent font-semibold rounded-t-md">
+                        <button id="forgot-tab" onclick="toggleForms('forgot-form', 'forgot-tab')" class="w-1/3 py-2 py-2 bg-secondary text-text font-semibold rounded-t-md hover:bg-accent">
                             Forgot Password?
                         </button>
                     </div>
-                    
-                    <div class="w-full p-6">
-                        <div id="login-form" class="form block">
-                            @include('auth.login')
-                        </div>
-                        <div id="register-form" class="form hidden">
-                            @include('auth.register')
-                        </div>
-                        <div id="forgot-form" class="form hidden">
-                            @include('auth.forgot-password')
-                        </div>
-                        <x-copyright />
+
+                    <div>
+                        @include('auth.login')
+                        @include('auth.register')
+                        @include('auth.forgot-password')
+
                     </div>
-                </x-container>
+                </div>
             </div>
         </div>
+
+
+        <div id="pixel-container" class="hidden lg:flex flex-col lg:w-1/2 items-center justify-center">
+            <x-application-logo class="shadow-lg shadow-secondary" />
+        </div>
+
     </div>
-    
 </x-app-layout>
 
+
+
 <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const pixelContainer = document.getElementById('pixel-container');
-        const pixelCount = 40;
-        const colors = ['#FAFAFA', '#545454'];
+    let forms, tabs;
 
-        for (let i = 0; i < pixelCount; i++) {
-            const pixel = document.createElement('div');
-            pixel.className = 'absolute opacity-40 animate-rise';
-
-            const size = Math.random() * 6 + 2;
-            pixel.style.width = `${size}px`;
-            pixel.style.height = `${size}px`;
-
-            const left = Math.random() * 100;
-            const bottom = Math.random() * 50;
-
-            const delay = (Math.random() * 0.5).toFixed(2);
-            const duration = Math.floor(Math.random() * 3) + 3;
-            const color = colors[Math.floor(Math.random() * colors.length)];
-            pixel.style.backgroundColor = color;
-            pixel.style.left = `${left}%`;
-            pixel.style.bottom = `-${bottom}px`;
-            pixel.style.animationDelay = `${delay}s`;
-            pixel.style.animationDuration = `${duration}s`;
-            pixelContainer.appendChild(pixel);
-        }
-    });
-
-    function toggleForms(formType) {
-        const loginForm = document.getElementById('login-form');
-        const registerForm = document.getElementById('register-form');
-        const forgotForm = document.getElementById('forgot-form');
-
-        forgotForm.classList.add('hidden');
-
-        if (formType == 'login') {
-            loginForm.classList.remove('hidden');
-            registerForm.classList.add('hidden');
-            setActiveTab('login');
-        } else if (formType == 'register') {
-            loginForm.classList.add('hidden');
-            registerForm.classList.remove('hidden');
-            setActiveTab('register');
-        }
+    function setup() {
+        forms = [
+            document.getElementById('login-form'),
+            document.getElementById('register-form'),
+            document.getElementById('forgot-form')
+        ];
+        tabs = [
+            document.getElementById('login-tab'),
+            document.getElementById('register-tab'),
+            document.getElementById('forgot-tab')
+        ];
+        toggleForms('login-form', 'login-tab');
     }
 
-    function setActiveTab(activeTab) {
-        const tabButtons = document.querySelectorAll('.bg-secondary button');
-        tabButtons.forEach(btn => {
-            btn.classList.remove('bg-accent');
-            btn.classList.add('bg-primary');
+    function toggleForms(formId, tabId) {
+        forms.forEach(form => {
+            if (form.id == formId) {
+                form.classList.remove('hidden');
+            } else {
+                form.classList.add('hidden');
+            }
         });
-        if (activeTab == 'login') {
-            document.getElementById('login-tab').classList.remove('bg-primary');
-            document.getElementById('login-tab').classList.add('bg-accent');
-        } else if (activeTab == 'register') {
-            document.getElementById('register-tab').classList.remove('bg-primary');
-            document.getElementById('register-tab').classList.add('bg-accent');
-        } else if (activeTab == 'forgot') {
-            document.getElementById('forgot-tab').classList.remove('bg-primary');
-            document.getElementById('forgot-tab').classList.add('bg-accent');
-        }
+        tabs.forEach(tab => {
+            if (tab.id === tabId) {
+                tab.classList.remove('text-text', 'bg-secondary');
+                tab.classList.add('text-secondary', 'bg-accent');
+            } else {
+                tab.classList.remove('text-secondary', 'bg-accent');
+                tab.classList.add('text-text', 'bg-secondary');
+            }
+        });
     }
-
-    function showForm(formId) {
-        document.querySelectorAll('.form').forEach(form => form.classList.add('hidden'));
-        const selectedForm = document.getElementById(formId);
-        selectedForm.classList.remove('hidden');
-    }
+    setup();
 </script>
