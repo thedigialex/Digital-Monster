@@ -4,7 +4,7 @@
             {{ isset($userEquipment) ? 'Update User Equipment' : 'Create User Equipment' }}
         </x-fonts.sub-header>
         <a href="{{ route('user.profile') }}">
-            <x-buttons.button type="edit" icon="fa-arrow-left" label="Back" />
+            <x-buttons.button type="edit" icon="fa-arrow-left" label="Back" :showSpinner="true"/>
         </a>
     </x-slot>
 

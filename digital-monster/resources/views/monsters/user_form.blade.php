@@ -4,7 +4,7 @@
             {{ isset($userMonster) ? 'Update Monster' : 'Assign Monster' }}
         </x-fonts.sub-header>
         <a href="{{ route('user.profile') }}">
-            <x-buttons.button type="edit" icon="fa-arrow-left" label="Back" />
+            <x-buttons.button type="edit" icon="fa-arrow-left" label="Back" :showSpinner="true"/>
         </a>
     </x-slot>
 

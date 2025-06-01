@@ -4,7 +4,7 @@
             Website Policy
         </x-fonts.sub-header>
         <a href="{{ route('profile.edit') }}">
-            <x-buttons.button type="edit" icon="fa-arrow-left" label="Back" />
+            <x-buttons.button type="edit" icon="fa-arrow-left" label="Back" :showSpinner="true"/>
         </a>
     </x-slot>
 
@@ -21,8 +21,8 @@
                 To use this site, you must agree to our Website Policy.
             </x-fonts.paragraph>
             @if ($user->policy_accept == 1)
-            <a href="{{ route('info') }}" class="flex flex-col items-center gap-4 py-4 text-center">
-                <x-buttons.button type="edit" icon="fa-circle-info" label="Info" />
+            <a href="{{ route('digigarden/info') }}" class="flex flex-col items-center gap-4 py-4 text-center">
+                <x-buttons.button type="edit" icon="fa-circle-info" label="Info" :showSpinner="true"/>
             </a>
             @endif
         </x-slot>

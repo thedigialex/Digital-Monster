@@ -13,6 +13,6 @@
         :messages="$errors->get('email')" />
 
     <div class="flex items-center justify-center py-4">
-        <x-buttons.button type="edit" icon="fa-envelope" label="Reset" />
+        <x-buttons.button type="edit" icon="fa-envelope" label="Reset" :showSpinner="true"/>
     </div>
 </form>

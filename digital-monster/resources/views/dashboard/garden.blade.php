@@ -5,13 +5,12 @@
         </x-fonts.sub-header>
         <div class="flex flex-row gap-8">
             <a href="{{ route('digigarden.chart') }}">
-                <x-buttons.button type="edit" icon=" fa-diagram-project" label="Chart" />
+                <x-buttons.button type="edit" icon=" fa-diagram-project" label="Chart" :showSpinner="true"/>
             </a>
             <a href="{{ route('digigarden/info') }}">
-                <x-buttons.button type="edit" icon="fa-circle-info" label="Info" />
+                <x-buttons.button type="edit" icon="fa-circle-info" label="Info" :showSpinner="true"/>
             </a>
         </div>
-
     </x-slot>
 
     <x-container>

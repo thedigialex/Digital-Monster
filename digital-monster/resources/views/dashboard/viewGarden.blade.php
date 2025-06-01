@@ -4,7 +4,7 @@
             {{ $user->name }}'s DigiGarden
         </x-fonts.sub-header>
         <a href="{{ route('users.index') }}">
-            <x-buttons.button type="edit" icon="fa-arrow-left" label="Back" />
+            <x-buttons.button type="edit" icon="fa-arrow-left" label="Back" :showSpinner="true"/>
         </a>
     </x-slot>
 

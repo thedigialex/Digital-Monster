@@ -30,6 +30,6 @@
         :messages="$errors->get('password_confirmation')" />
 
     <div class="flex items-center justify-center py-4">
-        <x-buttons.button type="edit" icon="fa-user-plus" label="Register" />
+        <x-buttons.button type="edit" icon="fa-user-plus" label="Register" :showSpinner="true"/>
     </div>
 </form>
