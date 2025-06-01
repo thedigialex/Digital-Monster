@@ -4,7 +4,7 @@
             DigiConverge
         </x-fonts.sub-header>
         <a href="{{ route('digiconverge.extract') }}">
-            <x-buttons.button type="edit" icon="fa-expand-arrows-alt" label="Extract" :showSpinner="true"/>
+            <x-buttons.button type="edit" icon="fa-expand-arrows-alt" label="Extract" />
         </a>
     </x-slot>
 

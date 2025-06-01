@@ -4,7 +4,7 @@
             Evolution Chart
         </x-fonts.sub-header>
         <a href="{{ route('digigarden') }}">
-            <x-buttons.button type="edit" icon="fa-arrow-left" label="Back" :showSpinner="true"/>
+            <x-buttons.button type="edit" icon="fa-arrow-left" label="Back" />
         </a>
     </x-slot>
     <x-container class="p-2 md:p-4">

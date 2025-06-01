@@ -22,7 +22,7 @@
             <x-fonts.paragraph><strong>Extracted Count:</strong> {{ $user->extracted_count }}</x-fonts.paragraph>
             <div class="flex justify-center py-4">
                 <a href="{{ route('profile.policy') }}">
-                    <x-buttons.button type="edit" icon="fa-file-contract" label="Policy" :showSpinner="true"/>
+                    <x-buttons.button type="edit" icon="fa-file-contract" label="Policy" />
                 </a>
             </div>
         </x-accordion>

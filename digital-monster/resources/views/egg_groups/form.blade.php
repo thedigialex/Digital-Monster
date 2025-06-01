@@ -5,7 +5,7 @@
         </x-fonts.sub-header>
         <a href="{{ route('egg_groups.index') }}">
 
-            <x-buttons.button type="edit" icon="fa-arrow-left" label="Back" :showSpinner="true"/>
+            <x-buttons.button type="edit" icon="fa-arrow-left" label="Back" />
         </a>
     </x-slot>
 

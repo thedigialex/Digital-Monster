@@ -70,7 +70,7 @@
 
                         <x-table.data class="w-1/2 md:w-1/3">
                             <div class="flex justify-end gap-4">
-                                <x-buttons.session model="other_user" :id="$user->id" route="digigarden.user" label="Garden" icon="fa-hard-drive" :showSpinner="true"/>
+                                <x-buttons.session model="other_user" :id="$user->id" route="digigarden.user" label="Garden" icon="fa-hard-drive" />
                                 @if ($isAdmin)
                                 <x-buttons.session model="user_edit" :id="$user->id" route="user.profile" label="View" icon="fa-eye" />
                                 @endif

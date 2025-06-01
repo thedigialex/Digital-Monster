@@ -4,7 +4,7 @@
             {{ isset($userLocation) ? 'Update User Location' : 'Create User Location' }}
         </x-fonts.sub-header>
         <a href="{{ route('user.profile') }}">
-            <x-buttons.button type="edit" icon="fa-arrow-left" label="Back" :showSpinner="true"/>
+            <x-buttons.button type="edit" icon="fa-arrow-left" label="Back" />
         </a>
     </x-slot>
 

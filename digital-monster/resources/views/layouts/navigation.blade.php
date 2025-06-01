@@ -73,7 +73,7 @@
 <div class="mt-auto flex flex-col items-center justify-center border-t-4 border-secondary p-4 gap-y-2">
     <form method="POST" action="{{ route('logout') }}">
         @csrf
-        <x-buttons.button type="edit" icon="fa-sign-out" label="Log Out" :showSpinner="true"/>
+        <x-buttons.button type="edit" icon="fa-sign-out" label="Log Out" />
     </form>
     <x-copyright />
 </div>

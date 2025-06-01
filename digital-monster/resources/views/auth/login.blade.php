@@ -20,6 +20,6 @@
         :messages="$errors->get('password')" />
 
     <div class="flex items-center justify-center py-4">
-        <x-buttons.button type="edit" icon="fa-sign-in" label="Log in" :showSpinner="true"/>
+        <x-buttons.button type="edit" icon="fa-sign-in" label="Log in" />
     </div>
 </form>
