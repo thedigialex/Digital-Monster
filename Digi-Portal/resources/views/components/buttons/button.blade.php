@@ -3,7 +3,6 @@
     'icon' => $type === 'delete' ? 'fa-trash' : 'fa-edit',
     'label' => $type === 'delete' ? 'Delete' : 'Edit',
 ])
-
 @php
     $isDelete = $type === 'delete';
     $borderColor = $isDelete ? 'border-error' : 'border-accent';
@@ -18,8 +17,7 @@
         ? ($isDelete ? 'w-[40px]' : 'w-[60px]') 
         : ($isDelete ? 'w-[40px]' : 'w-[60px] md:w-[40px]');
 @endphp
-
-<button {{ $attributes->merge(['type' => 'submit', 'class' => "relative rounded-md flex items-center overflow-hidden transition-all duration-300 group active:scale-95 h-[45px] border $buttonWidth $borderColor $bgColor"]) }}>
+<button {{ $attributes->merge(['type' => 'submit', 'class' => "relative rounded-md flex items-center overflow-hidden transition-all duration-300 group active:scale-95 h-[40px] border $buttonWidth $borderColor $bgColor"]) }}>
     @if(!$isCompact)
         <span class="label absolute left-1/3 text-secondary transform -translate-x-1/2 font-semibold transition-all duration-300 group-hover:opacity-0 md:block hidden">
             {{ $label }}

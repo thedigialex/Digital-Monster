@@ -1,6 +1,6 @@
 <x-auth-session-status class="mb-4" :status="session('status')" />
 
-<form method="POST" action="{{ route('login') }}" id="login-form" class="flex flex-col gap-4 md:px-4">
+<form method="POST" action="{{ route('login') }}" id="login-form" class="flex flex-col gap-4 px-4">
     @csrf
     <div class="pb-4">
         <x-fonts.sub-header>Welcome back</x-fonts.sub-header>

@@ -3,7 +3,7 @@
         <x-fonts.sub-header>
             DigiGarden
         </x-fonts.sub-header>
-        <div class="flex flex-row gap-8">
+        <div class="flex flex-row gap-4">
             <a href="{{ route('digigarden.chart') }}">
                 <x-buttons.button type="edit" icon=" fa-diagram-project" label="Chart" />
             </a>
@@ -11,7 +11,6 @@
                 <x-buttons.button type="edit" icon="fa-circle-info" label="Info" />
             </a>
         </div>
-
     </x-slot>
 
     <x-container>

@@ -2,7 +2,7 @@
 
 <div class="max-w-7xl mx-auto my-8 lg:my-14 shadow-lg shadow-secondary bg-primary rounded-md">
     @isset($header)
-    <div class="bg-secondary p-4 rounded-t-md border-b-4 border-accent flex justify-between items-center">
+    <div class="bg-gradient-to-l from-primary to-tertiary p-4 rounded-t-md border-b-4 border-accent flex justify-between items-center">
         {{ $header }}
     </div>
     @endisset

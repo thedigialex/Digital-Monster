@@ -1,10 +1,10 @@
-<form method="POST" action="{{ route('register') }}" id="register-form" class="flex flex-col gap-4 md:px-4">
+<form method="POST" action="{{ route('register') }}" id="register-form" class="flex flex-col gap-4 px-4">
     @csrf
-    <div class="pb-4">
-        <x-fonts.sub-header>You've Discovered the Digi-Portal</x-fonts.sub-header>
+    <div>
+        <x-fonts.sub-header>You've Found the Digi-Portal</x-fonts.sub-header>
         <x-fonts.paragraph>
-            This gateway grants access to a digital realm. A world where powerful digital monsters await your guidance.
-            Help them grow stronger and defend this reality. Create your access credentials below to begin your journey.
+            This gateway grants access to a digital realm. Digital monsters await your guidance.
+            Help them grow stronger and defend thier world. Create your access credentials below to begin your journey.
         </x-fonts.paragraph>
     </div>
     <x-inputs.text
