@@ -9,11 +9,11 @@
                     </x-fonts.sub-header>
                 </div>
                 <div class="flex flex-col justify-center md:w-4/5">
-                    <div class="flex border-b-4 border-accent gap-4">
+                    <x-container.tab-div>
                         <x-buttons.tab id="login-tab" onclick="toggleForms('login-form', 'login-tab')" class="w-1/3 bg-secondary text-text" label="Login" />
                         <x-buttons.tab id="register-tab" onclick="toggleForms('register-form', 'register-tab')" class="w-1/3 bg-secondary text-text" label="Register" />
                         <x-buttons.tab id="forgot-tab" onclick="toggleForms('forgot-form', 'forgot-tab')" class="w-1/3 bg-secondary text-text" label="Password?" />
-                    </div>
+                    </x-container.tab-div>
                     <div class="py-4">
                         @include('auth.login')
                         @include('auth.register')

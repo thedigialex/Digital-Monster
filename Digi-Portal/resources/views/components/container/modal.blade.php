@@ -9,8 +9,8 @@
         @click.away="open = false"
         @keydown.escape.window="open = false">
 
-        <div class="bg-primary border-2 border-accent rounded-md shadow-lg p-4 w-full max-w-lg">
-            <div class="flex items-center justify-between mb-4">
+        <div class="bg-primary rounded-md shadow-lg w-full max-w-lg">
+            <div class="flex items-center justify-between p-4">
                 <x-fonts.accent-header>{{ $title }}</x-fonts.accent-header>
                 <x-buttons.button type="edit" label="Close" icon="fa-x" @click="open = false"/>
             </div>

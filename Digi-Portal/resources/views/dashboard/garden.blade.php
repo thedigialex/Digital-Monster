@@ -18,14 +18,13 @@
             <x-fonts.sub-header>
                 DigiGarden {{ $count }}
             </x-fonts.sub-header>
-
             <x-container.modal name="user-items" title="Settings">
                 <x-slot name="button">
                     <x-buttons.button type="edit" icon="fa-gear" label="Settings" id="openMenu" @click="open = true" />
                 </x-slot>
-                <div class="flex gap-4 p-2 rounded-t-md bg-secondary w-full justify-center">
-                    <button id="showBackgrounds" class="bg-accent text-secondary px-4 py-2 rounded-md">Backgrounds</button>
-                </div>
+                <x-container.tab-div class="pt-2 px-2 justify-center bg-secondary">
+                    <x-buttons.tab id="showBackgrounds" class="bg-accent text-secondary p-2" label="Backgrounds" />
+                </x-container.tab-div>
                 <div class="flex flex-col justify-center items-center bg-cover bg-center rounded-b-md"
                     style="background-image: url('{{ asset($background) }}'); height: 40vh;">
                     <x-alerts.spinner id="loading-section-background"></x-alerts.spinner>
@@ -76,11 +75,12 @@
                         <x-slot name="button">
                             <x-buttons.button type="edit" id="openItems" label="Items" icon="fa-briefcase" @click="open = true" />
                         </x-slot>
-                        <div class="flex gap-4 p-2 rounded-t-md bg-secondary w-full justify-center">
-                            <button id="showItems" class="bg-accent text-secondary px-4 py-2 rounded-md">Consumable</button>
-                            <button id="showAttacks" class="bg-primary text-text px-4 py-2 rounded-md">Attacks</button>
-                            <button id="showMaterials" class="bg-primary text-text px-4 py-2 rounded-md">Materials</button>
-                        </div>
+
+                        <x-container.tab-div class="pt-2 px-2 justify-center bg-secondary">
+                            <x-buttons.tab id="showItems" class="bg-accent text-secondary p-2" label="Consumable" />
+                            <x-buttons.tab id="showAttacks" class="bg-secondary text-text p-2" label="Attacks" />
+                            <x-buttons.tab id="showMaterials" class="bg-secondary text-text p-2" label="Materials" />
+                        </x-container.tab-div>
 
                         <div class="flex flex-col justify-center items-center bg-cover bg-center rounded-b-md"
                             style="background-image: url('{{ asset($background) }}'); height: 40vh;">
@@ -194,16 +194,14 @@
                     <div class="flex flex-col justify-center items-center bg-cover bg-center"
                         style="background-image: url('{{ asset($background) }}'); height: 40vh;">
                         <div id="training-section" class="flex flex-col justify-center items-center gap-4 p-2 w-full">
-                            <div id="equipment-info" class="text-center py-2 px-4 bg-primary rounded-md">
-                                <x-fonts.paragraph id="equipment-name"></x-fonts.paragraph>
-                                <x-fonts.paragraph id="equipment-level"></x-fonts.paragraph>
-                            </div>
                             <div class="flex justify-center items-center">
                                 <x-container.sprite id="equipment-sprite"></x-container.sprite>
                                 <x-container.sprite id="monster-sprite"></x-container.sprite>
                             </div>
-                            <div class="w-full h-8 bg-secondary rounded-md">
-                                <div id="progress-bar" class="h-full bg-accent w-0 rounded-md"></div>
+                            <div class="relative w-full h-8 bg-secondary rounded-md overflow-hidden">
+<x-fonts.paragraph id="equipment-name" class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white z-10"></x-fonts.paragraph>
+
+                                <div id="progress-bar" class="absolute inset-0 h-full bg-accent w-0 rounded-md z-0"></div>
                             </div>
                             <x-buttons.button type="edit" id="trainingButton" label="Start" icon="fa-play" />
                         </div>
@@ -214,6 +212,7 @@
         </div>
     </x-container>
 </x-app-layout>
+
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         let interval;
@@ -321,15 +320,13 @@
                 attacks: document.getElementById('showAttacks'),
                 materials: document.getElementById('showMaterials')
             };
-
             tabs.forEach(id => {
                 document.getElementById(id).classList.toggle('hidden', id !== tabId);
                 buttons[id].classList.remove('bg-accent', 'text-secondary');
-                buttons[id].classList.add('bg-primary', 'text-text');
+                buttons[id].classList.add('bg-secondary', 'text-text');
             });
-
             buttons[tabId].classList.add('bg-accent', 'text-secondary');
-            buttons[tabId].classList.remove('bg-primary', 'text-text');
+            buttons[tabId].classList.remove('bg-secondary', 'text-text');
         }
 
         function updateItemSections() {
@@ -544,16 +541,13 @@
                     trainingSection.classList.remove('hidden');
                     userEquipment = JSON.parse(this.getAttribute('data-equipment'));
                     setTrainingButton();
-                    document.getElementById('equipment-name').textContent = userEquipment.equipment.stat;
-                    document.getElementById('equipment-level').textContent = `Lvl: ${userEquipment.level}`;
-
+                    document.getElementById('equipment-name').textContent = `${userEquipment.equipment.stat} Lvl: ${userEquipment.level}`;
                     monsterImage = document.getElementById('monster-sprite');
                     secondaryImage = document.getElementById('equipment-sprite');
                     secondaryImage.style.backgroundImage = `url(/storage/${userEquipment.equipment.image})`;
                     clearInterval(secondaryAnimationInterval);
                     secondaryImage.style.backgroundPositionX = `-${0 * 48}px`;
                     monsterImage.style.backgroundImage = getMonsterImage(activeUserMonster);
-
                     monsterAnimationInterval = animateSprite(monsterImage, [1, 2], 400, monsterAnimationInterval);
                 } else {
                     sleepSection.classList.remove('hidden');
