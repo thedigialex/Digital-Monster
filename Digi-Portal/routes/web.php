@@ -41,7 +41,7 @@ Route::middleware(['auth'])->group(function () {
     Route::middleware(['policy'])->group(function () {
         Route::get('/digigarden', [DashboardController::class, 'garden'])->name('digigarden');
         Route::get('/digigarden/chart', [DashboardController::class, 'chart'])->name('digigarden.chart');
-        Route::view('/digigarden/info', 'dashboard.info')->name('digigarden/info');
+        Route::view('/digigarden/info', 'dashboard.info')->name('digigarden.info');
         Route::get('/digigarden/user', [DashboardController::class, 'gardenUser'])->name('digigarden.user');
         Route::post('/digigarden/background', [DashboardController::class, 'changeBackground'])->name('digigarden.background');
         Route::get('/colosseum', [DashboardController::class, 'colosseum'])->name('colosseum');

@@ -7,7 +7,7 @@
             <a href="{{ route('digigarden.chart') }}">
                 <x-buttons.button type="edit" icon=" fa-diagram-project" label="Chart" />
             </a>
-            <a href="{{ route('digigarden/info') }}">
+            <a href="{{ route('digigarden.info') }}">
                 <x-buttons.button type="edit" icon="fa-circle-info" label="Info" />
             </a>
         </div>
@@ -48,19 +48,17 @@
                 </div>
             </x-container.modal>
         </x-slot>
-
         <div
             id="monster-container"
-            class="relative w-full overflow-hidden rounded-b-md shadow-lg bg-cover bg-center h-[60vh]"
+            class="relative w-full rounded-b-md shadow-lg bg-cover bg-center h-[60vh]"
             data-monsters='@json($userMonsters)'
             style="background-image: url('{{ asset($background) }}');">
         </div>
-
-        <div id="stats-panel" class="hidden bg-secondary border-primary border-t-4 p-2 md:p-4 shadow-lg rounded-b-md">
+        <div id="stats-panel" class="hidden bg-secondary border-primary border-t-4 p-2 shadow-lg rounded-b-md">
             <div class="flex justify-between items-center pb-4">
                 <x-fonts.sub-header id="stat-name-wrapper">
                     <span id="stat-level"><span></span> </span>
-                    <span id="stat-name"><span></span> </span>
+                    <span id="stat-name" class="ml-2"><span></span> </span>
                     <input type="text" id="name-input" class="hidden text-text bg-neutral focus:border-accent focus:ring-accent rounded-md" />
                     <i class="fa-solid fa-pen-to-square ml-2 cursor-pointer" id="edit-icon"></i>
                     <i class="fa-solid fa-save ml-2 cursor-pointer hidden" id="save-name-btn"></i>
@@ -199,8 +197,7 @@
                                 <x-container.sprite id="monster-sprite"></x-container.sprite>
                             </div>
                             <div class="relative w-full h-8 bg-secondary rounded-md overflow-hidden">
-<x-fonts.paragraph id="equipment-name" class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white z-10"></x-fonts.paragraph>
-
+                                <x-fonts.paragraph id="equipment-name" class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white z-10"></x-fonts.paragraph>
                                 <div id="progress-bar" class="absolute inset-0 h-full bg-accent w-0 rounded-md z-0"></div>
                             </div>
                             <x-buttons.button type="edit" id="trainingButton" label="Start" icon="fa-play" />
@@ -247,7 +244,7 @@
                 }
             });
 
-            document.querySelector('#stat-level span').textContent = 'Lvl: ' + activeUserMonster.level + ' ';
+            document.querySelector('#stat-level span').textContent = 'Lvl: ' + activeUserMonster.level;
             document.querySelector('#stat-name span').textContent = activeUserMonster.name;
             document.querySelector('#stat-stage span').textContent = activeUserMonster.monster.stage;
             document.querySelector('#stat-steps span').textContent = activeUserMonster.steps;

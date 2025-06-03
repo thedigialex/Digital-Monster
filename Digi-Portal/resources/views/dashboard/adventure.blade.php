@@ -15,9 +15,9 @@
                 <x-slot name="button">
                     <x-buttons.button type="edit" label="Locations" icon="fa-location-dot" @click="open = true" id="openMenu" />
                 </x-slot>
-                <div class="flex gap-4 p-2 rounded-t-md bg-secondary w-full justify-center">
-                    <button id="showLocations" class="bg-accent text-secondary px-4 py-2 rounded-md">Locations</button>
-                </div>
+                <x-container.tab-div class="pt-2 px-2 justify-center bg-secondary">
+                    <x-buttons.tab id="showLocations" class="bg-accent text-secondary p-2" label="Locations" />
+                </x-container.tab-div>
                 <div class="flex flex-col justify-center items-center bg-cover bg-center rounded-b-md"
                     style="background-image: url('{{ asset($background) }}'); height: 40vh;">
                     <x-alerts.spinner id="loading-section-location"></x-alerts.spinner>
