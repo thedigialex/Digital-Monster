@@ -366,6 +366,14 @@
             });
         }
 
+        function closeStatMenu() {
+            statsPanel.classList.add('hidden');
+            container.classList.remove('rounded-b-none');
+            if (activeUserMonster) {
+                activeUserMonster.monsterDiv.classList.remove('clicked');
+            }
+        }
+
         JSON.parse(container.getAttribute('data-monsters')).forEach(userMonster => {
             const monsterDiv = document.createElement('div');
             monsterDiv.className = 'monster';
@@ -520,11 +528,7 @@
         document.getElementById('showMaterials').addEventListener('click', () => showTab('materials'));
 
         document.getElementById('close-stats').addEventListener('click', () => {
-            statsPanel.classList.add('hidden');
-            container.classList.remove('rounded-b-none');
-            if (activeUserMonster) {
-                activeUserMonster.monsterDiv.classList.remove('clicked');
-            }
+            closeStatMenu();
         });
 
         document.querySelectorAll('.openTraining').forEach(button => {
@@ -711,7 +715,6 @@
             const data = {
                 user_monster_id: activeUserMonster.id
             };
-
             fetch("{{ route('monster.sleep') }}", {
                     method: "POST",
                     headers: {
@@ -723,6 +726,9 @@
                 .then(result => {
                     activeUserMonster.updateUserMonster(result.userMonster);
                     updateStats();
+                    if (result.userMonster.sleep_time) {
+                        closeStatMenu();
+                    }
                 });
         });
 

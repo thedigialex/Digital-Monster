@@ -11,7 +11,7 @@
     $isCompact = empty($label);
     $buttonWidth = $isCompact 
         ? ($isDelete ? 'w-[40px]' : 'w-[60px]') 
-        : ($isDelete ? 'w-[40px] md:w-[140px]' : 'w-[60px] md:w-[140px]');
+        : ($isDelete ? 'w-[40px] md:w-[120px]' : 'w-[60px] md:w-[120px]');
 
     $iconWidth = $isCompact 
         ? ($isDelete ? 'w-[40px]' : 'w-[60px]') 
