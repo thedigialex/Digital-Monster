@@ -1,5 +1,8 @@
 <x-app-layout>
     <div class="min-h-screen flex lg:flex-row">
+        <div class="hidden lg:flex w-1/2 items-center justify-center">
+            <x-application-logo class="shadow-lg shadow-secondary" />
+        </div>
         <div class="w-full lg:w-1/2 bg-primary m-2 md:m-8 rounded-lg shadow-lg shadow-secondary overflow-hidden">
             <div class="flex flex-col gap-8 items-center justify-center">
                 <div class="w-full bg-gradient-to-tr from-primary to-tertiary py-4 flex items-center justify-center gap-4 border-b-4 border-accent">
@@ -21,9 +24,6 @@
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="hidden lg:flex w-1/2 items-center justify-center">
-            <x-application-logo class="shadow-lg shadow-secondary" />
         </div>
     </div>
 </x-app-layout>
