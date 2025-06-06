@@ -337,6 +337,20 @@
                 attackText.classList.remove("text-secondary");
                 attackText.classList.add("text-text");
             });
+            
+            document.querySelectorAll("#attacks .useAttack").forEach(button => {
+                //breaks the food item
+                //const userAttack = JSON.parse(button.getAttribute("data-item"));
+                //const attackContainer = button.closest(".attack-div");
+                //const attackText = container.querySelector("p");
+//
+                //if (activeUserMonster.attack == userAttack.id) {
+                //    attackContainer.classList.add("bg-accent");
+                //    attackContainer.classList.remove("bg-secondary");
+                //    attackText.classList.add("text-secondary");
+                //    attackText.classList.remove("text-text");
+                //}
+            });
 
         }
 
@@ -590,7 +604,7 @@
                 };
 
                 activeUserMonster.attack = userAttack.id;
-                //highlightEquippedAttack();
+                highlightEquippedAttack();
 
                 fetch("{{ route('monster.attack') }}", {
                     method: "POST",
