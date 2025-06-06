@@ -330,28 +330,19 @@
 
         function highlightEquippedAttack() {
             document.querySelectorAll(".attack-div").forEach(container => {
-                container.classList.remove("bg-accent");
-                container.classList.add("bg-secondary");
-
                 const attackText = container.querySelector("p");
-                attackText.classList.remove("text-secondary");
-                attackText.classList.add("text-text");
-            });
-            
-            document.querySelectorAll("#attacks .useAttack").forEach(button => {
-                //breaks the food item
-                //const userAttack = JSON.parse(button.getAttribute("data-item"));
-                //const attackContainer = button.closest(".attack-div");
-                //const attackText = container.querySelector("p");
-//
-                //if (activeUserMonster.attack == userAttack.id) {
-                //    attackContainer.classList.add("bg-accent");
-                //    attackContainer.classList.remove("bg-secondary");
-                //    attackText.classList.add("text-secondary");
-                //    attackText.classList.remove("text-text");
-                //}
-            });
+                container.classList.remove("bg-accent", "bg-secondary");
+                attackText.classList.remove("text-secondary", "text-text");
+                const userAttack = JSON.parse(container.querySelector("button").getAttribute("data-item"));
 
+                if (activeUserMonster.attack === userAttack.id) {
+                    container.classList.add("bg-accent");
+                    attackText.classList.add("text-secondary");
+                } else {
+                    container.classList.add("bg-secondary");
+                    attackText.classList.add("text-text");
+                }
+            });
         }
 
         function closeStatMenu() {
