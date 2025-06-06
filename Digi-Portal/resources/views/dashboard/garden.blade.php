@@ -85,7 +85,7 @@
                             <div id="items" class="flex justify-center items-center overflow-y-auto">
                                 <div id="item-selection" class="flex flex-wrap justify-center items-center gap-4">
                                     @foreach ($userItems as $userItem)
-                                    <x-container.item-card :data-item="$userItem" />
+                                    <x-container.item-card :data-item="$userItem" buttonClass="useItem" />
                                     @endforeach
                                 </div>
                                 <x-fonts.paragraph id="status-text-item" class="text-text p-2 bg-primary rounded-md">Monster is full</x-fonts.paragraph>
@@ -96,19 +96,10 @@
                             </div>
                             <div id="attacks" class="hidden flex flex-wrap justify-center items-center gap-4 overflow-y-auto">
                                 @foreach ($userAttacks as $userAttack)
-                                <x-container.item-card :data-item="$userAttack" />
+                                <x-container.item-card :data-item="$userAttack" :showQuantity="false" buttonClass="useAttack" divClass="attack-div" />
 
-                                <div class="attack-div flex flex-col items-center w-36 p-2 bg-secondary border-2 border-accent rounded-md"
-                                    data-attack-id="{{ $userAttack->id }}">
-                                    <div class="w-24 h-24 p-2 rounded-md bg-primary">
-                                        <button class="useAttack w-full h-full"
-                                            data-attack='{{ json_encode($userAttack) }}'
-                                            style="background: url('/storage/{{ $userAttack->item->image }}') no-repeat; background-size: cover; background-position: 0 0;">
-                                        </button>
-                                    </div>
-                                    <x-fonts.paragraph class="attack-p text-text"> {{ $userAttack->item->name }}</x-fonts.paragraph>
-                                </div>
-                                
+
+
                                 @endforeach
                             </div>
                             <div id="materials" class="hidden flex flex-wrap justify-center items-center gap-4 overflow-y-auto">
@@ -342,23 +333,11 @@
                 container.classList.remove("bg-accent");
                 container.classList.add("bg-secondary");
 
-                const attackText = container.querySelector(".attack-p");
+                const attackText = container.querySelector("p");
                 attackText.classList.remove("text-secondary");
                 attackText.classList.add("text-text");
             });
 
-            document.querySelectorAll("#attacks .useAttack").forEach(button => {
-                const userAttack = JSON.parse(button.getAttribute("data-attack"));
-                const attackContainer = button.closest(".attack-div");
-                const attackText = attackContainer.querySelector(".attack-p");
-
-                if (activeUserMonster.attack == userAttack.id) {
-                    attackContainer.classList.add("bg-accent");
-                    attackContainer.classList.remove("bg-secondary");
-                    attackText.classList.add("text-secondary");
-                    attackText.classList.remove("text-text");
-                }
-            });
         }
 
         function closeStatMenu() {
@@ -604,14 +583,14 @@
 
         document.querySelectorAll(".useAttack").forEach(button => {
             button.addEventListener("click", function() {
-                const userAttack = JSON.parse(this.getAttribute("data-attack"));
+                const userAttack = JSON.parse(this.getAttribute("data-item"));
                 const data = {
                     user_attack_id: userAttack.id,
                     user_monster_id: activeUserMonster.id
                 };
 
                 activeUserMonster.attack = userAttack.id;
-                highlightEquippedAttack();
+                //highlightEquippedAttack();
 
                 fetch("{{ route('monster.attack') }}", {
                     method: "POST",
