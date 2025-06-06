@@ -97,9 +97,6 @@
                             <div id="attacks" class="hidden flex flex-wrap justify-center items-center gap-4 overflow-y-auto">
                                 @foreach ($userAttacks as $userAttack)
                                 <x-container.item-card :data-item="$userAttack" :showQuantity="false" buttonClass="useAttack" divClass="attack-div" />
-
-
-
                                 @endforeach
                             </div>
                             <div id="materials" class="hidden flex flex-wrap justify-center items-center gap-4 overflow-y-auto">
@@ -337,10 +334,10 @@
 
                 if (activeUserMonster.attack === userAttack.id) {
                     container.classList.add("bg-accent");
-                    attackText.classList.add("text-secondary");
+                    attackText.classList.add("text-text");
                 } else {
                     container.classList.add("bg-secondary");
-                    attackText.classList.add("text-text");
+                    attackText.classList.add("text-secondary");
                 }
             });
         }
