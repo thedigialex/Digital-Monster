@@ -28,7 +28,7 @@ $imgSrc = '';
     <div class="w-24 h-24 p-4 rounded-md bg-primary m-2">
         <button
             {{ $attributes->merge(['class' => 'w-full h-full ' . $buttonClass]) }}
-            data-item='@json($dataMonster)'
+            data-monster='@json($dataMonster)'
             style="background: url('{{ $imgSrc }}') no-repeat; background-size: cover; background-position: 0 0;">
         </button>
     </div>
