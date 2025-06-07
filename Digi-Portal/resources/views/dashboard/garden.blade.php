@@ -87,6 +87,9 @@
                                     @foreach ($userItems as $userItem)
                                     <x-container.item-card :data-item="$userItem" buttonClass="useItem" />
                                     @endforeach
+                                    @if($userItems->isEmpty())
+                                    <x-fonts.paragraph class="text-text p-2 bg-primary rounded-md">No Consumables</x-fonts.paragraph>
+                                    @endif
                                 </div>
                                 <x-fonts.paragraph id="status-text-item" class="text-text p-2 bg-primary rounded-md">Monster is full</x-fonts.paragraph>
                                 <div id="item-usage-section" class="hidden flex justify-center items-center gap-4 w-full">

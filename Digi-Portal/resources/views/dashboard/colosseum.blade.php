@@ -12,6 +12,23 @@
             </x-fonts.sub-header>
         </x-slot>
         <x-container.background id="setup-section" :background="$background" class="rounded-b-md">
+
+            @if(!$userMonsters->isEmpty())
+            <div id="monsterScrollWrapper" class="flex justify-center items-center gap-2 w-full">
+                <x-buttons.button type="edit" id="scrollLeft" label="" icon="fa-chevron-left" />
+                <div id="monsterScroll" class="flex gap-4 transition-transform duration-300 w-1/3 overflow-hidden">
+                    @foreach ($userMonsters as $userMonster)
+                    <x-container.user-monster-card :data-monster="$userMonster" />
+                    @endforeach
+                </div>
+                <x-buttons.button type="edit" id="scrollRight" label="" icon="fa-chevron-right" />
+            </div>
+            @else
+            <x-fonts.paragraph class="text-text p-2 bg-primary rounded-md">No monsters can battle</x-fonts.paragraph>
+            @endif
+
+
+
             @if ($userMonsters->isEmpty())
             <x-fonts.paragraph class="text-text p-2 bg-primary rounded-md">No Monsters Available To Battle</x-fonts.paragraph>
             @else
@@ -43,6 +60,33 @@
         </x-container.background>
     </x-container>
 </x-app-layout>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const scrollContainer = document.getElementById('monsterScroll');
+        const scrollLeftBtn = document.getElementById('scrollLeft');
+        const scrollRightBtn = document.getElementById('scrollRight');
+
+        // Determine card width dynamically
+        function getCardWidth() {
+            const firstCard = scrollContainer.querySelector('div');
+            return firstCard ? firstCard.offsetWidth + 16 /*gap-4 = 1rem = 16px*/ : 0;
+        }
+
+        scrollLeftBtn.addEventListener('click', () => {
+            const cardWidth = getCardWidth();
+            scrollContainer.scrollBy({ left: -cardWidth, behavior: 'smooth' });
+        });
+
+        scrollRightBtn.addEventListener('click', () => {
+            const cardWidth = getCardWidth();
+            scrollContainer.scrollBy({ left: cardWidth, behavior: 'smooth' });
+        });
+    });
+</script>
+
+
+
 
 <script>
     document.addEventListener("DOMContentLoaded", function() {
@@ -119,8 +163,8 @@
         }
 
         function renderMonsters() {
-            scrollLeft.style.visibility = currentIndex === 0 ? "hidden" : "visible";
-            scrollRight.style.visibility = currentIndex + itemsPerPage >= monsterElements.length ? "hidden" : "visible";
+            //scrollLeft.style.visibility = currentIndex === 0 ? "hidden" : "visible";
+            //scrollRight.style.visibility = currentIndex + itemsPerPage >= monsterElements.length ? "hidden" : "visible";
             carousel.innerHTML = "";
             const monstersToShow = monsterElements.slice(currentIndex, currentIndex + itemsPerPage);
             monstersToShow.forEach(monster => carousel.appendChild(monster));
