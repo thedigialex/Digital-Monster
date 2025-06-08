@@ -2,6 +2,7 @@
 'dataMonster',
 'buttonClass' => '',
 'divClass' => '',
+'id' => null,
 ])
 
 @php
@@ -20,7 +21,8 @@ $imgSrc = '';
 }
 @endphp
 
-<div {{ $attributes->merge(['class' => 'flex flex-col items-center w-36 bg-secondary rounded-md ' . $divClass]) }}>
+<div id="{{ $id }}"
+    {{ $attributes->merge(['class' => 'flex flex-col items-center w-36 bg-secondary rounded-md ' . $divClass]) }}>
     <x-fonts.paragraph class="bg-accent w-full rounded-t-md text-center border-b-2 border-primary">
         {{ $dataMonster->name }}
     </x-fonts.paragraph>

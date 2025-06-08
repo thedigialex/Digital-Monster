@@ -11,28 +11,27 @@
                 Colosseum
             </x-fonts.sub-header>
         </x-slot>
-        <x-container.background id="setup-section" :background="$background" class="rounded-b-md">
-
+        <x-container.background id="setup-section" :background="$background" class="rounded-b-md gap-4">
             @if(!$userMonsters->isEmpty())
+            <x-fonts.paragraph class="text-text p-4 bg-primary rounded-md">Select a monsters for battle</x-fonts.paragraph>
             <div id="monsterScrollWrapper" class="flex justify-center items-center gap-2 w-full">
                 <x-buttons.button type="edit" id="scrollLeft" label="" icon="fa-chevron-left" />
                 <div id="monsterScroll" class="flex gap-4 transition-transform duration-300 w-1/3 overflow-hidden">
                     @foreach ($userMonsters as $userMonster)
-                    <x-container.user-monster-card :data-monster="$userMonster" buttonClass="userMonster" divClass="monster-div" />
+                    <x-container.user-monster-card :data-monster="$userMonster" :id="'monster-' . $userMonster->id" buttonClass="userMonster" divClass="monster-div" />
                     @endforeach
                 </div>
                 <x-buttons.button type="edit" id="scrollRight" label="" icon="fa-chevron-right" />
             </div>
             <div id="type-section" class="hidden flex items-center gap-4 flex-col pt-4">
-                <x-fonts.paragraph class="text-text p-2 bg-primary rounded-md">Player OR Wild</x-fonts.paragraph>
+                <x-fonts.paragraph class="text-text p-4 bg-primary rounded-md">Player OR Wild</x-fonts.paragraph>
                 <div class="flex justify-center items-center gap-4 ">
                     <x-buttons.button type="edit" id="userBattleButton" label="Player" icon="fa-user" />
                     <x-buttons.button type="edit" id="wildBattleButton" label="Wild" icon="fa-robot" />
                 </div>
             </div>
-
             @else
-            <x-fonts.paragraph class="text-text p-2 bg-primary rounded-md">No monsters can battle</x-fonts.paragraph>
+            <x-fonts.paragraph class="text-text p-4 bg-primary rounded-md">No monsters are able to battle</x-fonts.paragraph>
             @endif
         </x-container.background>
 
@@ -47,10 +46,6 @@
     </x-container>
 </x-app-layout>
 
-
-
-
-
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         const typeSection = document.getElementById("type-section");
@@ -58,6 +53,12 @@
         const loadingSection = document.getElementById("loading-section");
         const battleArena = document.getElementById("battle-arena");
         const setupSection = document.getElementById("setup-section");
+        const scrollContainer = document.getElementById('monsterScroll');
+        const scrollLeftBtn = document.getElementById('scrollLeft');
+        const scrollRightBtn = document.getElementById('scrollRight');
+
+        scrollLeftBtn?.addEventListener('click', () => scrollCards(-1));
+        scrollRightBtn?.addEventListener('click', () => scrollCards(1));
 
         let monsterElements = [];
         let monsterImage;
@@ -66,10 +67,6 @@
         let enemyMonsterAnimationInterval;
         let enemyMonster;
         let activeUserMonster;
-        
-        const scrollContainer = document.getElementById('monsterScroll');
-        const scrollLeftBtn = document.getElementById('scrollLeft');
-        const scrollRightBtn = document.getElementById('scrollRight');
 
         function getCardWidth() {
             const firstCard = scrollContainer.querySelector('div');
@@ -83,17 +80,6 @@
                 behavior: 'smooth'
             });
         }
-
-        scrollLeftBtn.addEventListener('click', () => scrollCards(-1));
-        scrollRightBtn.addEventListener('click', () => scrollCards(1));
-
-        document.querySelectorAll('.userMonster').forEach(button => {
-            button.addEventListener('click', function() {
-                activeUserMonster = JSON.parse(this.getAttribute("data-monster"));
-                highlightUserMonster();
-                typeSection.classList.remove("hidden");
-            });
-        });
 
         function highlightUserMonster() {
             document.querySelectorAll(".monster-div").forEach(container => {
@@ -112,9 +98,7 @@
         }
 
         function startBattle(animationFrame, removeUserMonster) {
-
             const attackImage = document.getElementById('attack-image');
-
             monsterImage = document.getElementById('user-monster-sprite');
             enemyMonsterImage = document.getElementById('enemy-monster-sprite');
 
@@ -146,20 +130,18 @@
                     userMonsterAnimation(userFrame);
                     enemyMonsterAnimation(enemyFrame);
                     setTimeout(() => {
-                        //const activeMonsterDiv = document.querySelector(`#monster-${activeUserMonster.id}`);
-
+                        const monsterDiv = document.querySelector(`#monster-${activeUserMonster.id}`);
                         if (removeUserMonster) {
+                            monsterDiv.remove();
                             activeUserMonster = null;
-                            //activeMonsterDiv.remove();
-                            //does  not remove when out  of energy
+                            //bug where if no monsters are left the select monster still shows
                         }
+
                         highlightUserMonster();
                         battleSection.classList.add("hidden");
                         loadingSection.classList.add("hidden");
                         setupSection.classList.remove("hidden");
                         typeSection.classList.add("hidden");
-
-
                     }, 5000);
                     return;
                 }
@@ -250,7 +232,15 @@
             }, 400);
         }
 
-        document.getElementById("wildBattleButton").addEventListener("click", function() {
+        document.querySelectorAll('.userMonster').forEach(button => {
+            button.addEventListener('click', function() {
+                activeUserMonster = JSON.parse(this.getAttribute("data-monster"));
+                highlightUserMonster();
+                typeSection.classList.remove("hidden");
+            });
+        });
+
+        document.getElementById("wildBattleButton")?.addEventListener("click", function() {
             battleSection.classList.remove("hidden");
             loadingSection.classList.remove("hidden");
             setupSection.classList.add("hidden");

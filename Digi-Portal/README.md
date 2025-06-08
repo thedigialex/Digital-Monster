@@ -108,3 +108,18 @@ Update to production location
 -   `Stop Current`: docker stop staging-digi-portal
 -   `Remove Current`: docker rm staging-digi-portal
 -   `Run Image`: docker run -d --name staging-digi-portal -p 8004:80 --network bridge --restart unless-stopped -v digi-uploads:/var/www/html/public/uploads digi-portal:latest
+
+
+Setup 
+//Docker
+docker network create mariadb-network
+docker run -d --name mariadb --network mariadb-network -e MARIADB_ROOT_PASSWORD=password -p 3306:3306 mariadb
+docker run -d --name phpmyadmin --network mariadb-network -e PMA_HOST=mariadb -p 8080:80 phpmyadmin
+
+//Project
+php artisan mirgrate
+php artisan db:seed
+
+//Login
+test@example.com	
+ChangeMe1
