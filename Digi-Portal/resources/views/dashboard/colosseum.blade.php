@@ -13,12 +13,12 @@
             <x-buttons.button type="edit" label="Switch" icon="fa-repeat" id="backButton" class="hidden" />
         </x-slot>
         <x-container.background id="setup-section" :background="$background" class="rounded-b-md gap-4">
-            <div id="monster-section" class="flex flex-col items-center gap-4  w-full">
+            <div id="monster-section" class="flex flex-col items-center gap-4 w-full">
                 @if(!$userMonsters->isEmpty())
-                <x-fonts.paragraph class="text-text p-4 bg-primary rounded-md">Select a monsters for battle</x-fonts.paragraph>
+                <x-fonts.paragraph class="text-text p-4 bg-primary rounded-md">Select a monster for battle</x-fonts.paragraph>
                 <div id="monsterScrollWrapper" class="flex justify-center items-center gap-2 w-full">
                     <x-buttons.button type="edit" id="scrollLeft" label="" icon="fa-chevron-left" />
-                    <div id="monsterScroll" class="flex gap-4 transition-transform duration-300 w-1/3 overflow-hidden">
+                    <div id="monsterScroll" class="flex  transition-transform duration-300 w-3/4 lg:w-1/3 gap-4 overflow-hidden bg-primary p-4 rounded-md">
                         @foreach ($userMonsters as $userMonster)
                         <x-container.user-monster-card :data-monster="$userMonster" :id="'monster-' . $userMonster->id" buttonClass="userMonster" divClass="monster-div" />
                         @endforeach

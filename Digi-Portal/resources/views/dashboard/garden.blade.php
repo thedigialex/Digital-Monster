@@ -85,7 +85,7 @@
                             <div id="items" class="flex justify-center items-center overflow-y-auto">
                                 <div id="item-selection" class="flex flex-wrap justify-center items-center gap-4">
                                     @foreach ($userItems as $userItem)
-                                    <x-container.item-card :data-item="$userItem" buttonClass="useItem" />
+                                    <x-container.item-card :data-item="$userItem" buttonClass="useItem" :bottomText='$userItem->quantity' />
                                     @endforeach
                                     @if($userItems->isEmpty())
                                     <x-fonts.paragraph class="text-text p-2 bg-primary rounded-md">No Consumables</x-fonts.paragraph>
@@ -99,12 +99,12 @@
                             </div>
                             <div id="attacks" class="hidden flex flex-wrap justify-center items-center gap-4 overflow-y-auto">
                                 @foreach ($userAttacks as $userAttack)
-                                <x-container.item-card :data-item="$userAttack" :showQuantity="false" buttonClass="useAttack" divClass="attack-div" />
+                                <x-container.item-card :data-item="$userAttack" buttonClass="useAttack" divClass="attack-div" />
                                 @endforeach
                             </div>
                             <div id="materials" class="hidden flex flex-wrap justify-center items-center gap-4 overflow-y-auto">
                                 @foreach ($userMaterials as $userMaterial)
-                                <x-container.item-card :data-item="$userMaterial" />
+                                <x-container.item-card :data-item="$userMaterial" :bottomText='$userMaterial->quantity' />
                                 @endforeach
                                 @if($userMaterials->isEmpty())
                                 <x-fonts.paragraph class="text-text p-2 bg-primary rounded-md">No Materials</x-fonts.paragraph>

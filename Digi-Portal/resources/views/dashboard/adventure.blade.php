@@ -10,41 +10,43 @@
             <x-fonts.sub-header>
                 {{ $currentLocation->location->name }}
             </x-fonts.sub-header>
-            <x-buttons.button type="edit" label="Switch" icon="fa-repeat" id="backButton" class="hidden" />
-            <x-container.modal name="user-items" title="Locations">
-                <x-slot name="button">
-                    <x-buttons.button type="edit" label="Locations" icon="fa-location-dot" @click="open = true" id="openMenu" />
-                </x-slot>
-                <x-container.tab-div class="pt-2 px-2 justify-center bg-secondary">
-                    <x-buttons.tab id="showLocations" class="bg-accent text-secondary p-2" label="Locations" />
-                </x-container.tab-div>
-                <div class="flex flex-col justify-center items-center bg-cover bg-center rounded-b-md"
-                    style="background-image: url('{{ asset($background) }}'); height: 40vh;">
-                    <x-alerts.spinner id="loading-section-location"></x-alerts.spinner>
-                    <div id="locations" class="flex flex-wrap justify-center items-center gap-4 overflow-y-auto">
-                        @foreach ($userLocations as $userLocation)
-                        <div class="location-div flex flex-col items-center w-36 p-2 bg-secondary border-2 border-accent rounded-md"
-                            data-location-id="{{ $userLocation->id }}">
-                            <div class="w-24 h-24 p-2 rounded-md bg-primary">
-                                <button class="userLocation w-full h-full"
-                                    data-location='{{ json_encode($userLocation) }}'
-                                    style="background: url('/storage/{{ $userLocation->location->image }}') no-repeat; background-size: cover; background-position: 0 0;">
-                                </button>
+            <div>
+                <x-buttons.button type="edit" label="Switch" icon="fa-repeat" id="backButton" class="hidden" />
+                <x-container.modal name="user-items" title="Locations">
+                    <x-slot name="button">
+                        <x-buttons.button type="edit" label="Locations" icon="fa-location-dot" @click="open = true" id="openMenu" />
+                    </x-slot>
+                    <x-container.tab-div class="pt-2 px-2 justify-center bg-secondary">
+                        <x-buttons.tab id="showLocations" class="bg-accent text-secondary p-2" label="Locations" />
+                    </x-container.tab-div>
+                    <div class="flex flex-col justify-center items-center bg-cover bg-center rounded-b-md"
+                        style="background-image: url('{{ asset($background) }}'); height: 40vh;">
+                        <x-alerts.spinner id="loading-section-location"></x-alerts.spinner>
+                        <div id="locations" class="flex flex-wrap justify-center items-center gap-4 overflow-y-auto">
+                            @foreach ($userLocations as $userLocation)
+                            <div class="location-div flex flex-col items-center w-36 p-2 bg-secondary border-2 border-accent rounded-md"
+                                data-location-id="{{ $userLocation->id }}">
+                                <div class="w-24 h-24 p-2 rounded-md bg-primary">
+                                    <button class="userLocation w-full h-full"
+                                        data-location='{{ json_encode($userLocation) }}'
+                                        style="background: url('/storage/{{ $userLocation->location->image }}') no-repeat; background-size: cover; background-position: 0 0;">
+                                    </button>
+                                </div>
+                                <x-fonts.paragraph class="background-p text-text"> {{ $userLocation->location->name }}</x-fonts.paragraph>
                             </div>
-                            <x-fonts.paragraph class="background-p text-text"> {{ $userLocation->location->name }}</x-fonts.paragraph>
+                            @endforeach
                         </div>
-                        @endforeach
                     </div>
-                </div>
-            </x-container.modal>
+                </x-container.modal>
+            </div>
         </x-slot>
         <x-container.background id="setup-section" :background="$background" class="rounded-b-md gap-4">
-            <div id="monster-section" class="flex flex-col items-center gap-4  w-full">
+            <div id="monster-section" class="flex flex-col items-center gap-4 w-full">
                 @if(!$userMonsters->isEmpty())
-                <x-fonts.paragraph class="text-text p-4 bg-primary rounded-md">Select a monsters for battle</x-fonts.paragraph>
+                <x-fonts.paragraph class="text-text p-4 bg-primary rounded-md">Select a monster for adventure</x-fonts.paragraph>
                 <div id="monsterScrollWrapper" class="flex justify-center items-center gap-2 w-full">
                     <x-buttons.button type="edit" id="scrollLeft" label="" icon="fa-chevron-left" />
-                    <div id="monsterScroll" class="flex gap-4 transition-transform duration-300 w-1/3 overflow-hidden">
+                    <div id="monsterScroll" class="flex  transition-transform duration-300 w-3/4 lg:w-1/3 gap-4 overflow-hidden bg-primary p-4 rounded-md">
                         @foreach ($userMonsters as $userMonster)
                         <x-container.user-monster-card :data-monster="$userMonster" :id="'monster-' . $userMonster->id" buttonClass="userMonster" divClass="monster-div" />
                         @endforeach
