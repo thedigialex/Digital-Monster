@@ -10,7 +10,7 @@
             <x-fonts.sub-header>
                 {{ $currentLocation->location->name }}
             </x-fonts.sub-header>
-
+            <x-buttons.button type="edit" label="Switch" icon="fa-repeat" id="backButton" class="hidden" />
             <x-container.modal name="user-items" title="Locations">
                 <x-slot name="button">
                     <x-buttons.button type="edit" label="Locations" icon="fa-location-dot" @click="open = true" id="openMenu" />
@@ -38,152 +38,60 @@
                 </div>
             </x-container.modal>
         </x-slot>
-        <x-container.background id="setup-section" :background="$background" class="rounded-b-md">
-            @if ($userMonsters->isEmpty())
-            <x-fonts.paragraph class="text-text p-2 bg-primary rounded-md">No Monsters Available To Explore</x-fonts.paragraph>
-            @else
-
-            <x-fonts.paragraph class="text-text p-2 bg-primary rounded-md">Select a monster</x-fonts.paragraph>
-            <div class="flex items-center gap-4 pt-4">
-                <x-buttons.button type="edit" id="scrollLeft" label="" icon="fa-chevron-left" />
-                <div id="monsterCarousel" class="flex items-center gap-4" data-monsters='@json($userMonsters)'>
+        <x-container.background id="setup-section" :background="$background" class="rounded-b-md gap-4">
+            <div id="monster-section" class="flex flex-col items-center gap-4  w-full">
+                @if(!$userMonsters->isEmpty())
+                <x-fonts.paragraph class="text-text p-4 bg-primary rounded-md">Select a monsters for battle</x-fonts.paragraph>
+                <div id="monsterScrollWrapper" class="flex justify-center items-center gap-2 w-full">
+                    <x-buttons.button type="edit" id="scrollLeft" label="" icon="fa-chevron-left" />
+                    <div id="monsterScroll" class="flex gap-4 transition-transform duration-300 w-1/3 overflow-hidden">
+                        @foreach ($userMonsters as $userMonster)
+                        <x-container.user-monster-card :data-monster="$userMonster" :id="'monster-' . $userMonster->id" buttonClass="userMonster" divClass="monster-div" />
+                        @endforeach
+                    </div>
+                    <x-buttons.button type="edit" id="scrollRight" label="" icon="fa-chevron-right" />
                 </div>
-                <x-buttons.button type="edit" id="scrollRight" label="" icon="fa-chevron-right" />
             </div>
-
             <div id="confirm-section" class="hidden flex justify-center  items-center gap-4 flex-col pt-4">
                 <x-buttons.button type="edit" id="selectMonsterButton" label="Adventure" icon="fa-map" />
             </div>
+            @else
+            <x-fonts.paragraph class="text-text p-4 bg-primary rounded-md">No monsters are able to battle</x-fonts.paragraph>
             @endif
         </x-container.background>
         <x-container.background id="adventure-section" class="hidden rounded-b-md gap-4" :background="$background">
-            <x-buttons.button type="edit" icon="fa-repeat" label="Switch" id="backButton" />
             <div id="movementArea" class="relative w-full md:w-1/4 h-32 overflow-hidden">
                 <div id="movingSpriteWrapper" class="absolute left-0">
                     <x-container.sprite id="user-monster-sprite" :rotate="true" />
                 </div>
             </div>
             <x-fonts.paragraph id="messageBox" class="text-text p-2 bg-primary rounded-md">Adventure Forth!</x-fonts.paragraph>
-
             <x-buttons.button type="edit" id="stepButton" label="Step" icon="fa-forward" />
         </x-container.background>
     </x-container>
 </x-app-layout>
+
 <script>
     document.addEventListener("DOMContentLoaded", function() {
-        const carousel = document.getElementById("monsterCarousel");
         const confirmSection = document.getElementById("confirm-section");
+        const monsterSection = document.getElementById("monster-section");
+        const switchButton = document.getElementById("backButton");
+        const locationButton = document.getElementById("openMenu");
+        const scrollContainer = document.getElementById('monsterScroll');
+        const scrollLeftBtn = document.getElementById('scrollLeft');
+        const scrollRightBtn = document.getElementById('scrollRight');
         const battleSection = document.getElementById("adventure-section");
-        const loadingSection = document.getElementById("loading-section");
-        const battleArena = document.getElementById("battle-arena");
         const setupSection = document.getElementById("setup-section");
-        const scrollLeft = document.getElementById("scrollLeft");
-        const scrollRight = document.getElementById("scrollRight");
         const movingMonster = document.getElementById('user-monster-sprite');
         const stepButton = document.getElementById("stepButton");
-        const userMonsters = JSON.parse(carousel.getAttribute("data-monsters"));
 
-        let itemsPerPage = window.innerWidth <= 640 ? 1 : 4;
-        let currentIndex = 0;
         let activeUserMonster;
         let monsterElements = [];
         let monsterAnimationInterval;
 
-        function generateMonsters() {
-            userMonsters.forEach(userMonster => {
-                const monsterDiv = document.createElement("div");
-                monsterDiv.classList.add(
-                    "flex", "flex-col", "items-center", "w-36", "p-2",
-                    "bg-secondary", "border-2", "border-accent", "rounded-md",
-                    "cursor-pointer", "text-text"
-                );
-                monsterDiv.id = `monster-${userMonster.id}`;
-
-                monsterDiv.addEventListener("click", function() {
-                    if (activeUserMonster) {
-                        const previousActiveMonsterDiv = document.querySelector(`#monster-${activeUserMonster.id}`);
-                        if (previousActiveMonsterDiv) {
-                            previousActiveMonsterDiv.classList.remove("bg-accent", "text-secondary");
-                            previousActiveMonsterDiv.classList.add("text-text", "bg-secondary");
-                        }
-                    }
-                    confirmSection.classList.remove("hidden");
-                    activeUserMonster = userMonster;
-                    monsterDiv.classList.remove("bg-secondary", "text-text");
-                    monsterDiv.classList.add("text-secondary", "bg-accent");
-                });
-
-                const imgDiv = document.createElement("div");
-                imgDiv.classList.add("w-24", "h-24", "p-2", "rounded-md", "bg-primary");
-
-                const img = document.createElement("img");
-                img.classList.add("w-full", "h-full", "object-cover");
-                img.style.objectPosition = "0 0";
-
-                if (["Egg", "Fresh", "Child"].includes(userMonster.monster.stage) || userMonster.type === "Data") {
-                    img.src = `/storage/${userMonster.monster.image_0}`;
-                } else if (userMonster.type == "Vaccine") {
-                    img.src = `/storage/${userMonster.monster.image_1}`;
-                } else if (userMonster.type == "Virus") {
-                    img.src = `/storage/${userMonster.monster.image_2}`;
-                }
-
-                imgDiv.appendChild(img);
-
-                const nameParagraph = document.createElement("p");
-                nameParagraph.classList.add("text-center");
-                nameParagraph.textContent = userMonster.name;
-
-                monsterDiv.appendChild(imgDiv);
-                monsterDiv.appendChild(nameParagraph);
-
-                monsterElements.push(monsterDiv);
-            });
-        }
-
-        function renderMonsters() {
-            scrollLeft.style.visibility = currentIndex === 0 ? "hidden" : "visible";
-            scrollRight.style.visibility = currentIndex + itemsPerPage >= monsterElements.length ? "hidden" : "visible";
-            carousel.innerHTML = "";
-            const monstersToShow = monsterElements.slice(currentIndex, currentIndex + itemsPerPage);
-            monstersToShow.forEach(monster => carousel.appendChild(monster));
-        }
-
-        function userMonsterAnimation(frames) {
-            let frameIndex = 0;
-            movingMonster.style.backgroundImage = getMonsterImage(activeUserMonster);
-            clearInterval(monsterAnimationInterval);
-            monsterAnimationInterval = setInterval(() => {
-                monsterIndex = frames[frameIndex];
-                frameIndex = (frameIndex + 1) % frames.length;
-                movingMonster.style.backgroundPositionX = `-${monsterIndex * 48}px`;
-            }, 400);
-        }
-
-        function getMonsterImage(userMonster) {
-            if (['Fresh', 'Child'].includes(userMonster.monster.stage)) {
-                return `url(/storage/${userMonster.monster.image_0})`;
-            }
-            const imageMap = {
-                "Vaccine": userMonster.monster.image_1,
-                "Virus": userMonster.monster.image_2
-            };
-            return `url(/storage/${imageMap[userMonster.type] || userMonster.monster.image_0})`;
-        }
-
-        scrollLeft.addEventListener("click", function() {
-            if (currentIndex > 0) {
-                currentIndex -= itemsPerPage;
-                renderMonsters();
-            }
-        });
-
-        scrollRight.addEventListener("click", function() {
-            if (currentIndex + itemsPerPage < monsterElements.length) {
-                currentIndex += itemsPerPage;
-                renderMonsters();
-            }
-        });
+        scrollLeftBtn?.addEventListener('click', () => scrollCards(-1));
+        scrollRightBtn?.addEventListener('click', () => scrollCards(1));
+        switchButton.addEventListener('click', () => toggleSections());
 
         stepButton.addEventListener("click", function() {
             stepButton.disabled = true;
@@ -215,11 +123,76 @@
                 });
         });
 
-        document.getElementById("backButton").addEventListener("click", function() {
+        function getCardWidth() {
+            const firstCard = scrollContainer.querySelector('div');
+            return firstCard ? firstCard.offsetWidth + 16 : 0;
+        }
+
+        function scrollCards(direction) {
+            const cardWidth = getCardWidth();
+            scrollContainer.scrollBy({
+                left: direction * cardWidth,
+                behavior: 'smooth'
+            });
+        }
+
+        function highlightUserMonster() {
+            document.querySelectorAll(".monster-div").forEach(container => {
+                const monsterText = container.querySelector("p");
+                container.classList.remove("bg-accent", "bg-secondary");
+                monsterText.classList.remove("text-secondary", "text-text");
+                const userMonster = JSON.parse(container.querySelector("button").getAttribute("data-monster"));
+                if (activeUserMonster.id === userMonster.id) {
+                    container.classList.add("bg-accent");
+                    monsterText.classList.add("text-text");
+                } else {
+                    container.classList.add("bg-secondary");
+                    monsterText.classList.add("text-secondary");
+                }
+            });
+        }
+
+        function toggleSections() {
+            switchButton.classList.add("hidden");
             battleSection.classList.add("hidden");
+            monsterSection.classList.remove("hidden");
+            confirmSection.classList.add("hidden");
             setupSection.classList.remove("hidden");
-            confirmSection.classList.remove("hidden");
+            locationButton.classList.remove("hidden");
             document.getElementById('messageBox').textContent = "Adventure Forth!";
+        }
+
+        function userMonsterAnimation(frames) {
+            let frameIndex = 0;
+            movingMonster.style.backgroundImage = getMonsterImage(activeUserMonster);
+            clearInterval(monsterAnimationInterval);
+            monsterAnimationInterval = setInterval(() => {
+                monsterIndex = frames[frameIndex];
+                frameIndex = (frameIndex + 1) % frames.length;
+                movingMonster.style.backgroundPositionX = `-${monsterIndex * 48}px`;
+            }, 400);
+        }
+
+        function getMonsterImage(userMonster) {
+            if (['Fresh', 'Child'].includes(userMonster.monster.stage)) {
+                return `url(/storage/${userMonster.monster.image_0})`;
+            }
+            const imageMap = {
+                "Vaccine": userMonster.monster.image_1,
+                "Virus": userMonster.monster.image_2
+            };
+            return `url(/storage/${imageMap[userMonster.type] || userMonster.monster.image_0})`;
+        }
+
+        document.querySelectorAll('.userMonster').forEach(button => {
+            button.addEventListener('click', function() {
+                activeUserMonster = JSON.parse(this.getAttribute("data-monster"));
+                highlightUserMonster();
+                switchButton.classList.remove("hidden");
+                monsterSection.classList.add("hidden");
+                confirmSection.classList.remove("hidden");
+                locationButton.classList.add("hidden");
+            });
         });
 
         document.getElementById("selectMonsterButton").addEventListener("click", function() {
@@ -254,8 +227,5 @@
                     })
             });
         });
-
-        generateMonsters();
-        renderMonsters();
     });
 </script>
