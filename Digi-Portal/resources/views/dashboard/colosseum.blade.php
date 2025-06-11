@@ -18,7 +18,7 @@
                 <x-fonts.paragraph class="text-text p-4 bg-primary rounded-md">Select a monster for battle</x-fonts.paragraph>
                 <div id="monsterScrollWrapper" class="flex justify-center items-center gap-2 w-full">
                     <x-buttons.button type="edit" id="scrollLeft" label="" icon="fa-chevron-left" />
-                    <div id="monsterScroll" class="flex  transition-transform duration-300 w-3/4 lg:w-1/3 gap-4 overflow-hidden bg-primary p-4 rounded-md">
+                    <div id="monsterScroll" class="flex transition-transform duration-300 w-3/4 lg:w-1/3 gap-4 overflow-hidden bg-primary p-4 rounded-md">
                         @foreach ($userMonsters as $userMonster)
                         <x-container.user-monster-card :data-monster="$userMonster" :id="'monster-' . $userMonster->id" buttonClass="userMonster" divClass="monster-div" />
                         @endforeach

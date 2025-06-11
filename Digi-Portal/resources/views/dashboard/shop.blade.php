@@ -19,8 +19,8 @@
             @if (!$items->isEmpty())
             <div id="item-section" class="flex flex-col items-center gap-4 w-full">
                 @foreach ($items as $type => $groupedItems)
-                <div class="category-container p-4  bg-primary rounded-md" id="category-{{ $type }}">
-                    <x-fonts.sub-header class="border-b-2 border-accent mb-4">{{ $type }}</x-fonts.sub-header>
+                <div class="flex flex-col transition-transform duration-300 w-3/4 lg:w-1/3 gap-4 overflow-hidden bg-primary p-4 rounded-md" id="category-{{ $type }}">
+                    <x-fonts.sub-header class="border-b-2 border-accent p-4">{{ $type }}</x-fonts.sub-header>
                     <div class="flex flex-wrap justify-center gap-4 my-4">
                         @foreach ($groupedItems as $item)
 
