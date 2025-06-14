@@ -23,22 +23,7 @@
                     <x-fonts.sub-header class="border-b-2 border-accent p-4">{{ $type }}</x-fonts.sub-header>
                     <div class="flex flex-wrap justify-center gap-4 my-4">
                         @foreach ($groupedItems as $item)
-
-                        <x-container.item-card :data-item="$item" buttonClass="useItem" :isUserItem="false" :bottomText="'$ ' . $item->price" />
-
-
-                        <div class="buyItem flex flex-col items-center w-36 p-2 bg-secondary border-2 border-accent rounded-md cursor-pointer"
-                            id="item-{{ $item->id }}" data-item='{{ json_encode($item) }}' data-category="category-{{ $type}}">
-                            <div class="relative w-24 h-24 p-2 rounded-md bg-primary">
-                                <div class="w-full h-full"
-                                    style="background: url('/storage/{{ $item->image }}') no-repeat; background-size: cover; background-position: 0 0;">
-                                </div>
-                                <span class="absolute bottom-1 right-1 bg-accent text-text text-xs px-2 py-1 rounded-md">
-                                    ¥ {{ $item->price }}
-                                </span>
-                            </div>
-                            <x-fonts.paragraph class="text-text"> {{ $item->name }} </x-fonts.paragraph>
-                        </div>
+                        <x-container.item-card :data-item="$item" buttonClass="buyItem" :isUserItem="false" :bottomText="'$ ' . $item->price" />
                         @endforeach
                     </div>
                 </div>

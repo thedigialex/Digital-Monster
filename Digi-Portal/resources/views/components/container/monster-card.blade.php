@@ -1,28 +1,46 @@
-@props(['monster', 'obtained'])
+@props([
+    'dataMonster',
+    'buttonClass' => '',
+    'divClass' => '',
+    'id' => null,
+    'preview' => false,
+    'obtained' => false,
+])
 
-<div class="flex flex-col items-center w-32 p-2 bg-secondary border-2 border-accent rounded-md text-text"
-     x-data="{
-        images: [
-            '{{ asset('storage/' . $monster->image_0) }}',
-            '{{ asset('storage/' . $monster->image_1) }}',
-            '{{ asset('storage/' . $monster->image_2) }}'
-        ].filter(i => i),
-        currentIndex: 0,
-        cycleImage() {
-            this.currentIndex = (this.currentIndex + 1) % this.images.length;
-        }
-     }">
-    <div class="w-24 h-24 p-2 rounded-md bg-primary flex items-center justify-center">
-        @if ($obtained)
-            <img
-                :src="images[currentIndex]"
-                alt="Monster Image"
-                class="w-full h-full object-cover cursor-pointer"
-                style="object-position: 0 0;"
-                @click="cycleImage()" />
-        @else
-            <i class="fas fa-question text-3xl text-accent"></i>
-        @endif
+@php
+$monster = null;
+$type = null;
+$imgSrc = '';
+$stage = null;
+
+if ($preview || $obtained) {
+    $monster = $dataMonster;
+    $type = 'Data';
+} else {
+    $monster = $dataMonster->monster ?? null;
+    $type = $dataMonster->type ?? null;
+}
+$stage = $monster->stage ?? null;
+
+if (in_array($stage, ['Egg', 'Fresh', 'Child']) || $type === 'Data') {
+    $imgSrc = "/storage/" . ($monster->image_0 ?? '');
+} elseif ($type === 'Vaccine') {
+    $imgSrc = "/storage/" . ($monster->image_1 ?? '');
+} elseif ($type === 'Virus') {
+    $imgSrc = "/storage/" . ($monster->image_2 ?? '');
+}
+@endphp
+
+<div id="{{ $id }}"
+     {{ $attributes->merge(['class' => 'flex flex-col items-center w-36 bg-secondary rounded-md ' . $divClass]) }}>
+    <x-fonts.paragraph class="bg-accent w-full rounded-t-md text-center border-b-2 border-primary">
+        {{ $dataMonster->name }}
+    </x-fonts.paragraph>
+    <div class="w-24 h-24 p-4 rounded-md bg-primary m-2">
+        <button
+            {{ $attributes->merge(['class' => 'w-full h-full ' . $buttonClass]) }}
+            data-monster='@json($dataMonster)'
+            style="background: url('{{ $imgSrc }}') no-repeat; background-size: cover; background-position: 0 0;">
+        </button>
     </div>
-    <x-fonts.paragraph>{{ $monster->name }}</x-fonts.paragraph>
 </div>

@@ -17,25 +17,28 @@
                 DataCrystals <span>{{ $count}} / 10</span>
             </x-fonts.paragraph>
         </x-slot>
-        <x-container.background :background="$background" class="rounded-b-md">
-            <div id="egg-selection" class="flex flex-col justify-center items-center gap-4">
-                <x-fonts.paragraph class="text-text p-2 bg-primary rounded-md">{{ $message }}</x-fonts.paragraph>
-                <div class="flex items-center gap-4">
+        <x-container.background :background="$background" class="rounded-b-md gap-4">
+            <x-alerts.spinner id="loading-section"></x-alerts.spinner>
+            <div id="egg-section" class="flex flex-col items-center gap-4 w-full">
+                @if(!$eggs->isEmpty())
+                <x-fonts.paragraph class="text-text p-4 bg-primary rounded-md">{{ $message }}</x-fonts.paragraph>
+                <div class="flex justify-center items-center gap-2 w-full">
                     <x-buttons.button type="edit" id="scrollLeft" label="" icon="fa-chevron-left" />
-                    <div id="monsterCarousel" class="flex items-center gap-4" data-eggs='@json($eggs)'></div>
-
+                    <div id="monsterScroll" class="flex  transition-transform duration-300 w-3/4 lg:w-1/3 gap-4 overflow-hidden bg-primary p-4 rounded-md">
+                        @foreach ($eggs as $egg)
+                        <x-container.monster-card :data-monster="$egg" :id="'monster-' . $egg->id" :preview="true" buttonClass="selectEgg" divClass="monster-div" />
+                        @endforeach
+                    </div>
                     <x-buttons.button type="edit" id="scrollRight" label="" icon="fa-chevron-right" />
                 </div>
             </div>
-            <div id="confirm-selection" class="hidden flex flex-col justify-center items-center">
-                <x-fonts.paragraph class="text-text p-2 bg-primary rounded-md">Converge DataCrystals into this egg?</x-fonts.paragraph>
-                <div id="single-egg" class="flex items-center gap-4 py-4"></div>
-                <div class="flex gap-4">
-                    <x-buttons.button type="edit" id="backButton" label="Back" icon="fa-backward" />
-                    <x-buttons.button type="edit" id="confirmButton" label="Confirm" icon="fa-check" />
-                </div>
+            <div id="confirm-selection" class="hidden flex flex-col justify-center items-center gap-4">
+                <x-fonts.paragraph class="text-text p-4 bg-primary rounded-md">Converge DataCrystals</x-fonts.paragraph>
+                <x-buttons.button type="edit" id="confirmButton" label="Confirm" icon="fa-check" />
             </div>
-            <x-alerts.spinner id="loading-section"></x-alerts.spinner>
+            @else
+            <x-fonts.paragraph class="text-text p-4 bg-primary rounded-md">No monsters are able to battle</x-fonts.paragraph>
+            @endif
         </x-container.background>
     </x-container>
 </x-app-layout>
@@ -43,82 +46,56 @@
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         const carousel = document.getElementById("monsterCarousel");
-        const eggSelection = document.getElementById("egg-selection");
         const confirmSelection = document.getElementById("confirm-selection");
-        const singleEgg = document.getElementById("single-egg");
-        const scrollLeft = document.getElementById("scrollLeft");
-        const scrollRight = document.getElementById("scrollRight");
-        const eggMonsters = JSON.parse(carousel.getAttribute("data-eggs"));
+        const eggSection = document.getElementById("egg-section");
+        const scrollLeftBtn = document.getElementById('scrollLeft');
+        const scrollRightBtn = document.getElementById('scrollRight');
+        const scrollContainer = document.getElementById('monsterScroll');
 
-        let currentIndex = 0;
-        let selectedMonster;
-        const itemsPerPage = window.innerWidth <= 640 ? 1 : 4;
-        let monsterElements = [];
+        scrollLeftBtn?.addEventListener('click', () => scrollCards(-1));
+        scrollRightBtn?.addEventListener('click', () => scrollCards(1));
 
-        function renderMonsters() {
-            scrollLeft.style.visibility = currentIndex === 0 ? "hidden" : "visible";
-            scrollRight.style.visibility = currentIndex + itemsPerPage >= monsterElements.length ? "hidden" : "visible";
-            carousel.innerHTML = "";
-            const monstersToShow = monsterElements.slice(currentIndex, currentIndex + itemsPerPage);
-            monstersToShow.forEach(monster => carousel.appendChild(monster));
+        function getCardWidth() {
+            const firstCard = scrollContainer.querySelector('div');
+            return firstCard ? firstCard.offsetWidth + 16 : 0;
         }
 
-        function showConfirmation() {
-            eggSelection.classList.add("hidden");
-            confirmSelection.classList.remove("hidden");
-
-            singleEgg.innerHTML = `
-                <div class="flex flex-col items-center w-36 p-2 bg-secondary border-2 border-accent rounded-md text-text">
-                    <div class="w-24 h-24 p-2 rounded-md bg-primary">
-                        <img src="/storage/${selectedMonster.image_0}" class="w-full h-full object-cover" style="object-position: 0 0;" />
-                    </div>
-                    <p class="text-center">${selectedMonster.name}</p>
-                </div>
-            `;
-        }
-
-        function showEggSelection() {
-            confirmSelection.classList.add("hidden");
-            eggSelection.classList.remove("hidden");
-        }
-
-        eggMonsters.forEach(monster => {
-            const monsterDiv = document.createElement("div");
-            monsterDiv.classList.add("flex", "flex-col", "items-center", "w-36", "p-2", "bg-secondary", "border-2", "border-accent", "rounded-md", "cursor-pointer", "text-text");
-            monsterDiv.innerHTML = `
-                <div class="w-24 h-24 p-2 rounded-md bg-primary">
-                    <img src="/storage/${monster.image_0}" class="w-full h-full object-cover" style="object-position: 0 0;" />
-                </div>
-                <p class="text-center">${monster.name}</p>
-            `;
-
-            monsterDiv.addEventListener("click", function() {
-                selectedMonster = monster;
-                showConfirmation();
+        function scrollCards(direction) {
+            const cardWidth = getCardWidth();
+            scrollContainer.scrollBy({
+                left: direction * cardWidth,
+                behavior: 'smooth'
             });
+        }
 
-            monsterElements.push(monsterDiv);
+        function highlightUserMonster() {
+            document.querySelectorAll(".monster-div").forEach(container => {
+                const monsterText = container.querySelector("p");
+                container.classList.remove("bg-accent", "bg-secondary");
+                monsterText.classList.remove("text-secondary", "text-text");
+                const userMonster = JSON.parse(container.querySelector("button").getAttribute("data-monster"));
+                if (selectedMonster.id === userMonster.id) {
+                    container.classList.add("bg-accent");
+                    monsterText.classList.add("text-text");
+                } else {
+                    container.classList.add("bg-secondary");
+                    monsterText.classList.add("text-secondary");
+                }
+            });
+        }
+
+        document.querySelectorAll('.selectEgg').forEach(button => {
+            button.addEventListener('click', function() {
+                selectedMonster = JSON.parse(this.getAttribute("data-monster"));
+                confirmSelection.classList.remove("hidden");
+                highlightUserMonster();
+            });
         });
-
-        scrollLeft.addEventListener("click", function() {
-            if (currentIndex > 0) {
-                currentIndex -= itemsPerPage;
-                renderMonsters();
-            }
-        });
-
-        scrollRight.addEventListener("click", function() {
-            if (currentIndex + itemsPerPage < monsterElements.length) {
-                currentIndex += itemsPerPage;
-                renderMonsters();
-            }
-        });
-
-        document.getElementById("backButton").addEventListener("click", showEggSelection);
 
         document.getElementById("confirmButton").addEventListener("click", function() {
             document.getElementById("loading-section").classList.remove("hidden");
             confirmSelection.classList.add("hidden");
+            eggSection.classList.add("hidden");
             const data = {
                 monster_id: selectedMonster.id
             };
@@ -133,12 +110,8 @@
                 .then(result => {
                     if (result.successful) {
                         window.location.href = '/digigarden';
-                    } else {
-                        //reset thing and show a message.
                     }
                 });
         });
-
-        renderMonsters();
     });
 </script>
