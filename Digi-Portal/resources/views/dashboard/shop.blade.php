@@ -11,11 +11,12 @@
                 Shop
             </x-fonts.sub-header>
             <x-fonts.paragraph id="user-balance">
-                Balance: ¥ <span>{{ $user->bits }}</span>
+                Balance: $ <span>{{ $user->bits }}</span>
             </x-fonts.paragraph>
         </x-slot>
         <x-container.background :background="$background" class="rounded-b-md gap-4">
             <x-alerts.spinner id="loading-section" />
+            <x-fonts.paragraph id="messageBox" class="hidden text-text p-4 bg-primary rounded-md"></x-fonts.paragraph>
             @if (!$items->isEmpty())
             <div id="item-section" class="flex flex-col items-center gap-4 w-full">
                 @foreach ($items as $type => $groupedItems)
@@ -40,12 +41,13 @@
     document.addEventListener("DOMContentLoaded", function() {
         const loadingSection = document.getElementById('loading-section');
         const itemSection = document.getElementById('item-section');
+        const messageBox = document.getElementById('messageBox');
         document.querySelectorAll('.buyItem').forEach(div => {
             div.addEventListener('click', function() {
                 loadingSection.classList.remove("hidden");
                 itemSection.classList.add("hidden");
+                messageBox.classList.add("hidden");
                 let item = JSON.parse(this.getAttribute('data-item'));
-
                 fetch("{{ route('shop.buy') }}", {
                         method: "POST",
                         headers: {
@@ -67,13 +69,15 @@
                                 let itemContainer = document.getElementById(`item-${item.id}`);
                                 let categoryId = itemContainer.getAttribute('data-category');
                                 itemContainer.remove();
-
                                 let categoryContainer = document.getElementById(categoryId);
                                 let remainingItems = categoryContainer.querySelectorAll('.item-container');
                                 if (remainingItems.length == 0) {
                                     categoryContainer.remove();
                                 }
                             }
+                        } else {
+                            messageBox.textContent = result.message;
+                            messageBox.classList.remove("hidden");
                         }
                     });
             });

@@ -18,7 +18,7 @@ $item = $isUserItem ? $dataItem->item : $dataItem;
     <div class="w-24 h-24 p-4 rounded-md bg-primary m-2 relative">
         <button
             {{ $attributes->merge(['class' => 'w-full h-full ' . $buttonClass]) }}
-            data-item='@json($item)'
+            data-item='@json($dataItem)'
             style="background: url('/storage/{{ $item->image }}') no-repeat; background-size: cover; background-position: 0 0;">
         </button>
 

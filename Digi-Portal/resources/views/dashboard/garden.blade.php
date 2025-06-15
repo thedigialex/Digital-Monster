@@ -85,7 +85,7 @@
                             <div id="items" class="flex justify-center items-center overflow-y-auto">
                                 <div id="item-selection" class="flex flex-wrap justify-center items-center gap-4">
                                     @foreach ($userItems as $userItem)
-                                    <x-container.item-card :data-item="$userItem" buttonClass="useItem" :bottomText='$userItem->quantity' />
+                                    <x-container.item-card :data-item="$userItem" buttonClass="useItem" :bottomText="$userItem->quantity" />
                                     @endforeach
                                     @if($userItems->isEmpty())
                                     <x-fonts.paragraph class="text-text p-2 bg-primary rounded-md">No Consumables</x-fonts.paragraph>
@@ -542,7 +542,6 @@
 
         document.querySelectorAll('.useItem').forEach(button => {
             button.addEventListener('click', function() {
-
                 const itemSelectionSection = document.getElementById('item-selection');
                 itemSelectionSection.classList.add('hidden');
 
@@ -550,13 +549,10 @@
                 animationSection.classList.remove('hidden');
 
                 userItem = JSON.parse(this.getAttribute('data-item'));
-
                 monsterImage = document.getElementById('monster-item-sprite');
                 secondaryImage = document.getElementById('item-sprite');
                 secondaryImage.style.backgroundImage = `url(/storage/${userItem.item.image})`;
-
                 monsterImage.style.backgroundImage = getMonsterImage(activeUserMonster);
-
                 monsterAnimationInterval = animateSprite(monsterImage, [1, 2], 400, monsterAnimationInterval);
                 secondaryAnimationInterval = animateSprite(secondaryImage, [0, 1, 2, 3], 800, secondaryAnimationInterval);
 

@@ -491,7 +491,7 @@ class DashboardController extends Controller
         $item = Item::find($request->item_id);
 
         if (!$item || $user->bits < $item->price) {
-            return response()->json(['message' => 'Hmmm something is off.', 'successful' => false]);
+            return response()->json(['message' => 'Not enough Bits', 'successful' => false]);
         }
 
         $userItem = UserItem::firstOrNew(['user_id' => $user->id, 'item_id' => $item->id]);

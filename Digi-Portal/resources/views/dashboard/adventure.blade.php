@@ -40,42 +40,40 @@
                 </x-container.modal>
             </div>
         </x-slot>
-        <x-container.background id="setup-section" :background="$background" class="rounded-b-md gap-4">
-            <div id="monster-section" class="flex flex-col items-center gap-4 w-full">
-                @if(!$userMonsters->isEmpty())
-                <x-fonts.paragraph class="text-text p-4 bg-primary rounded-md">Select a monster for adventure</x-fonts.paragraph>
-                <div class="flex justify-center items-center gap-2 w-full">
-                    <x-buttons.button type="edit" id="scrollLeft" label="" icon="fa-chevron-left" />
-                    <div id="monsterScroll" class="flex transition-transform duration-300 w-3/4 lg:w-1/3 gap-4 overflow-hidden bg-primary p-4 rounded-md">
-                        @foreach ($userMonsters as $userMonster)
-                        <x-container.monster-card :data-monster="$userMonster" :id="'monster-' . $userMonster->id" buttonClass="userMonster" divClass="monster-div" />
-                        @endforeach
+        <x-container.background :background="$background" class="rounded-b-md gap-4">
+            <div id="setup-section" class="flex flex-col gap-4 w-full">
+                <div id="monster-section" class="flex flex-col items-center gap-4 w-full">
+                    @if(!$userMonsters->isEmpty())
+                    <x-fonts.paragraph class="text-text p-4 bg-primary rounded-md">Select a monster for adventure</x-fonts.paragraph>
+                    <div class="flex justify-center items-center gap-2 w-full">
+                        <x-buttons.button type="edit" id="scrollLeft" label="" icon="fa-chevron-left" />
+                        <div id="monsterScroll" class="flex transition-transform duration-300 w-3/4 lg:w-1/3 gap-4 overflow-hidden bg-primary p-4 rounded-md">
+                            @foreach ($userMonsters as $userMonster)
+                            <x-container.monster-card :data-monster="$userMonster" :id="'monster-' . $userMonster->id" buttonClass="userMonster" divClass="monster-div" />
+                            @endforeach
+                        </div>
+                        <x-buttons.button type="edit" id="scrollRight" label="" icon="fa-chevron-right" />
                     </div>
-                    <x-buttons.button type="edit" id="scrollRight" label="" icon="fa-chevron-right" />
                 </div>
+                @else
+                <x-fonts.paragraph class="text-text p-4 bg-primary rounded-md">No monsters are able to battle</x-fonts.paragraph>
+                @endif
             </div>
-            <div id="confirm-section" class="hidden flex justify-center  items-center gap-4 flex-col pt-4">
-                <x-buttons.button type="edit" id="selectMonsterButton" label="Adventure" icon="fa-map" />
-            </div>
-            @else
-            <x-fonts.paragraph class="text-text p-4 bg-primary rounded-md">No monsters are able to battle</x-fonts.paragraph>
-            @endif
-        </x-container.background>
-        <x-container.background id="adventure-section" class="hidden rounded-b-md gap-4" :background="$background">
-            <div id="movementArea" class="relative w-full md:w-1/4 h-32 overflow-hidden">
-                <div id="movingSpriteWrapper" class="absolute left-0">
-                    <x-container.sprite id="user-monster-sprite" :rotate="true" />
+            <div id="adventure-section" class="hidden flex flex-col gap-4 w-full items-center">
+                <div id="movementArea" class="lg:w-1/2 w-full relative overflow-hidden h-16">
+                    <div id="movingSpriteWrapper" class="absolute top-0 left-0">
+                        <x-container.sprite id="user-monster-sprite" :rotate="true" />
+                    </div>
                 </div>
+                <x-fonts.paragraph id="messageBox" class="text-text p-4 bg-primary rounded-md">Adventure Forth!</x-fonts.paragraph>
+                <x-buttons.button type="edit" id="stepButton" label="Step" icon="fa-forward" />
             </div>
-            <x-fonts.paragraph id="messageBox" class="text-text p-2 bg-primary rounded-md">Adventure Forth!</x-fonts.paragraph>
-            <x-buttons.button type="edit" id="stepButton" label="Step" icon="fa-forward" />
         </x-container.background>
     </x-container>
 </x-app-layout>
 
 <script>
     document.addEventListener("DOMContentLoaded", function() {
-        const confirmSection = document.getElementById("confirm-section");
         const monsterSection = document.getElementById("monster-section");
         const switchButton = document.getElementById("backButton");
         const locationButton = document.getElementById("openMenu");
@@ -158,7 +156,6 @@
             switchButton.classList.add("hidden");
             battleSection.classList.add("hidden");
             monsterSection.classList.remove("hidden");
-            confirmSection.classList.add("hidden");
             setupSection.classList.remove("hidden");
             locationButton.classList.remove("hidden");
             document.getElementById('messageBox').textContent = "Adventure Forth!";
@@ -190,18 +187,12 @@
             button.addEventListener('click', function() {
                 activeUserMonster = JSON.parse(this.getAttribute("data-monster"));
                 highlightUserMonster();
+                userMonsterAnimation([0, 1]);
                 switchButton.classList.remove("hidden");
                 monsterSection.classList.add("hidden");
-                confirmSection.classList.remove("hidden");
+                battleSection.classList.remove("hidden");
                 locationButton.classList.add("hidden");
             });
-        });
-
-        document.getElementById("selectMonsterButton").addEventListener("click", function() {
-            userMonsterAnimation([0, 1]);
-            setupSection.classList.add("hidden");
-            confirmSection.classList.add("hidden");
-            battleSection.classList.remove("hidden");
         });
 
         document.querySelectorAll(".userLocation").forEach(button => {

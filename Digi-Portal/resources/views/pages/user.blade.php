@@ -2,9 +2,6 @@
     <x-slot name="header">
         <x-fonts.sub-header>
             {{ $user->name }}
-            <span class="ml-2">
-                <i class="fa fa-envelope" id="copyEmailIcon" style="cursor: pointer;" onclick="copyToClipboard('{{ $user->email }}')"></i>
-            </span>
         </x-fonts.sub-header>
         <a href="{{ route('users.index') }}">
             <x-buttons.button type="edit" icon="fa-arrow-left" label="Back" />
@@ -213,14 +210,3 @@
         </x-accordion>
     </x-container>
 </x-app-layout>
-
-<script>
-    function copyToClipboard(email) {
-        const tempInput = document.createElement('input');
-        tempInput.value = email;
-        document.body.appendChild(tempInput);
-        tempInput.select();
-        document.execCommand('copy');
-        document.body.removeChild(tempInput);
-    }
-</script>
