@@ -54,7 +54,7 @@
             data-monsters='@json($userMonsters)'
             style="background-image: url('{{ asset($background) }}');">
         </div>
-        <div id="stats-panel" class="hidden bg-secondary border-primary border-t-4 p-2 shadow-lg rounded-b-md">
+        <div id="stats-panel" class="hidden bg-secondary border-primary border-t-4 p-4 shadow-lg rounded-b-md">
             <div class="flex justify-between items-center pb-4">
                 <x-fonts.sub-header id="stat-name-wrapper">
                     <span id="stat-level"><span></span> </span>
@@ -73,13 +73,11 @@
                         <x-slot name="button">
                             <x-buttons.button type="edit" id="openItems" label="Items" icon="fa-briefcase" @click="open = true" />
                         </x-slot>
-
                         <x-container.tab-div class="pt-2 px-2 justify-center bg-secondary">
                             <x-buttons.tab id="showItems" class="bg-accent text-secondary p-2" label="Consumable" />
                             <x-buttons.tab id="showAttacks" class="bg-secondary text-text p-2" label="Attacks" />
                             <x-buttons.tab id="showMaterials" class="bg-secondary text-text p-2" label="Materials" />
                         </x-container.tab-div>
-
                         <div class="flex flex-col justify-center items-center bg-cover bg-center rounded-b-md"
                             style="background-image: url('{{ asset($background) }}'); height: 40vh;">
                             <div id="items" class="flex justify-center items-center overflow-y-auto">
@@ -118,15 +116,15 @@
                     <x-fonts.paragraph id="stat-steps">Steps: <span></span></x-fonts.paragraph>
                 </div>
                 <div class="flex gap-4 justify-between">
-                    <div class="flex-1">
+                    <div class="flex-1 flex flex-col gap-1">
                         <x-fonts.paragraph>Energy</x-fonts.paragraph>
                         <div class="w-full bg-secondary rounded-md h-8">
                             <div id="energy-bar" class="bg-success h-8 rounded-md transition-all duration-300"></div>
                         </div>
                     </div>
-                    <div class="flex-1">
+                    <div class="flex-1 flex flex-col gap-1">
                         <x-fonts.paragraph>Hunger</x-fonts.paragraph>
-                        <div class="hunger-icons">
+                        <div class="hunger-icons flex flex-row justify-evenly">
                             <i class="fa-solid fa-drumstick-bite fa-2x"></i>
                             <i class="fa-solid fa-drumstick-bite fa-2x"></i>
                             <i class="fa-solid fa-drumstick-bite fa-2x"></i>

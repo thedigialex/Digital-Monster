@@ -123,3 +123,15 @@ php artisan db:seed
 //Login
 test@example.com	
 ChangeMe1
+
+//Local
+rm public/storage
+npm run build
+docker build -t digi-portal .
+docker save -o digi-portal.tar digi-portal:latest
+
+//Server
+docker load -i digi-portal.tar
+docker stop staging-digi-portal
+docker rm staging-digi-portal
+docker run -d --name staging-digi-portal -p 8004:80 --network bridge --restart unless-stopped -v digi-uploads:/var/www/html/storage/app/public digi-portal:latest
