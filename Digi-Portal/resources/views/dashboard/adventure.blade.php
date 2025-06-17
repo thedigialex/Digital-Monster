@@ -56,7 +56,7 @@
                     </div>
                 </div>
                 @else
-                <x-fonts.paragraph class="text-text p-4 bg-primary rounded-md">No monsters are able to battle</x-fonts.paragraph>
+                <x-fonts.paragraph class="text-text p-4 bg-primary rounded-md">No monsters are able to adventure</x-fonts.paragraph>
                 @endif
             </div>
             <div id="adventure-section" class="hidden flex flex-col gap-4 w-full items-center">
@@ -95,6 +95,7 @@
 
         stepButton.addEventListener("click", function() {
             stepButton.disabled = true;
+            stepButton.classList.add("hidden");
             document.getElementById("backButton").classList.add("hidden");
             const data = {
                 user_monster_id: activeUserMonster.id
@@ -118,7 +119,9 @@
                             stepButton.disabled = false;
                             document.getElementById('messageBox').textContent = result.message;
                             document.getElementById("backButton").classList.remove("hidden");
+                                                    stepButton.classList.remove("hidden");
                         }, result.duration);
+
                     }
                 });
         });
