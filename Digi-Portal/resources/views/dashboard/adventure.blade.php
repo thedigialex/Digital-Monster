@@ -119,9 +119,8 @@
                             stepButton.disabled = false;
                             document.getElementById('messageBox').textContent = result.message;
                             document.getElementById("backButton").classList.remove("hidden");
-                                                    stepButton.classList.remove("hidden");
+                            stepButton.classList.remove("hidden");
                         }, result.duration);
-
                     }
                 });
         });

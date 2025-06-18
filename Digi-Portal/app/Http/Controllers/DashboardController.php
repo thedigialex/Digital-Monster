@@ -200,7 +200,7 @@ class DashboardController extends Controller
                 return $sorted;
             });
 
-        return view('dashboard.chart', compact('monsters', 'obtainedMonsterIds','fieldIconMap'));
+        return view('dashboard.chart', compact('monsters', 'obtainedMonsterIds', 'fieldIconMap'));
     }
 
     public function colosseum()
@@ -527,7 +527,7 @@ class DashboardController extends Controller
                 $query->where('type', 'Material')
                     ->where('name', 'DataCrystal');
             })
-            ->sum('quantity');
+            ->sum('quantity') ?? 0;
 
         $userMonsters = UserMonster::with('monster')->where('user_id', $user->id)->get();
         $totalMonsters = $userMonsters->count();
