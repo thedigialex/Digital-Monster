@@ -20,8 +20,8 @@
         <x-container.background :background="$background" class="rounded-b-md gap-4">
             <x-alerts.spinner id="loading-section"></x-alerts.spinner>
             <div id="egg-section" class="flex flex-col items-center gap-4 w-full">
-                @if(!$eggs->isEmpty())
                 <x-fonts.paragraph class="text-text p-4 bg-primary rounded-md">{{ $message }}</x-fonts.paragraph>
+                @if(!$eggs->isEmpty())
                 <div class="flex justify-center items-center gap-2 w-full">
                     <x-buttons.button type="edit" id="scrollLeft" label="" icon="fa-chevron-left" />
                     <div id="monsterScroll" class="flex  transition-transform duration-300 w-3/4 lg:w-1/3 gap-4 overflow-hidden bg-primary p-4 rounded-md">
@@ -31,14 +31,12 @@
                     </div>
                     <x-buttons.button type="edit" id="scrollRight" label="" icon="fa-chevron-right" />
                 </div>
+                @endif
             </div>
             <div id="confirm-selection" class="hidden flex flex-col justify-center items-center gap-4">
                 <x-fonts.paragraph class="text-text p-4 bg-primary rounded-md">Converge DataCrystals</x-fonts.paragraph>
                 <x-buttons.button type="edit" id="confirmButton" label="Confirm" icon="fa-check" />
             </div>
-            @else
-            <x-fonts.paragraph class="text-text p-4 bg-primary rounded-md">No monsters are able to battle</x-fonts.paragraph>
-            @endif
         </x-container.background>
     </x-container>
 </x-app-layout>

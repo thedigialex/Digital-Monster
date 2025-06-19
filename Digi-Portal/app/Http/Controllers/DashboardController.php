@@ -545,10 +545,11 @@ class DashboardController extends Controller
                 : "Select an Egg")
             : "Not enough DataCrystals";
 
-        $eggs = ($count >= 10 && $totalMonsters < $digiGarden->level * 5)
-            ? Monster::where('stage', 'Egg')->get()
-            : [];
-
+        $eggs = collect();
+        if ($count >= 10 && $totalMonsters < $digiGarden->level * 5) {
+            $eggs = Monster::where('stage', 'Egg')->get();
+        }
+        
         return view('dashboard.converge', compact('count', 'background', 'eggs', 'message'));
     }
 

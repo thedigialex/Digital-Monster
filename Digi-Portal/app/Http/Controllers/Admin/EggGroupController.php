@@ -12,18 +12,31 @@ class EggGroupController extends Controller
 
     public function index()
     {
-        $eggGroups = EggGroup::all()->groupBy('field');
-        $icons = [
-            'fa-dragon',
-            'fa-bug',
-            'fa-paw',
-            'fa-leaf',
-            'fa-water',
-            'fa-magic',
+        $eggGroupsByField = EggGroup::all()->groupBy('field');
+
+        $fieldIcons = [
+            'Tyrannos' => 'fa-dragon',
+            'Insecta' => 'fa-bug',
+            'Beast' => 'fa-paw',
+            'Flora' => 'fa-leaf',
+            'Abyss' => 'fa-water',
+            'Arcane' => 'fa-magic',
         ];
-        return view('egg_groups.index', ['eggGroups' => $eggGroups, 'fields' => $this->fields, 'icons' => $icons]);
+
+        $flatGroups = collect();
+        foreach ($eggGroupsByField as $field => $groups) {
+            foreach ($groups as $group) {
+                $group->field = $field;
+                $group->icon = $fieldIcons[$field] ?? 'fa-egg';
+                $flatGroups->push($group);
+            }
+        }
+
+        return view('egg_groups.index', [
+            'eggGroups' => $flatGroups,
+        ]);
     }
-    
+
     public function edit()
     {
         $eggGroup = EggGroup::find(session('egg_group_id'));

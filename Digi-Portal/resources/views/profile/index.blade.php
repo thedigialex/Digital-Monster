@@ -51,7 +51,6 @@
                 <thead class="bg-primary">
                     <tr>
                         <x-table.header class="w-1/2 md:w-1/3 text-left">Name</x-table.header>
-                        <x-table.header class="w-1/3 text-left hidden md:table-cell">Friendship</x-table.header>
                         <x-table.header class="w-1/2 md:w-1/3"></x-table.header>
                     </tr>
                 </thead>
@@ -64,12 +63,9 @@
                             </x-fonts.paragraph>
                         </x-table.data>
 
-                        <x-table.data class="w-1/3 hidden md:table-cell">
-                            <x-buttons.button type="edit" class="add_friend_button" label="Add" icon="fa-plus" :data-user="$user->id" />
-                        </x-table.data>
-
                         <x-table.data class="w-1/2 md:w-1/3">
                             <div class="flex justify-end gap-4">
+                                <x-buttons.button type="edit" class="add_friend_button" label="Add" icon="fa-plus" :data-user="$user->id" />
                                 <x-buttons.session model="other_user" :id="$user->id" route="digigarden.user" label="Garden" icon="fa-hard-drive" />
                                 @if ($isAdmin)
                                 <x-buttons.session model="user_edit" :id="$user->id" route="user.profile" label="View" icon="fa-eye" />
@@ -90,7 +86,6 @@
                 <thead class="bg-primary">
                     <tr>
                         <x-table.header class="w-1/2 md:w-1/3 text-left">Name</x-table.header>
-                        <x-table.header class="w-1/3 text-left hidden md:table-cell">Cancel</x-table.header>
                         <x-table.header class="w-1/2 md:w-1/3"></x-table.header>
                     </tr>
                 </thead>
@@ -103,12 +98,9 @@
                             </x-fonts.paragraph>
                         </x-table.data>
 
-                        <x-table.data class="w-1/3 hidden md:table-cell">
-                            <x-buttons.button type="edit" class="cancel_friend_button" label="Cancel" icon="fa-xmark" :data-user="$user->id" />
-                        </x-table.data>
-
                         <x-table.data class="w-1/2 md:w-1/3">
                             <div class="flex justify-end gap-4">
+                                <x-buttons.button type="edit" class="cancel_friend_button" label="Cancel" icon="fa-xmark" :data-user="$user->id" />
                                 <x-buttons.session model="other_user" :id="$user->id" route="digigarden.user" label="Garden" icon="fa-hard-drive" />
                                 @if ($isAdmin)
                                 <x-buttons.session model="user_edit" :id="$user->id" route="user.profile" label="View" icon="fa-eye" />
@@ -127,7 +119,6 @@
                 <thead class="bg-primary">
                     <tr>
                         <x-table.header class="w-1/2 md:w-1/3 text-left">Name</x-table.header>
-                        <x-table.header class="w-1/3 text-left hidden md:table-cell">Accept / Deny</x-table.header>
                         <x-table.header class="w-1/2 md:w-1/3"></x-table.header>
                     </tr>
                 </thead>
@@ -140,15 +131,10 @@
                             </x-fonts.paragraph>
                         </x-table.data>
 
-                        <x-table.data class="w-1/3 hidden md:table-cell">
-                            <div class="flex justify-start gap-4">
-                                <x-buttons.button type="edit" class="add_friend_button" label="Accpet" icon="fa-plus" :data-user="$user->id" />
-                                <x-buttons.button type="edit" class="cancel_friend_button" label="Deny" icon="fa-xmark" :data-user="$user->id" />
-                            </div>
-                        </x-table.data>
-
                         <x-table.data class="w-1/2 md:w-1/3">
                             <div class="flex justify-end gap-4">
+                                <x-buttons.button type="edit" class="add_friend_button" label="Accpet" icon="fa-plus" :data-user="$user->id" />
+                                <x-buttons.button type="edit" class="cancel_friend_button" label="Deny" icon="fa-xmark" :data-user="$user->id" />
                                 <x-buttons.session model="other_user" :id="$user->id" route="digigarden.user" label="Garden" icon="fa-hard-drive" />
                                 @if ($isAdmin)
                                 <x-buttons.session model="user_edit" :id="$user->id" route="user.profile" label="View" icon="fa-eye" />
