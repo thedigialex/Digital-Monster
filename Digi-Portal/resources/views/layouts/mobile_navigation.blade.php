@@ -13,6 +13,9 @@
     </div>
 
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden bg-secondary">
+        <div class="bg-gradient-to-l from-primary to-tertiary border-b-4 border-accent p-6 z-10 flex justify-between items-center">
+            {{ $header }}
+        </div>
         @include('layouts.navigation')
     </div>
 </nav>

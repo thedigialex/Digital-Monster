@@ -38,14 +38,12 @@
                     {{ config('app.name') }}
                 </x-fonts.sub-header>
             </div>
-
             @include('layouts.navigation')
         </aside>
 
-        @include('layouts.mobile_navigation')
-
-        <div class="flex-1 md:ml-64 overflow-hidden">
-            <div class="md:fixed md:top-0 w-full md:w-[calc(100%-16rem)] bg-gradient-to-l from-primary to-tertiary border-b-4 border-accent p-6 z-10 flex justify-between items-center">
+        <div class="flex-1 md:ml-64">
+            @include('layouts.mobile_navigation')
+            <div class="hidden md:fixed md:top-0 w-full md:w-[calc(100%-16rem)] bg-gradient-to-l from-primary to-tertiary border-b-4 border-accent p-6 z-10 md:flex justify-between items-center">
                 {{ $header }}
             </div>
 
