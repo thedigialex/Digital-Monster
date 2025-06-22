@@ -9,7 +9,6 @@
     @if (session('success'))
     <x-alerts.alert type="Success" message="Saved!" />
     @endif
-
     
     <x-container>
         <x-slot name="header">
