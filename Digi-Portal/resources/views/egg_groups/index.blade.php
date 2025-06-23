@@ -10,6 +10,7 @@
     <x-alerts.alert type="Success" message="Saved!" />
     @endif
     
+    
     <x-container>
         <x-slot name="header">
             <x-fonts.sub-header class="text-accent">Egg Groups</x-fonts.sub-header>
