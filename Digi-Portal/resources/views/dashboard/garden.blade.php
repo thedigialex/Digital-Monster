@@ -48,11 +48,13 @@
                 </div>
             </x-container.modal>
         </x-slot>
-        <div
-            id="monster-container"
-            class="relative w-full rounded-b-md shadow-lg bg-cover bg-center h-[60vh]"
-            data-monsters='@json($userMonsters)'
-            style="background-image: url('{{ asset($background) }}');">
+        <div class="relative w-full rounded-b-md shadow-lg h-[60vh] overflow-hidden">
+            <div
+                id="monster-container"
+                class="w-full h-full bg-cover bg-center"
+                data-monsters='@json($userMonsters)'
+                style="background-image: url('{{ asset($background) }}');"></div>
+            <div class="absolute inset-0 pointer-events-none {{ $timeOfDay }}"></div>
         </div>
         <div id="stats-panel" class="hidden bg-secondary border-primary border-t-4 p-4 shadow-lg rounded-b-md">
             <div class="flex justify-between items-center pb-4">

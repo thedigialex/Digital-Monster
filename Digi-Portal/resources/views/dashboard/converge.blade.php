@@ -17,7 +17,7 @@
                 DataCrystals <span>{{ $count}} / 10</span>
             </x-fonts.paragraph>
         </x-slot>
-        <x-container.background :background="$background" class="rounded-b-md gap-4">
+        <x-container.background :background="$background" :timeOfDay="$timeOfDay">
             <x-alerts.spinner id="loading-section"></x-alerts.spinner>
             <div id="egg-section" class="flex flex-col items-center gap-4 w-full">
                 <x-fonts.paragraph class="text-text p-4 bg-primary rounded-md">{{ $message }}</x-fonts.paragraph>

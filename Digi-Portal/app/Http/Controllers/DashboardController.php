@@ -47,14 +47,17 @@ class DashboardController extends Controller
         $userBackgrounds = $allUserItems->get('Background', collect());
         $userMaterials = $allUserItems->get('Material', collect());
 
-        $background = $this->getUserBackgroundImage($user);
-        $background_id =   $user->background_id;
+        $backgroundResult = $this->getUserBackgroundImage($user);
+        $background = $backgroundResult['background'];
+        $timeOfDay = $backgroundResult['timeOfDay'];
+
+        $background_id = $user->background_id;
         $userBackgrounds = $userBackgrounds->filter(function ($background) use ($background_id) {
             return $background->id !== $background_id;
         });
         $count = $userMonsters->count() . ' / ' . ($digiGarden->level * 5);
 
-        return view('dashboard.garden', compact('user', 'userMonsters', 'count', 'userEquipment', 'userItems', 'userAttacks', 'userBackgrounds', 'userMaterials', 'background', 'background_id'));
+        return view('dashboard.garden', compact('user', 'userMonsters', 'count', 'userEquipment', 'userItems', 'userAttacks', 'userBackgrounds', 'userMaterials', 'background_id', 'timeOfDay', 'background'));
     }
 
     public function gardenUser(Request $request)
@@ -71,10 +74,12 @@ class DashboardController extends Controller
             })
             ->first();
 
-        $background = $this->getUserBackgroundImage($user);
+        $backgroundResult = $this->getUserBackgroundImage($user);
+        $background = $backgroundResult['background'];
+        $timeOfDay = $backgroundResult['timeOfDay'];
         $count = $userMonsters->count() . ' / ' . ($digiGarden->level * 5);
 
-        return view('dashboard.viewGarden', compact('user', 'userMonsters', 'count', 'background'));
+        return view('dashboard.viewGarden', compact('user', 'userMonsters', 'count', 'timeOfDay', 'background'));
     }
 
     public function changeBackground(Request $request)
@@ -220,9 +225,11 @@ class DashboardController extends Controller
             $userMonster->attack = UserItem::with('item')->where('id', $userMonster->attack)->first();
         }
 
-        $background = $this->getUserBackgroundImage($user);
+        $backgroundResult = $this->getUserBackgroundImage($user);
+        $background = $backgroundResult['background'];
+        $timeOfDay = $backgroundResult['timeOfDay'];
 
-        return view('dashboard.colosseum', compact('userMonsters', 'background'));
+        return view('dashboard.colosseum', compact('userMonsters', 'timeOfDay', 'background'));
     }
 
     public function generateBattle(Request $request)
@@ -376,9 +383,11 @@ class DashboardController extends Controller
             $userMonster->attack = UserItem::with('item')->where('id', $userMonster->attack)->first();
         }
 
-        $background = "/storage/" . $currentLocation->location->image;
+        $backgroundResult = $this->getUserBackgroundImage($user);
+        $background = $backgroundResult['background'];
+        $timeOfDay = $backgroundResult['timeOfDay'];
 
-        return view('dashboard.adventure', compact('userMonsters', 'background',  'userLocations', 'currentLocation'));
+        return view('dashboard.adventure', compact('userMonsters', 'timeOfDay', 'background', 'userLocations', 'currentLocation'));
     }
 
     public function changeLocation(Request $request)
@@ -408,7 +417,9 @@ class DashboardController extends Controller
     {
         $user = User::find(Auth::id());
 
-        $background = $this->getUserBackgroundImage($user);
+        $backgroundResult = $this->getUserBackgroundImage($user);
+        $background = $backgroundResult['background'];
+        $timeOfDay = $backgroundResult['timeOfDay'];
 
         $userItems = UserItem::where('user_id', $user->id)->get()->keyBy('item_id');
 
@@ -425,14 +436,16 @@ class DashboardController extends Controller
             })
             ->groupBy('type');
 
-        return view('dashboard.shop', compact('user', 'background', 'items'));
+        return view('dashboard.shop', compact('user', 'timeOfDay', 'background', 'items'));
     }
 
     public function upgradeStation()
     {
         $user = User::find(Auth::id());
 
-        $background = $this->getUserBackgroundImage($user);
+        $backgroundResult = $this->getUserBackgroundImage($user);
+        $background = $backgroundResult['background'];
+        $timeOfDay = $backgroundResult['timeOfDay'];
 
         $allUserItems = UserItem::with('item')
             ->where('user_id', $user->id)
@@ -454,7 +467,7 @@ class DashboardController extends Controller
                 $userItem = $allUserItems->get($equipment->upgrade_item_id);
                 return $userItem && $userItem->quantity >= $requiredQty;
             });
-        return view('dashboard.upgrade', compact('user', 'userEquipments', 'background'));
+        return view('dashboard.upgrade', compact('user', 'userEquipments', 'timeOfDay', 'background'));
     }
 
     public function upgradeEquipment(Request $request)
@@ -520,7 +533,9 @@ class DashboardController extends Controller
     public function converge()
     {
         $user = User::find(Auth::id());
-        $background = $this->getUserBackgroundImage($user);
+        $backgroundResult = $this->getUserBackgroundImage($user);
+        $background = $backgroundResult['background'];
+        $timeOfDay = $backgroundResult['timeOfDay'];
 
         $count = $user->userItems()
             ->whereHas('item', function ($query) {
@@ -549,14 +564,16 @@ class DashboardController extends Controller
         if ($count >= 10 && $totalMonsters < $digiGarden->level * 5) {
             $eggs = Monster::where('stage', 'Egg')->get();
         }
-        
-        return view('dashboard.converge', compact('count', 'background', 'eggs', 'message'));
+
+        return view('dashboard.converge', compact('count', 'timeOfDay', 'background', 'eggs', 'message'));
     }
 
     public function extract()
     {
         $user = User::find(Auth::id());
-        $background = $this->getUserBackgroundImage($user);
+        $backgroundResult = $this->getUserBackgroundImage($user);
+        $background = $backgroundResult['background'];
+        $timeOfDay = $backgroundResult['timeOfDay'];
         $monsterCount = UserMonster::where('user_id', $user->id)
             ->whereHas('monster', function ($query) {
                 $query->whereNotIn('stage', ['Egg', 'Fresh', 'Child']);
@@ -576,7 +593,7 @@ class DashboardController extends Controller
         } else {
             $message = "You have no monsters to extract";
         }
-        return view('dashboard.extract', compact('userMonsters', 'background', 'message'));
+        return view('dashboard.extract', compact('userMonsters', 'timeOfDay', 'background', 'message'));
     }
 
     public function extractMonster(Request $request)
@@ -922,21 +939,26 @@ class DashboardController extends Controller
         ]);
     }
 
-    public function getUserBackgroundImage($user)
+    public function getUserBackgroundImage($user): array
     {
         $userBackground = UserItem::with('item')
             ->where('id', $user->background_id)
             ->first();
-
+        $background = "/storage/" . $userBackground->item->image;
         $hour = now()->hour;
-        if ($hour >= 12 && $hour < 18) {
-            $background = "/storage/" . $userBackground->item->image;
-        } elseif ($hour >= 0 && $hour < 6) {
-            $background = "/storage/" . $userBackground->item->image_2;
+
+        if ($hour >= 5 && $hour < 10) {
+            $timeOfDay = 'bg-amber-300 bg-opacity-5';
+        } elseif ($hour >= 10 && $hour < 18) {
+            $timeOfDay = '';
         } else {
-            $background = "/storage/" . $userBackground->item->image_1;
+            $timeOfDay = 'bg-indigo-800 bg-opacity-25';
         }
-        return $background;
+
+        return [
+            'background' => $background,
+            'timeOfDay' => $timeOfDay,
+        ];
     }
 
     public function changeName(Request $request)

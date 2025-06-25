@@ -40,7 +40,8 @@
                 </x-container.modal>
             </div>
         </x-slot>
-        <x-container.background :background="$background" class="rounded-b-md gap-4">
+        
+        <x-container.background :background="$background" :timeOfDay="$timeOfDay">
             <div id="setup-section" class="flex flex-col gap-4 w-full">
                 <div id="monster-section" class="flex flex-col items-center gap-4 w-full">
                     @if(!$userMonsters->isEmpty())

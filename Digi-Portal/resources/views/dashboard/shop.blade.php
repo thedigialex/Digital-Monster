@@ -14,7 +14,7 @@
                 Balance: $ <span>{{ $user->bits }}</span>
             </x-fonts.paragraph>
         </x-slot>
-        <x-container.background :background="$background" class="rounded-b-md gap-4">
+        <x-container.background :background="$background" :timeOfDay="$timeOfDay">
             <x-alerts.spinner id="loading-section" />
             <x-fonts.paragraph id="messageBox" class="hidden text-text p-4 bg-primary rounded-md"></x-fonts.paragraph>
             @if (!$items->isEmpty())

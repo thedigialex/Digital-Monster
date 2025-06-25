@@ -14,7 +14,7 @@
                 DigiExtract
             </x-fonts.sub-header>
         </x-slot>
-        <x-container.background :background="$background" class="rounded-b-md">
+        <x-container.background :background="$background" :timeOfDay="$timeOfDay">
             <div id="monster-selection" class="flex flex-col justify-center items-center gap-4">
                 <x-fonts.paragraph class="text-text p-2 bg-primary rounded-md">{{ $message }}</x-fonts.paragraph>
                 <div class="flex items-center gap-4">

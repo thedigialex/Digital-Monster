@@ -12,7 +12,7 @@
             </x-fonts.sub-header>
             <x-buttons.button type="edit" label="Switch" icon="fa-repeat" id="backButton" class="hidden" />
         </x-slot>
-        <x-container.background id="setup-section" :background="$background" class="rounded-b-md gap-4">
+        <x-container.background id="setup-section" :background="$background" :timeOfDay="$timeOfDay">
             <div id="monster-section" class="flex flex-col items-center gap-4 w-full">
                 @if(!$userMonsters->isEmpty())
                 <x-fonts.paragraph class="text-text p-4 bg-primary rounded-md">Select a monster for battle</x-fonts.paragraph>
@@ -38,7 +38,7 @@
             @endif
         </x-container.background>
 
-        <x-container.background id="battle-section" :background="$background" class="hidden rounded-b-md">
+        <x-container.background id="battle-section" :background="$background" :timeOfDay="$timeOfDay" class="hidden">
             <x-alerts.spinner id="loading-section"></x-alerts.spinner>
             <div id="battle-arena" class="flex justify-around items-center gap-4 w-full md:w-1/2">
                 <x-container.sprite id="enemy-monster-sprite" :rotate="true" name='test'></x-container.sprite>

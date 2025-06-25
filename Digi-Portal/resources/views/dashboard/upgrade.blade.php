@@ -11,7 +11,7 @@
                 Upgrade Station
             </x-fonts.sub-header>
         </x-slot>
-        <x-container.background :background="$background" class="rounded-b-md">
+        <x-container.background :background="$background" :timeOfDay="$timeOfDay">
             <x-alerts.spinner id="loading-section" />
             @if ($userEquipments->isEmpty())
             <x-fonts.paragraph class="text-text p-2 bg-primary rounded-md">No Equipment to upgrade</x-fonts.paragraph>
