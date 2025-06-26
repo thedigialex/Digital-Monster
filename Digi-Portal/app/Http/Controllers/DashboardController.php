@@ -390,6 +390,7 @@ class DashboardController extends Controller
         return view('dashboard.adventure', compact('userMonsters', 'timeOfDay', 'background', 'userLocations', 'currentLocation'));
     }
 
+    
     public function changeLocation(Request $request)
     {
         $user = User::find(Auth::id());
