@@ -10,8 +10,7 @@
     <x-alerts.alert type="Success" message="Saved!" />
     @endif
     
-    
-    <x-container>
+    <x-container  class="p-1 lg:p-4">
         <x-slot name="header">
             <x-fonts.sub-header class="text-accent">Egg Groups</x-fonts.sub-header>
         </x-slot>

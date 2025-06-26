@@ -74,8 +74,6 @@
                 <div class="flex flex-col justify-center items-center py-4 space-y-4">
                     <div class="flex flex-col md:flex-row justify-center items-center gap-4 w-full md:1/3">
                         <x-inputs.file label="Choose an Image" name="image" class="w-1/3" :currentImage="$item->image ?? null" :messages="$errors->get('image')" />
-                        <x-inputs.file label="Choose an Image" name="image_1" class="hidden w-1/3" :currentImage="$item->image_1 ?? null" :messages="$errors->get('image_1')" />
-                        <x-inputs.file label="Choose an Image" name="image_2" class="hidden w-1/3" :currentImage="$item->image_2 ?? null" :messages="$errors->get('image_2')" />
                     </div>
                     <x-buttons.button type="edit" label="{{ isset($item) ? 'Update' : 'Create' }}" icon="fa-save" />
                 </div>
@@ -88,10 +86,6 @@
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         let dropdown = document.getElementById("type");
-        if(dropdown.value === 'Background'){
-            document.getElementById('image_1_div').classList.remove('hidden');
-            document.getElementById('image_2_div').classList.remove('hidden');
-        }
         if(dropdown.value === 'Consumable'){
             document.getElementById('effect_div').classList.remove('hidden');
         }
@@ -99,7 +93,5 @@
 
     function toggleTypeDropdown(event) {
         document.getElementById('effect_div').classList.toggle('hidden', event.target.value !== 'Consumable');
-        document.getElementById('image_1_div').classList.toggle('hidden', event.target.value !== 'Background');
-        document.getElementById('image_2_div').classList.toggle('hidden', event.target.value !== 'Background');
     }
 </script>

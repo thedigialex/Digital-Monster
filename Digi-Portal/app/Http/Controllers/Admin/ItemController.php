@@ -53,15 +53,6 @@ class ItemController extends Controller
             $validationRules['image'] = 'required|image|mimes:png,jpg|max:2048';
         }
 
-        if ($request->input('type') == 'Background') {
-            if (!$item->image_1) {
-                $validationRules['image_1'] = 'required|image|mimes:png,jpg|max:2048';
-            }
-            if (!$item->image_2) {
-                $validationRules['image_2'] = 'required|image|mimes:png,jpg|max:2048';
-            }
-        }
-
         if ($request->input('type') == 'Consumable') {
             $validationRules['effect'] = 'required|string';
         }
@@ -78,24 +69,6 @@ class ItemController extends Controller
             }
         }
 
-        if ($request->hasFile('image_1')) {
-            $path = $request->file('image_1')->store('items', 'public');
-            $itemData['image_1'] = $path;
-
-            if ($item->image_1) {
-                Storage::disk('public')->delete($item->image_1);
-            }
-        }
-
-        if ($request->hasFile('image_2')) {
-            $path = $request->file('image_2')->store('items', 'public');
-            $itemData['image_2'] = $path;
-
-            if ($item->image_2) {
-                Storage::disk('public')->delete($item->image_2);
-            }
-        }
-
         $item->fill($itemData);
         $item->save();
 
@@ -109,12 +82,6 @@ class ItemController extends Controller
         $item = Item::findOrFail(session('item_id'));
         if ($item->image) {
             Storage::disk('public')->delete($item->image);
-        }
-        if ($item->image_1) {
-            Storage::disk('public')->delete($item->image_1);
-        }
-        if ($item->image_2) {
-            Storage::disk('public')->delete($item->image_2);
         }
         $item->delete();
         return redirect()->route('items.index')->with('success', 'Item deleted successfully.');

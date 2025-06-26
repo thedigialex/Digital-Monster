@@ -11,8 +11,6 @@ class Item extends Model
         'type',
         'price',
         'image',
-        'image_1',
-        'image_2',
         'rarity',
         'effect',
         'available',
