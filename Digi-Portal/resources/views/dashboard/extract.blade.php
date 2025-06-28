@@ -15,115 +15,78 @@
             </x-fonts.sub-header>
         </x-slot>
         <x-container.background :background="$background" :timeOfDay="$timeOfDay">
-            <div id="monster-selection" class="flex flex-col justify-center items-center gap-4">
-                <x-fonts.paragraph class="text-text p-2 bg-primary rounded-md">{{ $message }}</x-fonts.paragraph>
-                <div class="flex items-center gap-4">
+            <x-alerts.spinner id="loading-section"></x-alerts.spinner>
+
+            <div id="monster-section" class="flex flex-col items-center gap-4 w-full">
+                <x-fonts.paragraph class="text-text p-4 bg-primary rounded-md">{{ $message }}</x-fonts.paragraph>
+                @if(!$userMonsters->isEmpty())
+                <div class="flex justify-center items-center gap-2 w-full">
                     <x-buttons.button type="edit" id="scrollLeft" label="" icon="fa-chevron-left" />
-                    <div id="monsterCarousel" class="flex items-center gap-4" data-monsters='@json($userMonsters)'></div>
+                    <div id="monsterScroll" class="flex  transition-transform duration-300 w-3/4 lg:w-1/3 gap-4 overflow-hidden bg-primary p-4 rounded-md">
+                        @foreach ($userMonsters as $userMonster)
+                        <x-container.monster-card :data-monster="$userMonster" :id="'monster-' . $userMonster->id" buttonClass="selectUserMonster" divClass="monster-div" />
+                        @endforeach
+                    </div>
                     <x-buttons.button type="edit" id="scrollRight" label="" icon="fa-chevron-right" />
                 </div>
+                @endif
             </div>
-            <div id="confirm-selection" class="hidden flex flex-col justify-center items-center">
-                <x-fonts.paragraph class="text-text p-2 bg-primary rounded-md">Extract DataCore from this Monster?</x-fonts.paragraph>
-                <div id="single-egg" class="flex items-center gap-4 py-4"></div>
-                <div class="flex gap-4">
-                    <x-buttons.button type="edit" id="backButton" label="Back" icon="fa-backward" />
-                    <x-buttons.button type="edit" id="confirmButton" label="Confirm" icon="fa-check" />
-                </div>
+            <div id="confirm-selection" class="hidden flex flex-col justify-center items-center gap-4">
+                <x-fonts.paragraph class="text-text p-4 bg-primary rounded-md">Extract DataCore from this Monster?</x-fonts.paragraph>
+                <x-buttons.button type="edit" id="confirmButton" label="Confirm" icon="fa-check" />
             </div>
-            <x-alerts.spinner id="loading-section"></x-alerts.spinner>
         </x-container.background>
     </x-container>
 </x-app-layout>
 
 <script>
     document.addEventListener("DOMContentLoaded", function() {
-        const carousel = document.getElementById("monsterCarousel");
-        const monsterSection = document.getElementById("monster-selection");
         const confirmSelection = document.getElementById("confirm-selection");
-        const singleEgg = document.getElementById("single-egg");
-        const scrollLeft = document.getElementById("scrollLeft");
-        const scrollRight = document.getElementById("scrollRight");
-        const userMonsters = JSON.parse(carousel.getAttribute("data-monsters"));
+        const monsterSection = document.getElementById("monster-section");
+        const scrollLeftBtn = document.getElementById("scrollLeft");
+        const scrollRightBtn = document.getElementById("scrollRight");
 
-        let currentIndex = 0;
         let selectedMonster;
-        const itemsPerPage = window.innerWidth <= 640 ? 1 : 4;
-        let monsterElements = [];
 
-        function getMonsterImage(userMonster) {
-            if (['Fresh', 'Child'].includes(userMonster.monster.stage)) {
-                return `/storage/${userMonster.monster.image_0}`;
-            }
-            const imageMap = {
-                "Vaccine": userMonster.monster.image_1,
-                "Virus": userMonster.monster.image_2,
-            };
-            return `/storage/${imageMap[userMonster.type] || userMonster.monster.image_0}`;
+        scrollLeftBtn?.addEventListener('click', () => scrollCards(-1));
+        scrollRightBtn?.addEventListener('click', () => scrollCards(1));
+
+        function getCardWidth() {
+            const firstCard = scrollContainer.querySelector('div');
+            return firstCard ? firstCard.offsetWidth + 16 : 0;
         }
 
-        function renderMonsters() {
-            scrollLeft.style.visibility = currentIndex === 0 ? "hidden" : "visible";
-            scrollRight.style.visibility = currentIndex + itemsPerPage >= monsterElements.length ? "hidden" : "visible";
-            carousel.innerHTML = "";
-            const monstersToShow = monsterElements.slice(currentIndex, currentIndex + itemsPerPage);
-            monstersToShow.forEach(monster => carousel.appendChild(monster));
-        }
-
-        function showConfirmation() {
-            const imageSrc = getMonsterImage(selectedMonster);
-            monsterSection.classList.add("hidden");
-            confirmSelection.classList.remove("hidden");
-
-            singleEgg.innerHTML = `
-                <div class="flex flex-col items-center w-36 p-2 bg-secondary border-2 border-accent rounded-md text-text">
-                    <div class="w-24 h-24 p-2 rounded-md bg-primary">
-                        <img src="${imageSrc}" class="w-full h-full object-cover" style="object-position: 0 0;" />
-                    </div>
-                    <p class="text-center">${selectedMonster.name}</p>
-                </div>
-            `;
-        }
-
-        function showEggSelection() {
-            confirmSelection.classList.add("hidden");
-            monsterSection.classList.remove("hidden");
-        }
-
-        userMonsters.forEach(userMonster => {
-            const monsterDiv = document.createElement("div");
-            const imageSrc = getMonsterImage(userMonster);
-            monsterDiv.classList.add("flex", "flex-col", "items-center", "w-36", "p-2", "bg-secondary", "border-2", "border-accent", "rounded-md", "cursor-pointer", "text-text");
-            monsterDiv.innerHTML = `
-                <div class="w-24 h-24 p-2 rounded-md bg-primary">
-                    <img src="${imageSrc}" class="w-full h-full object-cover" style="object-position: 0 0;" />
-                </div>
-                <p class="text-center">${userMonster.name}</p>
-            `;
-
-            monsterDiv.addEventListener("click", function() {
-                selectedMonster = userMonster;
-                showConfirmation();
+        function scrollCards(direction) {
+            const cardWidth = getCardWidth();
+            scrollContainer.scrollBy({
+                left: direction * cardWidth,
+                behavior: 'smooth'
             });
+        }
 
-            monsterElements.push(monsterDiv);
+        document.querySelectorAll('.selectUserMonster').forEach(button => {
+            button.addEventListener('click', function() {
+                selectedMonster = JSON.parse(this.getAttribute("data-monster"));
+                confirmSelection.classList.remove("hidden");
+                highlightUserMonster();
+            });
         });
 
-        scrollLeft.addEventListener("click", function() {
-            if (currentIndex > 0) {
-                currentIndex -= itemsPerPage;
-                renderMonsters();
-            }
-        });
-
-        scrollRight.addEventListener("click", function() {
-            if (currentIndex + itemsPerPage < monsterElements.length) {
-                currentIndex += itemsPerPage;
-                renderMonsters();
-            }
-        });
-
-        document.getElementById("backButton").addEventListener("click", showEggSelection);
+        function highlightUserMonster() {
+            document.querySelectorAll(".monster-div").forEach(container => {
+                const monsterText = container.querySelector("p");
+                container.classList.remove("bg-accent", "bg-secondary");
+                monsterText.classList.remove("text-secondary", "text-text");
+                const userMonster = JSON.parse(container.querySelector("button").getAttribute("data-monster"));
+                if (selectedMonster.id === userMonster.id) {
+                    container.classList.add("bg-accent");
+                    monsterText.classList.add("text-text");
+                } else {
+                    container.classList.add("bg-secondary");
+                    monsterText.classList.add("text-secondary");
+                }
+            });
+        }
 
         document.getElementById("confirmButton").addEventListener("click", function() {
             document.getElementById("loading-section").classList.remove("hidden");
@@ -147,7 +110,5 @@
                     }
                 });
         });
-
-        renderMonsters();
     });
 </script>

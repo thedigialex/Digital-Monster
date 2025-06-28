@@ -36,28 +36,28 @@
                 <div class="flex flex-col lg:flex-row gap-4">
                     @foreach ($group->slice(3, 2) as $member)
                     <div class="w-full lg:w-1/2 flex justify-center">
-                        <x-container.monster-card :monster="$member" :obtained="$obtainedMonsterIds->contains($member->id)" />
+                        <x-container.monster-card :dataMonster="$member" :obtained="$obtainedMonsterIds->contains($member->id)" />
                     </div>
                     @endforeach
                 </div>
                 <div class="flex flex-col lg:flex-row gap-4">
                     @foreach ($group->slice(5, 4) as $member)
                     <div class="w-full lg:w-1/2 flex justify-center">
-                        <x-container.monster-card :monster="$member" :obtained="$obtainedMonsterIds->contains($member->id)" />
+                        <x-container.monster-card :dataMonster="$member" :obtained="$obtainedMonsterIds->contains($member->id)" />
                     </div>
                     @endforeach
                 </div>
                 <div class="flex flex-col lg:flex-row gap-4">
                     @foreach ($group->slice(9, 8) as $member)
                     <div class="w-full lg:w-1/2 flex justify-center">
-                        <x-container.monster-card :monster="$member" :obtained="$obtainedMonsterIds->contains($member->id)" />
+                        <x-container.monster-card :dataMonster="$member" :obtained="$obtainedMonsterIds->contains($member->id)" />
                     </div>
                     @endforeach
                 </div>
                 <div class="flex flex-col lg:flex-row gap-4">
                     @foreach ($group->slice(17, 8) as $member)
                     <div class="w-full lg:w-1/2 flex justify-center">
-                        <x-container.monster-card :monster="$member" :obtained="$obtainedMonsterIds->contains($member->id)" />
+                        <x-container.monster-card :dataMonster="$member" :obtained="$obtainedMonsterIds->contains($member->id)" />
                     </div>
                     @endforeach
                 </div>

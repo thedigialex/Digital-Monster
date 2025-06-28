@@ -25,8 +25,7 @@
                 <x-container.tab-div class="pt-2 px-2 justify-center bg-secondary">
                     <x-buttons.tab id="showBackgrounds" class="bg-accent text-secondary p-2" label="Backgrounds" />
                 </x-container.tab-div>
-                <div class="flex flex-col justify-center items-center bg-cover bg-center rounded-b-md"
-                    style="background-image: url('{{ asset($background) }}'); height: 40vh;">
+                <x-container.background :background="$background" :timeOfDay="$timeOfDay" class="h-[40vh]">
                     <x-alerts.spinner id="loading-section-background"></x-alerts.spinner>
                     <div id="backgrounds" class="flex flex-wrap justify-center items-center gap-4 overflow-y-auto">
                         @foreach ($userBackgrounds as $userBackground)
@@ -45,7 +44,7 @@
                         <x-fonts.paragraph class="text-text p-2 bg-primary rounded-md">No Additional Backgrounds</x-fonts.paragraph>
                         @endif
                     </div>
-                </div>
+                </x-container.background>
             </x-container.modal>
         </x-slot>
         <div class="relative w-full rounded-b-md shadow-lg h-[60vh] overflow-hidden">
@@ -80,8 +79,7 @@
                             <x-buttons.tab id="showAttacks" class="bg-secondary text-text p-2" label="Attacks" />
                             <x-buttons.tab id="showMaterials" class="bg-secondary text-text p-2" label="Materials" />
                         </x-container.tab-div>
-                        <div class="flex flex-col justify-center items-center bg-cover bg-center rounded-b-md"
-                            style="background-image: url('{{ asset($background) }}'); height: 40vh;">
+                        <x-container.background :background="$background" :timeOfDay="$timeOfDay" class="h-[40vh]">
                             <div id="items" class="flex justify-center items-center overflow-y-auto">
                                 <div id="item-selection" class="flex flex-wrap justify-center items-center gap-4">
                                     @foreach ($userItems as $userItem)
@@ -110,7 +108,7 @@
                                 <x-fonts.paragraph class="text-text p-2 bg-primary rounded-md">No Materials</x-fonts.paragraph>
                                 @endif
                             </div>
-                        </div>
+                        </x-container.background>
                     </x-container.modal>
                 </div>
                 <div class="flex flex-wrap gap-4 justify-start">
@@ -174,9 +172,7 @@
                             @endforeach
                         </div>
                     </x-slot>
-
-                    <div class="flex flex-col justify-center items-center bg-cover bg-center"
-                        style="background-image: url('{{ asset($background) }}'); height: 40vh;">
+                    <x-container.background :background="$background" :timeOfDay="$timeOfDay" class="h-[40vh]">
                         <div id="training-section" class="flex flex-col justify-center items-center gap-4 p-2 w-full">
                             <div class="flex justify-center items-center">
                                 <x-container.sprite id="equipment-sprite"></x-container.sprite>
@@ -189,7 +185,7 @@
                             <x-buttons.button type="edit" id="trainingButton" label="Start" icon="fa-play" />
                         </div>
                         <x-fonts.paragraph id="sleep-section" class="text-text p-2 bg-primary rounded-md">Monster is sleeping</x-fonts.paragraph>
-                    </div>
+                    </x-container.background>
                 </x-container.modal>
             </div>
         </div>

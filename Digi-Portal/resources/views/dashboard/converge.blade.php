@@ -43,7 +43,6 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function() {
-        const carousel = document.getElementById("monsterCarousel");
         const confirmSelection = document.getElementById("confirm-selection");
         const eggSection = document.getElementById("egg-section");
         const scrollLeftBtn = document.getElementById('scrollLeft');
