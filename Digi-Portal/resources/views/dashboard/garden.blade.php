@@ -25,7 +25,7 @@
                 <x-container.tab-div class="pt-2 px-2 justify-center bg-secondary">
                     <x-buttons.tab id="showBackgrounds" class="bg-accent text-secondary p-2" label="Backgrounds" />
                 </x-container.tab-div>
-                <x-container.background :background="$background" :timeOfDay="$timeOfDay" class="h-[40vh]">
+                <x-container.background :background="$background" :timeOfDay="$timeOfDay" height="h-[40vh]">
                     <x-alerts.spinner id="loading-section-background"></x-alerts.spinner>
                     <div id="backgrounds" class="flex flex-wrap justify-center items-center gap-4 overflow-y-auto">
                         @foreach ($userBackgrounds as $userBackground)
@@ -79,7 +79,7 @@
                             <x-buttons.tab id="showAttacks" class="bg-secondary text-text p-2" label="Attacks" />
                             <x-buttons.tab id="showMaterials" class="bg-secondary text-text p-2" label="Materials" />
                         </x-container.tab-div>
-                        <x-container.background :background="$background" :timeOfDay="$timeOfDay" class="h-[40vh]">
+                        <x-container.background :background="$background" :timeOfDay="$timeOfDay" height="h-[40vh]">
                             <div id="items" class="flex justify-center items-center overflow-y-auto">
                                 <div id="item-selection" class="flex flex-wrap justify-center items-center gap-4">
                                     @foreach ($userItems as $userItem)
@@ -172,7 +172,7 @@
                             @endforeach
                         </div>
                     </x-slot>
-                    <x-container.background :background="$background" :timeOfDay="$timeOfDay" class="h-[40vh]">
+                    <x-container.background :background="$background" :timeOfDay="$timeOfDay" height="h-[40vh]">
                         <div id="training-section" class="flex flex-col justify-center items-center gap-4 p-2 w-full">
                             <div class="flex justify-center items-center">
                                 <x-container.sprite id="equipment-sprite"></x-container.sprite>

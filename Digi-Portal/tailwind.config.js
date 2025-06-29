@@ -9,6 +9,13 @@ export default {
         './resources/views/**/*.blade.php',
     ],
 
+    safelist: [
+        'bg-indigo-800',
+        'bg-opacity-25',
+        'bg-amber-300',
+        'bg-opacity-10'
+    ],
+
     theme: {
         extend: {
             fontFamily: {

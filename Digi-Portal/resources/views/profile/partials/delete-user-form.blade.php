@@ -10,7 +10,7 @@
                 <x-buttons.button type="delete" @click="open = true" label="Delete" />
             </div>
         </x-slot>
-        <form method="post" action="{{ route('profile.destroy') }}">
+        <form method="post" action="{{ route('profile.destroy') }}"  class="p-4">
             @csrf
             @method('delete')
             <x-fonts.accent-header>Are you sure you want to delete your account?</x-fonts.accent-header>

@@ -949,7 +949,7 @@ class DashboardController extends Controller
         $hour = now()->hour;
 
         if ($hour >= 5 && $hour < 10) {
-            $timeOfDay = 'bg-amber-300 bg-opacity-5';
+            $timeOfDay = 'bg-amber-300 bg-opacity-10';
         } elseif ($hour >= 10 && $hour < 18) {
             $timeOfDay = '';
         } else {
